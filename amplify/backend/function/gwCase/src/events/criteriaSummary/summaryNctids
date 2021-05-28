@@ -1,0 +1,10 @@
+{
+  "summary": "",
+  "method": "summaryNctids",
+  "body": {
+    "nct_ids": [
+      "NCT04069715",
+      "NCT02278341"
+    ]
+  }
+}

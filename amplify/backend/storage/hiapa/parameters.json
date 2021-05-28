@@ -1,5 +1,5 @@
 {
-    "bucketName": "isoucp",
+    "bucketName": "isoucpcriteria",
     "authPolicyName": "s3_amplify_9cd912b4ucp",
     "unauthPolicyName": "s3_amplify_9cd912b4ucp",
     "authRoleName": {
@@ -31,5 +31,5 @@
     "s3PermissionsGuestPublic": "DISALLOW",
     "s3PermissionsGuestUploads": "DISALLOW",
     "GuestAllowList": "DISALLOW",
-    "triggerFunction": "ucpCase"
+    "triggerFunction": "gwCase"
 }

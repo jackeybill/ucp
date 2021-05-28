@@ -1,0 +1,7 @@
+{
+    "module": "criteria",
+    "method": "listStudies",
+    "body": {
+      "filters": {"Id":"C1001"}
+    }
+  }

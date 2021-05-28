@@ -47,12 +47,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "ucpCase",
+            "gwCase",
             {
               "Fn::Join": [
                 "",
                 [
-                  "ucpCase",
+                  "gwCase",
                   "-",
                   {
                     "Ref": "env"
@@ -80,8 +80,8 @@
         },
         "Runtime": "python3.8",
         "Layers": [
-          "arn:aws:lambda:us-east-2:608494368293:layer:Jose:1",
-          "arn:aws:lambda:us-east-2:608494368293:layer:postgresqlClient:1"
+          "arn:aws:lambda:us-west-2:608494368293:layer:Jose:1",
+          "arn:aws:lambda:us-west-2:608494368293:layer:postgresqlClient-master:3"
         ],
         "Timeout": "800"
       }

@@ -4,7 +4,7 @@ import time
 from trp import Document
 import postgresql
 from main import CaseBuild
-from ucpCases import insertData,listCases
+from gwCases import insertData,listCases
 
 
 s3Client = boto3.client('s3')

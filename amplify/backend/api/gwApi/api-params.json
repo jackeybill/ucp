@@ -2,18 +2,18 @@
     "paths": [
         {
             "name": "/cases",
-            "lambdaFunction": "ucpCase",
+            "lambdaFunction": "gwCase",
             "privacy": {
                 "open": true
             },
             "policyResourceName": "/cases"
         }
     ],
-    "resourceName": "ucpApi",
-    "apiName": "ucpApi",
+    "resourceName": "gwApi",
+    "apiName": "gwApi",
     "functionArns": [
         {
-            "lambdaFunction": "ucpCase"
+            "lambdaFunction": "gwCase"
         }
     ],
     "privacy": {
@@ -25,7 +25,7 @@
     "dependsOn": [
         {
             "category": "function",
-            "resourceName": "ucpCase",
+            "resourceName": "gwCase",
             "attributes": [
                 "Name",
                 "Arn"

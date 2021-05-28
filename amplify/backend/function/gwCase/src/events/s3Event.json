@@ -7,7 +7,7 @@
         "eventTime": "2021-03-31T05:24:34.059Z",
         "eventName": "ObjectCreated:Put",
         "userIdentity": {
-          "principalId": "AWS:AROAY3LIXGYS4KM5HOOVC:ucpCase-dev"
+          "principalId": "AWS:AROAY3LIXGYS4KM5HOOVC:gwCase-dev"
         },
         "requestParameters": {
           "sourceIPAddress": "44.234.45.55"

@@ -6,3 +6,18 @@ Helpful resources:
 - Amplify CLI documentation: https://docs.amplify.aws/cli
 - More details on this folder & generated files: https://docs.amplify.aws/cli/reference/files
 - Join Amplify's community: https://amplify.aws/community/
+
+# criteria
+POST https://jtbey858h4.execute-api.us-west-2.amazonaws.com/main/cases
+
+## List all criterias
+payload: amplify/backend/function/gwCase/src/events/criteria/listStudies.json
+
+## add a criteria
+payload: amplify/backend/function/gwCase/src/events/criteria/addStudy.json
+
+## update a criteria
+payload: amplify/backend/function/gwCase/src/events/criteria/updateStudy.json
+
+## remove a criteria
+payload: amplify/backend/function/gwCase/src/events/criteria/delStudy.json

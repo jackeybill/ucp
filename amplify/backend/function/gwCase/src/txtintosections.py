@@ -1,0 +1,613 @@
+import section_filter as section_filter
+import boto3
+import json
+import urllib.parse
+import re
+from time import gmtime, strftime
+from operator import itemgetter
+import os
+from collections import Counter
+from generate_text import convertToTxt
+import inference_section_extraction as infn_sect_extra
+from ExtractUtils import ExtractUtils
+from AwsUtils import AwsUtils
+
+lambda_client = boto3.client('lambda')
+
+
+def process_summary(allBody):
+    awsUtils:AwsUtils = AwsUtils()
+    comprehendmedical = boto3.client('comprehendmedical')
+    chunk_data = awsUtils.splitContent(allBody)
+    entity_result = []
+    icd10_result = []
+    rx_result = []
+    for text in chunk_data:
+        entity = comprehendmedical.detect_entities_v2(Text= text)
+        entity_result.extend(entity['Entities'])
+        #if Category in entity['Entities'].keys():
+        cd10Entitiy = comprehendmedical.infer_icd10_cm(Text=text)
+        icd10_result.extend(cd10Entitiy['Entities'])
+        rxEntitiy = comprehendmedical.infer_rx_norm(Text=text)
+        rx_result.extend(rxEntitiy['Entities'])
+        
+    Entities_summary = AddKeyForValue('Entities_keyvalue','Entities_Category',entity_result,'Entities')    
+    icd10_summary = AddKeyForValue('icd10_keyvalue','icd10_Category',icd10_result,'ICD-10-CM') 
+    rx_summary = AddKeyForValue('rx_keyvalue','rx_Category',rx_result,'RxNorm')
+    return Entities_summary, icd10_summary, rx_summary
+
+
+def save_to_dynamodb(table, data):
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table(table)
+    if data:
+        response = table.put_item(
+            Item=data
+        )
+    else:
+        pass
+    
+
+def process_result_summary(content):
+    awsUtils:AwsUtils = AwsUtils()
+    comprehendmedical = boto3.client('comprehendmedical')
+    chunk_data = awsUtils.splitContent(content)
+    entity_result = []
+    icd10_result = []
+    rx_result = []
+    for text in chunk_data:
+        entity = comprehendmedical.detect_entities_v2(Text= text)
+        entity_result.extend(entity['Entities'])
+        #if Category in entity['Entities'].keys():
+        cd10Entitiy = comprehendmedical.infer_icd10_cm(Text=text)
+        icd10_result.extend(cd10Entitiy['Entities'])
+        rxEntitiy = comprehendmedical.infer_rx_norm(Text=text)
+        rx_result.extend(rxEntitiy['Entities'])
+        
+    Entities_summary = AddKeyForValue('Entities_keyvalue','Entities_Category',entity_result,'Entities')    
+    icd10_summary = AddKeyForValue('icd10_keyvalue','icd10_Category',icd10_result,'ICD-10-CM') 
+    rx_summary = AddKeyForValue('rx_keyvalue','rx_Category',rx_result,'RxNorm')
+    
+    # return Entities_summary, icd10_summary, rx_summary
+    # en_re, icd_10_re, rx_re = process_summary(content)
+    # data['comprehendMedical']['Entities']['Summary'] = en_re
+    # data['comprehendMedical']['ICD-10-CM']['Summary'] = icd_10_re
+    # data['comprehendMedical']['RxNorm']['Summary'] = rx_re
+    # return data
+    result = {
+                'Entities': {'Entities':entity_result, 'Summary':Entities_summary},
+                'ICD-10-CM': {'Entities':icd10_result, 'Summary':icd10_summary},
+                'RxNorm': {'Entities':rx_result, 'Summary':rx_summary}
+            }
+    return result
+
+
+def saveToJson(bucketName, bucketKey, inclusionContent, exclusion, eventsSchedule, allBody):
+    fileName = getFileName(bucketKey)
+    items = []
+    awsUtils:AwsUtils = AwsUtils()
+    
+
+    if inclusionContent:
+        # result = process_result_summary(inclusionContent)
+        items.append(getItemInfo('inc-0', fileName, 'inclusionCriteria', 'Inclusion Criteria', inclusionContent, process_result_summary(inclusionContent)))
+    if exclusion:
+        # items.append(getItemInfo('exc-0', fileName, 'exclusionCriteria', 'Exclusion Criteria', exclusion, awsUtils.detectComprehendMedical(exclusion)))
+        items.append(getItemInfo('exc-0', fileName, 'exclusionCriteria', 'Exclusion Criteria', exclusion, process_result_summary(exclusion)))
+    if eventsSchedule:
+        items.append(getItemInfo('evt-0', fileName, 'eventsSchedule', 'Events Schedule', eventsSchedule, process_result_summary(eventsSchedule)))
+    # Add all content
+    if allBody:
+        #comprehendmedical = boto3.client('comprehendmedical')
+        #chunk_data = awsUtils.splitContent(allBody)
+        #entity_result = []
+        #icd10_result = []
+        #rx_result = []
+        # for text in chunk_data:
+        #     entity = comprehendmedical.detect_entities_v2(Text= text)
+        #     entity_result.extend(entity['Entities'])
+        #     #if Category in entity['Entities'].keys():
+        #     cd10Entitiy = comprehendmedical.infer_icd10_cm(Text=text)
+        #     icd10_result.extend(cd10Entitiy['Entities'])
+        #     rxEntitiy = comprehendmedical.infer_rx_norm(Text=text)
+        #     rx_result.extend(rxEntitiy['Entities'])
+            
+        # Entities_summary = AddKeyForValue('Entities_keyvalue','Entities_Category',entity_result,'Entities')    
+        # icd10_summary = AddKeyForValue('icd10_keyvalue','icd10_Category',icd10_result,'ICD-10-CM') 
+        # rx_summary = AddKeyForValue('rx_keyvalue','rx_Category',rx_result,'RxNorm')
+        # runtime= boto3.client('runtime.sagemaker')
+        # ENDPOINT_NAME='scispacy'
+        # base_result = []
+        # bc5cdr_result = []
+        # bionlp13cg_result = []
+        # craft_result = []
+        # jnlpba_result = []
+        # mosaic_result = []
+        # model_results = {}
+        # for model in ['base','bc5cdr', 'bionlp13cg', 'craft', 'jnlpba']:
+        #     payload=json.dumps({'text':allBody, 'model': model})
+        #     response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
+        #                                       ContentType='application/json',
+        #                                       Body=payload)
+        #     result = json.loads(response['Body'].read().decode())
+        #     #print(model)
+        #     #print(result)
+        #     model_results[model] = result['ents']
+  
+        # model = 'mosaic-ner'
+        # payload=json.dumps({'text':allBody, 'model':'mosaic-ner'})
+        # ENDPOINT_NAME='mosaic'
+        # response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
+        #                                       ContentType='application/json',
+        #                                       Body=payload)
+        # result = json.loads(response['Body'].read().decode())
+        #print(result)
+        # model_results[model] = result['entities']
+        # base_result.extend(model_results['base'])
+        # base_keyvalue = AddKeyForValue('base_keyvalue','base_Category',base_result,'base')
+        # bc5cdr_result.extend(model_results['bc5cdr'])
+        # bc5cdr_keyvalue , bc5cdr_summary = AddKeyForValue('bc5cdr_keyvalue',' bc5cdr_Category',bc5cdr_result,'bc5cdr')
+        # bionlp13cg_result.extend(model_results['bionlp13cg'])
+        # bionlp13cg_keyvalue ,  bionlp13cg_summary = AddKeyForValue('bionlp13cg_keyvalue','bionlp13cg_Category',bionlp13cg_result,'bionlp13cg')
+        # craft_result.extend(model_results['craft'])
+        # craft_keyvalue ,  craft_summary = AddKeyForValue('craft_keyvalue',' craft_Category',craft_result,'craft')
+        # jnlpba_result.extend(model_results['jnlpba'])
+        # jnlpba_keyvalue ,  jnlpba_summary = AddKeyForValue('jnlpba_keyvalue',' jnlpba_Category',jnlpba_result,'jnlpba')
+        # mosaic_result.extend(model_results['mosaic-ner'])
+        # mosaic_keyvalue ,  mosaic_summary = AddKeyForValue('mosaic_keyvalue',' mosaic_Category',mosaic_result,'mosaic-ner')
+        # result = {
+        #         'Entities': {'Entities':entity_result, 'Summary':Entities_summary},
+        #         'ICD-10-CM': {'Entities':icd10_result, 'Summary':icd10_summary},
+        #         'RxNorm': {'Entities':rx_result, 'Summary':rx_summary},
+        #         'Base': {'Entities':base_keyvalue},
+        #         'Bc5cdr': {'Entities':bc5cdr_keyvalue , 'Summary':bc5cdr_summary},
+        #         'Bionlp13cg': {'Entities':bionlp13cg_keyvalue, 'Summary':bionlp13cg_summary},
+        #         'Craft': {'Entities':craft_keyvalue, 'Summary':craft_summary},
+        #         'Jnlpba': {'Entities':jnlpba_keyvalue, 'Summary':jnlpba_summary},
+        #         'Mosaic-ner': {'Entities':mosaic_keyvalue, 'Summary':mosaic_summary}
+        #     }
+        # Dean add format raw text
+        # items.append(getItemInfo('all-0', fileName, 'allText', 'all Text', convertToTxt(json.loads(allBody)), result)) 
+        result = {}
+        items.append(getItemInfo('all-0', fileName, 'allText', 'all Text', allBody, result))    
+    return items
+    
+def AddKeyForValue(keyvalue,Category,result,model):
+    keyvalue = []
+    Category = []
+    base_key = ['Text']
+    models_key = ['Text','BeginOffset','EndOffset','Category']
+    if model in ['Entities','ICD-10-CM','RxNorm']:
+        for item in result:
+           Category.append(item['Category'])
+        summary = Counter(Category)
+        return summary 
+    if model == 'base':
+        for item in result:
+            value = []
+            value.append(item)
+            mydict=dict(zip(base_key,value))
+            print(mydict)
+            keyvalue.append(mydict)
+        return keyvalue
+    if model in ['bc5cdr', 'bionlp13cg', 'craft', 'jnlpba']:
+        for item in result:
+            mydict=dict(zip(models_key,item))
+            keyvalue.append(mydict)
+            Category.append(mydict['Category'])
+        summary = Counter(Category)
+        return keyvalue ,summary
+    if model == 'mosaic-ner':
+        for item in result:
+            item['EndOffset'] = item.pop('end')
+            item['Text'] = item.pop('ent')
+            item['Category'] = item.pop('label')
+            item['BeginOffset'] = item.pop('start')
+            keyvalue.append(item)
+            Category.append(item['Category'])
+        summary = Counter(Category)
+        return keyvalue ,summary
+
+
+def getFileName(documentName):
+    base, filename = os.path.split(documentName)
+    bucket_key = os.path.splitext(filename)[0]
+    return bucket_key
+
+def getItemInfo(id, filename, objectiveType, title, content, comprehendMedical):
+    incItem = {}
+    incItem['title'] = title
+    incItem['content'] = content
+    incItem['comprehendMedical'] = comprehendMedical
+    incItem['objectiveType'] = objectiveType
+    incItem['id'] = id
+    incItem['Filename'] = filename
+    incItem['level'] = '1'
+    incItem['level_number'] = '1.1'
+    return incItem
+
+def parseTxt(bucketName, bucketKey, fileContent):
+    #s3 
+    #s3BucketName = "iso-data-zone"                    #"iso-clinicaltrial-studyprotocols"
+    #documentPath = "iso-service-dev/RawDocuments/"    #"study_protocols_eli_lilly_and_company_phase1/"
+    
+    #document and spoonsor
+    #filename = 'NCT01484431.pdf'
+    
+    #Inferance call
+    sectionNames = ['Inclusion Criteria','Exclusion Criteria']
+    result = infn_sect_extra.extractSections(fileContent,sectionNames, False)
+    #return result
+    #infn_sect_extra.nctExtractSections(s3BucketName,documentPath,filename,sectionNames)
+    util:ExtractUtils = ExtractUtils()
+    #inclusion_body = util.getItemStartEnd(fileContent, 'Inclusion Criteria')
+    #exclusion_body = util.getItemStartEnd(fileContent, 'Exclusion Criteria')
+    # inclusion_body = util.getItemStartEnd(fileContent, 'INCLUSION CRITERIA')
+    # exclusion_body = util.getItemStartEnd(fileContent, 'EXCLUSION CRITERIA')
+    events_body = util.getItemStartEnd(fileContent, 'Events')
+    # title_body = util.getItemStartEnd(fileContent, 'Title')
+    
+    # use inference_section_extraction to parse the inclusion/exclusion
+    inclusion_body = result['Inclusion Criteria'][0]['text']
+    exclusion_body = result['Exclusion Criteria'][0]['text']
+    #print('parseTxt: Inclusion Criteria - ' + inclusion_body)
+    #print('parseTxt: Exclusion Criteria - ' + exclusion_body)
+    #return
+    # print('parseTxt: title' + title_body)
+    return saveToJson(bucketName, bucketKey, inclusion_body, exclusion_body, events_body, fileContent)
+
+def getPathInfo(event):
+    # Started job with bucket: BI clinical study.pdf ; Clinical Pharmacology Protocol
+    #return 'iso-data-zone','iso-service-dev/comprehend-input/BI clinical study.pdf.txt'
+    payload = event['Records'][0]['s3']
+
+    s3BucketName = payload['bucket']['name']
+    documentName = urllib.parse.unquote_plus(payload['object']['key'], encoding='utf-8')
+
+    print("Started job with bucket: {}, and file name: {}".format(s3BucketName, documentName))
+    return s3BucketName, documentName
+
+    
+def handler_aws_attr_summary(data, hash_value):
+    if data:
+        body = data[hash_value]
+        for firstlevel in body:
+            if len(body[firstlevel]) == 0:
+                continue
+            child = body[firstlevel][0]
+            relationshipItems = []
+            if 'comprehendMedical' not in child or len(child['comprehendMedical']) == 0:
+                continue
+            for name in child['comprehendMedical']:
+                aws_result_data = child['comprehendMedical'][name]
+                for entity in aws_result_data['Entities']:
+                    if 'Attributes' in entity:
+                        for attr in entity['Attributes']:
+                            relationshipItem = {entity['Type']: attr['Type']}
+                            relationshipItems.append(relationshipItem)
+
+            result_data = []
+
+            from functools import reduce
+            data_set = reduce(lambda x, y: x if y in x else x + [y], [[], ] + relationshipItems)
+
+            for ds in data_set:
+                result_data_item = ds
+                result_data_item['count'] = relationshipItems.count(ds)
+                result_data.append(result_data_item)
+            data[hash_value][firstlevel][0]['RelationshipSummary'] = result_data
+    return data
+    
+def save_csv(hashcode, d_json):
+    datad = {}
+    datas = d_json[hashcode]['includeAllText'][0]['comprehendMedical']['Entities']['Entities']
+    # datas = d_json['62942bae410fe17939c808ddfc268b48']['includeAllText'][0]['comprehendMedical']['Entities']['Entities']
+    datad['Entities'] = datas 
+    datas = d_json[hashcode]['includeAllText'][0]['comprehendMedical']['ICD-10-CM']['Entities']
+    datad['ICD-10-CM'] = datas 
+    datas = d_json[hashcode]['includeAllText'][0]['comprehendMedical']['RxNorm']['Entities']
+    datad['RxNorm'] = datas 
+    # print(datad)
+    item_list = ['Id', 'BeginOffset', 'EndOffset', 'Score', 'Text', 'Category', 'Type']
+    content = ','.join(item_list)
+    
+    for key in datad:
+        for item in datad[key]:
+            dd = [str(item[k]) for k in item if k in item_list]
+            c = ','.join(dd)
+            content += '\r\n' + c
+    return content
+    
+    
+def get_txt_format(bucketName, bucketKey):
+    s3 = boto3.client('s3')
+    newbucketKey=bucketKey
+    newbucketKey=newbucketKey.replace('comprehend-input','TextractOutput')
+    newbucketKey=newbucketKey.replace('.txt','.json')
+    print(f'read bucket {bucketName}, key {newbucketKey}')
+    
+    response = s3.get_object(Bucket=bucketName, Key=newbucketKey)
+    pdf_json = json.loads(response['Body'].read().decode('utf-8'))
+    
+    allFormatText = convertToTxt(pdf_json)
+    return allFormatText
+    
+
+def using_new_format_for_label_edit_aws(data, hashcode):
+    """
+    For front-end new tab show labels and edit the label
+    params:
+        data: after process json
+        hashcode: generate's hashcode the root key
+    """
+    body = data[hashcode]
+    path_names = ['includeAllText', 'inclusionCriteria', 'exclusionCriteria', 'protocolTitle', 'scheduleActivities', 'briefSummary']
+    for path_name in path_names:
+        # InclusionCriteria
+        content = body[path_name][0]['content']
+        if not content or len(content) < 1:
+            continue
+        contents = str(content).split(' ')
+        for name in ['ICD-10-CM', 'RxNorm', 'Entities']:
+            value = body[path_name][0]['comprehendMedical'][name]
+            all_result = []
+            nlp = []
+    
+            nlp_result = []
+            nindex = 1
+            for l in value['Entities']:
+                text = l['Text']
+                if len(str(text).split(' ')) > 1:
+                    for j in str(text).split(' '):
+                        i = {'id': 'm-' + str(nindex), 'type': 'mark', 'category': l['Category'], 'text': j, 'score': l['Score'],
+                             'children': []}
+                        if name == 'ICD-10-CM' and 'ICD10CMConcepts' in l:
+                            if len(l['ICD10CMConcepts']) >=3:
+                                rows = l['ICD10CMConcepts']
+                                rows_by_fname = sorted(rows, key=itemgetter('Score'))
+                                i['Concepts'] = rows_by_fname
+                            else:
+                                i['Concepts'] = l['ICD10CMConcepts']
+                    nlp_result.append(i)
+                else:
+                    i = {'id': 'm-' + str(nindex), 'type': 'mark', 'category': l['Category'], 'text': l['Text'], 'score': l['Score'], 'children': []}
+                    if name == 'ICD-10-CM' and 'ICD10CMConcepts' in l:
+                        if len(l['ICD10CMConcepts']) >=2:
+                            rows = l['ICD10CMConcepts']
+                            rows_by_fname = sorted(rows, key=itemgetter('Score'))
+                            i['Concepts'] = rows_by_fname[:1]
+                        else:
+                            i['Concepts'] = l['ICD10CMConcepts']
+                    nlp_result.append(i)
+                nindex += 1
+    
+            index = 1
+            mark_item = {}
+            child = []
+            for i in contents:
+                flag = False
+                items_dict = {'type': 'span', 'id': index, 'text': i}
+    
+    
+                for li in nlp_result:
+                    if i:
+                        pattern = str(li['text'])
+                        try:
+                            match = re.search(pattern, i)
+                            if match and len(list(li['children'])) == 0:
+                                children = list(li['children'])
+                                children.append(items_dict)
+                                li['children'] = children
+                                print(li)
+                                flag = True
+                                all_result.append(li)
+                                index += 1
+                                break
+                        except:
+                            continue
+    
+                if not flag:
+                    index += 1
+                    # print(items_dict)
+                    # all_result.append(items_dict)
+            # print(all_result)
+            # print(f'Name:{name}')
+            data[hashcode][path_name][0]['comprehendMedical'][name]['label'] = all_result
+        # print(data)
+    
+    return data
+
+
+def using_new_format_for_label_edit(data, hashcode):
+    """
+    For front-end new tab show labels and edit the label
+    params:
+        data: after process json
+        hashcode: generate's hashcode the root key
+    """
+    body = data[hashcode]
+    content = body['includeAllText'][0]['content']
+    contents = str(content).split(' ')
+    for name in ['Bc5cdr', 'Bionlp13cg', 'Craft', 'Jnlpba', 'Mosaic-ner']:
+        value = body['includeAllText'][0]['comprehendMedical'][name]
+        all_result = []
+        nlp = []
+        # nlp_labels = []
+        # for b in value['Entities']:
+        #     # print(b['Text'])
+        #     item = {'text': b['Text'], 'category': b['Category']}
+        #     if item not in nlp_labels:
+        #         nlp_labels.append(item)
+
+        nlp_result = []
+        nindex = 1
+        for l in value['Entities']:
+            text = l['Text']
+            if len(str(text).split(' ')) > 1:
+                for j in str(text).split(' '):
+                    i = {'id': 'm-' + str(nindex), 'type': 'mark', 'category': l['Category'], 'text': j,
+                         'children': []}
+                nlp_result.append(i)
+            else:
+                i = {'id': 'm-' + str(nindex), 'type': 'mark', 'category': l['Category'], 'text': l['Text'], 'children': []}
+                nlp_result.append(i)
+            nindex += 1
+
+        index = 1
+        mark_item = {}
+        child = []
+        for i in contents:
+            flag = False
+            items_dict = {'type': 'span', 'id': index, 'text': i}
+
+
+            for li in nlp_result:
+                if i:
+                    pattern = str(li['text'])
+                    try:
+                        match = re.search(pattern, i)
+                        # match = re.search(i, pattern)
+                        # match = pattern == i
+                        if match and len(list(li['children'])) == 0:
+                            children = list(li['children'])
+                            children.append(items_dict)
+                            li['children'] = children
+                            print(li)
+                            flag = True
+                            all_result.append(li)
+                            index += 1
+                            break
+                    except:
+                        continue
+
+            if not flag:
+                index += 1
+                # print(items_dict)
+                all_result.append(items_dict)
+
+
+        # print(all_result)
+        # print(f'Name:{name}')
+        data[hashcode]['includeAllText'][0]['comprehendMedical'][name]['label'] = all_result
+        # print(data)
+    
+    return data
+
+
+def lambda_handler(event, context):
+    print("event: {}".format(event))
+    bucketName, bucketKey = getPathInfo(event)
+    # iso-data-zone, and file name: iso-service-dev/comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt
+    #bucketName = 'iso-data-zone'
+    #bucketKey = 'iso-service-dev/comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt'
+    if not bucketKey.endswith('.txt'):
+        return
+
+    s3 = boto3.client('s3')
+    response = s3.get_object(Bucket=bucketName, Key=bucketKey)
+    txt = response['Body'].read().decode('utf-8')
+    
+    #new_key = bucketKey.replace('comprehend-input','TextractOutput').replace('.txt','.json')
+    #print(f'read bucket:{bucketName}, key:{new_key}')
+    #response = s3.get_object(Bucket=bucketName, Key=new_key)
+    #pdf_json = json.loads(response['Body'].read().decode('utf-8'))
+    
+    #new_txt = convertToTxt(pdf_json)
+    
+    data = parseTxt(bucketName, bucketKey, txt)
+    #data = parseTxt(bucketName, bucketKey, new_txt)
+    #print("Input json:", data)
+    #return
+
+    d = dict()
+    extractUtils:ExtractUtils = ExtractUtils()
+    hash_value = extractUtils.md5_hash(bucketKey)
+    d[hash_value] = data
+    protocol = section_filter.run(d)
+    # print(protocol)
+    protocol['filepath'] = bucketKey
+    
+    # save to S3
+    prefixName = os.environ['SERVICE']+'-'+os.environ['STAGE']
+    protocol[hash_value]['includeAllText'] = protocol[hash_value]['allText']
+    
+    del protocol[hash_value]['allText']
+    protocol[hash_value]['includeAllText'][0]['content'] = get_txt_format(bucketName, bucketKey)
+    print(protocol)
+    
+    # Mock for testing
+    # demo_data = protocol[hash_value]['includeAllText']
+    # del demo_data[0]['comprehendMedical']['Bc5cdr']
+    # del demo_data[0]['comprehendMedical']['Bionlp13cg']
+    # del demo_data[0]['comprehendMedical']['Craft']
+    # del demo_data[0]['comprehendMedical']['Jnlpba']
+    # del demo_data[0]['comprehendMedical']['Mosaic-ner']
+    awsUtils:AwsUtils = AwsUtils()
+    title = 'Protocol I7T-MC-RMAA Disposition of [14C]-LY2623091 following Oral Administration in Healthy Subjects'
+    
+    incItem = {}
+    incItem['title'] = title
+    incItem['content'] = title
+    incItem['comprehendMedical'] = awsUtils.detectComprehendMedical(title)
+    en_re, icd_10_re, rx_re = process_summary(title)
+    incItem['comprehendMedical']['Entities']['Summary'] = en_re
+    incItem['comprehendMedical']['ICD-10-CM']['Summary'] = icd_10_re
+    incItem['comprehendMedical']['RxNorm']['Summary'] = rx_re
+    protocol[hash_value]['protocolTitle']  = [incItem]
+    
+    brief = 'The information contained in this protocol is confidential and is intended for the use of clinical investigators. It is the property of Eli Lilly and Company or its subsidiaries and should not be copied by or distributed to persons not involved in the clinical investigation of LY2623091, unless such persons are bound by a confidentiality agreement with Eli Lilly and Company or its subsidiaries. This document and its associated attachments are subject to United States Freedom of Information Act (FOIA) Exemption 4.'
+    
+    incItem = {}
+    incItem['title'] = brief
+    incItem['content'] = brief
+    incItem['comprehendMedical'] = awsUtils.detectComprehendMedical(brief)
+    en_re, icd_10_re, rx_re = process_summary(brief)
+    incItem['comprehendMedical']['Entities']['Summary'] = en_re
+    incItem['comprehendMedical']['ICD-10-CM']['Summary'] = icd_10_re
+    incItem['comprehendMedical']['RxNorm']['Summary'] = rx_re
+    protocol[hash_value]['briefSummary']  = [incItem]
+    
+    endpoints='Mr . Nesser is a 52 - year - old Caucasian male with an extensive past medical history that includes coronary artery disease , atrial fibrillation , hypertension , hyperlipidemia , presented to North ED with complaints of chills , nausea , acute left flank pain and some numbness in his left leg.'
+    incItem = {}
+    incItem['title'] = endpoints
+    incItem['content'] = endpoints
+    incItem['comprehendMedical'] = awsUtils.detectComprehendMedical(endpoints)
+    en_re, icd_10_re, rx_re = process_summary(endpoints)
+    incItem['comprehendMedical']['Entities']['Summary'] = en_re
+    incItem['comprehendMedical']['ICD-10-CM']['Summary'] = icd_10_re
+    incItem['comprehendMedical']['RxNorm']['Summary'] = rx_re
+    protocol[hash_value]['objectivesEndpointsEstimands']  = [incItem]
+    
+    # protocol[hash_value]['objectivesEndpointsEstimands']  = []
+    protocol[hash_value]['scheduleActivities']  = []
+    new_content = protocol
+    
+    # for aws label need editor
+    # new_content = using_new_format_for_label_edit_aws(new_content,hash_value)
+    
+    # for pwc model lable need editor
+    # new_content = using_new_format_for_label_edit(new_content,hash_value)
+
+    # set status
+    table = 'study_protocol'
+    t_item = {
+        "file_name": getFileName(bucketKey),
+        "status": "Not started",
+        "lastUpdate": strftime("%Y/%m/%d", gmtime())
+      }
+    # Save to db
+    # save_to_dynamodb(table, t_item)
+    lambda_client.invoke_async(FunctionName='dean-dev-protocol-job', InvokeArgs=json.dumps({'method':'save', 'body':t_item}))
+    
+    new_content = handler_aws_attr_summary(new_content, hash_value)
+    response = s3.put_object(Bucket=bucketName, Key=prefixName+'/input/data/'+getFileName(bucketKey)+'.json', Body=json.dumps(new_content))
+    print("save result success!")
+    # lambda_client.invoke_async(FunctionName='iso-service-dev-aws-summary', InvokeArgs=json.dumps({'bucket':bucketName, 'key':prefixName+'/input/data/'+getFileName(bucketKey)+'.json'}))
+    lambda_client.invoke_async(FunctionName='iso-service-dev-aws-label', InvokeArgs=json.dumps({'bucket':bucketName, 'key':prefixName+'/input/data/'+getFileName(bucketKey)+'.json'}))
+    
+    # Dean Add export CSV file
+    # content = save_csv(hash_value, protocol)
+    # iso-service-dev/bak/ProtocolExtraction/
+    # response = s3.put_object(Bucket=bucketName, Key=prefixName+'/bak/ProtocolExtraction/csv/'+getFileName(bucketKey)+'.csv', Body=content)
+    
+    return {'message': 'ok'}

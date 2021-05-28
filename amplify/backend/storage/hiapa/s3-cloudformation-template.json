@@ -85,19 +85,19 @@
 	
     
     
-        "functionucpCaseName": {
+        "functiongwCaseName": {
             "Type": "String",
-            "Default": "functionucpCaseName"
+            "Default": "functiongwCaseName"
         },
         
-        "functionucpCaseArn": {
+        "functiongwCaseArn": {
             "Type": "String",
-            "Default": "functionucpCaseArn"
+            "Default": "functiongwCaseArn"
         },
         
-        "functionucpCaseLambdaExecutionRole": {
+        "functiongwCaseLambdaExecutionRole": {
             "Type": "String",
-            "Default": "functionucpCaseLambdaExecutionRole"
+            "Default": "functiongwCaseLambdaExecutionRole"
         }
         
         
@@ -225,7 +225,7 @@
                         {
                             "Event": "s3:ObjectCreated:*",
                             "Function": {
-                                "Ref": "functionucpCaseArn"
+                                "Ref": "functiongwCaseArn"
                             }
                         }
                     ]

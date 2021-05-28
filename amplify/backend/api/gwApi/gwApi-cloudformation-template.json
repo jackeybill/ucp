@@ -14,15 +14,15 @@
         },
     
     
-          "functionucpCaseName": {
+          "functiongwCaseName": {
             "Type": "String",
-            "Default": "functionucpCaseName"
+            "Default": "functiongwCaseName"
           },
         
           
-          "functionucpCaseArn": {
+          "functiongwCaseArn": {
             "Type": "String",
-            "Default": "functionucpCaseArn"
+            "Default": "functiongwCaseArn"
           }
         
           
@@ -45,16 +45,16 @@
         
         
         
-      "ucpApi": {
+      "gwApi": {
         "Type": "AWS::ApiGateway::RestApi",
         "Properties": {
           "Description": "",
-          "Name": "ucpApi",
+          "Name": "gwApi",
           "Body": {
             "swagger": "2.0",
             "info": {
               "version": "2018-05-24T17:52:00Z",
-              "title": "ucpApi"
+              "title": "gwApi"
             },
             "host": {
                 "Fn::Join": [
@@ -176,7 +176,7 @@
                             
                             {
                                 
-                                "Ref": "functionucpCaseArn"
+                                "Ref": "functiongwCaseArn"
                             },
                             
                             "/invocations"
@@ -275,7 +275,7 @@
                           
                           {
                             
-                            "Ref": "functionucpCaseArn"
+                            "Ref": "functiongwCaseArn"
                           },
                           
                           "/invocations"
@@ -332,12 +332,12 @@
                   
         
         
-        "functionucpCasePermissionucpApi": {
+        "functiongwCasePermissiongwApi": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
                 "FunctionName": 
                     {
-                        "Ref":  "functionucpCaseName"
+                        "Ref":  "functiongwCaseName"
                     },
                     
                     "Action": "lambda:InvokeFunction",
@@ -356,7 +356,7 @@
                             },
                             ":",
                             {
-                                "Ref": "ucpApi"
+                                "Ref": "gwApi"
                             },
                             "/*/*/*"
                         ]
@@ -367,7 +367,7 @@
         
         
         
-      "DeploymentAPIGWucpApi": {
+      "DeploymentAPIGWgwApi": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",
@@ -381,7 +381,7 @@
             ]
           },
           "RestApiId": {
-            "Ref": "ucpApi"
+            "Ref": "gwApi"
           }
         }
       }
@@ -389,15 +389,15 @@
     "Outputs": {
         "RootUrl": {
             "Description": "Root URL of the API gateway",
-            "Value": {"Fn::Join": ["", ["https://", {"Ref": "ucpApi"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/", {"Fn::If": ["ShouldNotCreateEnvResources","Prod", {"Ref": "env"} ]}]]}
+            "Value": {"Fn::Join": ["", ["https://", {"Ref": "gwApi"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/", {"Fn::If": ["ShouldNotCreateEnvResources","Prod", {"Ref": "env"} ]}]]}
         },
         "ApiName": {
           "Description": "API Friendly name",
-          "Value": "ucpApi"
+          "Value": "gwApi"
         },
         "ApiId": {
           "Description": "API ID (prefix of API URL)",
-          "Value": {"Ref": "ucpApi"}
+          "Value": {"Ref": "gwApi"}
         }
     }
   }

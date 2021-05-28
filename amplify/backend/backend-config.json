@@ -1,6 +1,6 @@
 {
   "function": {
-    "ucpCase": {
+    "gwCase": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
@@ -8,13 +8,13 @@
     }
   },
   "api": {
-    "ucpApi": {
+    "gwApi": {
       "service": "API Gateway",
       "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "ucpCase",
+          "resourceName": "gwCase",
           "attributes": [
             "Name",
             "Arn"
