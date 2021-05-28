@@ -10,7 +10,7 @@ import {
 import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
 import { saveText } from "../../utils/ajax-proxy";
-import { formatWord } from '../TextWithEntity';
+import { formatWord } from "../TextWithEntity";
 import {
   sectionOptions,
   initSelectedSections,
@@ -67,7 +67,6 @@ const Extraction = (props: any, ref) => {
   const summary = file[key][activeSection][0].comprehendMedical[entity].Summary;
 
   useEffect(() => {
-
     const getAllEntityTypes = (obj, sections, entity) => {
       const summaryCollection = [];
       sections.forEach((k) => {
@@ -137,7 +136,7 @@ const Extraction = (props: any, ref) => {
     //       tmpWords.splice(startId, l.children.length, l);
     //     }
     //   });
-    
+
     // setWordsCollection(tmpWords);
     setWordsCollection(labels);
     props.updateCurrentEntity(entity);
@@ -202,7 +201,8 @@ const Extraction = (props: any, ref) => {
             comprehendMedical: {
               [entity]: {
                 // label: markCollection,
-                label:tempWordsCollection              },
+                label: tempWordsCollection,
+              },
             },
           },
         ],
@@ -221,6 +221,8 @@ const Extraction = (props: any, ref) => {
       });
     }
   };
+  // console.log('-svg----', svgEntity)
+  //  console.log('-content----', content)
 
   return (
     <div className="extraction-content">
@@ -281,7 +283,7 @@ const Extraction = (props: any, ref) => {
                 >
                   All
                 </div>
-                {Object.entries(summary).map((s:any) => {            
+                {Object.entries(summary) && Object.entries(summary).map((s: any) => {
                   return (
                     <div
                       className={`type-item ${s[0]} ${
@@ -331,23 +333,33 @@ const Extraction = (props: any, ref) => {
               </span>
             </div>
             <div className="summary">
-              <p>Relationships identfied in this section</p>
-              <div className="relation-pair">
-                {file[key][activeSection][0].RelationshipSummary &&
-                  file[key][activeSection][0].RelationshipSummary.map(
-                    (pair:any, idx:number) => {
-                      return (
-                        <span className="pair-item" key={idx}>
-                          {`${formatWord(Object.keys(pair)[0]) }-${formatWord(Object.values(pair)[0]) }`}
-                          &nbsp;(<span>{pair.count}</span>)
-                        </span>
-                      );
-                    }
-                  )}
-              </div>
+              {!file[key][activeSection][0].RelationshipSummary ||
+              file[key][activeSection][0].RelationshipSummary.length == 0 ? (
+                <div>
+                  There are no entity relationships identified in this section.
+                </div>
+              ) : (
+                <>
+                  <p>Relationships identfied in this section</p>
+                  <div className="relation-pair">
+                    {file[key][activeSection][0].RelationshipSummary &&
+                      file[key][activeSection][0].RelationshipSummary.map(
+                        (pair: any, idx: number) => {
+                          return (
+                            <span className="pair-item" key={idx}>
+                              {`${formatWord(
+                                Object.keys(pair)[0]
+                              )}-${formatWord(Object.values(pair)[0])}`}
+                              &nbsp;(<span>{pair.count}</span>)
+                            </span>
+                          );
+                        }
+                      )}
+                  </div>
+                </>
+              )}
             </div>
-            <div className="content" id="svg-content">           
-              {/* <canvas width="500" height="500" id="canvas"></canvas> */}
+            <div className="content" id="svg-content">
               <SvgComponent
                 entityData={svgEntity}
                 content={content}

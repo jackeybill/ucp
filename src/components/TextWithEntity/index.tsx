@@ -39,6 +39,7 @@ interface markIF {
   text: string;
   category: string;
   children: Array<any>;
+  score: 1;
 }
 
 export const formatWord = (w) => {
@@ -53,8 +54,6 @@ export const formatWord = (w) => {
   }
   return w
 }
-
-
 
 const renderConcepts = (concepts = [], text = "", entity = "") => {
   if (entity=="MedDRA") {
@@ -367,6 +366,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
       text: "",
       category: currentLabel,
       children: selectedWordObj,
+      score:1,
     };
     // get text for mark
     let markText = "";
@@ -405,6 +405,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
                 }`}
               >
                 {word.text ? `${word.text}` : " "}&nbsp;
+                {/* {word.text.indexOf('\n')} */}
               </span>
             );
           }

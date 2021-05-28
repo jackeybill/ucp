@@ -1,4 +1,5 @@
-import { BACKEND_HOST, TOPIC_ANALYSIS, RELATIONSHIP, PA_HOST, PA_HOST_EMAIL,PWC_LOGIN_URL } from '../constants'
+import { BACKEND_HOST, TOPIC_ANALYSIS, RELATIONSHIP, PA_HOST, PA_HOST_EMAIL, PWC_LOGIN_URL } from '../constants'
+import { getFormatDate } from './utils';
 
 export const uploadFile = async (filename: string, path: string, base64: any) => {
   const response = await fetch(BACKEND_HOST, {
@@ -295,7 +296,7 @@ export const saveText = async (result: any, path: any) => {
 
 export const submitText = async (result: any, path: any,) => {
    const status = "Completed"
-  const lastUpdate= new Date().toLocaleDateString()
+  const lastUpdate= getFormatDate()
   const response = await fetch(BACKEND_HOST, {
     method: "POST",
     headers: {

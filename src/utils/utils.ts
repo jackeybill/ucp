@@ -122,6 +122,23 @@ export const getUrlParams = (key: string) => {
 }
 
 
+export function getFormatDate() {
+    let date:any = new Date();
+    let month:any = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentDate = month + "/" + strDate + "/" + date.getFullYear()
+          
+    return currentDate;
+}
+
+
+
 
 
 

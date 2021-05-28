@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
-import { Layout, Popconfirm,  } from "antd";
+import { Layout, Popconfirm, } from "antd";
+
 import ProtocolSection from "../ProtocolSection";
 import Overview from "../Overview";
 import Logo from "../../assets/pwc-logo-dark.svg";
@@ -16,7 +17,7 @@ const getUsername = (emailAddress: any) => {
   }
   return name;
 };
-const { Header, Content } = Layout;
+const { Header, Content} = Layout;
 
 const GlobalLayout = (props: any) => {
   const [username, setUsername] = useState("");
@@ -100,6 +101,8 @@ const GlobalLayout = (props: any) => {
         </div>
       </Header>
       <Content>{renderContent()}</Content>
+      
+      
     </Layout>
   );
 };

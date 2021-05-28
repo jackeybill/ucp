@@ -43,10 +43,12 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
     };
   }
   componentDidMount() {
+    console.log('=====', this.props)
     this.refresh()
   }
   
-  componentDidUpdate(prevProps: SvgComponentProps, newProps:any) {
+  componentDidUpdate(prevProps: SvgComponentProps, newProps: any) {
+     console.log('=update====', this.props)
     this.refresh()
   }
 
@@ -284,7 +286,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
 
     // const entities = data.comprehendMedical.Entities.Entities
     // let entities = flattenAttributeIntoEntities(comprehendMedical.Entities.Entities)
-    entities = entities.sort((e1:any, e2:any) => (e1.BeginOffset - e2.BeginOffset || e1.EndOffset - e2.EndOffset))
+    entities = entities.sort((e1: any, e2: any) => (e1.BeginOffset - e2.BeginOffset || e1.EndOffset - e2.EndOffset))
 
     let pos = 0
     let scanedEntitiesIndex = 0
