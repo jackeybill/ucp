@@ -1,0 +1,334 @@
+@import "../../styles/variables.scss";
+.text-with-entity-container {
+  .content {
+    span {
+      // white-space: pre-line；
+    }
+  }
+}
+.ant-tooltip .ant-tooltip-content .ant-tooltip-inner {
+  background-color: #ffffff !important;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.concept-box {
+  .concept-item {
+    padding: 15px 0;
+    // border-bottom: 1px solid #cdcdcd;
+    p {
+      padding: 5px 0;
+      margin: 0;
+    }
+    .desc-title {
+      color: #bfbfbf;
+    }
+    .code {
+      display: flex;
+    }
+    .desc-box {
+      padding-left: 10px;
+      p {
+        padding: 0 5px;
+      }
+      .score {
+        color: #bfbfbf;
+      }
+    }
+
+    i {
+      color: #282f34;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .item-title {
+      border-bottom: 1px solid #bfbfbf;
+      font-weight: 600;
+      // margin-bottom: 10px;
+      span {
+        display: block;
+      }
+    }
+  }
+}
+
+.meddra-concept-box {
+  font-size: 12px;
+
+  span {
+    display: block;
+    font-weight: 500;
+    i {
+      font-style: normal;
+      font-size: 400;
+      margin-left: 10px;
+      color: #bfbfbf;
+    }
+  }
+}
+.text {
+  white-space: pre-line;
+  mark.warn {
+    // border-left: 2px solid red;
+  }
+  mark.suc {
+    // border-left: 2px solid green;
+  }
+  mark {
+    position: relative;
+    padding: 2px 16px 2px 5px;
+    display: inline-block;
+    vertical-align: text-top;
+    margin-top: -5px;
+    span {
+      white-space: nowrap;
+    }
+
+    .key-word {
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .score-icon {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+    }
+    .cate-label {
+      font-size: 10px;
+      display: block;
+    }
+  }
+
+  .confidence-legend {
+    position: absolute;
+    top: 14px;
+    right: -14px;
+  }
+}
+.mark-tooltip-container {
+  .highlighted-text {
+    font-weight: 600;
+    border-bottom: 1px solid #bfbfbf;
+    // margin-bottom: 5px;
+  }
+  .score {
+    font-size: 12px;
+    color: #999999;
+    border-bottom: 1px solid #ffffff;
+    padding: 5px 0;
+    span {
+      font-weight: 500;
+    }
+    .suc {
+      color: green;
+    }
+    .warn {
+      color: #cc0c0c;
+    }
+  }
+
+  .type-selector {
+    color: #999999;
+    font-size: 12px;
+    .ant-select {
+      margin: 5px 0 10px 0;
+    }
+  }
+  .remove-btn {
+    color: $theme-color;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  .bottom {
+    text-align: center;
+  }
+}
+.ant-select-dropdown {
+  z-index: 1100 !important;
+}
+.entity-types {
+  .type-item {
+    background-color: #cbcbcb;
+  }
+  .ALL {
+    background-color: $theme-color;
+  }
+  .CHEMICAL {
+    background-color: $CHEMICAL;
+  }
+  .DISEASE {
+    background-color: $DISEASE;
+  }
+  .PROTECTED_HEALTH_INFORMATION {
+    background-color: $PROTECTED_HEALTH_INFORMATION;
+  }
+  .TEST_TREATMENT_PROCEDURE {
+    background-color: $TEST_TREATMENT_PROCEDURE;
+  }
+  .MEDICATION {
+    background-color: $MEDICATION;
+  }
+  .ANATOMY {
+    background-color: $ANATOMY;
+  }
+  .MEDICAL_CONDITION {
+    background-color: $MEDICAL_CONDITION;
+  }
+  .TAXON {
+    background-color: $TAXON;
+  }
+  .GO {
+    background-color: $GO;
+  }
+  .CELL_LINE {
+    background-color: $CELL_LINE;
+  }
+  .DNA {
+    background-color: $DNA;
+  }
+  .PROTEIN {
+    background-color: $PROTEIN;
+  }
+  .AE {
+    background-color: $AE;
+  }
+  .ORGANISM {
+    background-color: $ORGANISM;
+  }
+  .CELL {
+    background-color: $CELL;
+  }
+  .CANCER {
+    background-color: $CANCER;
+  }
+  .CELLULAR_COMPONENT {
+    background-color: $CELLULAR_COMPONENT;
+  }
+  .GENE_OR_GENE_PRODUCT {
+    background-color: $GENE_OR_GENE_PRODUCT;
+  }
+  .IMMATERIAL_ANATOMICAL_ENTITY {
+    background-color: $IMMATERIAL_ANATOMICAL_ENTITY;
+  }
+  .ORGANISM_SUBDIVISION {
+    background-color: $ORGANISM_SUBDIVISION;
+  }
+  .ORGANISM_SUBSTANCE {
+    background-color: $ORGANISM_SUBSTANCE;
+  }
+  .SIMPLE_CHEMICAL {
+    background-color: $SIMPLE_CHEMICAL;
+  }
+  .GGP {
+    background-color: $GGP;
+  }
+  .CHEBI {
+    background-color: $CHEBI;
+  }
+  .MEDICAL_CONDITION {
+    background-color: $MEDICAL_CONDITION;
+  }
+  .TIME_EXPRESSION {
+    background-color: $TIME_EXPRESSION;
+  }
+}
+
+mark {
+  background-color: transparent !important;
+  .key-word {
+    border-bottom: 2px solid #ededed;
+  }
+  .CHEMICAL {
+    border-color: $CHEMICAL;
+  }
+  .DISEASE {
+    border-color: $DISEASE;
+  }
+  .PROTECTED_HEALTH_INFORMATION {
+    border-color: $PROTECTED_HEALTH_INFORMATION;
+  }
+  .TEST_TREATMENT_PROCEDURE {
+    border-color: $TEST_TREATMENT_PROCEDURE;
+  }
+  .MEDICATION {
+    border-color: $MEDICATION;
+  }
+  .ANATOMY {
+    border-color: $ANATOMY;
+  }
+  .MEDICAL_CONDITION {
+    border-color: $MEDICAL_CONDITION;
+  }
+  .TAXON {
+    border-color: $TAXON;
+  }
+  .GO {
+    border-color: $GO;
+  }
+  .CELL_LINE {
+    border-color: $CELL_LINE;
+  }
+  .DNA {
+    border-color: $DNA;
+  }
+  .PROTEIN {
+    border-color: $PROTEIN;
+  }
+  .AE {
+    border-color: $AE;
+  }
+  .ORGANISM {
+    border-color: $ORGANISM;
+  }
+  .CELL {
+    border-color: $CELL;
+  }
+  .CANCER {
+    border-color: $CANCER;
+  }
+  .CELLULAR_COMPONENT {
+    border-color: $CELLULAR_COMPONENT;
+  }
+  .GENE_OR_GENE_PRODUCT {
+    border-color: $GENE_OR_GENE_PRODUCT;
+  }
+  .IMMATERIAL_ANATOMICAL_ENTITY {
+    border-color: $IMMATERIAL_ANATOMICAL_ENTITY;
+  }
+  .ORGANISM_SUBDIVISION {
+    border-color: $ORGANISM_SUBDIVISION;
+  }
+  .ORGANISM_SUBSTANCE {
+    border-color: $ORGANISM_SUBSTANCE;
+  }
+  .SIMPLE_CHEMICAL {
+    border-color: $SIMPLE_CHEMICAL;
+  }
+  .GGP {
+    border-color: $GGP;
+  }
+  .CHEBI {
+    border-color: $CHEBI;
+  }
+  .MEDICAL_CONDITION {
+    border-color: $MEDICAL_CONDITION;
+  }
+  .TIME_EXPRESSION {
+    border-color: $TIME_EXPRESSION;
+  }
+}
+
+mark.warn {
+  span {
+    border-color: #cc0c0c;
+  }
+  span:last-child {
+    border-color: transparent;
+  }
+}
+mark.suc {
+  span {
+    border-color: green;
+  }
+}

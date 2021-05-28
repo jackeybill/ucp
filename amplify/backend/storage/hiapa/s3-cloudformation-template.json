@@ -1,0 +1,249 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "S3 resource stack creation using Amplify CLI",
+	"Parameters": {
+		"bucketName": {
+			"Type": "String"
+		},
+		"authPolicyName": {
+			"Type": "String"
+		},
+		"unauthPolicyName": {
+			"Type": "String"
+		},
+		"authRoleName": {
+			"Type": "String"
+		},
+		"unauthRoleName": {
+			"Type": "String"
+		},
+		"s3PublicPolicy": {
+			"Type": "String",
+			"Default" : "NONE"
+		},
+		"s3PrivatePolicy": {
+			"Type": "String",
+			"Default" : "NONE"
+		},
+		"s3ProtectedPolicy": {
+			"Type": "String",
+			"Default" : "NONE"
+		},
+		"s3UploadsPolicy": {
+			"Type": "String",
+			"Default" : "NONE"
+		},
+		"s3ReadPolicy": {
+			"Type": "String",
+			"Default" : "NONE"
+		},
+		"s3PermissionsAuthenticatedPublic": {
+			"Type": "String",
+			"Default" : "DISALLOW"
+		},
+		"s3PermissionsAuthenticatedProtected": {
+			"Type": "String",
+			"Default" : "DISALLOW"
+		},
+		"s3PermissionsAuthenticatedPrivate": {
+			"Type": "String",
+			"Default" : "DISALLOW"
+		},
+		"s3PermissionsAuthenticatedUploads": {
+			"Type": "String",
+			"Default" : "DISALLOW"
+		},
+		"s3PermissionsGuestPublic": {
+			"Type": "String",
+			"Default" : "DISALLOW"
+		},
+		"s3PermissionsGuestUploads": {
+			"Type": "String",
+			"Default" : "DISALLOW"		},
+		"AuthenticatedAllowList": {
+			"Type": "String",
+			"Default" : "DISALLOW"
+		},
+		"GuestAllowList": {
+			"Type": "String",
+			"Default" : "DISALLOW"
+		},
+		"selectedGuestPermissions": {
+			"Type": "CommaDelimitedList",
+			"Default" : "NONE"
+		},
+		"selectedAuthenticatedPermissions": {
+			"Type": "CommaDelimitedList",
+			"Default" : "NONE"
+		},
+		"env": {
+			"Type": "String"
+		},
+		"triggerFunction": {
+			"Type": "String"
+		},
+	
+    
+    
+        "functionucpCaseName": {
+            "Type": "String",
+            "Default": "functionucpCaseName"
+        },
+        
+        "functionucpCaseArn": {
+            "Type": "String",
+            "Default": "functionucpCaseArn"
+        },
+        
+        "functionucpCaseLambdaExecutionRole": {
+            "Type": "String",
+            "Default": "functionucpCaseLambdaExecutionRole"
+        }
+        
+        
+    
+
+	},
+	"Conditions": {
+		"ShouldNotCreateEnvResources": {
+			"Fn::Equals": [
+				{
+					"Ref": "env"
+				},
+				"NONE"
+			]
+		},
+		"CreateAuthPublic": {
+			"Fn::Not" : [{
+				"Fn::Equals" : [
+					 {"Ref" : "s3PermissionsAuthenticatedPublic"},
+					 "DISALLOW"
+				]
+		 }]
+		},
+		"CreateAuthProtected": {
+			"Fn::Not" : [{
+				"Fn::Equals" : [
+					 {"Ref" : "s3PermissionsAuthenticatedProtected"},
+					 "DISALLOW"
+				]
+		 }]
+		},
+		"CreateAuthPrivate": {
+			"Fn::Not" : [{
+				"Fn::Equals" : [
+					 {"Ref" : "s3PermissionsAuthenticatedPrivate"},
+					 "DISALLOW"
+				]
+		 }]
+		},
+		"CreateAuthUploads": {
+			"Fn::Not" : [{
+				"Fn::Equals" : [
+					 {"Ref" : "s3PermissionsAuthenticatedUploads"},
+					 "DISALLOW"
+				]
+		 }]
+		},
+		"CreateGuestPublic": {
+			"Fn::Not" : [{
+				"Fn::Equals" : [
+					 {"Ref" : "s3PermissionsGuestPublic"},
+					 "DISALLOW"
+				]
+		 }]
+		},
+		"CreateGuestUploads": {
+			"Fn::Not" : [{
+				"Fn::Equals" : [
+					 {"Ref" : "s3PermissionsGuestUploads"},
+					 "DISALLOW"
+				]
+		 }]
+		},
+		"AuthReadAndList": {
+			"Fn::Not" : [{
+				"Fn::Equals" : [
+					 {"Ref" : "AuthenticatedAllowList"},
+					 "DISALLOW"
+				]
+		 }]
+		},
+		"GuestReadAndList": {
+			"Fn::Not" : [{
+				"Fn::Equals" : [
+					 {"Ref" : "GuestAllowList"},
+					 "DISALLOW"
+				]
+		 }]
+		}
+	},
+	"Resources": {
+		"S3Bucket": {
+			"Type": "AWS::S3::Bucket",
+            
+			"DeletionPolicy" : "Retain",
+			"Properties": {
+				"BucketName": {
+                    "Fn::If": [
+                        "ShouldNotCreateEnvResources",
+                        {
+                            "Ref": "bucketName"
+                        },
+                        {
+                            "Fn::Join": [
+                                "",
+                                [
+                                    {
+                                        "Ref": "bucketName"
+                                    },
+                                    {
+                                      "Fn::Select": [
+                                          3,
+                                          {
+                                              "Fn::Split": [
+                                                  "-",
+                                                  {
+                                                      "Ref": "AWS::StackName"
+                                                  }
+                                              ]
+                                          }
+                                      ]
+                                    },
+                                    "-",
+                                    {
+                                        "Ref": "env"
+                                    }
+                                ]
+                            ]
+                        }
+                    ]
+                },
+                
+                "NotificationConfiguration": {
+                    "LambdaConfigurations": [
+                        {
+                            "Event": "s3:ObjectCreated:*",
+                            "Function": {
+                                "Ref": "functionucpCaseArn"
+                            }
+                        }
+                    ]
+                }
+			}
+		}
+	},
+	"Outputs": {
+		"BucketName": {
+			"Value": {
+				"Ref": "S3Bucket"
+			},
+			"Description": "Bucket name for the S3 bucket"
+		},
+		"Region": {
+			"Value": {
+				"Ref": "AWS::Region"
+			}
+		}
+	}
+}

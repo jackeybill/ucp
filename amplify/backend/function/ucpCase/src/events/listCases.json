@@ -1,0 +1,6 @@
+{
+    "method": "listCases",
+    "body": {
+      "filters": {"CaseId":"C1001"}
+    }
+  }

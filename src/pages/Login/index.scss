@@ -1,0 +1,175 @@
+@import "../../styles/variables.scss";
+
+.login__container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.continer__right {
+  flex: 1;
+  display: flex;
+  // padding: 40px 115px 0 115px;
+  justify-content: center;
+  min-width: 608px;
+  background-color: $theme-color;
+
+  .login__form-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 320px;
+  }
+
+  .welcome__word {
+    font-size: 16px;
+    margin-top: 20px;
+    color: #2d2d2d;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .welcome__title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+  .logo__img {
+    width: 100px;
+    height: 78px;
+    margin-bottom: 20px;
+  }
+
+  .remember__check {
+    margin-top: -12px;
+  }
+
+  .login__form {
+    margin-top: 46px;
+
+    .ant-checkbox-wrapper.check__remember {
+      color: #ffffff;
+    }
+
+    .ant-input.ant-input-sm {
+      height: 40px;
+    }
+
+    .form__label {
+      font-size: 12px;
+      color: #ffffff;
+    }
+    #role__btn {
+      height: 40px;
+      .anticon.anticon-down {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+    .ant-menu.method__menu {
+      font-size: 12px;
+      font-weight: 500;
+      text-align: center;
+      margin: 0 auto;
+      margin-bottom: 40px;
+      width: 130px;
+      .ant-menu-item {
+        font-weight: 500;
+        color: #7d7d7d;
+      }
+      .ant-menu-item-selected,
+      .ant-menu-item-active {
+        color: $theme-color;
+        border-bottom: 2px solid $theme-color;
+      }
+    }
+    .role__selector {
+      .ant-select-selector {
+        height: 40px;
+      }
+      .ant-select-single.ant-select-sm:not(.ant-select-customize-input)
+        .ant-select-selector::after,
+      .ant-select-single.ant-select-sm:not(.ant-select-customize-input)
+        .ant-select-selector
+        .ant-select-selection-item,
+      .ant-select-single.ant-select-sm:not(.ant-select-customize-input)
+        .ant-select-selector
+        .ant-select-selection-placeholder {
+        height: 40px;
+        line-height: 40px;
+      }
+    }
+
+    .form__footer {
+      display: flex;
+      .left {
+        flex: 1;
+      }
+    }
+  }
+}
+
+.continer__left {
+  // flex: 1;
+  width: 620px;
+  text-align: center;
+  height: auto;
+  .background__img {
+    width: 100%;
+  }
+}
+
+.ant-btn-primary,
+.ant-btn-primary:hover,
+.ant-btn-primary:visited,
+.ant-btn-primary:active {
+  background-color: $theme-color;
+  border-color: $theme-color;
+}
+
+.ant-checkbox:hover .ant-checkbox-inner,
+.ant-input:hover {
+  border-color: $theme-color;
+}
+
+.login__button {
+  background-color: $theme-color;
+  width: 100px;
+  height: 40px;
+  background-color: rgba(45, 45, 45, 0.9);
+}
+
+.check__remember {
+  font-size: 10px !important;
+}
+
+.forget__password {
+  font-size: 10px;
+  color: #d04a02;
+  margin-top: 5px;
+}
+
+.signup__button {
+  color: #d04a02;
+}
+
+.forget__pwd {
+  font-size: 14px;
+  text-align: right;
+  color: #ffffff;
+}
+
+.login__footer {
+  font-size: 10px;
+  text-align: center;
+  margin-top: -10px;
+}
+
+.form__role__select {
+  width: 100%;
+}
+.ant-form-item-explain.ant-form-item-explain-error {
+  color: yellow;
+}

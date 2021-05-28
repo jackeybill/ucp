@@ -1,0 +1,6 @@
+{
+    "method": "getCase",
+    "body": {
+      "caseID":"C1001"
+    }
+  }

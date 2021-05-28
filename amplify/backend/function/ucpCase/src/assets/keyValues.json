@@ -1,0 +1,132 @@
+[
+  {
+    "name": "Diagnosis Code",
+    "value": "E10.341",
+    "confidence": 95.5
+  },
+  {
+    "name": "Supplier ID or NPI #",
+    "value": "123456",
+    "confidence": 93
+  },
+  {
+    "name": "Provider's Fax #",
+    "value": "+1-212-9876543",
+    "confidence": 91
+  },
+  {
+    "name": "Date of Request",
+    "value": "03/01/2021",
+    "confidence": 90.5
+  },
+  {
+    "name": "Member's",
+    "value": "DOB12/25/1965",
+    "confidence": 89.5
+  },
+  {
+    "name": "Date of Service",
+    "value": "04/01/2021",
+    "confidence": 86
+  },
+  {
+    "name": "Provider's Phone",
+    "value": "# 205-403-6789",
+    "confidence": 77
+  },
+  {
+    "name": "Member's Name",
+    "value": "John Doe",
+    "confidence": 71.5
+  },
+  {
+    "name": "Other (please specify)",
+    "value": "NOT_SELECTED",
+    "confidence": 82.5
+  },
+  {
+    "name": "Not Approved - Letter to Follow",
+    "value": "NOT_SELECTED",
+    "confidence": 79.5
+  },
+  {
+    "name": "Member's Name",
+    "value": "John Doe",
+    "confidence": 78.5
+  },
+  {
+    "name": "Prior",
+    "value": "Authorization Form",
+    "confidence": 74.5
+  },
+  {
+    "name": "Confined to bed (unable to get out of bed without assistance, unable to ambulate, and unable to sit in a",
+    "value": "NOT_SELECTED",
+    "confidence": 74.5
+  },
+  {
+    "name": "Unable to safely sit upright while in a wheelchair,",
+    "value": "NOT_SELECTED",
+    "confidence": 74.5
+  },
+  {
+    "name": "Authorization #",
+    "value": "Yes",
+    "confidence": 73
+  },
+  {
+    "name": "Is a danger to self or others",
+    "value": "NOT_SELECTED",
+    "confidence": 69.5
+  },
+  {
+    "name": "The transportation is for the member to receive medically necessary care.",
+    "value": "NOT_SELECTED",
+    "confidence": 69
+  },
+  {
+    "name": "The member can tolerate a wheelchair but has no capacity to mobilize outside of the house to the curb for EDS transportation pick up, and",
+    "value": "NOT_SELECTED",
+    "confidence": 64
+  },
+  {
+    "name": "Requires isolation due to disease or other",
+    "value": "NOT_SELECTED",
+    "confidence": 64
+  },
+  {
+    "name": "Can tolerate a wheelchair but is medically",
+    "value": "NOT_SELECTED",
+    "confidence": 62.5
+  },
+  {
+    "name": "There is no caretaker/family available to transport member or to bring them to the curb.",
+    "value": "NOT_SELECTED",
+    "confidence": 60.000003814697266
+  },
+  {
+    "name": "All three (3) of the following criteria must be met for all",
+    "value": "non-",
+    "confidence": 52.499996185302734
+  },
+  {
+    "name": "Non-Emergency",
+    "value": "Ambulance Transportation",
+    "confidence": 51
+  },
+  {
+    "name": "Requires specialized monitoring of",
+    "value": "NOT_SELECTED",
+    "confidence": 49.5
+  },
+  {
+    "name": "Page",
+    "value": "2 of 2",
+    "confidence": 47
+  },
+  {
+    "name": "Notification Date",
+    "value": "03/03/2021",
+    "confidence": 44
+  }
+]

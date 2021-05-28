@@ -1,0 +1,35 @@
+{
+    "paths": [
+        {
+            "name": "/cases",
+            "lambdaFunction": "ucpCase",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/cases"
+        }
+    ],
+    "resourceName": "ucpApi",
+    "apiName": "ucpApi",
+    "functionArns": [
+        {
+            "lambdaFunction": "ucpCase"
+        }
+    ],
+    "privacy": {
+        "auth": 0,
+        "unauth": 0,
+        "authRoleName": "amplify-hiapa-dev-1712441-authRole",
+        "unAuthRoleName": "amplify-hiapa-dev-1712441-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "ucpCase",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}

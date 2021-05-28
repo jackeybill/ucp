@@ -1,0 +1,28 @@
+.section-text-container {
+  padding: 0 20px 20px 20px;
+
+  .section-wrapper {
+    margin-bottom: 20px;
+  }
+  .section-content {
+    white-space: pre-line;
+  }
+  .section {
+    display: flex;
+  }
+  .section-title .text {
+    box-shadow: unset;
+  }
+  .inclusion-txt {
+    margin-bottom: 10px;
+  }
+  .file-content {
+    border: 1px solid #2d2d2d;
+    padding: 20px;
+    height: 110px;
+    overflow: hidden;
+  }
+  .btn.btn-primary {
+    color: #ffffff;
+  }
+}

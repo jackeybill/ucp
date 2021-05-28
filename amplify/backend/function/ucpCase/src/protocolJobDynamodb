@@ -1,0 +1,63 @@
+import json
+import boto3
+
+
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('study_protocol')
+
+
+def list_all():
+    response = table.scan()
+    x = response.get('Items', [])
+    print(x)
+    return {
+        'statusCode': 200,
+        'body': json.dumps(x)
+    }
+
+
+def submit():
+    pass
+
+
+def save(data):
+    if data:
+        response = table.put_item(
+            Item=data
+        )
+        
+        return {
+            'statusCode': 200,
+            'body': json.dumps('success')
+        }
+    else:
+        pass
+
+
+def init():
+    pass
+    
+
+def lambda_handler(event, context):
+    print('event:', event)
+    #inference_section_extraction.testMe()
+    #return
+
+    if 'method' in event:
+        method = event['method']
+        
+        if method == 'list':
+            return list_all()
+            
+        elif method == 'submit':
+            submit()
+            
+        elif method == 'save':
+            save(event['body'])
+        else:
+            init()
+        
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
+    }
