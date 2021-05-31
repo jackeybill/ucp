@@ -7,6 +7,8 @@ import sys
 from bson import ObjectId
 from bson.json_util import dumps,RELAXED_JSON_OPTIONS
 import datetime
+import random
+import string
 #from load_data import load_data
 
 class JSONEncoder(json.JSONEncoder):
@@ -114,6 +116,28 @@ def testMongoDB(item):
         'body': json.dumps(response)
     }
 
+def getRadomStr():
+    ran_str1 = ''.join(random.sample(string.ascii_letters + string.digits, 3))
+    ran_str2 = ''.join(random.sample(string.ascii_letters + string.digits, 2))
+    ran_str3 = ''.join(random.sample(string.ascii_letters + string.digits, 4))
+    ran_str = ran_str1 + '-' + ran_str2 + '-' + ran_str3
+    return ran_str.upper()
+
+def getRadomNum():
+    return srt(random.randint(1, 10)) + '%'
+    
+def mockItem(item):
+    # Trial Alias 9 character alias, format is 3-2-4. Mix of numbers and letters. E.g., H9X-BG-CLI5
+    trialAlias = item['trial_alias']
+    if len(trialAlias) != 11:
+        item['trial_alias'] = getRadomStr()
+    
+    if 'Therapeutic Area Average' in item:
+        #Protocol Amendment Rate: 0 - 10%
+        item['Therapeutic Area Average']['protocol_amendment_rate'] = getRadomNum()
+        #Screen Failure Rate: 0 - 10%
+        item['Therapeutic Area Average']['screen_failure_rate'] = getRadomNum()
+
 def change_type(byte):    
     if isinstance(byte,bytes):
         return str(byte,encoding="utf-8")  
@@ -123,6 +147,8 @@ def listStudies(item):
     results = []
     x = col.find( {} )
     for ret in x:
+        if('status' not in ret):
+            ret['status'] = "Completed"
         results.append(json.loads(JSONEncoder().encode(ret)))
     #print('results=', results)
     return results

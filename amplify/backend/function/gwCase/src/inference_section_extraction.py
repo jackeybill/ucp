@@ -7,12 +7,10 @@ bullets_patterns = {'pfizer' : [ r'\n\d{1,3}\.\s' , r'\n\D\.\s' ] ,
                    'eli_lilly': [ r'\n[\[]+[\d{1,3}]+[\]]' , r'\n[\[]+[\d{1,3}]+[a-z]+[\]]' ]
                    }
 
+spl_chars = '();' #'(),.;'
+
 searchst = 'TABLE OF CONTENTS'
 searchend = 'REFERENCES\n'
-
-
-bullet_p1,bullet_p2 = bullets_patterns['eli_lilly']
-
 
 ### Textract ###
 def startJob(s3BucketName, objectName):
@@ -120,6 +118,17 @@ def getsubsections(toc,index):
                 result.append(t)
     return result
 
+def processTextforUI(text):
+    r1 = re.compile(r"("+bullet_p1+")[\n ]")
+    r2 = re.compile(r"("+bullet_p2+")[\n ]")
+    output = r1.sub(r' $$$\1 ', text)
+    output = r2.sub(r' $$$\1 ', output)
+    output = output.replace('\n',' ')
+    output = output.replace('$$$ ','\n').replace('$$$','\n')
+    for sc in spl_chars:
+        output = output.replace(sc,f' {sc} ')
+    return output
+
 def extractsectiontext(toc,t,text):
     result = {}
     result['index'] = t[0]
@@ -127,7 +136,7 @@ def extractsectiontext(toc,t,text):
     t2 = toc[toc.index(t)+1]
     subtext = text[t[2][0]:t2[2][0]]
     subtext = subtext.replace(t[0],'').replace(t[1],'').strip()
-    result['text'] = subtext
+    result['text'] = processTextforUI(subtext)  #subtext
     result['json'] = bulletsToJson(subtext,dictionary=True)
     return result
 
@@ -181,17 +190,17 @@ def nctExtractSections(s3BucketName,documentPath,filename,sectionNames,pretty=Fa
     result = extractSections(text,sectionNames,pretty)
     return result
 
-# if __name__ == '__main__':
-#     ### Inference ###
-    
-#     #s3 
-#     s3BucketName = "iso-data-zone"                    #"iso-clinicaltrial-studyprotocols"
-#     documentPath = "iso-service-dev/RawDocuments/"    #"study_protocols_eli_lilly_and_company_phase1/"
-    
-#     #document and spoonsor
-#     filename = 'NCT01484431.pdf'
-    
-    
-#     #Inferance call
-#     sectionNames = ['Inclusion Criteria','Exclusion Criteria']
-#     print(nctExtractSections(s3BucketName,documentPath,filename,sectionNames))
+
+### Inference ###
+
+#s3 
+s3BucketName = "iso-data-zone"                    #"iso-clinicaltrial-studyprotocols"
+documentPath = "iso-service-dev/RawDocuments/"    #"study_protocols_eli_lilly_and_company_phase1/"
+
+#document and spoonsor
+filename = 'Clinical Pharmacology Protocol 887663.pdf' #'NCT01484431.pdf'
+bullet_p1,bullet_p2 = bullets_patterns['eli_lilly']
+
+#Inferance call
+sectionNames = ['Inclusion Criteria','Exclusion Criteria']
+print(nctExtractSections(s3BucketName,documentPath,filename,sectionNames))
