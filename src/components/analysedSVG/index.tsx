@@ -43,12 +43,10 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
     };
   }
   componentDidMount() {
-    console.log('=====', this.props)
     this.refresh()
   }
   
   componentDidUpdate(prevProps: SvgComponentProps, newProps: any) {
-     console.log('=update====', this.props)
     this.refresh()
   }
 
@@ -287,7 +285,6 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
     // const entities = data.comprehendMedical.Entities.Entities
     // let entities = flattenAttributeIntoEntities(comprehendMedical.Entities.Entities)
     entities = entities.sort((e1: any, e2: any) => (e1.BeginOffset - e2.BeginOffset || e1.EndOffset - e2.EndOffset))
-    console.log('entites-----', entities)
 
     let pos = 0
     let scanedEntitiesIndex = 0
@@ -341,6 +338,8 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
           nextEntity = findNextIncludingEntity(last)
         }
       }
+      
+      
       if (cur < last) {
         gList.push(
           <g className={`svg_text_chunk gap`} data-start-offset={cur} data-end-offset={last} style={{display:'inline-block',padding:'0 5px'}}>
@@ -349,6 +348,8 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
         )
         cur = last
       }
+
+     
 
 
       addedEntities
@@ -416,6 +417,22 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       tempLineChildren.push(<path className={`joint_curve relation_id_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} />)
       tempLineChildren.push(<path className={`conn_line horizontal relation_id_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} id={`relation_tail_horizontal_line_${childEntity.Id}_${childEntity.parentId}`}/>)
     }
+    // plain text before the first entity
+    if (entities[0].BeginOffset > 0) {
+      lines.unshift(
+      <g className="svg_text_chunk gap" data-start-offset={0} data-end-offset={entities[0].BeginOffset} style={{display:'inline-block',padding:'0 5px'}}>
+        <text startOffset={0}>&nbsp;&nbsp;&nbsp;{content.slice(0,entities[0].BeginOffset)}&nbsp;&nbsp;&nbsp;</text>
+      </g>
+      )
+    }
+     // plain text after the last entity
+    if (entities[entities.length -1].EndOffset < content.length) {
+      lines.push(
+      <g className="svg_text_chunk gap" data-start-offset={entities[entities.length - 1].EndOffset} data-end-offset={content.length} style={{display:'inline-block',padding:'0 5px'}}>
+        <text startOffset={entities[entities.length - 1].EndOffset}>&nbsp;&nbsp;&nbsp;{content.slice(entities[entities.length - 1].EndOffset)}&nbsp;&nbsp;&nbsp;</text>
+      </g>
+      ) 
+    }
 
     return (
       <div>
@@ -424,12 +441,6 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
             {lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{display:'inline-block'}}>{line}</g>)}
             {verticalRelations}
           </svg>
-          <div className="plain-text">
-            {
-              content.slice(entities[entities.length-1].EndOffset)
-            }
-          </div>
-         
         </div>
       </div>
     )
