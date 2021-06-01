@@ -287,6 +287,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
     // const entities = data.comprehendMedical.Entities.Entities
     // let entities = flattenAttributeIntoEntities(comprehendMedical.Entities.Entities)
     entities = entities.sort((e1: any, e2: any) => (e1.BeginOffset - e2.BeginOffset || e1.EndOffset - e2.EndOffset))
+    console.log('entites-----', entities)
 
     let pos = 0
     let scanedEntitiesIndex = 0
@@ -420,9 +421,15 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       <div>
         <div id="svg-wrapper" className="svg-view-container" style={{overflow: "scroll", maxWidth: '100%',maxHeight: 550, background: "#fafafa"}}>
           <svg id="svg-viewport" overflow="auto" style={{ position: "relative", display: "block" }}>        
-            {lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{display:'inline-block',padding:'0 5px'}}>{line}</g>)}
+            {lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{display:'inline-block'}}>{line}</g>)}
             {verticalRelations}
           </svg>
+          <div className="plain-text">
+            {
+              content.slice(entities[entities.length-1].EndOffset)
+            }
+          </div>
+         
         </div>
       </div>
     )

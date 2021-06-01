@@ -2,7 +2,7 @@
 .text-with-entity-container {
   .content {
     span {
-      // white-space: pre-line；
+      word-break: keep-all;
     }
   }
 }

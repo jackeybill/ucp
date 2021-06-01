@@ -37,6 +37,7 @@ const Extraction = (props: any, ref) => {
     window.location.href = window.location.origin + "/overview";
   }
   const initEntity = entityOptions[0];
+  const allEntity = "Entities"
   const { activeSection } = props;
   const file = props.fileReader.file;
 
@@ -45,7 +46,6 @@ const Extraction = (props: any, ref) => {
 
   const path = file["result_url"];
   const [entity, setEntity] = useState(initEntity);
-  const [wordsCollection, setWordsCollection] = useState([]);
   const [currentLabel, setCurrentLabel] = useState("");
   const [activeType, setActiveType] = useState("");
   const [searchTxt, setSearchTxt] = useState("");
@@ -54,15 +54,19 @@ const Extraction = (props: any, ref) => {
   );
   let [content, setContent] = useState(initContent);
   const [entityTypes, setEntityTypes] = useState([]);
+  
+  // const allWordsCollection = file[key][activeSection][0].comprehendMedical["Entities"].label
+  // const allSummary = file[key][activeSection][0].comprehendMedical["Entities"].Summary;
 
-  const initLabels =
-    file[key][activeSection][0].comprehendMedical[entity].label;
-  const initSvgEntity = file[key][activeSection][0].comprehendMedical[entity];
+  const initSvgEntity = file[key][activeSection][0].comprehendMedical["Entities"];
   const [svgEntity, setSvgEntity] = useState(initSvgEntity);
-  const [labels, setLabels] = useState(initLabels);
+  console.log( props.fileReader)
+
+  const initLabels = file[key][activeSection][0].comprehendMedical[entity].label
+  const [labels, setLabels] = useState(initLabels);// labels and wordsColelction are same now
+  const [wordsCollection, setWordsCollection] = useState(initLabels);
   const entities =
     file[key][activeSection][0].comprehendMedical[entity].Entities;
-
   const firstMarkId = initLabels && initLabels.length > 0 && initLabels[0].id;
   const summary = file[key][activeSection][0].comprehendMedical[entity].Summary;
 
@@ -96,7 +100,7 @@ const Extraction = (props: any, ref) => {
     setActiveType("");
     setContent(file[key][activeSection][0].content);
     setLabels(file[key][activeSection][0].comprehendMedical[entity].label);
-
+    setWordsCollection(file[key][activeSection][0].comprehendMedical[entity].label)
     const paramBody = {
       [key]: {
         [activeSection]: [
@@ -137,11 +141,10 @@ const Extraction = (props: any, ref) => {
     //     }
     //   });
 
-    // setWordsCollection(tmpWords);
     setWordsCollection(labels);
     props.updateCurrentEntity(entity);
-    setSvgEntity(file[key][activeSection][0].comprehendMedical[entity]);
-  }, [entity, activeSection, labels, activeTabKey]);
+    setSvgEntity(file[key][activeSection][0].comprehendMedical["Entities"]);
+  }, [entity, activeSection, labels, activeTabKey,props.fileReader.file]);
 
   const getDisplayTitle = (s) => {
     let displayTitle;
@@ -151,6 +154,7 @@ const Extraction = (props: any, ref) => {
   };
 
   const updateWordsCollection = (words) => {
+    // setLabels(words)
     setWordsCollection(words);
   };
 
@@ -174,11 +178,15 @@ const Extraction = (props: any, ref) => {
   function callback(key) {
     setSearchTxt("");
     setActiveTabKey(key);
+    if (key !== "ENTITY RECOGNITION") {
+      setEntity('Entities')
+    }
     props.readFile({ activeTabKey: key });
   }
 
   const handleSaveContent = async (
     id,
+    currentScore,
     currentLabel,
     wordsCollection,
     updateWordsCollection,
@@ -189,6 +197,7 @@ const Extraction = (props: any, ref) => {
     if (!currentLabel) return;
     const tempWordsCollection = wordsCollection.slice(0);
     tempWordsCollection[targetIdx].category = currentLabel;
+    tempWordsCollection[targetIdx].score = currentScore
     updateWordsCollection(tempWordsCollection);
 
     const markCollection = tempWordsCollection.filter((w) => w.type == "mark");
@@ -210,19 +219,19 @@ const Extraction = (props: any, ref) => {
     };
 
     const saveRes = await saveText(paramBody, path);
-    props.readFile({
-      updatedSection: paramBody,
-    });
+    const prevFile = props.fileReader.file[hashKey]
+
+    let temFile = props.fileReader.file
+    temFile[hashKey][activeSection][0].comprehendMedical[entity].label = tempWordsCollection
 
     if (saveRes.statusCode == "200") {
       message.success("Save successfully");
       props.readFile({
         updatedSection: paramBody,
+        file:temFile
       });
     }
   };
-  // console.log('-svg----', svgEntity)
-  //  console.log('-content----', content)
 
   return (
     <div className="extraction-content">
@@ -404,9 +413,11 @@ const Extraction = (props: any, ref) => {
             </div>
             <TextWithEntity
               key="2"
-              summary={summary}
+              // summary={allSummary}
               hashKey={key}
-              entity={entity}
+              entity={allEntity}
+              // wordsCollection={allWordsCollection}
+              summary={summary}
               wordsCollection={wordsCollection}
               activeType={activeType}
               searchTxt={searchTxt}

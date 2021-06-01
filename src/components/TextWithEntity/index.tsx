@@ -17,6 +17,7 @@ interface TextWithEntityIF {
   showTooltip?: boolean;
   showConcepts?: boolean;
   currentLabel?: string;
+  score?: string;
   entityTypes?: Array<any>;
   showConfidence?: boolean;
   mId?: string;
@@ -31,6 +32,7 @@ interface TextWithEntityIF {
   handleSaveContent?: Function;
   updateWordsCollection?: (e) => void;
   readFile?: (e) => void;
+  fileReader?:{}
 }
 
 interface markIF {
@@ -188,6 +190,8 @@ const renderMark = (markParams, entity) => {
 
 const renderTooltipTitle = (
   word,
+  currentId,
+  currentScore,
   currentLabel,
   handleChange,
   entityTypes,
@@ -196,6 +200,7 @@ const renderTooltipTitle = (
   saveParamsObj,
   handleSaveContent,
   readFile,
+  fileReader,
   entity
 ) => {
   const id = word.id;
@@ -210,18 +215,30 @@ const renderTooltipTitle = (
         {text}
       </div>
       <div className="score">
-        Confidence Score: <span className={`${score && score.toFixed(0) * 100>=80? "suc" : "warn"}`}>{(score * 100).toFixed(0)}%</span>
+        Confidence Score:
+        {
+          !currentScore &&
+          <span className={`${score && score.toFixed(0) * 100 >= 80 ? "suc" : "warn"}`}>{(score * 100).toFixed(0)}%</span>
+        }
+        {
+          currentScore&&id!==currentId &&
+           <span className={`${score && score.toFixed(0) * 100 >= 80 ? "suc" : "warn"}`}>{(score * 100).toFixed(0)}%</span>       
+        }
+        {
+          currentScore&&id==currentId &&
+           <span className= "suc">{(currentScore * 100).toFixed(0)}%</span>
+        }
       </div>
       <div className="type-selector">
         Change Entity Type
         <Select
           value={currentLabel?currentLabel:word.category}
           style={{ width: 200 }}
-          onChange={handleChange}
+          onChange={(v)=>handleChange(id,v)}
         >
-          {entityTypes.map((i) => {
+          {entityTypes.map((i,idx) => {
             return (
-              <Option value={i} key={i}>
+              <Option value={i} key={idx}>
                 {formatWord(i)}
               </Option>
             );
@@ -231,7 +248,7 @@ const renderTooltipTitle = (
         <span
           className="remove-btn"
           onClick={(e) =>
-            hanldeRemoveCategory(id, wordsCollection, updateWordsCollection, saveParamsObj,readFile)
+            hanldeRemoveCategory(id, wordsCollection, updateWordsCollection, saveParamsObj,readFile,fileReader)
           }
         >
           Remove Entity
@@ -243,6 +260,7 @@ const renderTooltipTitle = (
           onClick={() =>
             handleSaveContent(
               id,
+              currentScore,
               currentLabel,
               wordsCollection,
               updateWordsCollection,
@@ -258,7 +276,7 @@ const renderTooltipTitle = (
 };
 
 
-const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,saveParamsObj,readFile) => {
+const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,saveParamsObj,readFile,fileReader) => {
  
   const tempWordsCollection = wordsCollection.slice(0);
   const startWordIdx = tempWordsCollection.findIndex((wObj) => {
@@ -289,10 +307,14 @@ const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,s
    readFile({
       updatedSection: paramBody,
     });
-    if (saveRes.statusCode == "200") {
+  if (saveRes.statusCode == "200") {
+    let temFile = fileReader.file
+    temFile[hashKey][activeSection][0].comprehendMedical[entity].label = tempWordsCollection
+
       message.success("Remove successfully");
       readFile({
         updatedSection: paramBody,
+        file:temFile
       });
     }
 };
@@ -312,7 +334,11 @@ const TextWithEntity = (props: TextWithEntityIF) => {
     path,
     readFile,
   } = props;
+  // debugger
+// console.log('--wordsCollection------', wordsCollection)
   const [currentLabel, setCurrentLabel] = useState("");
+  const [currentScore, setCurrentScore] = useState(null)
+  const [currentId, setCurrentId] = useState(null)
   const saveParamsObj = {
     hashKey,
     entity,
@@ -320,7 +346,9 @@ const TextWithEntity = (props: TextWithEntityIF) => {
     path,
   };
 
-  const onChange = (v) => {
+  const onChange = (id,v) => {
+    setCurrentId(id)
+    setCurrentScore(1)
     setCurrentLabel(v);
   };
 
@@ -384,6 +412,8 @@ const TextWithEntity = (props: TextWithEntityIF) => {
     updateWordsCollection(tempWordsCollection);
   };
 
+  // console.log('-----', wordsCollection)
+
   return (
     <div className="text-with-entity-container">
       <div
@@ -432,6 +462,8 @@ const TextWithEntity = (props: TextWithEntityIF) => {
                     placement="right"
                     title={renderTooltipTitle(
                       word,
+                      currentId,
+                      currentScore,
                       currentLabel,
                       onChange,
                       entityTypes,
@@ -440,6 +472,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
                       saveParamsObj,
                       handleSaveContent,
                       props.readFile,
+                      props.fileReader,
                       entity
                     )}
                   >

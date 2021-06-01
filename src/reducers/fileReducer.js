@@ -4,6 +4,7 @@ const initialState = {
     file: {},
     activeTabKey:'ENTITY RECOGNITION', 
     updatedSection: {},
+    labels:[]
 }
 
 const fileReducer = (state = initialState, action) => {
