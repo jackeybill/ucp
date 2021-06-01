@@ -67,12 +67,9 @@ body,
   background-color: $theme-color;
   border-color: $theme-color;
 }
-.ant-layout-header {
-  height: 44px;
-}
 
 .ant-layout-header .ant-menu .ant-menu-item {
-  font-size: 10px !important;
+  // font-size: 10px !important;
 }
 .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item {
   margin-left: 10px;
@@ -83,15 +80,16 @@ body,
   padding-bottom: 50px;
 }
 
-.ant-layout.pa__layout {
+.ant-layout.intell-trial-layout {
   .ant-layout-header {
     position: fixed;
     width: 100%;
     z-index: 111;
+    height: 50px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
   }
   .ant-layout-content {
-    padding: 44px 80px 0 80px;
+    padding-top: 50px;
   }
 }
 // .ant-radio-inner::after,

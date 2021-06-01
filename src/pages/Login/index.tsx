@@ -5,6 +5,7 @@ import { Form, Input, Button, Checkbox } from "antd";
 import { getUrlParams } from "../../utils/utils";
 import { login, verifyToken } from "../../utils/ajax-proxy";
 import background from "../../assets/background.png";
+import Footer from '../../components/Footer';
 import "./index.scss";
 
 const backgroundImg = {
@@ -18,53 +19,54 @@ const Login = (props: any) => {
   const [form] = Form.useForm();
 
   const usernameLogin = async (values: any) => {
- 
+    props.history.push('/trials')
 
-    const resp = await login(values);
-    if (resp.statusCode == 200) {
-      Cookies.set("role", values.role);
-      Cookies.set("username", values.username);
+    // const resp = await login(values);
+    // if (resp.statusCode == 200) {
+    //   Cookies.set("role", values.role);
+    //   Cookies.set("username", values.username);
 
-      resp.body.AuthenticationResult &&
-        verifyTokenFn(resp.body.AuthenticationResult.IdToken);
-    } else {
-      const errMsg = resp.body || LoginErr;
-      form.setFields([
-        {
-          name: "username",
-          errors: [errMsg],
-        },
-        {
-          name: "password",
-          errors: [errMsg],
-        },
-      ]);
-    }
+    //   resp.body.AuthenticationResult &&
+    //     verifyTokenFn(resp.body.AuthenticationResult.IdToken);
+    // } else {
+    //   const errMsg = resp.body || LoginErr;
+    //   form.setFields([
+    //     {
+    //       name: "username",
+    //       errors: [errMsg],
+    //     },
+    //     {
+    //       name: "password",
+    //       errors: [errMsg],
+    //     },
+    //   ]);
+    // }
   };
 
   const verifyTokenFn = async (token: string) => {
     const result = await verifyToken(token);
     result && Cookies.set("username", result);
-    result && props.history.push('/overview')  
+    result && props.history.push("/overview/upload");
   };
 
-  // useEffect(() => {
-  //   if (getUrlParams("authorization")) {
-  //     // dont verify now, back-end not ready
-  //     // verifyToken(getUrlParams('authorization'))
-  //     Cookies.set("username", getUrlParams("gmail"));
-  //    props.history.push('/overview')
-  //   }
-  // }, [window.location.href]);
+  useEffect(() => {
+    if (getUrlParams("authorization")) {
+      // dont verify now, back-end not ready
+      // verifyToken(getUrlParams('authorization'))
+      Cookies.set("username", getUrlParams("gmail"));
+      props.history.push("/overview/upload");
+    }
+  }, [window.location.href]);
 
   return (
+    <>
     <div className="login__container">
       <div className="continer__left" style={backgroundImg}></div>
       <div className="continer__right">
         <div className="login__form-wrapper">
           <div className="welcome__title">
             Welcome to <br />
-            Protocol Digitization
+            Intelligent Trial Design
           </div>
 
           <div className="login__form">
@@ -81,10 +83,10 @@ const Login = (props: any) => {
               <Form.Item
                 name="username"
                 rules={[
-                  {
-                    required: true,
-                    message: "Please input your username!",
-                  },
+                  // {
+                  //   required: true,
+                  //   message: "Please input your username!",
+                  // },
                 ]}
                 className="input__form-name"
               >
@@ -97,8 +99,8 @@ const Login = (props: any) => {
                 name="password"
                 rules={[
                   {
-                    required: true,
-                    message: "Please input your password!",
+                    // required: true,
+                    // message: "Please input your password!",
                   },
                 ]}
                 className="input__form-password"
@@ -128,6 +130,8 @@ const Login = (props: any) => {
         </div>
       </div>
     </div>
+      <Footer />
+      </>
   );
 };
 

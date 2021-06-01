@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
 import { Tabs, Input, Select, message } from "antd";
 import {
@@ -10,11 +10,7 @@ import {
 import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
 import { saveText } from "../../utils/ajax-proxy";
-import { formatWord } from '../TextWithEntity';
-import {
-  sectionOptions,
-  initSelectedSections,
-} from "../../pages/ProtocolSection";
+import { sectionOptions } from "../../pages/ProtocolSection";
 import SvgComponent from "../../components/analysedSVG";
 import SuccessIcon from "../../assets/success.svg";
 import WarnIcon from "../../assets/warn.svg";
@@ -28,21 +24,19 @@ interface markIF {
   category: string;
   children: Array<any>;
 }
+const combinedSection = ["inclusionCriteria", "inclusionCriteria"];
 const { TabPane } = Tabs;
 const { Option } = Select;
-const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA"];
+const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "meddra"];
 
-const Extraction = (props: any, ref) => {
+const Extraction = (props: any) => {
   if (!props.fileReader.file.txt) {
-    window.location.href = window.location.origin + "/overview";
+    // props.history.push("/overview");
   }
   const initEntity = entityOptions[0];
   const { activeSection } = props;
   const file = props.fileReader.file;
-
   const key = file.keyName || Object.keys(file)[0] || [];
-  let initContent = file[key][activeSection][0].content;
-
   const path = file["result_url"];
   const [entity, setEntity] = useState(initEntity);
   const [wordsCollection, setWordsCollection] = useState([]);
@@ -52,100 +46,42 @@ const Extraction = (props: any, ref) => {
   const [activeTabKey, setActiveTabKey] = useState(
     props.fileReader.activeTabKey
   );
-  let [content, setContent] = useState(initContent);
-  const [entityTypes, setEntityTypes] = useState([]);
 
-  const initLabels =
-    file[key][activeSection][0].comprehendMedical[entity].label;
-  const initSvgEntity = file[key][activeSection][0].comprehendMedical[entity];
-  const [svgEntity, setSvgEntity] = useState(initSvgEntity);
-  const [labels, setLabels] = useState(initLabels);
   const entities =
     file[key][activeSection][0].comprehendMedical[entity].Entities;
-
-  const firstMarkId = initLabels && initLabels.length > 0 && initLabels[0].id;
+  const svgEntity = file[key][activeSection][0].comprehendMedical[entity];
+  const initLabels =
+    file[key][activeSection][0].comprehendMedical[entity].label;
+  const firstMarkId = initLabels && initLabels[0].id;
+  const content = file[key][activeSection][0].content;
   const summary = file[key][activeSection][0].comprehendMedical[entity].Summary;
+  const entityTypes = Object.keys(summary);
 
   useEffect(() => {
-
-    const getAllEntityTypes = (obj, sections, entity) => {
-      const summaryCollection = [];
-      sections.forEach((k) => {
-        entity.forEach((en) => {
-          obj[k][0] &&
-            summaryCollection.push(obj[k][0].comprehendMedical[en].Summary);
-        });
-      });
-      const keys = [];
-      summaryCollection.forEach((s) => {
-        if (s && Object.keys(s).length > 0) keys.push(Object.keys(s));
-      });
-      return Array.from(new Set(keys.flat()));
-    };
-
-    if (file[key]) {
-      let entities = getAllEntityTypes(
-        file[key],
-        initSelectedSections,
-        entityOptions
-      );
-      setEntityTypes(entities);
-    }
-  }, [file[key]]);
-
-  useEffect(() => {
-    setActiveType("");
-    setContent(file[key][activeSection][0].content);
-    setLabels(file[key][activeSection][0].comprehendMedical[entity].label);
-
-    const paramBody = {
-      [key]: {
-        [activeSection]: [
-          {
-            comprehendMedical: {
-              [entity]: {
-                label: labels,
-              },
-            },
-          },
-        ],
-      },
-    };
-    props.readFile({
-      updatedSection: paramBody,
+    const tmpWords = content.split(" ").map((w, idx) => {
+      const wObj = {
+        id: idx,
+        type: "span",
+        text: w,
+      };
+      return wObj;
     });
-  }, [activeSection, entity, labels]);
-
-  useEffect(() => {
+    initLabels &&
+      initLabels.forEach((l) => {
+        if (l.children.length > 0) {
+          const startId = l.children[0].id;
+          tmpWords.splice(startId - 1, l.children.length, l);
+        }
+      });
+    setWordsCollection(tmpWords);
     props.updateCurrentEntity(entity);
-  }, []);
-
-  useEffect(() => {
-    // const tmpWords = content.split(" ").map((w, idx) => {
-    //   const wObj = {
-    //     id: idx,
-    //     type: "span",
-    //     text: w,
-    //   };
-    //   return wObj;
-    // });
-
-    // labels &&
-    //   labels.forEach((l) => {
-    //     if (l.children && l.children.length > 0) {
-    //       const startId = l.children[0].id;
-    //       tmpWords.splice(startId, l.children.length, l);
-    //     }
-    //   });
-    
-    // setWordsCollection(tmpWords);
-    setWordsCollection(labels);
-    props.updateCurrentEntity(entity);
-    setSvgEntity(file[key][activeSection][0].comprehendMedical[entity]);
-  }, [entity, activeSection, labels, activeTabKey]);
+  }, [entity]);
 
   const getDisplayTitle = (s) => {
     let displayTitle;
+    if (combinedSection.indexOf(s) > -1) {
+      displayTitle = "INCLUSION / EXCLUSION CRITERIA";
+    }
     const target = sectionOptions.find((e) => e.value == s);
     displayTitle = target.label;
     return displayTitle;
@@ -186,8 +122,6 @@ const Extraction = (props: any, ref) => {
     saveParamsObj
   ) => {
     const targetIdx = wordsCollection.findIndex((w) => w.id == id);
-    if (targetIdx == -1) return;
-    if (!currentLabel) return;
     const tempWordsCollection = wordsCollection.slice(0);
     tempWordsCollection[targetIdx].category = currentLabel;
     updateWordsCollection(tempWordsCollection);
@@ -201,8 +135,8 @@ const Extraction = (props: any, ref) => {
           {
             comprehendMedical: {
               [entity]: {
-                // label: markCollection,
-                label:tempWordsCollection              },
+                label: markCollection,
+              },
             },
           },
         ],
@@ -271,17 +205,8 @@ const Extraction = (props: any, ref) => {
                 Entity types identified in the text below. Select on an entity
                 type to filter the document.
               </p>
-              <div className="entity-types filterable">
-                <div
-                  className={`type-item ALL ${
-                    activeType == "" ? "active" : ""
-                  }`}
-                  key="all"
-                  onClick={() => onChangeActiveType("")}
-                >
-                  All
-                </div>
-                {Object.entries(summary).map((s:any) => {            
+              <div className="entity-types">
+                {Object.entries(summary).map((s) => {
                   return (
                     <div
                       className={`type-item ${s[0]} ${
@@ -290,14 +215,13 @@ const Extraction = (props: any, ref) => {
                       key={s[0]}
                       onClick={() => onChangeActiveType(s[0])}
                     >
-                      {formatWord(s[0])}&nbsp;(<span>{s[1]}</span>)
+                      {s[0]}&nbsp;(<span>{s[1]}</span>)
                     </div>
                   );
                 })}
               </div>
             </div>
             <TextWithEntity
-              key="1"
               summary={summary}
               wordsCollection={wordsCollection}
               activeType={activeType}
@@ -308,8 +232,6 @@ const Extraction = (props: any, ref) => {
               entityTypes={entityTypes}
               firstMarkId={firstMarkId}
               path={path}
-              showConfidence={false}
-              entity={entity}
             />
           </div>
         </TabPane>
@@ -331,28 +253,24 @@ const Extraction = (props: any, ref) => {
               </span>
             </div>
             <div className="summary">
-              <p>Relationships identfied in this section</p>
-              <div className="relation-pair">
-                {file[key][activeSection][0].RelationshipSummary &&
-                  file[key][activeSection][0].RelationshipSummary.map(
-                    (pair:any, idx:number) => {
-                      return (
-                        <span className="pair-item" key={idx}>
-                          {`${formatWord(Object.keys(pair)[0]) }-${formatWord(Object.values(pair)[0]) }`}
-                          &nbsp;(<span>{pair.count}</span>)
-                        </span>
-                      );
-                    }
-                  )}
+              <div className="entity-types">
+                {Object.entries(summary).map((s) => {
+                  return (
+                    <div
+                      className={`type-item ${s[0]} ${
+                        s[0] == activeType ? "active" : ""
+                      }`}
+                      key={s[0]}
+                    >
+                      {s[0]}&nbsp;(<span>{s[1]}</span>)
+                    </div>
+                  );
+                })}
               </div>
             </div>
-            <div className="content" id="svg-content">           
-              {/* <canvas width="500" height="500" id="canvas"></canvas> */}
-              <SvgComponent
-                entityData={svgEntity}
-                content={content}
-                activeSection={activeSection}
-              />
+
+            <div className="content" id="svg-content">
+              <SvgComponent entityData={svgEntity} content={content} />
             </div>
           </div>
         </TabPane>
@@ -391,7 +309,6 @@ const Extraction = (props: any, ref) => {
               </span>
             </div>
             <TextWithEntity
-              key="2"
               summary={summary}
               hashKey={key}
               entity={entity}

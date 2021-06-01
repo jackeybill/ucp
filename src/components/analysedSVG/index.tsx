@@ -28,7 +28,6 @@ const flattenAttributeIntoEntities = (inputData: any, result?: any, parentId?: n
 export interface SvgComponentProps {
   entityData: any;
   content: string;
-  activeSection: string;
 }
  
 export interface SvgComponentState {
@@ -43,11 +42,16 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
     };
   }
   componentDidMount() {
+   
+    console.log('did mount------', 'svg')
     this.refresh()
   }
   
   componentDidUpdate(prevProps: SvgComponentProps, newProps:any) {
-    this.refresh()
+     this.refresh()
+    // if (prevProps.entityData !== this.props.entityData) {
+    //   this.refresh()
+    // }
   }
 
   refresh = () : void  => {
@@ -307,8 +311,8 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       while(nextEntity) {
         if(cur < nextEntity.BeginOffset) {
           gList.push(
-            <g className="svg_text_chunk gap" data-start-offset={cur} data-end-offset={nextEntity.BeginOffset} style={{display:'inline-block',padding:'0 5px'}}>
-              <text startOffset={cur-pos}>&nbsp;&nbsp;&nbsp;{content.slice(cur, nextEntity.BeginOffset)}&nbsp;&nbsp;&nbsp;</text>
+            <g className="svg_text_chunk gap" data-start-offset={cur} data-end-offset={nextEntity.BeginOffset} >
+              <text startOffset={cur-pos}>{content.slice(cur, nextEntity.BeginOffset)}</text>
             </g>
           )
           cur = nextEntity.BeginOffset
@@ -322,12 +326,11 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
               color = "#CE6DBD"
             }
             gList.push(
-              <g key={nextEntity.Id} className="svg_text_chunk entity" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset} style={{paddingLeft:10}}>
-                <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text>
-                
-                <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} />
+              <g key={nextEntity.Id} className="svg_text_chunk entity" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>
+                <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>{nextEntity.Text}</text>
+                <line strokeWidth="3" strokeLinecap="round" x1={1.5} y1={6} x2={3} y2={6} style={{stroke: color}}/>
                 <circle fill={color} cx="3" cy="15" r="3"></circle>
-                <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={15} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>
+                <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={15} dy="0.35em">{`${formatStr(nextEntity.Type)} (${nextEntity.Text})`}</text>
               </g>
             )
             addedEntities.push(nextEntity)
@@ -340,8 +343,8 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       }
       if (cur < last) {
         gList.push(
-          <g className={`svg_text_chunk gap`} data-start-offset={cur} data-end-offset={last} style={{display:'inline-block',padding:'0 5px'}}>
-            <text>{content.slice(cur, last)}&nbsp;&nbsp;&nbsp;</text>
+          <g className={`svg_text_chunk gap`} data-start-offset={cur} data-end-offset={last}>
+            <text>{content.slice(cur, last)}</text>
           </g>
         )
         cur = last
@@ -363,7 +366,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
             gList.push(<rect className="text_rect" style={{strokeWidth: 1, cursor: "default"}} />)
             gList.push(
               <text dy="3" className="relation_label" style={{fill: "dimgrey", display: "block", strokeWidth: 1, cursor: "default"}}>
-                <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'9pt'}}>{formatStr(childEntity.RelationshipType)}</textPath>
+                <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle"}}>{formatStr(childEntity.RelationshipType)}</textPath>
               </text>
             )
             gList.push(<path className={`joint_curve ${childEntity.BeginOffset > item.BeginOffset ? 'left-circle' : ''} relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
@@ -383,7 +386,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
             verticalRelations.push(<rect className={`text_rect`}/>)
             verticalRelations.push(
               <text dy="3" className="relation_label" style={{fill: "dimgrey", display: "block", strokeWidth: 1, cursor: "default"}}>
-                <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'9pt'}}>{formatStr(childEntity.RelationshipType)}</textPath>
+                <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle"}}>{formatStr(childEntity.RelationshipType)}</textPath>
               </text>
             )
             // Record the entities which need to draw arrowtail
@@ -416,9 +419,9 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
 
     return (
       <div>
-        <div id="svg-wrapper" className="svg-view-container" style={{overflow: "scroll", maxWidth: '100%',maxHeight: 550, background: "#fafafa"}}>
-          <svg id="svg-viewport" overflow="auto" style={{ position: "relative", display: "block" }}>        
-            {lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{display:'inline-block',padding:'0 5px'}}>{line}</g>)}
+        <div className="svg-view-container" style={{overflow: "scroll", maxWidth: '100%', maxHeight: 550, background: "#fafafa"}}>
+          <svg id="svg-viewport" overflow="auto" style={{position: "relative", display: "block"}}>
+            {lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line">{line}</g>)}
             {verticalRelations}
           </svg>
         </div>

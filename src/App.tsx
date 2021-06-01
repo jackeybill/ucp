@@ -31,10 +31,17 @@ function App() {
           <Route exact path="/protocol-sections">
              <Layout />
           </Route>
-          
-          <Route exact path="/extraction">
+          <Route exact path="/trials">
              <Layout />
           </Route>
+          {/* <Route exact path="/trials/design">
+             <Layout />
+          </Route> */}
+          <Route exact path="/scenario">
+             <Layout />
+          </Route>
+          
+          
           
           <Route exact path="*" render={() => <Redirect to="/" />} />
         </Switch>

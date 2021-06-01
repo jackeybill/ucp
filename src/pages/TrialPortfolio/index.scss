@@ -1,0 +1,199 @@
+@import "../../styles/variables.scss";
+.trial-portfolio-container {
+  .ant-breadcrumb {
+    padding: 20px 0 30px 120px;
+    // background-color: #dedede;
+    color: #999999;
+    a {
+      text-decoration: none;
+    }
+    .homepage {
+      cursor: pointer;
+      color: $theme-color;
+      .anticon.anticon-home {
+        margin-right: 8px;
+      }
+    }
+  }
+  .list-top {
+    display: flex;
+    margin-bottom: 30px;
+    padding: 0 120px;
+    .count {
+      //   display: flex;
+      flex: 1;
+    }
+    .filter-selector {
+      display: flex;
+
+      .selector-item {
+        margin-right: 20px;
+        label {
+          color: #787878;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+  .upper {
+    padding: 26px 120px 0px 120px;
+    background-color: #dedede;
+    .title {
+      font-size: 20px;
+      color: #000000;
+      margin-bottom: 0;
+    }
+    .sub-title {
+      font-size: 14px;
+      color: #000000;
+    }
+
+    .small-trial {
+      color: $theme-color;
+      font-size: 12px;
+    }
+
+    .action-part {
+      display: flex;
+      margin-top: 30px;
+      .status-filter {
+        display: flex;
+        flex: 1;
+        .item {
+          margin-right: 50px;
+          cursor: pointer;
+          text-align: center;
+          padding: 10px;
+          &.active {
+            border-bottom: 4px solid $theme-color;
+            color: $theme-color;
+            .number,
+            .status {
+              color: $theme-color;
+            }
+          }
+        }
+
+        span {
+          display: block;
+          color: #000000;
+        }
+        .number {
+          font-size: 20px;
+          font-weight: 600;
+        }
+        .status {
+          font-size: 14px;
+          color: #000000;
+        }
+      }
+
+      .add-btn {
+        background-color: $theme-color;
+        color: #ffffff;
+        padding: 0 80px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        .anticon.anticon-plus-circle {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}
+
+.trial-details-wrapper {
+  padding: 0 120px 0px 120px;
+}
+
+.ant-modal-body {
+  .trial-item {
+    margin-bottom: 10px;
+  }
+
+  label {
+    color: #666666;
+    font-size: 12px;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .parallel-item {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.ant-modal-wrap {
+  .ant-modal {
+    width: 60% !important;
+  }
+}
+
+.ant-modal-content {
+  .ant-modal-header {
+    display: flex;
+
+    .action-timeline {
+      display: flex;
+      align-items: center;
+      margin-left: 50px;
+      .step {
+        font-size: 12px;
+        color: #d8d8d8;
+        .anticon {
+          font-size: 20px;
+        }
+        .num {
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          line-height: 18px;
+          text-align: center;
+          background-color: #d8d8d8;
+          color: #ffffff;
+          border: 1px solid #d8d8d8;
+          border-radius: 10px;
+          margin-right: 5px;
+          &.step1 {
+            color: #d04a02;
+            border-color: #d04a02;
+            background-color: #ffffff;
+          }
+        }
+        .num.active {
+          color: #d04a02;
+          border-color: #d04a02;
+          background-color: #ffffff;
+        }
+        .name.active {
+          color: #333333;
+        }
+      }
+
+      .line {
+        width: 40px;
+        border: 0.5px solid #d8d8d8;
+        height: 0.5px;
+        margin: 0 5px;
+      }
+    }
+  }
+
+  .trial-modal-footer {
+    .anticon {
+      font-size: 25px;
+      color: #d04a02;
+      cursor: pointer;
+    }
+    .step2-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .step1-footer {
+      text-align: right;
+    }
+  }
+}

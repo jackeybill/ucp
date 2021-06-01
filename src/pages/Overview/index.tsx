@@ -51,11 +51,10 @@ const Overview = (props: any) => {
       const resp = await getOverviewList();
       setLoading(false)
       if (resp.statusCode == 200) {
-        const respData = JSON.parse(resp.body)
-        const tmpData = respData.length>0 && respData.map((d,idx) => {
+        const tmpData = JSON.parse(resp.body).map((d,idx) => {
           let obj: dataProps = {};
-          obj.protocolName = d["file_name"];
-          // obj.ntcID = d.ntc_id||"";
+          obj.protocolName = d;
+          obj.ntcID = d.ntc_id||"";
           obj.key = idx; 
           obj.status = d.status||"Not started";
           obj.lastUpdate = d.lastUpdate||"";
@@ -76,7 +75,7 @@ const Overview = (props: any) => {
   };
   const handleRowClick = async (record) => {
     setLoading(true)
-    const filepath = `iso-service-dev/RawDocuments/${record.protocolName}`
+    const filepath = record.protocolName
     const resp = await extractText(filepath)
     setLoading(false)
     if (resp.statusCode == 200) {  
@@ -143,14 +142,14 @@ const Overview = (props: any) => {
         
         <div className="drawer-actions">
           <span className="discard" onClick={onClose}>
-            {/* Discard Upload */}
+            Discard Upload
           </span>
-          {/* <Button
+          <Button
             type="primary"
             onClick={() => props.history.push("/protocol-sections")}
           >
             Start Extraction
-          </Button> */}
+          </Button>
         </div>
       </Drawer>
     </>

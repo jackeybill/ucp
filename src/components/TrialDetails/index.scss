@@ -1,0 +1,58 @@
+.trial-detail-container {
+  padding: 20px 30px;
+  background-color: #ffffff;
+
+  .top {
+    display: flex;
+    margin-bottom: 20px;
+    .title {
+      flex: 1;
+      .nct-id {
+        color: #ca4a04;
+        font-size: 12px;
+      }
+      .trail-alias {
+        font-size: 20px;
+        color: #333333;
+      }
+      .update-time {
+        color: #333333;
+        font-size: 12px;
+      }
+    }
+    .status {
+      background-color: #333333;
+      color: #ffffff;
+      padding: 3px 5px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+  }
+
+  .info {
+    .info-row {
+      display: flex;
+      .trial-item {
+        flex: 1;
+        margin-bottom: 10px;
+        label {
+          color: #999999;
+          font-size: 14px;
+          display: block;
+        }
+        span {
+          display: block;
+          font-size: 14px;
+        }
+        .view-endpoint {
+          color: #e68700;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .edit-save-btn {
+    text-align: right;
+  }
+}

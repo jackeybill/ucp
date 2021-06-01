@@ -1,13 +1,15 @@
 import { FILE_READER } from '../constants/index';
+import textData from '../components/Extraction/testData.json';
+
 
 const initialState = {
     file: {},
+    // file: textData,
     activeTabKey:'ENTITY RECOGNITION', 
-    updatedSection: {},
+    updatedSection:{}
 }
 
-const fileReducer = (state = initialState, action) => {
-    console.log('=====',action.data)
+const fileReducer = ( state=initialState, action) => {
 	switch(action.type){	
 		case FILE_READER:
             state = {

@@ -1,0 +1,36 @@
+.add-endpoints-cotainer {
+  .endpoints {
+    .add-endpoint {
+      display: flex;
+      align-items: center;
+      .ant-btn {
+        margin-left: 10px;
+      }
+      .ant-input-affix-wrapper {
+        flex: 1;
+      }
+    }
+    .endpoint-list {
+      margin-top: 30px;
+      .list-item {
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        border-bottom: 1px solid #d9d9d9;
+        &:first-child {
+          border-top: 1px solid #d9d9d9;
+        }
+        span:first-child {
+          flex: 1;
+        }
+      }
+    }
+  }
+
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #ca4a04;
+  }
+  .ant-tabs-tab:hover {
+    color: #ca4a04;
+  }
+}

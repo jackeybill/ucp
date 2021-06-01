@@ -263,16 +263,17 @@ export const takeAction = async (action = "", params = {}) => {
   return await response.json();
 };
 
+
+
+
 export const getOverviewList = async () => {
-  const response = await fetch('https://7dx4asj8xj.execute-api.us-east-2.amazonaws.com/dev/dean-dev-protocol-job', {
-    method:'POST',
+  const response = await fetch(BACKEND_HOST, {
+    method: 'POST',
     headers: {
       'Access-Control-Request-Method': 'POST',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      "method": "list"
-    })
+    body: JSON.stringify({ "queryStringParameters": { "file": "" } })
   })
 
   return await response.json();
@@ -308,6 +309,42 @@ export const submitText = async (result: any, path: any,) => {
   return await response.json();
 };
 
+// criteria
+const criteria_url="https://jtbey858h4.execute-api.us-west-2.amazonaws.com/main/cases"
+export const getTrialList = async () => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "module": "criteria",
+      "method": "listStudies",
+      "body": {
+        "filters": {}
+      }})
+  })
+
+  return await response.json();
+}
+
+export const addStudy = async (params:any) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "module": "criteria",
+      "method": "addStudy",
+      "body": params
+      })
+  })
+
+  return await response.json();
+}
 
 
 
