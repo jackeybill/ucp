@@ -108,15 +108,14 @@
                             content: '';
                             pointer-events: none;
                             position: absolute;
-                            color: #fff;
-                            border: 1px solid;
+                            color: #f5f5f5;
                             background-color: #578be2;
                         }
                             
                         .tick-icon:before{
                             width: 6px;
                             height: 3px;
-                            left: 4%;
+                            left: 1%;
                             top: 65%;
                             transform: skew(0deg,50deg);
                         }
@@ -125,8 +124,8 @@
                         .tick-icon:after {
                             width: 10px;
                             height: 3px;
-                            left: 30%;
-                            top: 55%;
+                            left: 35%;
+                            top: 47%;
                             transform: skew(0deg,-50deg);
                         }
                     }
@@ -136,8 +135,8 @@
                     background-color: #f5f5f5;
                     text-align: center;
                     border-right: 1px solid #ddd;
-                    // border-top: 5px solid #f5f5f5;
-                    min-height: 110px;
+                    border-top: 10px solid #e7e7e7;
+                    min-height: 150px;
 
                     .update-btn{
                         margin-top: 10px;
@@ -188,7 +187,7 @@
                 }
 
                 .collapse-inner{
-                    width: calc(100% + 16px);
+                    width: calc(100% + 20px);
                     height: 280px;
                     overflow:auto;
                 }

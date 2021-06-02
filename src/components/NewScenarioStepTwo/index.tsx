@@ -15,6 +15,10 @@ const step2 = 'Criteria';
 const step3 = 'Schedule';
 
 const rates = [];
+let demographicsElements = [];
+let interventionElements = [];
+let medConditionElements = [];
+let labTestElements = [];
 
 const selected = "true";
 
@@ -79,20 +83,61 @@ const next = (step) =>{
     setCurrentAddStep(step)
 }
 
-const handleOptionSelect = (item, activeType) =>{
-    const index = demographicsElements.indexOf(item)
-    if(activeType == 1){
-        if(index < 0){
-            demographicsElements.push(item)
-        }
-    } else {
-        if(index >= 0){
-            demographicsElements.splice(item)
-        }
+const handleOptionSelect = (item, activeType, id, key) =>{
+    console.log('id: ' + id + ', key: ' + key + ', selected: ' + activeType)
+    switch(id){
+        case 0:
+            var index = demographicsElements.indexOf(item)
+            if(activeType == 1){
+                if(index < 0){
+                    demographicsElements.push(item)
+                }
+            } else {
+                if(index >= 0){
+                    demographicsElements.splice(item,1)
+                }
+            }
+            break;
+        case 1:
+            var index = medConditionElements.indexOf(item)
+            if(activeType == 1){
+                if(index < 0){
+                    medConditionElements.push(item)
+                }
+            } else {
+                if(index >= 0){
+                    medConditionElements.splice(item,1)
+                }
+            }
+            break;
+        case 2:
+            var index = interventionElements.indexOf(item)
+            if(activeType == 1){
+                if(index < 0){
+                    interventionElements.push(item)
+                }
+            } else {
+                if(index >= 0){
+                    interventionElements.splice(item,1)
+                }
+            }
+            break;
+        default:
+            var index = labTestElements.indexOf(item)
+            if(activeType == 1){
+                if(index < 0){
+                    labTestElements.push(item)
+                    console.log(labTestElements.length)
+                }
+            } else {
+                if(index >= 0){
+                    labTestElements.splice(item,1)
+                    console.log(labTestElements.length)
+                }
+            }
+            break;
     }
 }
-
-const demographicsElements = [];
 
 useEffect(() => {
     const summaryDefaultList = async () => {
@@ -102,20 +147,31 @@ useEffect(() => {
             const response = JSON.parse(resp.body)
             setInclusionCriteria(response[0].InclusionCriteria)
             setExclusionCriteria(response[1].ExclusionCriteria)
-            console.log(response[0].InclusionCriteria)
 
             const criteria = response[0].InclusionCriteria
-            console.log(criteria)
             
             for(var i = 0; i < criteria.length; i ++){
                 if(getCatorgoryIndex(i, criteria) == 0){
                     setMedCondition(criteria[i]['Medical Condition'])
-                } else if(getCatorgoryIndex(i, criteria) == 1){
+                    medConditionElements = criteria[i]['Medical Condition'].filter((d) => {
+                        return d.Count  == 1;
+                    });
+                    console.log(medConditionElements)
+                } else if(getCatorgoryIndex(i, criteria) == 1){ 
                     setDemographics(criteria[i]['Demographics'])
+                    demographicsElements = criteria[i]['Demographics'].filter((d) => {
+                        return d.Count  == 1;
+                    });
                 } else if(getCatorgoryIndex(i, criteria) == 2){
                     setLabTest(criteria[i]['Lab/Test'])
+                    labTestElements = criteria[i]['Lab/Test'].filter((d) => {
+                        return d.Count  == 1;
+                    });
                 } else if(getCatorgoryIndex(i, criteria) == 3){
                     setIntervention(criteria[i]['Intervention'])
+                    interventionElements = criteria[i]['Intervention'].filter((d) => {
+                        return d.Count  == 1;
+                    });
                 }
             }
         }
@@ -293,36 +349,36 @@ const screenFaliureOption = {
                         <div className="content-over">
                             <div className="item box">
                                 <span>Demographics</span><br/>
-                                {demographics.map((demographic) => {
+                                {demographics.map((demographic, idx) => {
                                     return(
-                                        <CriteriaOption demographic={demographic} handleOptionSelect={handleOptionSelect}></CriteriaOption>
+                                        <CriteriaOption demographic={demographic} index={0} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
                                     )
                                 })}
                             </div>
 
                             <div className="item box">
                                 <span>Medical Condition</span><br/>
-                                {medCondition.map((medCon) => {
+                                {medCondition.map((medCon, idx) => {
                                     return(
-                                        <CriteriaOption demographic={medCon} handleOptionSelect={handleOptionSelect}></CriteriaOption>
+                                        <CriteriaOption demographic={medCon} index={1} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
                                     )
                                 })}
                             </div>
 
                             <div className="item box">
                                 <span>Intervention</span><br/>
-                                {intervention.map((intervent) => {
+                                {intervention.map((intervent, idx) => {
                                     return(
-                                        <CriteriaOption demographic={intervent} handleOptionSelect={handleOptionSelect}></CriteriaOption>
+                                        <CriteriaOption demographic={intervent} index={2} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
                                     )
                                 })}
                             </div>
 
                             <div className="item box">
                                 <span>Lab / Test</span><br/>
-                                {labTest.map((lib) => {
+                                {labTest.map((lib, idx) => {
                                     return(
-                                        <CriteriaOption demographic={lib} handleOptionSelect={handleOptionSelect}></CriteriaOption>
+                                        <CriteriaOption demographic={lib} index={3} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
                                     )
                                 })}
                             </div>

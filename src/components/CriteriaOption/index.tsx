@@ -9,10 +9,10 @@ const CriteriaOption = (props) => {
     const handleOptionSelect = (domain, e) =>{
         if(activeType == 0){
             setActiveType(1)
-            props.handleOptionSelect(domain, 1)
+            props.handleOptionSelect(domain, 1, props.index, props.idx)
         } else {
             setActiveType(0)
-            props.handleOptionSelect(domain, 0)
+            props.handleOptionSelect(domain, 0, props.index, props.idx)
         }
     }
 
