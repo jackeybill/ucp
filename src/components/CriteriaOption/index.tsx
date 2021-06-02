@@ -4,7 +4,7 @@ import "./index.scss";
 
 const CriteriaOption = (props) => {
     const domain = props.demographic
-    const [activeType, setActiveType] = useState(props.demographic.activeType)
+    const [activeType, setActiveType] = useState(props.demographic.Count)
 
     const handleOptionSelect = (domain, e) =>{
         if(activeType == 0){
@@ -19,13 +19,13 @@ const CriteriaOption = (props) => {
     return (
         <div style={{display: 'inline-block'}}>
             {activeType == 0?(
-                <Tooltip title={'Frequency ' + domain.frequency}>
-                <span className="select-option" onClick={(e) => handleOptionSelect(domain, e)}>{domain.title}</span>
+                <Tooltip title={'Frequency ' + domain.Frequency*100 + '%'}>
+                <span className="select-option" onClick={(e) => handleOptionSelect(domain, e)}>{domain.Text}</span>
             </Tooltip>
             ):(
                 <div className="select-option selected">
                     <span className="tick-icon"></span>
-                    <span onClick={(e) => handleOptionSelect(domain, e)}>{domain.title}</span>
+                    <span onClick={(e) => handleOptionSelect(domain, e)}>{domain.Text}</span>
                 </div>
             )}
         </div>

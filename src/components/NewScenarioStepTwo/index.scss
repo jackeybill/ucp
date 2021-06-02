@@ -62,7 +62,7 @@
 
                 .content-over{
                     width: calc(100% + 16px);
-                    height:360px;
+                    height:400px;
                     overflow:auto;
                         
                     .item.box{
@@ -116,8 +116,8 @@
                         .tick-icon:before{
                             width: 6px;
                             height: 3px;
-                            left: 5%;
-                            top: 70%;
+                            left: 4%;
+                            top: 65%;
                             transform: skew(0deg,50deg);
                         }
                         
@@ -137,7 +137,7 @@
                     text-align: center;
                     border-right: 1px solid #ddd;
                     // border-top: 5px solid #f5f5f5;
-                    min-height: 150px;
+                    min-height: 110px;
 
                     .update-btn{
                         margin-top: 10px;

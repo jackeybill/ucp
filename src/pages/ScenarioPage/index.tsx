@@ -37,7 +37,6 @@ const ScenarioPage = (props) => {
     const next = (step) =>{
         props.location.state.scenarios = []
         props.location.state.scenarios.push(scenario)
-        console.log("To next step" + step)
         setCurrentAddStep(step)
     }
 

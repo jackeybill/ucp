@@ -16,23 +16,7 @@ const step3 = 'Schedule';
 
 const rates = [];
 
-const demographicsSample = [
-    { title: 'Age', frequency: '10%', activeType: 0},
-    { title: 'Gender', frequency: '', activeType: 0},
-    { title: 'Stable body weight', frequency: '10%', activeType: 0},
-    { title: 'Childbearing potential', frequency: '10%', activeType: 0}
-]
 const selected = "true";
-
-const initialStates = {
-    Demographics: {
-        age: "",
-        Gender: "",
-        weight: "",
-        potential: ""
-    },
-    description: ""
-  };
 
 const DataArr = [
     { 
@@ -46,7 +30,6 @@ const DataArr = [
 ]
 
 const panelHeader = () => {
-    console.log("init header")
     return (
         <div className="trial-panelHeader">
             <div>
@@ -82,18 +65,17 @@ const panelContent = (rates) => {
 };
 
 const NewScenarioStepTwo = (props) => {
-    console.log(props.record)
     const [currentAddStep, setCurrentAddStep] = useState(step1)
-    const [demographics, setDemographics] = useState(demographicsSample);
+    const [demographics, setDemographics] = useState([]);
+    const [intervention, setIntervention] = useState([]);
+    const [medCondition, setMedCondition] = useState([]);
+    const [labTest, setLabTest] = useState([]);
     const [criteriaStatus, setCriteriaStatus] = useState("Inclusion");
     const [rollHeight, setRollHeight] = useState(true)
-    const [inclusionCriteria, setInclusionCriteria] = useReducer(
-        (state, newState) => ({ ...state, ...newState }),
-        { ...initialStates }
-);
+    const [inclusionCriteria, setInclusionCriteria] = useState([])
+    const [exclusionCriteria, setExclusionCriteria] = useState([])
 
 const next = (step) =>{
-    console.log("To next step" + step)
     setCurrentAddStep(step)
 }
 
@@ -108,7 +90,6 @@ const handleOptionSelect = (item, activeType) =>{
             demographicsElements.splice(item)
         }
     }
-    console.log(demographicsElements)
 }
 
 const demographicsElements = [];
@@ -118,14 +99,43 @@ useEffect(() => {
         const resp = await getSummaryDefaultList();
 
         if (resp.statusCode == 200) {
-            console.log(resp.body)
+            const response = JSON.parse(resp.body)
+            setInclusionCriteria(response[0].InclusionCriteria)
+            setExclusionCriteria(response[1].ExclusionCriteria)
+            console.log(response[0].InclusionCriteria)
+
+            const criteria = response[0].InclusionCriteria
+            console.log(criteria)
+            
+            for(var i = 0; i < criteria.length; i ++){
+                if(getCatorgoryIndex(i, criteria) == 0){
+                    setMedCondition(criteria[i]['Medical Condition'])
+                } else if(getCatorgoryIndex(i, criteria) == 1){
+                    setDemographics(criteria[i]['Demographics'])
+                } else if(getCatorgoryIndex(i, criteria) == 2){
+                    setLabTest(criteria[i]['Lab/Test'])
+                } else if(getCatorgoryIndex(i, criteria) == 3){
+                    setIntervention(criteria[i]['Intervention'])
+                }
+            }
         }
     };
     summaryDefaultList();
 }, []);
 
+function getCatorgoryIndex(index, list){
+    if(list[index]['Medical Condition'] != undefined){
+        return 0;
+    } else if(list[index]['Demographics'] != undefined){
+        return 1;
+    } else if(list[index]['Lab/Test'] != undefined){
+        return 2;
+    } else {
+        return 3;
+    }
+}
+
 function callback(key) {
-    console.log(key);
     if(key.indexOf("1") < 0){
         setRollHeight(true)
     } else {
@@ -292,23 +302,29 @@ const screenFaliureOption = {
 
                             <div className="item box">
                                 <span>Medical Condition</span><br/>
-                                <span className="select-option">Type 2 Diabetes</span>
+                                {medCondition.map((medCon) => {
+                                    return(
+                                        <CriteriaOption demographic={medCon} handleOptionSelect={handleOptionSelect}></CriteriaOption>
+                                    )
+                                })}
                             </div>
 
                             <div className="item box">
                                 <span>Intervention</span><br/>
-                                <span className="select-option">Metformin</span>
-                                <span className="select-option">GLP-1R</span>
-                                <span className="select-option">Basal insulin</span>
-                                <span className="select-option">Bolus insulin</span>
-                                <span className="select-option">Contraception</span>
+                                {intervention.map((intervent) => {
+                                    return(
+                                        <CriteriaOption demographic={intervent} handleOptionSelect={handleOptionSelect}></CriteriaOption>
+                                    )
+                                })}
                             </div>
 
                             <div className="item box">
                                 <span>Lab / Test</span><br/>
-                                <span className="select-option">HbA1c</span>
-                                <span className="select-option">TSH</span>
-                                <span className="select-option">Fasting C-peptide</span>
+                                {labTest.map((lib) => {
+                                    return(
+                                        <CriteriaOption demographic={lib} handleOptionSelect={handleOptionSelect}></CriteriaOption>
+                                    )
+                                })}
                             </div>
                         </div>
                         </div>
