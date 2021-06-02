@@ -346,7 +346,24 @@ export const addStudy = async (params:any) => {
   return await response.json();
 }
 
+export const getSummaryDefaultList = async () => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+  headers: {
+    'Access-Control-Request-Method': 'POST',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "summary": "",
+    "method": "default",
+    "body": {
+      "nct_id": "NCT04069715"
+    }
+    })
+  })
 
+  return await response.json();
+}
 
 
 

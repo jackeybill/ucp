@@ -17,6 +17,11 @@ const SceneriosDashbaord = (props: any) => {
     );
   };
 
+  const path = {
+    pathname:'/scenario',
+    state:props.record
+  }
+
   const Metrics = () => {
     return (
        <Tooltip
@@ -117,7 +122,7 @@ const SceneriosDashbaord = (props: any) => {
           
          
           <div className="create-btn-wrapper">
-            <div className="create-btn" onClick={()=>props.history.push('/scenario')}>
+            <div className="create-btn" onClick={()=>props.history.push(path)}>
               <img src={addIcon} alt="" width="68px" height="68px" />
               <br />
               <span> ADD NEW SCENARIO</span>
