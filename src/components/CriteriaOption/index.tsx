@@ -23,8 +23,10 @@ const CriteriaOption = (props) => {
                 <span className="select-option" onClick={(e) => handleOptionSelect(domain, e)}>{domain.title}</span>
             </Tooltip>
             ):(
-                <span className="select-option selected"
-                    onClick={(e) => handleOptionSelect(domain, e)}>{domain.title}</span>
+                <div className="select-option selected">
+                    <span className="tick-icon"></span>
+                    <span onClick={(e) => handleOptionSelect(domain, e)}>{domain.title}</span>
+                </div>
             )}
         </div>
     )

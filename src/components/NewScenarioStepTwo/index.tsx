@@ -1,6 +1,7 @@
 import React, { useState, useReducer, useEffect} from 'react';
 import {Input, Button, Select, Tooltip, Collapse} from "antd";
 import {getSummaryDefaultList} from "../../utils/ajax-proxy";
+import { withRouter } from 'react-router';
 import "./index.scss";
 
 import CriteriaOption from "../CriteriaOption";
@@ -32,10 +33,6 @@ const initialStates = {
     },
     description: ""
   };
-
-  function callback(key) {
-    console.log(key);
-}
 
 const DataArr = [
     { 
@@ -89,6 +86,7 @@ const NewScenarioStepTwo = (props) => {
     const [currentAddStep, setCurrentAddStep] = useState(step1)
     const [demographics, setDemographics] = useState(demographicsSample);
     const [criteriaStatus, setCriteriaStatus] = useState("Inclusion");
+    const [rollHeight, setRollHeight] = useState(true)
     const [inclusionCriteria, setInclusionCriteria] = useReducer(
         (state, newState) => ({ ...state, ...newState }),
         { ...initialStates }
@@ -126,6 +124,15 @@ useEffect(() => {
     summaryDefaultList();
 }, []);
 
+function callback(key) {
+    console.log(key);
+    if(key.indexOf("1") < 0){
+        setRollHeight(true)
+    } else {
+        setRollHeight(false)
+    }
+}
+
 const amendmentRateoption = {
     title : {
       text: 'Protocol Amendment Rate',
@@ -150,7 +157,7 @@ const amendmentRateoption = {
     series: [
         {
             type: 'pie',
-            center: ['60%', '50%'],
+            center: ['80%', '50%'],
             radius: ['50%', '80%'],
             avoidLabelOverlap: false,
             label: {
@@ -203,7 +210,7 @@ const screenFaliureOption = {
     series: [
         {
             type: 'pie',
-            center: ['60%', '50%'],
+            center: ['80%', '50%'],
             radius: ['50%', '80%'],
             avoidLabelOverlap: false,
             label: {
@@ -235,8 +242,8 @@ const screenFaliureOption = {
     
 
     return (
-        // <div className="trial-portfolio-container">
-        <div>
+        <div className="trial-portfolio-container">
+        <div> 
             <div className="upper step-item">
                 <div className="action-part">
                     <div className="status-filter">
@@ -272,36 +279,39 @@ const screenFaliureOption = {
                             </div>
                         </div>
 
-                        <div className="item box">
-                            <span>Demographics</span><br/>
-                            {demographics.map((demographic) => {
-                                return(
-                                    <CriteriaOption demographic={demographic} handleOptionSelect={handleOptionSelect}></CriteriaOption>
-                                )
-                            })}
-                        </div>
+                        <div className="content-outer">
+                        <div className="content-over">
+                            <div className="item box">
+                                <span>Demographics</span><br/>
+                                {demographics.map((demographic) => {
+                                    return(
+                                        <CriteriaOption demographic={demographic} handleOptionSelect={handleOptionSelect}></CriteriaOption>
+                                    )
+                                })}
+                            </div>
 
-                        <div className="item box">
-                            <span>Medical Condition</span><br/>
-                            <span className="select-option">Type 2 Diabetes</span>
-                        </div>
+                            <div className="item box">
+                                <span>Medical Condition</span><br/>
+                                <span className="select-option">Type 2 Diabetes</span>
+                            </div>
 
-                        <div className="item box">
-                            <span>Intervention</span><br/>
-                            <span className="select-option">Metformin</span>
-                            <span className="select-option">GLP-1R</span>
-                            <span className="select-option">Basal insulin</span>
-                            <span className="select-option">Bolus insulin</span>
-                            <span className="select-option">Contraception</span>
-                        </div>
+                            <div className="item box">
+                                <span>Intervention</span><br/>
+                                <span className="select-option">Metformin</span>
+                                <span className="select-option">GLP-1R</span>
+                                <span className="select-option">Basal insulin</span>
+                                <span className="select-option">Bolus insulin</span>
+                                <span className="select-option">Contraception</span>
+                            </div>
 
-                        <div className="item box">
-                            <span>Lab / Test</span><br/>
-                            <span className="select-option">HbA1c</span>
-                            <span className="select-option">TSH</span>
-                            <span className="select-option">Fasting C-peptide</span>
+                            <div className="item box">
+                                <span>Lab / Test</span><br/>
+                                <span className="select-option">HbA1c</span>
+                                <span className="select-option">TSH</span>
+                                <span className="select-option">Fasting C-peptide</span>
+                            </div>
                         </div>
-                        
+                        </div>
                         <div className="updateTrial"><Button className="update-btn">UPDATE MY TRIAL</Button></div>
                         
                         
@@ -328,6 +338,9 @@ const screenFaliureOption = {
                                 <span>Inclusion Criteria</span>
                                 <Button type="primary">Save</Button>
                             </div>
+
+                            <div className="content-outer">
+                            <div className={`collapse-inner ${rollHeight == true? 'taller' : ''}`}>
                             <div className="criteria-list">
                                 <div className="list-columns">
                                     <div className="col-item">Eligibility Criteria</div>
@@ -351,6 +364,8 @@ const screenFaliureOption = {
                                 </Panel>
                             </Collapse>
                             </div>
+                            </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -359,17 +374,18 @@ const screenFaliureOption = {
                 ) : (
                     <span>Enrollment</span>
                 )}
-                <div className="footer">
-                    <Button type="primary" onClick={()=>next(step2)}>NEXT</Button>
-                    <Button className="view-btn" onClick={(e)=>props.goBack()}>CANCEL</Button>
-                </div>
+                
             </div>
             
         </div>
-        
+        <div className="action-footer">
+                    <Button type="primary" onClick={()=>next(step2)}>NEXT</Button>
+                    {/* <Button className="view-btn" onClick={()=>props.history.push('/trials')}>CANCEL</Button> */}
+                </div>
+    </div>    
     )
     
 }
 
 
-export default NewScenarioStepTwo;
+export default withRouter(NewScenarioStepTwo);
