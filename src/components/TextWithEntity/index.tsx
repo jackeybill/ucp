@@ -116,11 +116,11 @@ const renderMark = (markParams, entity) => {
           id={word.id}
           className={`id_${word.category}`}
         >
-          {word.children.map((child) => {
+          {word.children.map((child,idx) => {
             return (
               <span
                 id={child.id}
-                key={child.id}
+                key={idx}
                 className={`key-word ${word.category} ${
                   searchTxt &&
                   word.text.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
@@ -334,8 +334,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
     path,
     readFile,
   } = props;
-  // debugger
-// console.log('--wordsCollection------', wordsCollection)
+
   const [currentLabel, setCurrentLabel] = useState("");
   const [currentScore, setCurrentScore] = useState(null)
   const [currentId, setCurrentId] = useState(null)
@@ -412,8 +411,6 @@ const TextWithEntity = (props: TextWithEntityIF) => {
     updateWordsCollection(tempWordsCollection);
   };
 
-  // console.log('-----', wordsCollection)
-
   return (
     <div className="text-with-entity-container">
       <div
@@ -434,8 +431,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
                     : ""
                 }`}
               >
-                {word.text ? `${word.text}` : " "}&nbsp;
-                {/* {word.text.indexOf('\n')} */}
+                {word.text?word.text:''}&nbsp; 
               </span>
             );
           }
@@ -492,11 +488,11 @@ const TextWithEntity = (props: TextWithEntityIF) => {
             if (activeType && word.category != activeType) {
               return (
                 <>
-                  {word.children.map((child) => {
+                  {word.children.map((child,idx) => {
                     return (
                       <span
                         id={child.id}
-                        key={child.id}
+                        key={idx}
                         className={`key-word ${
                           searchTxt &&
                           word.text

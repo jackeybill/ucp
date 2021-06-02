@@ -2,7 +2,9 @@
 .text-with-entity-container {
   .content {
     span {
-      word-break: keep-all;
+      display: inline;
+      white-space: pre;
+      word-wrap: break-word;
     }
   }
 }

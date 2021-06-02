@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
 import { LoadingOutlined } from '@ant-design/icons';
 import UplodZone from "../../components/UploadZone";
+import moment from 'moment';
 
 import { getOverviewList,extractText } from "../../utils/ajax-proxy";
 import "./index.scss";
@@ -37,6 +38,9 @@ const columns = [
       title: "Last Updated",
       dataIndex: "lastUpdate",
       key: "lastUpdate",
+      render: (text, row, index) => {
+        return moment(text).format('MM-DD-YYYY');   
+      }
     },
   ];
 

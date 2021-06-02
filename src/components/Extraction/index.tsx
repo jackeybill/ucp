@@ -60,7 +60,6 @@ const Extraction = (props: any, ref) => {
 
   const initSvgEntity = file[key][activeSection][0].comprehendMedical["Entities"];
   const [svgEntity, setSvgEntity] = useState(initSvgEntity);
-  console.log( props.fileReader)
 
   const initLabels = file[key][activeSection][0].comprehendMedical[entity].label
   const [labels, setLabels] = useState(initLabels);// labels and wordsColelction are same now
@@ -413,13 +412,11 @@ const Extraction = (props: any, ref) => {
             </div>
             <TextWithEntity
               key="2"
-              // summary={allSummary}
               hashKey={key}
               entity={allEntity}
-              // wordsCollection={allWordsCollection}
               summary={summary}
               wordsCollection={wordsCollection}
-              activeType={activeType}
+              activeType=""
               searchTxt={searchTxt}
               onChangeActiveType={onChangeActiveType}
               currentLabel={currentLabel}

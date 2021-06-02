@@ -1,5 +1,4 @@
 import React from 'react'
-// import data from './data'
 import './styles.scss'
 
 const formatStr = (s: string) => {
@@ -210,7 +209,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       if (crossArrowTailNodeList.length >= 1 || lineNode.getElementsByClassName("arrowhead cross_row_relation").length >= 1) {
         y = y + 30
       }
-      lineNode.setAttribute("transform", `translate(${svgLeftPadding}, ${y})`)
+      lineNode.setAttribute("transform", `translate(${svgLeftPadding}, ${y-22})`)
       lineNode.setAttribute("y", y)
       
       width = x > width ? x : width
@@ -274,7 +273,8 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
   }
 
   render() {
-    const { content, entityData } = this.props;
+    const { entityData } = this.props;
+    let content = this.props.content+'\n'
     let entities = flattenAttributeIntoEntities(entityData.Entities)
 
     const lines = []
@@ -285,7 +285,6 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
     // const entities = data.comprehendMedical.Entities.Entities
     // let entities = flattenAttributeIntoEntities(comprehendMedical.Entities.Entities)
     entities = entities.sort((e1: any, e2: any) => (e1.BeginOffset - e2.BeginOffset || e1.EndOffset - e2.EndOffset))
-
     let pos = 0
     let scanedEntitiesIndex = 0
 
@@ -302,7 +301,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       const gList = []
       let cur = pos
       const addedEntities: Array<any> = []
-      
+
       let nextEntity = findNextIncludingEntity(last)
       while(nextEntity) {
         if(cur < nextEntity.BeginOffset) {
@@ -323,11 +322,10 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
             }
             gList.push(
               <g key={nextEntity.Id} className="svg_text_chunk entity" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset} style={{paddingLeft:10}}>
-                <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text>
-                
+                <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text> 
                 <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} />
                 <circle fill={color} cx="3" cy="15" r="3"></circle>
-                <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={15} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>
+                <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={15} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>         
               </g>
             )
             addedEntities.push(nextEntity)
@@ -348,10 +346,6 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
         )
         cur = last
       }
-
-     
-
-
       addedEntities
       .filter(item => item.Attributes)
       .forEach((item, idx) => {
@@ -397,17 +391,20 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       })
       
       pos = cur
-
       return gList
     }
 
     let enterBreakIndex = content.indexOf('\n')
+    // when there is only one paragraph
+    if (enterBreakIndex == -1) {
+       lines.push(getSvgLine(content.length))
+    }
+    
     while (enterBreakIndex !== -1) {
       // console.log(`========= enterBreakIndex: ${enterBreakIndex} ==============`)
       lines.push(getSvgLine(enterBreakIndex))
       enterBreakIndex = content.indexOf('\n', enterBreakIndex + 1)
     }
-
 
     for (let childEntity of pendingEntities) {
       const lineNo = entityLocation[childEntity.Id]
@@ -417,27 +414,10 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       tempLineChildren.push(<path className={`joint_curve relation_id_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} />)
       tempLineChildren.push(<path className={`conn_line horizontal relation_id_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} id={`relation_tail_horizontal_line_${childEntity.Id}_${childEntity.parentId}`}/>)
     }
-    // plain text before the first entity
-    if (entities[0].BeginOffset > 0) {
-      lines.unshift(
-      <g className="svg_text_chunk gap" data-start-offset={0} data-end-offset={entities[0].BeginOffset} style={{display:'inline-block',padding:'0 5px'}}>
-        <text startOffset={0}>&nbsp;&nbsp;&nbsp;{content.slice(0,entities[0].BeginOffset)}&nbsp;&nbsp;&nbsp;</text>
-      </g>
-      )
-    }
-     // plain text after the last entity
-    if (entities[entities.length -1].EndOffset < content.length) {
-      lines.push(
-      <g className="svg_text_chunk gap" data-start-offset={entities[entities.length - 1].EndOffset} data-end-offset={content.length} style={{display:'inline-block',padding:'0 5px'}}>
-        <text startOffset={entities[entities.length - 1].EndOffset}>&nbsp;&nbsp;&nbsp;{content.slice(entities[entities.length - 1].EndOffset)}&nbsp;&nbsp;&nbsp;</text>
-      </g>
-      ) 
-    }
-
     return (
       <div>
-        <div id="svg-wrapper" className="svg-view-container" style={{overflow: "scroll", maxWidth: '100%',maxHeight: 550, background: "#fafafa"}}>
-          <svg id="svg-viewport" overflow="auto" style={{ position: "relative", display: "block" }}>        
+        <div id="svg-wrapper" className="svg-view-container" style={{overflow: "scroll", maxWidth: '100%', background: "#fafafa"}}>
+          <svg id="svg-viewport" overflow="scroll" style={{ position: "relative", display: "block" }}>        
             {lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{display:'inline-block'}}>{line}</g>)}
             {verticalRelations}
           </svg>
