@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useEffect} from 'react';
-import {Input, Button, Select, Tooltip, Collapse, Divider, Modal, Slider } from "antd";
+import {Input, Button, Select, Tooltip, Collapse, Divider, Modal, Slider, Table} from "antd";
 import {getSummaryDefaultList, addScenario} from "../../utils/ajax-proxy";
 import { withRouter } from 'react-router';
 import {HistoryOutlined, CloseOutlined, EditFilled, CaretRightOutlined, PlusCircleOutlined} from "@ant-design/icons";
@@ -34,6 +34,37 @@ const DataArr = [
       value: 2 ,
       },
 ]
+
+const inclu_demographics = [
+    {
+        "Eligibility Criteria": "Age",
+        "Values": ">18",
+        "Timeframe": "At least 3 months prior to visit 1",
+        "Condition Or Exception": "For Patients Taking Merbromin"
+      },
+      {
+        "Eligibility Criteria": "Gender",
+        "Values": "Men or nonpregnant women",
+        "Timeframe": "At least 1 months prior to visit 1",
+        "Condition Or Exception": "For Patients Taking Merbromin"
+      }
+]
+
+const columns = [
+    {
+      title: 'Eligibility Criteria',
+      dataIndex: 'Eligibility Criteria',
+      width: '30%',
+      editable: false,
+    },
+    {
+      title: 'Values',
+      dataIndex: 'Values',
+    },
+    {
+      title: 'Timeframe',
+      dataIndex: 'Timeframe',
+    }]
 
 const panelHeader = () => {
     return (
@@ -88,8 +119,10 @@ const NewScenarioStepTwo = (props) => {
     const [visible, setVisible] = useState(false);
     const [minValue, setMinValue] = useState(frequencyFilter[0]);
     const [maxValue, setMaxValue] = useState(frequencyFilter[1]);
-    const [defaultActiveKey, setDefaultActiveKey] = useState(null)
-    const [collapsible, setCollapsible] = useState('disabled')
+    const [defaultActiveKey, setDefaultActiveKey] = useState([])
+    const [activeKey, setActiveKey] = useState([])
+    const [collapsible, setCollapsible] = useState("disabled")
+    const [inclu_demographics_list,set_inclu_demographics_list] = useState([])
 
 const next = (step) =>{
     setCurrentAddStep(step)
@@ -104,12 +137,14 @@ const saveInclusionCriteria = async () => {
         "Lab / Test": labTestElements
     }
     props.record.scenarios[0]["Inclusion Criteria"] = inclusion
+
+    //TODO to release to command for SIT
     const resp = await addScenario(props.record);
     if (resp.statusCode == 200) {
-      console.log("Add Scenario success")
-      
-      //TODO Expand bar chart
-    //   setDefaultActiveKey(['1'])
+      if(activeKey.indexOf("1") < 0){
+        setRollHeight(false)
+        setActiveKey(['1'])
+      }
     }
 }
 
@@ -230,13 +265,13 @@ function getCatorgoryIndex(index, list){
 }
 
 function callback(key) {
-    setDefaultActiveKey(key)
-    console.log(key)
     if(key.indexOf("1") < 0){
         setRollHeight(true)
     } else {
         setRollHeight(false)
     }
+    setDefaultActiveKey(key)
+    setActiveKey(key)
 }
 
 const amendmentRateoption = {
@@ -380,10 +415,26 @@ const getFrequency = (value) => {
     interventionElements = originIntervention.filter((d) => {
         return d.Count  == 1 && d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
     })
+
+    var temp1 = []
+    for(let e = 0; e < demographicsElements.length; e ++){
+        for(let i = 0; i < inclu_demographics.length; i ++){
+            if(demographicsElements[e].Text == inclu_demographics[i]['Eligibility Criteria']){
+                temp1.push(i)
+                break;
+            }
+        }
+    }
+    console.log(temp1)
+    if(temp1.length == 0){
+        temp1 = inclu_demographics
+    }
+    set_inclu_demographics_list(temp1)
 }
 
 const updateTrial = () => {
     setCollapsible('-')
+    setDefaultActiveKey(['2','3','4','5'])
 }
 
     
@@ -491,7 +542,7 @@ const updateTrial = () => {
                         <span className="tip1-desc">Use the historical trial library on the left to build the I/E criteria for your scenario.</span>
                         <div className="option-item">
                             <div>
-                            <Collapse defaultActiveKey={defaultActiveKey} onChange={callback} expandIconPosition="right" collapsible={collapsible}>
+                            <Collapse activeKey={activeKey} onChange={callback} expandIconPosition="right">
                                 <Panel header={panelHeader()} key="1">
                                     <div className="chart-container">
                                         <div  className="label"><span>Click on each metrics to filter</span></div>
@@ -519,10 +570,10 @@ const updateTrial = () => {
                                 </div>
                             </div>
                             <div className="sectionPanel">
-                            <Collapse defaultActiveKey={null} onChange={callback} expandIconPosition="left" collapsible={collapsible}
+                            <Collapse activeKey={defaultActiveKey} onChange={callback} expandIconPosition="left"
                                 expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
                                 <Panel header={panelHeaderSection("Demographics", 0)} key="2">
-                                    <p>test</p>
+                                    <Table columns={columns} dataSource={inclu_demographics_list} pagination={false} showHeader={false}/>
                                 </Panel>
                                 <Panel header={panelHeaderSection("Medical Condition", 0)} key="3">
                                     <p>test</p>
