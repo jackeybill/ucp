@@ -1,6 +1,7 @@
 import React, { useState, useReducer, useEffect} from 'react';
 import { withRouter } from 'react-router';
 import {Input, Button } from "antd";
+import {LeftOutlined } from "@ant-design/icons";
 import "./index.scss";
 
 import NewScenarioStepTwo from "../../components/NewScenarioStepTwo";
@@ -11,7 +12,6 @@ const step1 = 'Scenario';
 const step2 = 'Criteria';
 const step3 = 'Schedule';
 
-// const index = 0;
 const initialStates = {
     scenario_id: "",
     scenario_name: "",
@@ -26,6 +26,8 @@ const initialStates = {
     "Schedule of Events": {}
   };
 
+  var scenarioSize = 0
+
 const ScenarioPage = (props) => {
 
     const [currentAddStep, setCurrentAddStep] = useState(step1)
@@ -34,8 +36,14 @@ const ScenarioPage = (props) => {
         { ...initialStates }
     );
 
+    useEffect(() => {
+        if(props.location.state.scenarios == undefined){
+            props.location.state.scenarios = []
+        }
+        scenarioSize = props.location.state.scenarios.length + 1
+    });
+
     const next = (step) =>{
-        props.location.state.scenarios = []
         props.location.state.scenarios.push(scenario)
         setCurrentAddStep(step)
     }
@@ -44,12 +52,15 @@ const ScenarioPage = (props) => {
         setScenario({
           [key]: e.target.value,
         });
+        setScenario({
+            ['scenario_id']: scenarioSize,
+        });
     };
 
     return (
         <div className="action-container">
             <div className="action-title" onClick={()=>props.history.push('/trials')}>
-                <span>&nbsp;&nbsp;&lt;&nbsp;Trial Page</span>
+                <span><LeftOutlined /> Trial Page</span>
             </div>
 
             <div className="action-timeline">

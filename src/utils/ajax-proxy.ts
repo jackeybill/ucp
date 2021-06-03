@@ -368,6 +368,23 @@ export const getSummaryDefaultList = async () => {
   return await response.json();
 }
 
+export const addScenario = async (params:any) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "module": "criteria",
+      "method": "updateStudy",
+      "body": params
+      })
+  })
+
+  return await response.json();
+}
+
 
 
 
