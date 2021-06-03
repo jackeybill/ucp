@@ -43,7 +43,7 @@ const Dropzone = (props: any) => {
         if (progress >= 100) {
           setProgress(100);
         } else {
-          setProgress(progress + 5);
+          setProgress(progress + 2);
         }
       }, 1000);
     }
@@ -68,7 +68,7 @@ const Dropzone = (props: any) => {
         let times = 1;
         do {
           console.log(`waiting ${10 + 10 * times}s`);
-          await sleep(10000 + times * 5000);
+          await sleep(10000 + times * 5000 *2);
           times++;
           extractedRes = await extractText(PATH + f.name);
           try {

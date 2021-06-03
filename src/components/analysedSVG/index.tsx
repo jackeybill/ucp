@@ -341,7 +341,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       if (cur < last) {
         gList.push(
           <g className={`svg_text_chunk gap`} data-start-offset={cur} data-end-offset={last} style={{display:'inline-block',padding:'0 5px'}}>
-            <text>{content.slice(cur, last)}&nbsp;&nbsp;&nbsp;</text>
+            <text>&nbsp;&nbsp;&nbsp;{content.slice(cur, last)}&nbsp;&nbsp;&nbsp;</text>
           </g>
         )
         cur = last
