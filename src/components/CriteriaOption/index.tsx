@@ -4,7 +4,7 @@ import "./index.scss";
 
 const CriteriaOption = (props) => {
     const domain = props.demographic
-    const [activeType, setActiveType] = useState(props.demographic.Count)
+    const [activeType, setActiveType] = useState(0)
 
     const handleOptionSelect = (domain, e) =>{
         if(activeType == 0){

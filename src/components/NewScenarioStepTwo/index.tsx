@@ -7,6 +7,7 @@ import "./index.scss";
 
 import CriteriaOption from "../CriteriaOption";
 import CustomChart from "../CustomChart";
+import EditTable from "../../components/EditTable";
 
 const { TextArea } = Input;
 const { Panel } = Collapse;
@@ -33,21 +34,6 @@ const DataArr = [
        name: 'XXX',
       value: 2 ,
       },
-]
-
-const inclu_demographics = [
-    {
-        "Eligibility Criteria": "Age",
-        "Values": ">18",
-        "Timeframe": "At least 3 months prior to visit 1",
-        "Condition Or Exception": "For Patients Taking Merbromin"
-      },
-      {
-        "Eligibility Criteria": "Gender",
-        "Values": "Men or nonpregnant women",
-        "Timeframe": "At least 1 months prior to visit 1",
-        "Condition Or Exception": "For Patients Taking Merbromin"
-      }
 ]
 
 const columns = [
@@ -121,8 +107,7 @@ const NewScenarioStepTwo = (props) => {
     const [maxValue, setMaxValue] = useState(frequencyFilter[1]);
     const [defaultActiveKey, setDefaultActiveKey] = useState([])
     const [activeKey, setActiveKey] = useState([])
-    const [collapsible, setCollapsible] = useState("disabled")
-    const [inclu_demographics_list,set_inclu_demographics_list] = useState([])
+    const [collapsible, setCollapsible] = useState('disabled')
 
 const next = (step) =>{
     setCurrentAddStep(step)
@@ -136,7 +121,8 @@ const saveInclusionCriteria = async () => {
         "Intervention": interventionElements,
         "Lab / Test": labTestElements
     }
-    props.record.scenarios[0]["Inclusion Criteria"] = inclusion
+    props.record.scenarios[props.record.scenarios.length-1]["Inclusion Criteria"] = inclusion
+    // console.log(props.record.scenarios)
 
     //TODO to release to command for SIT
     const resp = await addScenario(props.record);
@@ -151,10 +137,16 @@ const saveInclusionCriteria = async () => {
 const handleOptionSelect = (item, activeType, id, key) =>{
     switch(id){
         case 0:
-            var index = demographicsElements.indexOf(item)
+
+            var index = demographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
             if(activeType == 1){
                 if(index < 0){
-                    demographicsElements.push(item)
+                    var newItem = {
+                        "Eligibility Criteria": item.Text,
+                        "Values": "-",
+                        "Timeframe": "-"
+                    }
+                    demographicsElements.push(newItem)
                 }
             } else {
                 if(index >= 0){
@@ -163,10 +155,15 @@ const handleOptionSelect = (item, activeType, id, key) =>{
             }
             break;
         case 1:
-            var index = medConditionElements.indexOf(item)
+            var index = medConditionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
             if(activeType == 1){
                 if(index < 0){
-                    medConditionElements.push(item)
+                    var newItem = {
+                        "Eligibility Criteria": item.Text,
+                        "Values": "-",
+                        "Timeframe": "-"
+                    }
+                    medConditionElements.push(newItem)
                 }
             } else {
                 if(index >= 0){
@@ -175,10 +172,15 @@ const handleOptionSelect = (item, activeType, id, key) =>{
             }
             break;
         case 2:
-            var index = interventionElements.indexOf(item)
+            var index = interventionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
             if(activeType == 1){
                 if(index < 0){
-                    interventionElements.push(item)
+                    var newItem = {
+                        "Eligibility Criteria": item.Text,
+                        "Values": "-",
+                        "Timeframe": "-"
+                    }
+                    interventionElements.push(newItem)
                 }
             } else {
                 if(index >= 0){
@@ -187,10 +189,15 @@ const handleOptionSelect = (item, activeType, id, key) =>{
             }
             break;
         default:
-            var index = labTestElements.indexOf(item)
+            var index = labTestElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
             if(activeType == 1){
                 if(index < 0){
-                    labTestElements.push(item)
+                    var newItem = {
+                        "Eligibility Criteria": item.Text,
+                        "Values": "-",
+                        "Timeframe": "-"
+                    }
+                    labTestElements.push(newItem)
                 }
             } else {
                 if(index >= 0){
@@ -218,33 +225,21 @@ useEffect(() => {
                     setMedCondition(criteria[i]['Medical Condition'].filter((d) => {
                         return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                     }))
-                    medConditionElements = criteria[i]['Medical Condition'].filter((d) => {
-                        return d.Count  == 1 && d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-                    });
                 } else if(getCatorgoryIndex(i, criteria) == 1){ 
                     setOriginDemographics(criteria[i]['Demographics'])
                     setDemographics(criteria[i]['Demographics'].filter((d) => {
                         return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                     }))
-                    demographicsElements = criteria[i]['Demographics'].filter((d) => {
-                        return d.Count  == 1 && d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-                    });
                 } else if(getCatorgoryIndex(i, criteria) == 2){
                     setOriginLabTest(criteria[i]['Lab/Test'])
                     setLabTest(criteria[i]['Lab/Test'].filter((d) => {
                         return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                     }))
-                    labTestElements = criteria[i]['Lab/Test'].filter((d) => {
-                        return d.Count  == 1 && d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-                    });
                 } else if(getCatorgoryIndex(i, criteria) == 3){
                     setOriginIntervention(criteria[i]['Intervention'])
                     setIntervention(criteria[i]['Intervention'].filter((d) => {
                         return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                     }))
-                    interventionElements = criteria[i]['Intervention'].filter((d) => {
-                        return d.Count  == 1 && d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-                    });
                 }
             }
         }
@@ -388,7 +383,6 @@ const getFrequency = (value) => {
     setMinValue(value[0])
     setMaxValue(value[1])
 
-    //Update dumy data display list
     setMedCondition(originMedCondition.filter((d) => {
         return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
     }))
@@ -402,39 +396,31 @@ const getFrequency = (value) => {
         return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
     }))
 
-    //Update selected dumy data list
-    medConditionElements = originMedCondition.filter((d) => {
-        return d.Count  == 1 && d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
-    })
-    demographicsElements = originDemographics.filter((d) => {
-        return d.Count  == 1 && d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
-    })
-    labTestElements = originLabTest.filter((d) => {
-        return d.Count  == 1 && d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
-    })
-    interventionElements = originIntervention.filter((d) => {
-        return d.Count  == 1 && d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
-    })
-
-    var temp1 = []
-    for(let e = 0; e < demographicsElements.length; e ++){
-        for(let i = 0; i < inclu_demographics.length; i ++){
-            if(demographicsElements[e].Text == inclu_demographics[i]['Eligibility Criteria']){
-                temp1.push(i)
-                break;
-            }
-        }
-    }
-    console.log(temp1)
-    if(temp1.length == 0){
-        temp1 = inclu_demographics
-    }
-    set_inclu_demographics_list(temp1)
+    medConditionElements = []
+    demographicsElements = []
+    labTestElements = []
+    interventionElements = []
 }
 
 const updateTrial = () => {
     setCollapsible('-')
     setDefaultActiveKey(['2','3','4','5'])
+}
+
+const updateIclusionCriteria = (newData, index) => {
+    switch(index){
+        case 1: 
+            demographicsElements = newData
+            break;
+        case 2:
+            medConditionElements = newData
+            break;
+        case 3:
+            interventionElements = newData
+            break;
+        default:
+            labTestElements = newData
+    }
 }
 
     
@@ -537,7 +523,7 @@ const updateTrial = () => {
                         
                         
                     </div>
-                    <div className="right-container">
+                    <div className={`right-container ${collapsible == 'disabled' ? 'none-click' : ''}`}>
                         <h4>Add Inclusion Criteria</h4>
                         <span className="tip1-desc">Use the historical trial library on the left to build the I/E criteria for your scenario.</span>
                         <div className="option-item">
@@ -573,16 +559,16 @@ const updateTrial = () => {
                             <Collapse activeKey={defaultActiveKey} onChange={callback} expandIconPosition="left"
                                 expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
                                 <Panel header={panelHeaderSection("Demographics", 0)} key="2">
-                                    <Table columns={columns} dataSource={inclu_demographics_list} pagination={false} showHeader={false}/>
+                                    <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={1} data={demographicsElements}/>
                                 </Panel>
                                 <Panel header={panelHeaderSection("Medical Condition", 0)} key="3">
-                                    <p>test</p>
+                                    <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={2} data={medConditionElements}/>
                                 </Panel>
                                 <Panel header={panelHeaderSection("Intervention", 0)} key="4">
-                                    <p>test</p>
+                                    <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={3} data={interventionElements}/>
                                 </Panel>
                                 <Panel header={panelHeaderSection("Lab / Test", 0)} key="5">
-                                    <p>test</p>
+                                    <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={4} data={labTestElements}/>
                                 </Panel>
                             </Collapse>
                             </div>
