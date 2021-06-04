@@ -1,7 +1,8 @@
 import React, { useState, useReducer, useEffect} from 'react';
-import {Input, Button, Select, Tooltip, Collapse} from "antd";
-import {getSummaryDefaultList} from "../../utils/ajax-proxy";
+import {Input, Button, Select, Tooltip, Collapse, Divider, Modal, Slider, Table} from "antd";
+import {getSummaryDefaultList, addScenario} from "../../utils/ajax-proxy";
 import { withRouter } from 'react-router';
+import {HistoryOutlined, CloseOutlined, EditFilled, CaretRightOutlined, PlusCircleOutlined} from "@ant-design/icons";
 import "./index.scss";
 
 import CriteriaOption from "../CriteriaOption";
@@ -13,6 +14,7 @@ const { Panel } = Collapse;
 const step1 = 'Scenario';
 const step2 = 'Criteria';
 const step3 = 'Schedule';
+const frequencyFilter = [50, 60]
 
 const rates = [];
 let demographicsElements = [];
@@ -33,6 +35,37 @@ const DataArr = [
       },
 ]
 
+const inclu_demographics = [
+    {
+        "Eligibility Criteria": "Age",
+        "Values": ">18",
+        "Timeframe": "At least 3 months prior to visit 1",
+        "Condition Or Exception": "For Patients Taking Merbromin"
+      },
+      {
+        "Eligibility Criteria": "Gender",
+        "Values": "Men or nonpregnant women",
+        "Timeframe": "At least 1 months prior to visit 1",
+        "Condition Or Exception": "For Patients Taking Merbromin"
+      }
+]
+
+const columns = [
+    {
+      title: 'Eligibility Criteria',
+      dataIndex: 'Eligibility Criteria',
+      width: '30%',
+      editable: false,
+    },
+    {
+      title: 'Values',
+      dataIndex: 'Values',
+    },
+    {
+      title: 'Timeframe',
+      dataIndex: 'Timeframe',
+    }]
+
 const panelHeader = () => {
     return (
         <div className="trial-panelHeader">
@@ -51,7 +84,8 @@ const panelHeaderSection = (header, count) => {
     return (
         <div className="trial-panelHeader">
             <div>
-                <div className="header-section"><span>{header}({count == 0? 0:count})</span></div>
+                <div className="header-section"><span>{header}({count == 0? 0:count})</span>
+                <PlusCircleOutlined className="right-icon"/></div>
             </div>
         </div>
     );
@@ -74,17 +108,47 @@ const NewScenarioStepTwo = (props) => {
     const [intervention, setIntervention] = useState([]);
     const [medCondition, setMedCondition] = useState([]);
     const [labTest, setLabTest] = useState([]);
+    const [originDemographics, setOriginDemographics] = useState([]);
+    const [originIntervention, setOriginIntervention] = useState([]);
+    const [originMedCondition, setOriginMedCondition] = useState([]);
+    const [originLabTest, setOriginLabTest] = useState([]);
     const [criteriaStatus, setCriteriaStatus] = useState("Inclusion");
     const [rollHeight, setRollHeight] = useState(true)
-    const [inclusionCriteria, setInclusionCriteria] = useState([])
-    const [exclusionCriteria, setExclusionCriteria] = useState([])
+    // const [inclusionCriteria, setInclusionCriteria] = useState([])
+    // const [exclusionCriteria, setExclusionCriteria] = useState([])
+    const [visible, setVisible] = useState(false);
+    const [minValue, setMinValue] = useState(frequencyFilter[0]);
+    const [maxValue, setMaxValue] = useState(frequencyFilter[1]);
+    const [defaultActiveKey, setDefaultActiveKey] = useState([])
+    const [activeKey, setActiveKey] = useState([])
+    const [collapsible, setCollapsible] = useState("disabled")
+    const [inclu_demographics_list,set_inclu_demographics_list] = useState([])
 
 const next = (step) =>{
     setCurrentAddStep(step)
 }
 
+const saveInclusionCriteria = async () => {
+
+    var inclusion = {
+        "Demographics": demographicsElements,
+        "Medical Condition": medConditionElements,
+        "Intervention": interventionElements,
+        "Lab / Test": labTestElements
+    }
+    props.record.scenarios[0]["Inclusion Criteria"] = inclusion
+
+    //TODO to release to command for SIT
+    const resp = await addScenario(props.record);
+    if (resp.statusCode == 200) {
+      if(activeKey.indexOf("1") < 0){
+        setRollHeight(false)
+        setActiveKey(['1'])
+      }
+    }
+}
+
 const handleOptionSelect = (item, activeType, id, key) =>{
-    console.log('id: ' + id + ', key: ' + key + ', selected: ' + activeType)
     switch(id){
         case 0:
             var index = demographicsElements.indexOf(item)
@@ -94,7 +158,7 @@ const handleOptionSelect = (item, activeType, id, key) =>{
                 }
             } else {
                 if(index >= 0){
-                    demographicsElements.splice(item,1)
+                    demographicsElements.splice(index,1)
                 }
             }
             break;
@@ -106,7 +170,7 @@ const handleOptionSelect = (item, activeType, id, key) =>{
                 }
             } else {
                 if(index >= 0){
-                    medConditionElements.splice(item,1)
+                    medConditionElements.splice(index,1)
                 }
             }
             break;
@@ -118,7 +182,7 @@ const handleOptionSelect = (item, activeType, id, key) =>{
                 }
             } else {
                 if(index >= 0){
-                    interventionElements.splice(item,1)
+                    interventionElements.splice(index,1)
                 }
             }
             break;
@@ -127,12 +191,10 @@ const handleOptionSelect = (item, activeType, id, key) =>{
             if(activeType == 1){
                 if(index < 0){
                     labTestElements.push(item)
-                    console.log(labTestElements.length)
                 }
             } else {
                 if(index >= 0){
-                    labTestElements.splice(item,1)
-                    console.log(labTestElements.length)
+                    labTestElements.splice(index,1)
                 }
             }
             break;
@@ -145,32 +207,43 @@ useEffect(() => {
 
         if (resp.statusCode == 200) {
             const response = JSON.parse(resp.body)
-            setInclusionCriteria(response[0].InclusionCriteria)
-            setExclusionCriteria(response[1].ExclusionCriteria)
+            // setInclusionCriteria(response[0].InclusionCriteria)
+            // setExclusionCriteria(response[1].ExclusionCriteria)
 
             const criteria = response[0].InclusionCriteria
             
             for(var i = 0; i < criteria.length; i ++){
                 if(getCatorgoryIndex(i, criteria) == 0){
-                    setMedCondition(criteria[i]['Medical Condition'])
+                    setOriginMedCondition(criteria[i]['Medical Condition'])
+                    setMedCondition(criteria[i]['Medical Condition'].filter((d) => {
+                        return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+                    }))
                     medConditionElements = criteria[i]['Medical Condition'].filter((d) => {
-                        return d.Count  == 1;
+                        return d.Count  == 1 && d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                     });
-                    console.log(medConditionElements)
                 } else if(getCatorgoryIndex(i, criteria) == 1){ 
-                    setDemographics(criteria[i]['Demographics'])
+                    setOriginDemographics(criteria[i]['Demographics'])
+                    setDemographics(criteria[i]['Demographics'].filter((d) => {
+                        return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+                    }))
                     demographicsElements = criteria[i]['Demographics'].filter((d) => {
-                        return d.Count  == 1;
+                        return d.Count  == 1 && d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                     });
                 } else if(getCatorgoryIndex(i, criteria) == 2){
-                    setLabTest(criteria[i]['Lab/Test'])
+                    setOriginLabTest(criteria[i]['Lab/Test'])
+                    setLabTest(criteria[i]['Lab/Test'].filter((d) => {
+                        return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+                    }))
                     labTestElements = criteria[i]['Lab/Test'].filter((d) => {
-                        return d.Count  == 1;
+                        return d.Count  == 1 && d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                     });
                 } else if(getCatorgoryIndex(i, criteria) == 3){
-                    setIntervention(criteria[i]['Intervention'])
+                    setOriginIntervention(criteria[i]['Intervention'])
+                    setIntervention(criteria[i]['Intervention'].filter((d) => {
+                        return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+                    }))
                     interventionElements = criteria[i]['Intervention'].filter((d) => {
-                        return d.Count  == 1;
+                        return d.Count  == 1 && d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                     });
                 }
             }
@@ -197,6 +270,8 @@ function callback(key) {
     } else {
         setRollHeight(false)
     }
+    setDefaultActiveKey(key)
+    setActiveKey(key)
 }
 
 const amendmentRateoption = {
@@ -305,6 +380,63 @@ const screenFaliureOption = {
     ]
 };
 
+const formatter = (value) => {
+    return value+'%'
+}
+
+const getFrequency = (value) => {
+    setMinValue(value[0])
+    setMaxValue(value[1])
+
+    //Update dumy data display list
+    setMedCondition(originMedCondition.filter((d) => {
+        return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
+    }))
+    setDemographics(originDemographics.filter((d) => {
+        return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
+    }))
+    setLabTest(originLabTest.filter((d) => {
+        return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
+    }))
+    setIntervention(originIntervention.filter((d) => {
+        return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
+    }))
+
+    //Update selected dumy data list
+    medConditionElements = originMedCondition.filter((d) => {
+        return d.Count  == 1 && d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
+    })
+    demographicsElements = originDemographics.filter((d) => {
+        return d.Count  == 1 && d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
+    })
+    labTestElements = originLabTest.filter((d) => {
+        return d.Count  == 1 && d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
+    })
+    interventionElements = originIntervention.filter((d) => {
+        return d.Count  == 1 && d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
+    })
+
+    var temp1 = []
+    for(let e = 0; e < demographicsElements.length; e ++){
+        for(let i = 0; i < inclu_demographics.length; i ++){
+            if(demographicsElements[e].Text == inclu_demographics[i]['Eligibility Criteria']){
+                temp1.push(i)
+                break;
+            }
+        }
+    }
+    console.log(temp1)
+    if(temp1.length == 0){
+        temp1 = inclu_demographics
+    }
+    set_inclu_demographics_list(temp1)
+}
+
+const updateTrial = () => {
+    setCollapsible('-')
+    setDefaultActiveKey(['2','3','4','5'])
+}
+
     
 
     return (
@@ -335,23 +467,40 @@ const screenFaliureOption = {
                 {criteriaStatus == 'Inclusion' ? (
                 <div className="main-container">
                     <div className="left-container">
-                        <div className="item"><span>Inclusion Criteria Library</span></div>
-                        <hr/>
+                        <div className="item"><span>Inclusion Criteria Library</span>
+                            <CloseOutlined className="right-icon"></CloseOutlined>
+                            <HistoryOutlined className="right-icon"></HistoryOutlined>
+                        </div>
+                        <Divider style={{ borderWidth: 2, borderColor: '#c4bfbf', marginTop: 5, marginBottom: 5 }} />
                         <div className="item">
                             <div className="tip-1"><span>Select / Unselect criteria to add to Trial</span></div>
                             <div className="tip-2">
-                                <span>CRITERIA FREQUENCY</span>
-                                <div>ICON</div>
+                                <span className="label">CRITERIA FREQUENCY</span><br/>
+                                <div id="freqModal" ref={null} onClick={() => setVisible(true)}><span className="label">{minValue}%-{maxValue}%</span><EditFilled /></div>
                             </div>
                         </div>
-
+                        {visible? (
+                            <div className="freqSection">
+                                <div className="title"><span>Set Frequency</span>
+                                    <CloseOutlined className="right-icon" onClick={() => setVisible(false)}></CloseOutlined></div>
+                                <div className="content">
+                                    <span>Criteria Frequency</span>
+                                    <span style={{ float: 'right'}}>{minValue}% - {maxValue}%</span>
+                                </div>
+                                <Slider range={{ draggableTrack: true }} defaultValue={[frequencyFilter[0],frequencyFilter[1]]} tipFormatter={formatter}
+                                        onAfterChange={getFrequency}/>
+                            </div>
+                        ):(
+                            <></>
+                        )
+                        }
                         <div className="content-outer">
                         <div className="content-over">
                             <div className="item box">
                                 <span>Demographics</span><br/>
                                 {demographics.map((demographic, idx) => {
                                     return(
-                                        <CriteriaOption demographic={demographic} index={0} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
+                                        <CriteriaOption key={`demographic_${idx}`} demographic={demographic} index={0} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
                                     )
                                 })}
                             </div>
@@ -360,7 +509,7 @@ const screenFaliureOption = {
                                 <span>Medical Condition</span><br/>
                                 {medCondition.map((medCon, idx) => {
                                     return(
-                                        <CriteriaOption demographic={medCon} index={1} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
+                                        <CriteriaOption key={`medCon_${idx}`} demographic={medCon} index={1} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
                                     )
                                 })}
                             </div>
@@ -369,7 +518,7 @@ const screenFaliureOption = {
                                 <span>Intervention</span><br/>
                                 {intervention.map((intervent, idx) => {
                                     return(
-                                        <CriteriaOption demographic={intervent} index={2} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
+                                        <CriteriaOption key={`intervent_${idx}`} demographic={intervent} index={2} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
                                     )
                                 })}
                             </div>
@@ -378,13 +527,13 @@ const screenFaliureOption = {
                                 <span>Lab / Test</span><br/>
                                 {labTest.map((lib, idx) => {
                                     return(
-                                        <CriteriaOption demographic={lib} index={3} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
+                                        <CriteriaOption key={`lib_${idx}`} demographic={lib} index={3} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
                                     )
                                 })}
                             </div>
                         </div>
                         </div>
-                        <div className="updateTrial"><Button className="update-btn">UPDATE MY TRIAL</Button></div>
+                        <div className="updateTrial"><Button className="update-btn" onClick={updateTrial}>UPDATE MY TRIAL</Button></div>
                         
                         
                     </div>
@@ -393,7 +542,7 @@ const screenFaliureOption = {
                         <span className="tip1-desc">Use the historical trial library on the left to build the I/E criteria for your scenario.</span>
                         <div className="option-item">
                             <div>
-                            <Collapse defaultActiveKey={null} onChange={callback} expandIconPosition="right">
+                            <Collapse activeKey={activeKey} onChange={callback} expandIconPosition="right">
                                 <Panel header={panelHeader()} key="1">
                                     <div className="chart-container">
                                         <div  className="label"><span>Click on each metrics to filter</span></div>
@@ -408,7 +557,7 @@ const screenFaliureOption = {
                             </div>
                             <div className="impact-summary">
                                 <span>Inclusion Criteria</span>
-                                <Button type="primary">Save</Button>
+                                <Button type="primary" onClick={saveInclusionCriteria}>Save</Button>
                             </div>
 
                             <div className="content-outer">
@@ -421,9 +570,10 @@ const screenFaliureOption = {
                                 </div>
                             </div>
                             <div className="sectionPanel">
-                            <Collapse defaultActiveKey={null} onChange={callback} expandIconPosition="left">
+                            <Collapse activeKey={defaultActiveKey} onChange={callback} expandIconPosition="left"
+                                expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
                                 <Panel header={panelHeaderSection("Demographics", 0)} key="2">
-                                    <p>test</p>
+                                    <Table columns={columns} dataSource={inclu_demographics_list} pagination={false} showHeader={false}/>
                                 </Panel>
                                 <Panel header={panelHeaderSection("Medical Condition", 0)} key="3">
                                     <p>test</p>
@@ -451,9 +601,8 @@ const screenFaliureOption = {
             
         </div>
         <div className="action-footer">
-                    <Button type="primary" onClick={()=>next(step2)}>NEXT</Button>
-                    {/* <Button className="view-btn" onClick={()=>props.history.push('/trials')}>CANCEL</Button> */}
-                </div>
+            <Button type="primary" onClick={()=>next(step2)}>NEXT</Button>
+        </div>
     </div>    
     )
     
