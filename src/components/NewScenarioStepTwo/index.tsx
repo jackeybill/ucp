@@ -107,7 +107,7 @@ const NewScenarioStepTwo = (props) => {
     const [maxValue, setMaxValue] = useState(frequencyFilter[1]);
     const [defaultActiveKey, setDefaultActiveKey] = useState([])
     const [activeKey, setActiveKey] = useState([])
-    const [collapsible, setCollapsible] = useState('disabled')
+    const [collapsible, setCollapsible] = useState(true)
 
 const next = (step) =>{
     setCurrentAddStep(step)
@@ -116,10 +116,26 @@ const next = (step) =>{
 const saveInclusionCriteria = async () => {
 
     var inclusion = {
-        "Demographics": demographicsElements,
-        "Medical Condition": medConditionElements,
-        "Intervention": interventionElements,
-        "Lab / Test": labTestElements
+        "Demographics": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": demographicsElements
+        },
+        "Medical Condition": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": medConditionElements
+        },
+        "Intervention": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": interventionElements
+        },
+        "Lab / Test": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": labTestElements
+        }
     }
     props.record.scenarios[props.record.scenarios.length-1]["Inclusion Criteria"] = inclusion
     // console.log(props.record.scenarios)
@@ -403,7 +419,7 @@ const getFrequency = (value) => {
 }
 
 const updateTrial = () => {
-    setCollapsible('-')
+    setCollapsible(false)
     setDefaultActiveKey(['2','3','4','5'])
 }
 
@@ -523,13 +539,13 @@ const updateIclusionCriteria = (newData, index) => {
                         
                         
                     </div>
-                    <div className={`right-container ${collapsible == 'disabled' ? 'none-click' : ''}`}>
+                    <div className={`right-container ${collapsible ? 'none-click' : ''}`}>
                         <h4>Add Inclusion Criteria</h4>
                         <span className="tip1-desc">Use the historical trial library on the left to build the I/E criteria for your scenario.</span>
                         <div className="option-item">
                             <div>
                             <Collapse activeKey={activeKey} onChange={callback} expandIconPosition="right">
-                                <Panel header={panelHeader()} key="1">
+                                <Panel header={panelHeader()} key="1" forceRender={false}>
                                     <div className="chart-container">
                                         <div  className="label"><span>Click on each metrics to filter</span></div>
                                         <CustomChart option={amendmentRateoption} height={120}></CustomChart>
@@ -558,16 +574,16 @@ const updateIclusionCriteria = (newData, index) => {
                             <div className="sectionPanel">
                             <Collapse activeKey={defaultActiveKey} onChange={callback} expandIconPosition="left"
                                 expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
-                                <Panel header={panelHeaderSection("Demographics", 0)} key="2">
+                                <Panel header={panelHeaderSection("Demographics", collapsible ? 0 : demographicsElements.length)} key="2" forceRender={false}>
                                     <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={1} data={demographicsElements}/>
                                 </Panel>
-                                <Panel header={panelHeaderSection("Medical Condition", 0)} key="3">
+                                <Panel header={panelHeaderSection("Medical Condition", collapsible ? 0 : medConditionElements.length)} key="3" forceRender={false}>
                                     <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={2} data={medConditionElements}/>
                                 </Panel>
-                                <Panel header={panelHeaderSection("Intervention", 0)} key="4">
+                                <Panel header={panelHeaderSection("Intervention", collapsible ? 0 : interventionElements.length)} key="4" forceRender={false}>
                                     <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={3} data={interventionElements}/>
                                 </Panel>
-                                <Panel header={panelHeaderSection("Lab / Test", 0)} key="5">
+                                <Panel header={panelHeaderSection("Lab / Test", collapsible ? 0 : labTestElements.length)} key="5" forceRender={false}>
                                     <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={4} data={labTestElements}/>
                                 </Panel>
                             </Collapse>

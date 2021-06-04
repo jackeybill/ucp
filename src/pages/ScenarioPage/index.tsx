@@ -20,9 +20,9 @@ const initialStates = {
     screen_failure_rate: "",
     patient_burden: "",
     cost: "",
-    "Inclusion Criteria": [],
-    "Exclusion Criteria": [],
-    "Enrollment Feasibility": [],
+    "Inclusion Criteria": {},
+    "Exclusion Criteria": {},
+    "Enrollment Feasibility": {},
     "Schedule of Events": {}
   };
 
@@ -56,6 +56,7 @@ const ScenarioPage = (props) => {
             ['scenario_id']: scenarioSize,
         });
     };
+    
 
     return (
         <div className="action-container">
