@@ -41,7 +41,7 @@ const SceneriosDashbaord = (props: any) => {
   return (
     <div className="scenarios-container">
       <div className="container-top">
-        <span className="count">Scenarios(2)</span>
+        <span className="count">Scenarios({props.record.scenarios&&props.record.scenarios.length||0})</span>
         <br />
         <span>
           Summary of design scenarios and key metrics on predicted impact.

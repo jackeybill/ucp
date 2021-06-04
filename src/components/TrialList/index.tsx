@@ -14,13 +14,13 @@ const panelHeader = (props,record) => {
   return (
     <div className="trial-panelHeader">
       <div>
-      {record["nct_id"] || "-"}<br/>
+      {/* {record["nct_id"] || "-"}<br/> */}
       {record["trial_alias"] || "-"}<br/>
-      <span className="update-time">Last updated {record.lastUpdate||'-'}</span>
+      <span className="update-time">Last updated {record.updateDate||'-'}</span>
       </div>
       <div>{record["molecule_name"] || "-"}</div>
       <div>{record["study_phase"] || "-"}</div>
-          <div>{record["therapeutic_Area"] || "-"}</div>
+          <div>{record["therapeutic_area"] || "-"}</div>
            <div> <span className={`status-tag ${record["status"].toLowerCase()=="completed"?'completed':'in-progress'}`}>{record["status"] || "-"}</span>
           </div>
       <div>
@@ -47,15 +47,15 @@ const panelContent = (record, onClick) => {
       </div>
       <div>
         <span className="key">Pediatric Study</span><br/>
-        <span className="value"> {record["prediatric_study"] || "-"}</span>
+        <span className="value"> {record["pediatric_study"] || "-"}</span>
       </div>
       <div>
         <span className="key">Study Country</span><br/>
         <span className="value"> {record["study_country"] || "-"}</span>
       </div>
       <div>
-        <span className="key">Endpoints</span><br/>
-        <span className="value"> <span className="view-endpoint" onClick={onClick}>View Endpoints (12)</span></span>
+        {/* <span className="key">Endpoints</span><br/>
+        <span className="value"> <span className="view-endpoint" onClick={onClick}>View Endpoints (12)</span></span> */}
       </div>
     </div>
   );

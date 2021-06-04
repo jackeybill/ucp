@@ -14,7 +14,7 @@ import TrialList from "../../components/TrialList";
 import TrialDetails from "../../components/TrialDetails";
 import Endpoints from "../../components/Endpoints";
 import Scenarios from "../../components/Scenarios";
-import { getTrialList, addStudy } from "../../utils/ajax-proxy";
+import { getTrialList, addStudy, updateStudy } from "../../utils/ajax-proxy";
 import { COUNTRY_MAP } from "../../utils/country-map";
 import { Therapeutic_Area_Map } from "../../utils/area-map";
 import addIcon from "../../assets/add.svg";
@@ -109,14 +109,25 @@ const TrialPortfolio = (props) => {
     //   "trial_alias": null,
     //   "molecule_name": null
     // }
+    console.log('-----', trial)
     const resp = await addStudy(trial);
+
     if (resp.statusCode == 200) {
       setVisible(false);
       setShowDetails(true);
       // setStep(step1)
-      message.success("Submit successfully");
+      message.success("Create successfully");
     }
   };
+
+  const handleUpdate = async () => {
+    console.log('----', trial)
+    const resp = await updateStudy(trial);
+
+    if (resp.statusCode == 200) {
+      message.success("Save successfully");
+    }
+  }
 
   const onViewTrial = (e, record) => {
     console.log('reocrd----', record)
@@ -146,6 +157,7 @@ const TrialPortfolio = (props) => {
     });
   };
   const handleTrialSelectChange = (key, v) => {
+    console.log('------', key, v)
     setTrial({
       [key]: v,
     });
@@ -215,7 +227,7 @@ const TrialPortfolio = (props) => {
       }
     };
     fetchList();
-  }, []);
+  }, [showDetails]);
 
   return (
     <div className="trial-portfolio-container">
@@ -314,10 +326,9 @@ const TrialPortfolio = (props) => {
           </Breadcrumb.Item>
           <Breadcrumb.Item>Trial Design</Breadcrumb.Item>
         </Breadcrumb>
-          <div className="trial-details-wrapper">
-              
-          <TrialDetails record={trial} onSave={handleOk} onInputChange={handleTrialInputChange} onSelectChange={handleTrialSelectChange}/>         
-          <Scenarios record={trial}/>
+          <div className="trial-details-wrapper">             
+            <TrialDetails record={trial} onSave={handleUpdate} onInputChange={handleTrialInputChange} onSelectChange={handleTrialSelectChange}/>         
+            <Scenarios record={trial}/>
             </div>
             </>
       )}
