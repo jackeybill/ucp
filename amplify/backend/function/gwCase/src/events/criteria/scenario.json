@@ -1,137 +1,140 @@
 {
-    "module": "criteria",
-    "method": "updateStudy",
-    "body": {
-      "_id": "60a5282e84a77822bd7ad195",
-      "nct_id": "NCT00000123",
-      "study_type": "Interventional",
-      "trial_title": "The Berkeley Orthokeratology Study",
-      "study_phase": "Phase 3",
-      "prediatric_study": "Yes",
-      "indication": "Astigmatism",
-      "description": "The Berkeley Orthokeratology Study",
-      "therapeutic_Area": "National Eye Institute (NEI)",
-      "trial_alias": null,
-      "molecule_name": null,
-      "status": "In Progress",
-      "createDate": "2021-05-19",
-      "Therapeutic Area Average": {
-        "name": "Therapeutic Area Average",
-        "description": "Endocrinology, Type 2 Diabetes Phase 3 trails",
-        "protocol_amendment_rate": "40%",
-        "screen_failure_rate": "20%",
-        "patient_burden": "61",
-        "cost": "$18 - 21M"
-      },
-      "scenarios": [
-        {
-          "scenario_id": "1",
-          "scenario_name": "scenario name 1",
-          "scenario_description": "Fewer lab-based activities, broader range of allowable insulin types",
-          "protocol_amendment_rate": "52%",
-          "screen_failure_rate": "18%",
-          "patient_burden": "40",
-          "cost": "$15 - 20M",
-          "Inclusion Criteria": {
-            "Demographics": [
-              {
-                "Eligibility Criteria": "Age",
-                "Values": ">18",
-                "Timeframe": "At least 3 months prior to visit 1",
-                "Condition Or Exception": "For Patients Taking Merbromin"
-              },
-              {
-                "Eligibility Criteria": "Gender",
-                "Values": "Men or nonpregnant women",
-                "Timeframe": "At least 1 months prior to visit 1",
-                "Condition Or Exception": "For Patients Taking Merbromin"
-              }
-            ]
-          },
-          "Exclusion Criteria": {
-            "Demographics": [
-              {
-                "Eligibility Criteria": "Age",
-                "Values": ">18",
-                "Timeframe": "At least 3 months prior to visit 1",
-                "Condition Or Exception": "For Patients Taking Merbromin"
-              },
-              {
-                "Eligibility Criteria": "Gender",
-                "Values": "Men or nonpregnant women",
-                "Timeframe": "At least 1 months prior to visit 1",
-                "Condition Or Exception": "For Patients Taking Merbromin"
-              }
-            ]
-          },
-          "Enrollment Feasibility": [
+  "module": "criteria",
+  "method": "updateStudy",
+  "body": {
+    "_id": "60a5282e84a77822bd7ad195",
+    "nct_id": "NCT00000123",
+    "study_type": "Interventional",
+    "trial_title": "The Berkeley Orthokeratology Study",
+    "study_phase": "Phase 3",
+    "prediatric_study": "Yes",
+    "indication": "Astigmatism",
+    "description": "The Berkeley Orthokeratology Study",
+    "therapeutic_Area": "National Eye Institute (NEI)",
+    "trial_alias": null,
+    "molecule_name": null,
+    "status": "In Progress",
+    "createDate": "2021-05-19",
+    "Therapeutic Area Average": {
+      "name": "Therapeutic Area Average",
+      "description": "Endocrinology, Type 2 Diabetes Phase 3 trails",
+      "protocol_amendment_rate": "40%",
+      "screen_failure_rate": "20%",
+      "patient_burden": "61",
+      "cost": "$18 - 21M"
+    },
+    "scenarios": [
+      {
+        "scenario_id": "1",
+        "scenario_name": "scenario name 1",
+        "scenario_description": "Fewer lab-based activities, broader range of allowable insulin types",
+        "protocol_amendment_rate": "52%",
+        "screen_failure_rate": "18%",
+        "patient_burden": "40",
+        "cost": "$15 - 20M",
+        "Inclusion Criteria": {
+          "Demographics": {
+            "protocol_amendment_rate":"18%",
+            "patient_burden":"52%",
+            "Entities": [
             {
-              "name": "Age",
-              "value": 500000,
-              "description": "85% (52% Female/ 48% Male)"
+              "Eligibility Criteria": "Age",
+              "Values": ">18",
+              "Timeframe": "At least 3 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
             },
             {
-              "name": "Gender",
-              "value": 450000,
-              "description": "75%"
+              "Eligibility Criteria": "Gender",
+              "Values": "Men or nonpregnant women",
+              "Timeframe": "At least 1 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
             }
-          ],
-          "Schedule of Events": {}
+          ]}
         },
-        {
-          "scenario_id": "2",
-          "scenario_name": "scenario name 2",
-          "scenario_description": "More Lenient criteria, lab-based activities, broader range of allowable insulin types",
-          "protocol_amendment_rate": "34%",
-          "screen_failure_rate": "12%",
-          "patient_burden": "53",
-          "cost": "$23 - 27M",
-          "Inclusion Criteria": {
-            "Demographics": [
-              {
-                "Eligibility Criteria": "Age",
-                "Values": "<48",
-                "Timeframe": "At least 3 months prior to visit 1",
-                "Condition Or Exception": "For Patients Taking Merbromin"
-              },
-              {
-                "Eligibility Criteria": "Gender",
-                "Values": "Men or nonpregnant women",
-                "Timeframe": "At least 1 months prior to visit 1",
-                "Condition Or Exception": "For Patients Taking Merbromin"
-              }
-            ]
-          },
-          "Exclusion Criteria": {
-            "Demographics": [
-              {
-                "Eligibility Criteria": "Age",
-                "Values": ">18",
-                "Timeframe": "At least 3 months prior to visit 1",
-                "Condition Or Exception": "For Patients Taking Merbromin"
-              },
-              {
-                "Eligibility Criteria": "Gender",
-                "Values": "Men or nonpregnant women",
-                "Timeframe": "At least 1 months prior to visit 1",
-                "Condition Or Exception": "For Patients Taking Merbromin"
-              }
-            ]
-          },
-          "Enrollment Feasibility": [
+        "Exclusion Criteria": {
+          "Demographics": [
             {
-              "name": "Age",
-              "value": 500000,
-              "description": "85% (52% Female/ 48% Male)"
+              "Eligibility Criteria": "Age",
+              "Values": ">18",
+              "Timeframe": "At least 3 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
             },
             {
-              "name": "Gender",
-              "value": 450000,
-              "description": "75%"
+              "Eligibility Criteria": "Gender",
+              "Values": "Men or nonpregnant women",
+              "Timeframe": "At least 1 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
             }
-          ],
-          "Schedule of Events": {}
-        }
-      ]
-    }
+          ]
+        },
+        "Enrollment Feasibility": [
+          {
+            "name": "Age",
+            "value": 500000,
+            "description": "85% (52% Female/ 48% Male)"
+          },
+          {
+            "name": "Gender",
+            "value": 450000,
+            "description": "75%"
+          }
+        ],
+        "Schedule of Events": {}
+      },
+      {
+        "scenario_id": "2",
+        "scenario_name": "scenario name 2",
+        "scenario_description": "More Lenient criteria, lab-based activities, broader range of allowable insulin types",
+        "protocol_amendment_rate": "34%",
+        "screen_failure_rate": "12%",
+        "patient_burden": "53",
+        "cost": "$23 - 27M",
+        "Inclusion Criteria": {
+          "Demographics": [
+            {
+              "Eligibility Criteria": "Age",
+              "Values": "<48",
+              "Timeframe": "At least 3 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
+            },
+            {
+              "Eligibility Criteria": "Gender",
+              "Values": "Men or nonpregnant women",
+              "Timeframe": "At least 1 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
+            }
+          ]
+        },
+        "Exclusion Criteria": {
+          "Demographics": [
+            {
+              "Eligibility Criteria": "Age",
+              "Values": ">18",
+              "Timeframe": "At least 3 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
+            },
+            {
+              "Eligibility Criteria": "Gender",
+              "Values": "Men or nonpregnant women",
+              "Timeframe": "At least 1 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
+            }
+          ]
+        },
+        "Enrollment Feasibility": [
+          {
+            "name": "Age",
+            "value": 500000,
+            "description": "85% (52% Female/ 48% Male)"
+          },
+          {
+            "name": "Gender",
+            "value": 450000,
+            "description": "75%"
+          }
+        ],
+        "Schedule of Events": {}
+      }
+    ]
   }
+}
