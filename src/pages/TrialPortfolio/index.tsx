@@ -74,11 +74,13 @@ const TrialPortfolio = (props) => {
   const [rawData, setRawData] = useState([]);
   const [data, setData] = useState([]);
   const [phase, setPhase] = useState("All");
-  const [area, setArea] = useState("");
+  const [area, setArea] = useState("All");
   const [visible, setVisible] = useState(false);
-  const [currentTrial, setCurrenTrial] = useState({});
+  const [currentTrial, setCurrentTrial] = useState({});
   const [loading, setLoading] = useState(false)
+  
   // const [step, setStep] = useState(step1);
+
   const [trial, setTrial] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     { ...initialStates }
@@ -88,64 +90,46 @@ const TrialPortfolio = (props) => {
     { ...initialCount }
   );
 
+
+
   const handlePhaseChange = (value) => {
     setPhase(value);
   };
   const handleAreaChange = (value) => {
-    console.log( 'c----',value)
     setArea(value);
   };
 
-  const handleOk = async () => {
-    // const params =  {
-    //   // "nct_id": "NCT00000123",
-    //   "study_type": "Interventional",
-    //   "trial_title": "The Berkeley Orthokeratology Study",
-    //   "study_phase": "Phase 3",
-    //   "prediatric_study": "Yes",
-    //   "indication": "Astigmatism",
-    //   "description": "The Berkeley Orthokeratology Study",
-    //   "therapeutic_Area": "National Eye Institute (NEI)",
-    //   "trial_alias": null,
-    //   "molecule_name": null
-    // }
-    console.log('-----', trial)
+
+  const handleOk = async () => { 
     const resp = await addStudy(trial);
 
     if (resp.statusCode == 200) {
       setVisible(false);
-      setShowDetails(true);
       // setStep(step1)
       message.success("Create successfully");
+      setLoading(true)
+      const resp = await getTrialList();
+      setShowDetails(true);
+      setLoading(false)
+      const latestTrial = resp.body && resp.body.find( i=> i['trial_title']==trial['trial_title'])
+      setTrial(latestTrial)
+      
     }
   };
 
   const handleUpdate = async () => {
-    console.log('----', trial)
     const resp = await updateStudy(trial);
-
+    
     if (resp.statusCode == 200) {
       message.success("Save successfully");
     }
   }
 
   const onViewTrial = (e, record) => {
-    console.log('reocrd----', record)
     e.preventDefault();
     setShowDetails(true);
-    setTrial(record);
-    // setCurrenTrial(record)
+    setTrial(record)
   };
-  function onSearch(val) {
-    console.log("search:", val);
-  }
-  function onBlur() {
-    console.log("blur");
-  }
-
-  function onFocus() {
-    console.log("focus");
-  }
 
   const handleCancel = () => {
     setVisible(false);
@@ -157,7 +141,6 @@ const TrialPortfolio = (props) => {
     });
   };
   const handleTrialSelectChange = (key, v) => {
-    console.log('------', key, v)
     setTrial({
       [key]: v,
     });
@@ -166,11 +149,9 @@ const TrialPortfolio = (props) => {
   useEffect(() => {
     const tmpData = rawData.filter((d) => {
       d.status = d.status ? d.status : "";
-      d["study_phase"] = d["study_phase"] ? d["study_phase"] : "Not Applicable";
+      d["study_phase"] = d["study_phase"] ? d["study_phase"] : "";
       d["study_country"] = d["study_country"] ? d["study_country"] : [""];
-      d["therapeutic_Area"] = d["therapeutic_Area"] ? d["therapeutic_Area"] : "";
-
-
+      d["therapeutic_area"] = d["therapeutic_area"] ? d["therapeutic_area"] : "";
       // search text matches one of the below fields
       let searchedFields = [
         d["trial_title"],
@@ -178,47 +159,50 @@ const TrialPortfolio = (props) => {
         d["molecule_name"],
         d["study_phase"],
         d["study_country"][0],
-        d["therapeutic_Area"],
+        d["therapeutic_area"],
         d["status"],
         d["study_type"],
-        d["prediatric_study"],
-        d['nct_id']
+        d["prediatric_study"],       
       ];
       searchedFields = searchedFields.filter(Boolean);
       searchedFields = searchedFields.map((i) =>
-        typeof i == "string" ? i.toLowerCase() : i
+        typeof i == "string" ? i.toLowerCase() : String(i)
       );
+
+      const isIncluded = searchedFields.map(f => {
+        return f.search(keyWords.toLowerCase())!=-1 
+      })
 
       return (
         d.status.toLowerCase() == status.toLowerCase() &&
-        (phase != "All" ? d["study_phase"].search(phase) != -1 : true) &&
-        (area != "All" ? d["therapeutic_Area"].search(area) != -1 : true) &&
-        (keyWords ? searchedFields.includes(keyWords.toLowerCase()) : true)
+        // (phase != "All" ? d["study_phase"].search(phase) != -1 : true) &&
+        // (area != "All" ? d["therapeutic_area"].search(area) != -1 : true) &&
+        (phase != "All" ? d["study_phase"]==phase : true) &&
+        (area != "All" ? d["therapeutic_area"]==area : true) &&
+        // (keyWords ? searchedFields.includes(keyWords.toLowerCase()) : true)
+        (keyWords ? isIncluded.find(e=>e==true)  : true)
       );
     });
     setData(tmpData);
   }, [status, rawData, area, phase, keyWords]);
 
   useEffect(() => {
+    !showDetails && setTrial(initialStates)
+    
     setStatus("IN PROGRESS");
     const fetchList = async () => {
       setLoading(true)
       const resp = await getTrialList();
       setLoading(false)
       if (resp.statusCode == 200) {
-        const source = resp.body.map((d, idx) => {
-          d["study_phase"] = d["study_phase"]
-            ? d["study_phase"]
-            : "Not Applicable";
-          return d;
-        });
+        const source=resp.body
         setRawData(source);
         console.log("all data-----", source);
         const inProgressArr = source.filter((d) => {
           return d.status && d.status.toUpperCase() == "IN PROGRESS";
         });
         const completedArr = source.filter((d) => {
-          return d.status && d.status == "Completed";
+          return d.status && d.status.toUpperCase() == "COMPLETED";
         });
         setCount({
           inProgress: inProgressArr.length,
@@ -235,7 +219,7 @@ const TrialPortfolio = (props) => {
         <>        
           <div className="upper">
             <span className="small-trial">MY TRIALS</span>
-            <p className="title">Hello {username}</p>
+            <p className="title">Hello, {username}</p>
             <span className="sub-title">
               Here is a glance of your trial portfolio.
             </span>
@@ -268,7 +252,7 @@ const TrialPortfolio = (props) => {
           </div>
 
           <div className="list-top">
-            <div className="count">Your Current Trials ({data.length})</div>
+            <div className="count">Your {status=="IN PROGRESS"?"Current":"Completed"} Trials ({data.length})</div>
             <div className="filter-selector">
               <div className="selector-item">
                 <label>Therapeutic Area</label> <br />
@@ -278,7 +262,7 @@ const TrialPortfolio = (props) => {
                   showSearch
                   style={{ width: 200 }}
                   onChange={handleAreaChange}
-                  onSearch={onSearch}
+                 
                   filterOption={(input, option) =>
                     option.children
                       .toLowerCase()
@@ -406,7 +390,6 @@ const TrialPortfolio = (props) => {
                     showSearch
                     style={{ width: 250 }}
                     onChange={(v) => handleTrialSelectChange("therapeutic_area", v)}
-                    onSearch={onSearch}
                     filterOption={(input, option) =>
                       option.children
                         .toLowerCase()
@@ -447,7 +430,7 @@ const TrialPortfolio = (props) => {
                     defaultValue="All"
                     value={trial["study_type"]}             
                     style={{ width: 250 }}
-                     onChange={(v) => handleTrialSelectChange("study_phase", v)}
+                    onChange={(v) => handleTrialSelectChange("study_type", v)}
                   >
                     {study_types.map((t) => {
                       return (

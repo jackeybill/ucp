@@ -52,7 +52,7 @@ const GlobalLayout = (props: any) => {
     const current = props.location.pathname;
     switch (current) {
       case "/trials":
-        content = <TrialPortfolio keyWords={searchTxt} />;
+        content = <TrialPortfolio keyWords={searchTxt}/>;
         break;
       // case "/trials/design":
       //   content = <TrialDesign />;

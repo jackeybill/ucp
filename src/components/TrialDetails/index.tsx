@@ -11,8 +11,6 @@ const { Option } = Select;
 const TrialDetails = (props) => {
   const [editable, setEditable] = useState(false);
   const { record, onSave, onInputChange, onSelectChange } = props;
-  console.log("details-----", record);
-
   const onEdit = () => {
     // setDisabled(false)
     setEditable(true);
@@ -30,10 +28,10 @@ const TrialDetails = (props) => {
           <span className="nct-id">{record["nct_id"] || "-"}</span>
           <br />
           <span className="trail-alias">
-            {record["trial_title"]}
+            {record["trial_alias"]}
           </span>
           <br />
-          <span className="update-time">Last updated {record['updateDate']||'-'}</span>
+          <span className="update-time">Last updated {record['updateDate']||record['createDate']|| '-'}</span>
         </div>
         <div>
           <span className="status">{ record["status"]||'In Progress'}</span>
@@ -58,8 +56,6 @@ const TrialDetails = (props) => {
             {editable ? (
               <Select
                 defaultValue={record["study_phase"]}
-                // value={phase}
-                // defaultValue="All"
                 style={{ width: 200 }}
                 onChange={(e)=>onSelectChange('study_phase',e)}
               >
@@ -74,15 +70,12 @@ const TrialDetails = (props) => {
             ) : (
               <span>{record["study_phase"] || "-"}</span>
             )}
-
-            {/* <span>{record['study_phase']||"-"}</span> */}
           </div>
           <div className="trial-item">
             <label>Study Type</label>
             {editable ? (
               <Select
                 defaultValue={record["study_type"]}
-                // value={area}
                 style={{ width: 200 }}
                onChange={(e)=>onSelectChange('study_type',e)}
               >
@@ -103,7 +96,6 @@ const TrialDetails = (props) => {
             <label>Study Country</label>
             {editable ? (
               <Select
-                // defaultValue="All"
                 defaultValue={record["study_country"]}
                 style={{ width: 200 }}
                  onChange={(e)=>onSelectChange('study_country',e)}
@@ -118,8 +110,7 @@ const TrialDetails = (props) => {
               </Select>
             ) : (
               <span>{record["study_country"] || "-"}</span>
-            )}
-            {/* <span>{record['study_country']||"-"}</span> */}
+            )}          
           </div>
         </div>
         <div className="info-row">
@@ -128,7 +119,6 @@ const TrialDetails = (props) => {
             {editable ? (
               <Select
                 defaultValue={record["pediatric_study"]}
-                // value={trial["pediatric_study"]}
                 style={{ width: 200 }}
                 onChange={(e)=>onSelectChange('pediatric_study',e)}
               >
@@ -138,11 +128,11 @@ const TrialDetails = (props) => {
             ) : (
               <span>{record["pediatric_study"] || "-"}</span>
             )}
-            {/* <span>{record['pediatric_study]||"-"}</span> */}
+           
           </div>
           <div className="trial-item">
             <label>Indication</label>
-            {/* <span>{record['indication'] || "-"}</span> */}
+           
             {editable ? (
               <Input
                 style={{ width: 200, height: 30 }}
@@ -158,7 +148,7 @@ const TrialDetails = (props) => {
             {editable ? (
               <Select
                 defaultValue={record["therapeutic_area"]}
-                // value={area}
+                
                 showSearch
                 style={{ width: 200 }}
                 onChange={(e)=>onSelectChange('therapeutic_area',e)}

@@ -136,7 +136,6 @@ export const COUNTRY_MAP = [
   "Qatar",
   "Netherlands",
   "Lesotho",
-  "",
   "Gabon",
   "Paraguay",
   "Martinique",

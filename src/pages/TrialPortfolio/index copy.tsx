@@ -94,7 +94,7 @@ const TrialPortfolio = () => {
     //   "prediatric_study": "Yes",
     //   "indication": "Astigmatism",
     //   "description": "The Berkeley Orthokeratology Study",
-    //   "therapeutic_Area": "National Eye Institute (NEI)",
+    //   "therapeutic_area": "National Eye Institute (NEI)",
     //   "trial_alias": null,
     //   "molecule_name": null
     // }

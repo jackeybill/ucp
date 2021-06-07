@@ -9,12 +9,11 @@ function callback(key) {
   // console.log(key);
 }
 
-const panelHeader = (props,record) => {
+const panelHeader = (props, record) => {
 
   return (
     <div className="trial-panelHeader">
       <div>
-      {/* {record["nct_id"] || "-"}<br/> */}
       {record["trial_alias"] || "-"}<br/>
       <span className="update-time">Last updated {record.updateDate||'-'}</span>
       </div>
@@ -95,16 +94,16 @@ const TrailList = (props: any) => {
             onChange={callback}
             expandIconPosition="right"
           >
-            {props.data.length > 0 && data.map((d, idx) => {
+            {data.length > 0 && data.map((d, idx) => {
               return (
                 <Panel header={panelHeader(props,d)} key={idx}>
                   {panelContent(d, showModal)}
                 </Panel>
               );
             })}
-            {/* {
-                data.length==0&& <div>No data found</div>
-            } */}
+            {
+              data.length==0&& <div>No data found</div>
+            }
           </Collapse>
         </div>
           </div>
