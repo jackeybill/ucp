@@ -11,7 +11,6 @@
     "indication": "Astigmatism",
     "description": "The Berkeley Orthokeratology Study",
     "therapeutic_area": "National Eye Institute (NEI)",
-    "trial_alias": null,
     "molecule_name": null,
     "status": "In Progress",
     "createDate": "2021-05-19",
@@ -49,10 +48,11 @@
               "Timeframe": "At least 1 months prior to visit 1",
               "Condition Or Exception": "For Patients Taking Merbromin"
             }
-          ]}
-        },
-        "Exclusion Criteria": {
-          "Demographics": [
+          ]},
+          "Medical Condition": {
+            "protocol_amendment_rate":"18%",
+            "patient_burden":"52%",
+            "Entities": [
             {
               "Eligibility Criteria": "Age",
               "Values": ">18",
@@ -65,7 +65,60 @@
               "Timeframe": "At least 1 months prior to visit 1",
               "Condition Or Exception": "For Patients Taking Merbromin"
             }
-          ]
+          ]},
+          "Intervention": {
+            "protocol_amendment_rate":"18%",
+            "patient_burden":"52%",
+            "Entities": [
+            {
+              "Eligibility Criteria": "Age",
+              "Values": ">18",
+              "Timeframe": "At least 3 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
+            },
+            {
+              "Eligibility Criteria": "Gender",
+              "Values": "Men or nonpregnant women",
+              "Timeframe": "At least 1 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
+            }
+          ]},
+          "Lab / Test": {
+            "protocol_amendment_rate":"18%",
+            "patient_burden":"52%",
+            "Entities": [
+            {
+              "Eligibility Criteria": "Age",
+              "Values": ">18",
+              "Timeframe": "At least 3 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
+            },
+            {
+              "Eligibility Criteria": "Gender",
+              "Values": "Men or nonpregnant women",
+              "Timeframe": "At least 1 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
+            }
+          ]}
+        },
+        "Exclusion Criteria": {
+          "Demographics": {
+            "protocol_amendment_rate":"18%",
+            "patient_burden":"52%",
+            "Entities": [
+            {
+              "Eligibility Criteria": "Age",
+              "Values": ">18",
+              "Timeframe": "At least 3 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
+            },
+            {
+              "Eligibility Criteria": "Gender",
+              "Values": "Men or nonpregnant women",
+              "Timeframe": "At least 1 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
+            }
+          ]}
         },
         "Enrollment Feasibility": [
           {
@@ -90,23 +143,10 @@
         "patient_burden": "53",
         "cost": "$23 - 27M",
         "Inclusion Criteria": {
-          "Demographics": [
-            {
-              "Eligibility Criteria": "Age",
-              "Values": "<48",
-              "Timeframe": "At least 3 months prior to visit 1",
-              "Condition Or Exception": "For Patients Taking Merbromin"
-            },
-            {
-              "Eligibility Criteria": "Gender",
-              "Values": "Men or nonpregnant women",
-              "Timeframe": "At least 1 months prior to visit 1",
-              "Condition Or Exception": "For Patients Taking Merbromin"
-            }
-          ]
-        },
-        "Exclusion Criteria": {
-          "Demographics": [
+          "Demographics": {
+            "protocol_amendment_rate":"18%",
+            "patient_burden":"52%",
+            "Entities": [
             {
               "Eligibility Criteria": "Age",
               "Values": ">18",
@@ -119,7 +159,26 @@
               "Timeframe": "At least 1 months prior to visit 1",
               "Condition Or Exception": "For Patients Taking Merbromin"
             }
-          ]
+          ]}
+        },
+        "Exclusion Criteria": {
+          "Demographics": {
+            "protocol_amendment_rate":"18%",
+            "patient_burden":"52%",
+            "Entities": [
+            {
+              "Eligibility Criteria": "Age",
+              "Values": ">18",
+              "Timeframe": "At least 3 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
+            },
+            {
+              "Eligibility Criteria": "Gender",
+              "Values": "Men or nonpregnant women",
+              "Timeframe": "At least 1 months prior to visit 1",
+              "Condition Or Exception": "For Patients Taking Merbromin"
+            }
+          ]}
         },
         "Enrollment Feasibility": [
           {
