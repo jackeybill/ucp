@@ -1,8 +1,8 @@
 import React, { useState, useReducer, useEffect} from 'react';
-import {Input, Button, Select, Tooltip, Collapse, Divider, Modal, Slider, Table} from "antd";
+import {Input, Button, Select, Tooltip, Collapse, Divider, Modal, Slider, Table,Dropdown,Menu} from "antd";
 import {getSummaryDefaultList, addScenario} from "../../utils/ajax-proxy";
 import { withRouter } from 'react-router';
-import {HistoryOutlined, CloseOutlined, EditFilled, CaretRightOutlined, PlusCircleOutlined} from "@ant-design/icons";
+import {HistoryOutlined, CloseOutlined, EditFilled, CaretRightOutlined, PlusCircleOutlined, DownOutlined,DownloadOutlined} from "@ant-design/icons";
 import "./index.scss";
 
 import CriteriaOption from "../CriteriaOption";
@@ -438,175 +438,357 @@ const updateIclusionCriteria = (newData, index) => {
             labTestElements = newData
     }
 }
+const jsonExport = async (jsonData, filename) => {
+    const json = JSON.stringify(jsonData);
+    const blob = new Blob([json], { type: "application/json" });
+    const href = await URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = filename + ".json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+    
+const handleExport = () => {
+    //to do    
+    // jsonExport(jsonData, fname);
+}
 
     
 
     return (
-        <div className="trial-portfolio-container">
-        <div> 
-            <div className="upper step-item">
-                <div className="action-part">
-                    <div className="status-filter">
-                        <div className={`in-progress item ${criteriaStatus == "Inclusion" ? "active" : ""}`}
-                            onClick={() => setCriteriaStatus("Inclusion")}>
-                            <span className="status">Inclusion Criteria</span>
-                        </div>
-                        <div className={`in-progress item ${criteriaStatus == "Exclusion" ? "active" : ""}`}
-                            onClick={() => setCriteriaStatus("Exclusion")}>
-                            <span className="status">Exclusion Criteria</span>
-                        </div>
-                        <div className={`in-progress item ${criteriaStatus == "Enrollment" ? "active" : ""}`}
-                            onClick={() => setCriteriaStatus("Enrollment")}>
-                            <span className="status">Enrollment Feasibility</span>
-                        </div>
-                        
-                    </div>
+      <div className="trial-portfolio-container">
+        <div>
+          <div className="upper step-item">
+            <div className="action-part">
+              <div className="status-filter">
+                <div
+                  className={`in-progress item ${
+                    criteriaStatus == "Inclusion" ? "active" : ""
+                  }`}
+                  onClick={() => setCriteriaStatus("Inclusion")}
+                >
+                  <span className="status">Inclusion Criteria</span>
                 </div>
-                <div className="export-part">
-                    <Select defaultValue="EXPORT AS"></Select>
+                <div
+                  className={`in-progress item ${
+                    criteriaStatus == "Exclusion" ? "active" : ""
+                  }`}
+                  onClick={() => setCriteriaStatus("Exclusion")}
+                >
+                  <span className="status">Exclusion Criteria</span>
                 </div>
-
-                {criteriaStatus == 'Inclusion' ? (
-                <div className="main-container">
-                    <div className="left-container">
-                        <div className="item"><span>Inclusion Criteria Library</span>
-                            <CloseOutlined className="right-icon"></CloseOutlined>
-                            <HistoryOutlined className="right-icon"></HistoryOutlined>
-                        </div>
-                        <Divider style={{ borderWidth: 2, borderColor: '#c4bfbf', marginTop: 5, marginBottom: 5 }} />
-                        <div className="item">
-                            <div className="tip-1"><span>Select / Unselect criteria to add to Trial</span></div>
-                            <div className="tip-2">
-                                <span className="label">CRITERIA FREQUENCY</span><br/>
-                                <div id="freqModal" ref={null} onClick={() => setVisible(true)}><span className="label">{minValue}%-{maxValue}%</span><EditFilled /></div>
-                            </div>
-                        </div>
-                        {visible? (
-                            <div className="freqSection">
-                                <div className="title"><span>Set Frequency</span>
-                                    <CloseOutlined className="right-icon" onClick={() => setVisible(false)}></CloseOutlined></div>
-                                <div className="content">
-                                    <span>Criteria Frequency</span>
-                                    <span style={{ float: 'right'}}>{minValue}% - {maxValue}%</span>
-                                </div>
-                                <Slider range={{ draggableTrack: true }} defaultValue={[frequencyFilter[0],frequencyFilter[1]]} tipFormatter={formatter}
-                                        onAfterChange={getFrequency}/>
-                            </div>
-                        ):(
-                            <></>
-                        )
-                        }
-                        <div className="content-outer">
-                        <div className="content-over">
-                            <div className="item box">
-                                <span>Demographics</span><br/>
-                                {demographics.map((demographic, idx) => {
-                                    return(
-                                        <CriteriaOption key={`demographic_${idx}`} demographic={demographic} index={0} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
-                                    )
-                                })}
-                            </div>
-
-                            <div className="item box">
-                                <span>Medical Condition</span><br/>
-                                {medCondition.map((medCon, idx) => {
-                                    return(
-                                        <CriteriaOption key={`medCon_${idx}`} demographic={medCon} index={1} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
-                                    )
-                                })}
-                            </div>
-
-                            <div className="item box">
-                                <span>Intervention</span><br/>
-                                {intervention.map((intervent, idx) => {
-                                    return(
-                                        <CriteriaOption key={`intervent_${idx}`} demographic={intervent} index={2} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
-                                    )
-                                })}
-                            </div>
-
-                            <div className="item box">
-                                <span>Lab / Test</span><br/>
-                                {labTest.map((lib, idx) => {
-                                    return(
-                                        <CriteriaOption key={`lib_${idx}`} demographic={lib} index={3} idx={idx} handleOptionSelect={handleOptionSelect}></CriteriaOption>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                        </div>
-                        <div className="updateTrial"><Button className="update-btn" onClick={updateTrial}>UPDATE MY TRIAL</Button></div>
-                        
-                        
-                    </div>
-                    <div className={`right-container ${collapsible ? 'none-click' : ''}`}>
-                        <h4>Add Inclusion Criteria</h4>
-                        <span className="tip1-desc">Use the historical trial library on the left to build the I/E criteria for your scenario.</span>
-                        <div className="option-item">
-                            <div>
-                            <Collapse activeKey={activeKey} onChange={callback} expandIconPosition="right">
-                                <Panel header={panelHeader()} key="1" forceRender={false}>
-                                    <div className="chart-container">
-                                        <div  className="label"><span>Click on each metrics to filter</span></div>
-                                        <CustomChart option={amendmentRateoption} height={120}></CustomChart>
-                                    </div>
-                                    <div className="chart-container  box">
-                                        <div className="label"><span>Click on each metrics to filter</span></div>
-                                        <CustomChart option={screenFaliureOption} height={120}></CustomChart>
-                                    </div>
-                                </Panel>
-                            </Collapse>
-                            </div>
-                            <div className="impact-summary">
-                                <span>Inclusion Criteria</span>
-                                <Button type="primary" onClick={saveInclusionCriteria}>Save</Button>
-                            </div>
-
-                            <div className="content-outer">
-                            <div className={`collapse-inner ${rollHeight == true? 'taller' : ''}`}>
-                            <div className="criteria-list">
-                                <div className="list-columns">
-                                    <div className="col-item">Eligibility Criteria</div>
-                                    <div className="col-item">Values</div>
-                                    <div className="col-item">Timeframe</div>
-                                </div>
-                            </div>
-                            <div className="sectionPanel">
-                            <Collapse activeKey={defaultActiveKey} onChange={callback} expandIconPosition="left"
-                                expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
-                                <Panel header={panelHeaderSection("Demographics", collapsible ? 0 : demographicsElements.length)} key="2" forceRender={false}>
-                                    <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={1} data={demographicsElements}/>
-                                </Panel>
-                                <Panel header={panelHeaderSection("Medical Condition", collapsible ? 0 : medConditionElements.length)} key="3" forceRender={false}>
-                                    <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={2} data={medConditionElements}/>
-                                </Panel>
-                                <Panel header={panelHeaderSection("Intervention", collapsible ? 0 : interventionElements.length)} key="4" forceRender={false}>
-                                    <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={3} data={interventionElements}/>
-                                </Panel>
-                                <Panel header={panelHeaderSection("Lab / Test", collapsible ? 0 : labTestElements.length)} key="5" forceRender={false}>
-                                    <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={4} data={labTestElements}/>
-                                </Panel>
-                            </Collapse>
-                            </div>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
+                <div
+                  className={`in-progress item ${
+                    criteriaStatus == "Enrollment" ? "active" : ""
+                  }`}
+                  onClick={() => setCriteriaStatus("Enrollment")}
+                >
+                  <span className="status">Enrollment Feasibility</span>
                 </div>
-                ) : criteriaStatus == 'Exclusion' ? (
-                    <CustomChart option={amendmentRateoption} height={120}></CustomChart>
-                ) : (
-                    <span>Enrollment</span>
-                )}
-                
+              </div>
             </div>
-            
+            <div className="export-part">
+              <Dropdown.Button
+                overlay={
+                  <Menu>
+                    <Menu.Item key="json">JSON</Menu.Item>
+                  </Menu>
+                }
+                icon={<DownOutlined />}
+                onClick={handleExport}
+              >
+                <DownloadOutlined />
+                EXPORT AS
+              </Dropdown.Button>
+            </div>
+
+            {criteriaStatus == "Inclusion" ? (
+              <div className="main-container">
+                <div className="left-container">
+                  <div className="item">
+                    <span>Inclusion Criteria Library</span>
+                    <CloseOutlined className="right-icon"></CloseOutlined>
+                    <HistoryOutlined className="right-icon"></HistoryOutlined>
+                  </div>
+                  <Divider
+                    style={{
+                      borderWidth: 2,
+                      borderColor: "#c4bfbf",
+                      marginTop: 5,
+                      marginBottom: 5,
+                    }}
+                  />
+                  <div className="item">
+                    <div className="tip-1">
+                      <span>Select / Unselect criteria to add to Trial</span>
+                    </div>
+                    <div className="tip-2">
+                      <span className="label">CRITERIA FREQUENCY</span>
+                      <br />
+                      <div
+                        id="freqModal"
+                        ref={null}
+                        onClick={() => setVisible(true)}
+                      >
+                        <span className="label">
+                          {minValue}%-{maxValue}%
+                        </span>
+                        <EditFilled />
+                      </div>
+                    </div>
+                  </div>
+                  {visible ? (
+                    <div className="freqSection">
+                      <div className="title">
+                        <span>Set Frequency</span>
+                        <CloseOutlined
+                          className="right-icon"
+                          onClick={() => setVisible(false)}
+                        ></CloseOutlined>
+                      </div>
+                      <div className="content">
+                        <span>Criteria Frequency</span>
+                        <span style={{ float: "right" }}>
+                          {minValue}% - {maxValue}%
+                        </span>
+                      </div>
+                      <Slider
+                        range={{ draggableTrack: true }}
+                        defaultValue={[frequencyFilter[0], frequencyFilter[1]]}
+                        tipFormatter={formatter}
+                        onAfterChange={getFrequency}
+                      />
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                  <div className="content-outer">
+                    <div className="content-over">
+                      <div className="item box">
+                        <span>Demographics</span>
+                        <br />
+                        {demographics.map((demographic, idx) => {
+                          return (
+                            <CriteriaOption
+                              key={`demographic_${idx}`}
+                              demographic={demographic}
+                              index={0}
+                              idx={idx}
+                              handleOptionSelect={handleOptionSelect}
+                            ></CriteriaOption>
+                          );
+                        })}
+                      </div>
+
+                      <div className="item box">
+                        <span>Medical Condition</span>
+                        <br />
+                        {medCondition.map((medCon, idx) => {
+                          return (
+                            <CriteriaOption
+                              key={`medCon_${idx}`}
+                              demographic={medCon}
+                              index={1}
+                              idx={idx}
+                              handleOptionSelect={handleOptionSelect}
+                            ></CriteriaOption>
+                          );
+                        })}
+                      </div>
+
+                      <div className="item box">
+                        <span>Intervention</span>
+                        <br />
+                        {intervention.map((intervent, idx) => {
+                          return (
+                            <CriteriaOption
+                              key={`intervent_${idx}`}
+                              demographic={intervent}
+                              index={2}
+                              idx={idx}
+                              handleOptionSelect={handleOptionSelect}
+                            ></CriteriaOption>
+                          );
+                        })}
+                      </div>
+
+                      <div className="item box">
+                        <span>Lab / Test</span>
+                        <br />
+                        {labTest.map((lib, idx) => {
+                          return (
+                            <CriteriaOption
+                              key={`lib_${idx}`}
+                              demographic={lib}
+                              index={3}
+                              idx={idx}
+                              handleOptionSelect={handleOptionSelect}
+                            ></CriteriaOption>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="updateTrial">
+                    <Button className="update-btn" onClick={updateTrial}>
+                      UPDATE MY TRIAL
+                    </Button>
+                  </div>
+                </div>
+                <div
+                  className={`right-container ${
+                    collapsible ? "none-click" : ""
+                  }`}
+                >
+                  <h4>Add Inclusion Criteria</h4>
+                  <span className="tip1-desc">
+                    Use the historical trial library on the left to build the
+                    I/E criteria for your scenario.
+                  </span>
+                  <div className="option-item">
+                    <div>
+                      <Collapse
+                        activeKey={activeKey}
+                        onChange={callback}
+                        expandIconPosition="right"
+                      >
+                        <Panel
+                          header={panelHeader()}
+                          key="1"
+                          forceRender={false}
+                        >
+                          <div className="chart-container">
+                            <div className="label">
+                              <span>Click on each metrics to filter</span>
+                            </div>
+                            <CustomChart
+                              option={amendmentRateoption}
+                              height={120}
+                            ></CustomChart>
+                          </div>
+                          <div className="chart-container  box">
+                            <div className="label">
+                              <span>Click on each metrics to filter</span>
+                            </div>
+                            <CustomChart
+                              option={screenFaliureOption}
+                              height={120}
+                            ></CustomChart>
+                          </div>
+                        </Panel>
+                      </Collapse>
+                    </div>
+                    <div className="impact-summary">
+                      <span>Inclusion Criteria</span>
+                      <Button type="primary" onClick={saveInclusionCriteria}>
+                        Save
+                      </Button>
+                    </div>
+
+                    <div className="content-outer">
+                      <div
+                        className={`collapse-inner ${
+                          rollHeight == true ? "taller" : ""
+                        }`}
+                      >
+                        <div className="criteria-list">
+                          <div className="list-columns">
+                            <div className="col-item">Eligibility Criteria</div>
+                            <div className="col-item">Values</div>
+                            <div className="col-item">Timeframe</div>
+                          </div>
+                        </div>
+                        <div className="sectionPanel">
+                          <Collapse
+                            activeKey={defaultActiveKey}
+                            onChange={callback}
+                            expandIconPosition="left"
+                            expandIcon={({ isActive }) => (
+                              <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                            )}
+                          >
+                            <Panel
+                              header={panelHeaderSection(
+                                "Demographics",
+                                collapsible ? 0 : demographicsElements.length
+                              )}
+                              key="2"
+                              forceRender={false}
+                            >
+                              <EditTable
+                                updateIclusionCriteria={updateIclusionCriteria}
+                                tableIndex={1}
+                                data={demographicsElements}
+                              />
+                            </Panel>
+                            <Panel
+                              header={panelHeaderSection(
+                                "Medical Condition",
+                                collapsible ? 0 : medConditionElements.length
+                              )}
+                              key="3"
+                              forceRender={false}
+                            >
+                              <EditTable
+                                updateIclusionCriteria={updateIclusionCriteria}
+                                tableIndex={2}
+                                data={medConditionElements}
+                              />
+                            </Panel>
+                            <Panel
+                              header={panelHeaderSection(
+                                "Intervention",
+                                collapsible ? 0 : interventionElements.length
+                              )}
+                              key="4"
+                              forceRender={false}
+                            >
+                              <EditTable
+                                updateIclusionCriteria={updateIclusionCriteria}
+                                tableIndex={3}
+                                data={interventionElements}
+                              />
+                            </Panel>
+                            <Panel
+                              header={panelHeaderSection(
+                                "Lab / Test",
+                                collapsible ? 0 : labTestElements.length
+                              )}
+                              key="5"
+                              forceRender={false}
+                            >
+                              <EditTable
+                                updateIclusionCriteria={updateIclusionCriteria}
+                                tableIndex={4}
+                                data={labTestElements}
+                              />
+                            </Panel>
+                          </Collapse>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : criteriaStatus == "Exclusion" ? (
+              <CustomChart
+                option={amendmentRateoption}
+                height={120}
+              ></CustomChart>
+            ) : (
+              <span>Enrollment</span>
+            )}
+          </div>
         </div>
         <div className="action-footer">
-            <Button type="primary" onClick={()=>next(step2)}>NEXT</Button>
+          <Button type="primary" onClick={() => next(step2)}>
+            NEXT
+          </Button>
         </div>
-    </div>    
-    )
+      </div>
+    );
     
 }
 

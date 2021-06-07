@@ -18,13 +18,13 @@ const SceneriosDashbaord = (props: any) => {
   };
 
   const path = {
-    pathname:'/scenario',
-    state:props.record
+    pathname: '/scenario',
+    state: props.record
   }
 
   const Metrics = () => {
     return (
-       <Tooltip
+      <Tooltip
         overlayClassName="metric-scatter"
         color="#ffffff"
         // visible={true}
@@ -41,7 +41,7 @@ const SceneriosDashbaord = (props: any) => {
   return (
     <div className="scenarios-container">
       <div className="container-top">
-        <span className="count">Scenarios({props.record.scenarios&&props.record.scenarios.length||0})</span>
+        <span className="count">Scenarios({props.record.scenarios && props.record.scenarios.length || 0})</span>
         <br />
         <span>
           Summary of design scenarios and key metrics on predicted impact.
@@ -72,57 +72,81 @@ const SceneriosDashbaord = (props: any) => {
                     <span>{s["scenario_description"]}</span>
                   </div>
                   <div className="col-value  poor">
-                    <span className="percent poor">
-                      {s["protocol_amendment_rate"]}
-                    </span>
-                    <br />
-                    <i>POOR</i>
+                    {
+                      s["protocol_amendment_rate"] ? (
+                        <>
+                          <span className="percent poor">
+                            {s["protocol_amendment_rate"]}
+                          </span>
+                          <br />
+                          <i>POOR</i>
+                        </>
+                      ) : '-'
+                    }
                   </div>
                   <div className="col-value fair">
-                    <span className="percent ">{s["screen_failure_rate"]}</span>
-                    <br />
-                    <i>FAIR</i>
+                    {
+                      s["screen_failure_rate"] ? (
+                        <>
+                          <span className="percent ">{s["screen_failure_rate"]}</span>
+                          <br />
+                          <i>FAIR</i>
+                        </>
+                      ) : '-'
+                    }
                   </div>
                   <div className="col-value good">
-                    <span className="percent">{s["patient_burden"]}</span>
-                    <br />
-                    <i>GOOD</i>
+                    {
+                      s["patient_burden"] ? (
+                        <>
+                          <span className="percent">{s["patient_burden"]}</span>
+                          <br />
+                          <i>GOOD</i>
+                        </>
+                      ) : '-'
+                    }
                   </div>
                   <div className="col-value good">
-                    <span className="percent ">{s["cost"]}</span>
-                    <br />
-                    <i>POOR</i>
+                    {
+                      s["cost"] ? (
+                        <>
+                          <span className="percent ">{s["cost"]}</span>
+                          <br />
+                          <i>POOR</i>
+                        </>
+                      ) : '-'
+                    }
                   </div>
                   <div className="footer btn-wrapper">
-                    <div className="view-btn">View Scenario</div>
+                    <div className="view-btn" onClick={() => props.history.push({
+                      pathname: '/scenario',
+                      state: { scenario_id: s['scenario_id'] }
+                    })}>View Scenario</div>
                   </div>
                 </div>
               );
             })}
-          {
+          {/* {
             props.record.scenarios &&
             props.record.scenarios.length > 0 && (
-            <div className="average scenario">
-            <div className="title average-title">
-              <span>Therapeutic Area Average</span>
-              <br />
-              <span>Endocrinology, Type 2 Diabetes Phase 3 trials</span>
-            </div>
-            <Metrics />
-            <Metrics />
-            <Metrics />
-            <Metrics/>
-            
-            <div className="footer btn-wrapper">
-              <div className="view-btn">View Scenario</div>
-            </div>
-          </div> 
+              <div className="average scenario">
+                <div className="title average-title">
+                  <span>Therapeutic Area Average</span>
+                  <br />
+                  <span>Endocrinology, Type 2 Diabetes Phase 3 trials</span>
+                </div>
+                <Metrics />
+                <Metrics />
+                <Metrics />
+                <Metrics />
+                <div className="footer btn-wrapper">
+                  <div className="view-btn">View Scenario</div>
+                </div>
+              </div>
             )
-          }
-          
-         
+          } */}
           <div className="create-btn-wrapper">
-            <div className="create-btn" onClick={()=>props.history.push(path)}>
+            <div className="create-btn" onClick={() => props.history.push(path)}>
               <img src={addIcon} alt="" width="68px" height="68px" />
               <br />
               <span> ADD NEW SCENARIO</span>

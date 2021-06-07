@@ -31,7 +31,7 @@ const study_types = [
   "All",
   "Interventional Studies (Clinical Trials)",
   "Observational Studies",
-  "-- Patient Registries",
+  "Patient Registries",
   "Expanded Access Studies",
 ];
 

@@ -38,7 +38,7 @@ export const study_types = [
   "All",
   "Interventional Studies (Clinical Trials)",
   "Observational Studies",
-  "-- Patient Registries",
+  "Patient Registries",
   "Expanded Access Studies",
 ];
 
@@ -384,7 +384,7 @@ const TrialPortfolio = (props) => {
               <div className="trial-item">
                 <label htmlFor="">Trial Title</label>
                 <Input
-                  style={{ width: 200, height: 30 }}
+                  style={{ width: 250, height: 30 }}
                   onChange={(e) => handleTrialInputChange("trial_title", e)}
                   value={trial["trial_title"]}
                 />
@@ -404,7 +404,7 @@ const TrialPortfolio = (props) => {
                     defaultValue="All"
                     value={trial["therapeutic_area"]}
                     showSearch
-                    style={{ width: 200 }}
+                    style={{ width: 250 }}
                     onChange={(v) => handleTrialSelectChange("therapeutic_area", v)}
                     onSearch={onSearch}
                     filterOption={(input, option) =>
@@ -425,7 +425,7 @@ const TrialPortfolio = (props) => {
                 <div className="trial-item">
                   <label htmlFor="">Indication</label>
                   <Input
-                    style={{ width: 200, height: 30 }}
+                    style={{ width: 250, height: 30 }}
                     onChange={(v) => handleTrialInputChange("indication", v)}
                     value={trial["indication"]}
                   />
@@ -435,18 +435,19 @@ const TrialPortfolio = (props) => {
                 <div className="trial-item">
                   <label htmlFor="">Trial Alias</label>
                   <Input
-                    style={{ width: 200, height: 30 }}
+                    style={{ width: 250, height: 30 }}
                     onChange={(v) => handleTrialInputChange("trial_alias", v)}
                     value={trial["trial_alias"]}
+                    disabled
                   />
                 </div>
                 <div className="trial-item">
                   <label htmlFor="">Study Type</label>
                   <Select
                     defaultValue="All"
-                    // value={area}
-                    style={{ width: 200 }}
-                    // onChange={()=>handleTrialSelectChange()}
+                    value={trial["study_type"]}             
+                    style={{ width: 250 }}
+                     onChange={(v) => handleTrialSelectChange("study_phase", v)}
                   >
                     {study_types.map((t) => {
                       return (
@@ -462,9 +463,9 @@ const TrialPortfolio = (props) => {
                 <div className="trial-item">
                   <label htmlFor="">Molecule Name</label>
                   <Input
-                    style={{ width: 200, height: 30 }}
-                    onChange={(v) => handleTrialInputChange("study_type", v)}
-                    value={trial["study_type"]}
+                    style={{ width: 250, height: 30 }}
+                    onChange={(v) => handleTrialInputChange("molecule_name", v)}
+                    value={trial["molecule_name"]}
                   />
                 </div>
                 <div className="trial-item">
@@ -472,7 +473,7 @@ const TrialPortfolio = (props) => {
                   <Select
                     defaultValue="All"
                     value={trial["study_phase"]}
-                    style={{ width: 200 }}
+                    style={{ width: 250 }}
                     onChange={(v) => handleTrialSelectChange("study_phase", v)}
                   >
                     {phase_options.map((o) => {
@@ -491,7 +492,7 @@ const TrialPortfolio = (props) => {
                   <Select
                     defaultValue="All"
                     value={trial["pediatric_study"]}
-                    style={{ width: 200 }}
+                    style={{ width: 250 }}
                     onChange={(v) => handleTrialSelectChange("pediatric_study", v)}
                   >
                     <Option value="YES">YES</Option>
@@ -503,7 +504,7 @@ const TrialPortfolio = (props) => {
                   <Select
                     defaultValue="All"
                     value={trial["study_country"]}
-                    style={{ width: 200 }}
+                    style={{ width: 250 }}
                     onChange={(v) => handleTrialSelectChange("study_country", v)}
                   >
                     {COUNTRY_MAP.map((o) => {

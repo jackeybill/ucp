@@ -29,7 +29,7 @@
       }
 
       .create-btn:hover {
-        cursor:pointer;
+        cursor: pointer;
       }
     }
     .columns {
@@ -73,11 +73,12 @@
       }
       .btn-wrapper {
         background-color: #ffffff;
-        padding: 12px 0;
+        padding: 12px 10px;
         display: flex;
         align-items: center;
         justify-content: center;
         .view-btn {
+          cursor: pointer;
           background-color: #414c4e;
           color: #ffffff;
           padding: 6px 0;

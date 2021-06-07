@@ -30,7 +30,7 @@ const TrialDetails = (props) => {
           <span className="nct-id">{record["nct_id"] || "-"}</span>
           <br />
           <span className="trail-alias">
-            {record["trial_alias"]}
+            {record["trial_title"]}
           </span>
           <br />
           <span className="update-time">Last updated {record['updateDate']||'-'}</span>

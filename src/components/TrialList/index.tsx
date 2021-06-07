@@ -92,7 +92,6 @@ const TrailList = (props: any) => {
         </div>
         <div>
           <Collapse
-            defaultActiveKey={["1"]}
             onChange={callback}
             expandIconPosition="right"
           >
