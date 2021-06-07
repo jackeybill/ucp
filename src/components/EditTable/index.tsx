@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import './index.scss';
-import { Table, Input, InputNumber, Popconfirm, Form, Typography, Button, Popover, Modal } from 'antd';
-import {MoreOutlined, CheckOutlined, CloseOutlined} from "@ant-design/icons";
+import { Table, Input, InputNumber, Popconfirm, Form, Typography, Button, Popover, Modal, Collapse} from 'antd';
+import {MoreOutlined, CheckOutlined, CloseOutlined, PlusCircleOutlined, CaretRightOutlined} from "@ant-design/icons";
 
 const { TextArea } = Input;
+const { Panel } = Collapse;
 
 const EditableCell = ({editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
   const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
@@ -71,16 +72,65 @@ const EditTable = (props) => {
     }
   };
 
-  // const handleAdd = () => {
-  //   const newData = {
-  //     key: mergedColumns.length,
-  //     "Eligibility Criteria": ``,
-  //     Values: '',
-  //     Timeframe: ``,
-  //   }
-  //   setData([...data, newData])
-  //   edit(newData)
-  // };
+  const handleAdd = () => {
+    const newData = {
+      key: mergedColumns.length,
+      "Eligibility Criteria": ``,
+      Values: '',
+      Timeframe: ``,
+    }
+    setData([...data, newData])
+    edit(newData)
+  };
+
+  const handleDelete = async (record) => {
+      const newData = [...data];
+      const index = newData.indexOf(record);
+
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1);
+        setData(newData);
+
+        props.updateIclusionCriteria(newData, props.tableIndex)
+      }
+  };
+
+  const handleAddSubCriteria = (record) => {
+    
+  }
+
+  function callback(key) {
+    // if(key.indexOf("1") < 0){
+    //     setRollHeight(true)
+    // } else {
+    //     setRollHeight(false)
+    // }
+    // setDefaultActiveKey(key)
+    // setActiveKey(key)
+}
+
+const panelHeaderSection = (header, count) => {
+  return (
+      <div className="trial-panelHeader">
+          <div>
+              <div className="header-section"><span>{header}({count == 0? 0:count})</span>
+              <PlusCircleOutlined className="right-icon" onClick={handleAdd}/></div>
+          </div>
+      </div>
+  );
+};
+
+const panelContent = (rates) => {
+  return (
+      <div className="trial-panelBody">
+      <div>
+          <span className="key">Trial Title</span><br/>
+          <span className="value"> test</span>
+      </div>
+      </div>
+  );
+};
 
   const columns = [{
       title: "Eligibility Criteria",
@@ -119,9 +169,9 @@ const EditTable = (props) => {
           </span>
         ) : (
           <Popover content={<div style={{display:'grid'}}>
-                      <span>Add sub-criteria</span>
+                      <span className="popover-action" onClick={() => handleAddSubCriteria(record)}>Add sub-criteria</span>
                       <span className="popover-action" onClick={() => editConditionOrException(record)}>Add condition or exception</span>
-                      <span>delet</span>
+                      <span className="popover-action" onClick={() => handleDelete(record)}>delet</span>
                     </div>} 
                 title={false} placement="bottomRight">
             <MoreOutlined style={{float:'right'}}/>
@@ -187,10 +237,15 @@ const EditTable = (props) => {
       {/* <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
           Add a row
         </Button> */}
+      <Collapse activeKey={props.defaultActiveKey} onChange={callback} expandIconPosition="left"
+          expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
+          <Panel header={panelHeaderSection(props.panelHeader, props.collapsible ? 0 : data.length)} 
+            key={props.tableIndex} forceRender={false}>
       <Table pagination={false} showHeader={false} rowKey={record => record["Eligibility Criteria"]}
         components={{ body: { cell: EditableCell } }} locale={{emptyText: 'No Data'}}
         dataSource={data} columns={mergedColumns} rowClassName="editable-row" />
-
+      </Panel>
+      </Collapse>
         <Modal visible={visible} title="Add Condition or Exception" onOk={handleOk} onCancel={handleCancel}
           footer={[<Button key="submit" type="primary" onClick={handleOk}>Submit</Button>]}>
           <p>Add condition or exception for <b>{conOrExcpKey}</b></p>

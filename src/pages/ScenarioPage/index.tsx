@@ -1,4 +1,5 @@
 import React, { useState, useReducer, useEffect} from 'react';
+import {addScenario} from "../../utils/ajax-proxy";
 import { withRouter } from 'react-router';
 import {Input, Button } from "antd";
 import {LeftOutlined } from "@ant-design/icons";
@@ -43,9 +44,13 @@ const ScenarioPage = (props) => {
         scenarioSize = props.location.state.scenarios.length + 1
     });
 
-    const next = (step) =>{
+    const next = async (step) =>{
         props.location.state.scenarios.push(scenario)
-        setCurrentAddStep(step)
+        const resp = await addScenario(props.location.state);
+        console.log(props.location.state)
+        if (resp.statusCode == 200) {
+            setCurrentAddStep(step)
+        }
     }
 
     const handleInputChange = (key, e) => {
@@ -53,7 +58,7 @@ const ScenarioPage = (props) => {
           [key]: e.target.value,
         });
         setScenario({
-            ['scenario_id']: scenarioSize,
+            ['scenario_id']: ''+scenarioSize,
         });
     };
     

@@ -1,15 +1,14 @@
-import React, { useState, useReducer, useEffect} from 'react';
-import {Input, Button, Select, Tooltip, Collapse, Divider, Modal, Slider, Table,Dropdown,Menu} from "antd";
+import React, { useState, useEffect} from 'react';
+import {Button, Collapse, Divider, Slider, Dropdown,Menu} from "antd";
 import {getSummaryDefaultList, addScenario} from "../../utils/ajax-proxy";
-import { withRouter } from 'react-router';
-import {HistoryOutlined, CloseOutlined, EditFilled, CaretRightOutlined, PlusCircleOutlined, DownOutlined,DownloadOutlined} from "@ant-design/icons";
+import {withRouter } from 'react-router';
+import {HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined} from "@ant-design/icons";
 import "./index.scss";
 
 import CriteriaOption from "../CriteriaOption";
 import CustomChart from "../CustomChart";
 import EditTable from "../../components/EditTable";
 
-const { TextArea } = Input;
 const { Panel } = Collapse;
 
 const step1 = 'Scenario';
@@ -22,19 +21,6 @@ let demographicsElements = [];
 let interventionElements = [];
 let medConditionElements = [];
 let labTestElements = [];
-
-const selected = "true";
-
-const DataArr = [
-    { 
-      name: 'XXX',
-      value: 1 ,
-     },
-     { 
-       name: 'XXX',
-      value: 2 ,
-      },
-]
 
 const columns = [
     {
@@ -62,28 +48,6 @@ const panelHeader = () => {
                 <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
                 <div className="item-desc"><span className="bar-item item4"></span><span>Medical</span></div>
             </div>
-        </div>
-    );
-};
-
-const panelHeaderSection = (header, count) => {
-    return (
-        <div className="trial-panelHeader">
-            <div>
-                <div className="header-section"><span>{header}({count == 0? 0:count})</span>
-                <PlusCircleOutlined className="right-icon"/></div>
-            </div>
-        </div>
-    );
-};
-
-const panelContent = (rates) => {
-    return (
-        <div className="trial-panelBody">
-        <div>
-            <span className="key">Trial Title</span><br/>
-            <span className="value"> test</span>
-        </div>
         </div>
     );
 };
@@ -138,10 +102,10 @@ const saveInclusionCriteria = async () => {
         }
     }
     props.record.scenarios[props.record.scenarios.length-1]["Inclusion Criteria"] = inclusion
-    // console.log(props.record.scenarios)
 
     //TODO to release to command for SIT
     const resp = await addScenario(props.record);
+    console.log(props.record)
     if (resp.statusCode == 200) {
       if(activeKey.indexOf("1") < 0){
         setRollHeight(false)
@@ -222,6 +186,8 @@ const handleOptionSelect = (item, activeType, id, key) =>{
             }
             break;
     }
+
+    setDefaultActiveKey([''])
 }
 
 useEffect(() => {
@@ -425,17 +391,21 @@ const updateTrial = () => {
 
 const updateIclusionCriteria = (newData, index) => {
     switch(index){
-        case 1: 
+        case 2: 
             demographicsElements = newData
-            break;
-        case 2:
-            medConditionElements = newData
+            console.log(demographicsElements)
             break;
         case 3:
+            medConditionElements = newData
+            console.log(medConditionElements)
+            break;
+        case 4:
             interventionElements = newData
+            console.log(interventionElements)
             break;
         default:
             labTestElements = newData
+            console.log(labTestElements)
     }
 }
 const jsonExport = async (jsonData, filename) => {
@@ -448,11 +418,13 @@ const jsonExport = async (jsonData, filename) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    console.log("export josn file:" +filename)
 };
     
 const handleExport = () => {
     //to do    
-    // jsonExport(jsonData, fname);
+    console.log("export josn file:")
+    jsonExport(props.record, "Scenario");
 }
 
     
@@ -493,12 +465,10 @@ const handleExport = () => {
               <Dropdown.Button
                 overlay={
                   <Menu>
-                    <Menu.Item key="json">JSON</Menu.Item>
+                    <Menu.Item key="json" onClick={handleExport}>JSON</Menu.Item>
                   </Menu>
                 }
-                icon={<DownOutlined />}
-                onClick={handleExport}
-              >
+                icon={<DownOutlined />}>
                 <DownloadOutlined />
                 EXPORT AS
               </Dropdown.Button>
@@ -701,71 +671,18 @@ const handleExport = () => {
                           </div>
                         </div>
                         <div className="sectionPanel">
-                          <Collapse
-                            activeKey={defaultActiveKey}
-                            onChange={callback}
-                            expandIconPosition="left"
-                            expandIcon={({ isActive }) => (
-                              <CaretRightOutlined rotate={isActive ? 90 : 0} />
-                            )}
-                          >
-                            <Panel
-                              header={panelHeaderSection(
-                                "Demographics",
-                                collapsible ? 0 : demographicsElements.length
-                              )}
-                              key="2"
-                              forceRender={false}
-                            >
-                              <EditTable
-                                updateIclusionCriteria={updateIclusionCriteria}
-                                tableIndex={1}
-                                data={demographicsElements}
-                              />
-                            </Panel>
-                            <Panel
-                              header={panelHeaderSection(
-                                "Medical Condition",
-                                collapsible ? 0 : medConditionElements.length
-                              )}
-                              key="3"
-                              forceRender={false}
-                            >
-                              <EditTable
-                                updateIclusionCriteria={updateIclusionCriteria}
-                                tableIndex={2}
-                                data={medConditionElements}
-                              />
-                            </Panel>
-                            <Panel
-                              header={panelHeaderSection(
-                                "Intervention",
-                                collapsible ? 0 : interventionElements.length
-                              )}
-                              key="4"
-                              forceRender={false}
-                            >
-                              <EditTable
-                                updateIclusionCriteria={updateIclusionCriteria}
-                                tableIndex={3}
-                                data={interventionElements}
-                              />
-                            </Panel>
-                            <Panel
-                              header={panelHeaderSection(
-                                "Lab / Test",
-                                collapsible ? 0 : labTestElements.length
-                              )}
-                              key="5"
-                              forceRender={false}
-                            >
-                              <EditTable
-                                updateIclusionCriteria={updateIclusionCriteria}
-                                tableIndex={4}
-                                data={labTestElements}
-                              />
-                            </Panel>
-                          </Collapse>
+                        <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={2} 
+                                data={demographicsElements} defaultActiveKey={defaultActiveKey}
+                                collapsible={collapsible} panelHeader={"Demographics"}/>
+                        <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={3} 
+                                data={medConditionElements} defaultActiveKey={defaultActiveKey}
+                                collapsible={collapsible} panelHeader={"Medical Condition"}/>
+                        <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={4} 
+                                data={interventionElements} defaultActiveKey={defaultActiveKey}
+                                collapsible={collapsible} panelHeader={"Intervention"}/>
+                        <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={5} 
+                                data={labTestElements} defaultActiveKey={defaultActiveKey}
+                                collapsible={collapsible} panelHeader={"Lab / Test"}/>
                         </div>
                       </div>
                     </div>
