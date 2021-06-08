@@ -33,12 +33,15 @@ pwd: !QAZ2wsx#EDC4rfv
 - topicModelling.py    - Process AWS TopicModelling for txt
 
 ## code pipeline
-- Put a PDF into S3://iso-service-dev/RawDocuments/
-- Trigge a S3 event: and call Lambda Function(extractPDF.py)
-- Lambda call textract async job, and bind the SNS event(AmazonTextractExtractPDF)
-- SNS will trigger a SQS(extractPDFQueue) after the aysnc textract job is done
-- SNS trigger lambda(processPdfToTxt.py) get textract job result by job id save into txt on s3 bucket S3://iso-service-dev/comprehend-input/
-- After txt file saved into S3, trigger another S3 event and call Lamdba(txttocomprehend.py) to send to AWS Comprehend Medical and save result in S3 bucket S3://iso-service-dev/comprehend-output/
+- Provide a upload API by upload.py in Amazon API Gateway(https://hp5pe11vg7.execute-api.us-east-1.amazonaws.com/prod/)
+- Put a PDF through upload API, and save into S3://iso-service-dev/RawDocuments/
+- Trigger a S3 event: and call Lambda Function(extractPDF.py)
+- Lambda call AWS Textract async job, and bind the SNS event(AmazonTextractExtractPDF)
+- SNS will trigger a SQS(extractPDFQueue) after the aysnc Textract job is done
+- SNS trigger lambda(processPdfToTxt.py) get AWS Textract job result by job id save results into txt on s3 bucket S3://iso-service-dev/comprehend-input/
+- After txt file saved into S3, trigger another S3 event and call Lambda(txtintosections.py) to send to AWS Comprehend Medical and save result in S3 bucket S3://iso-service-dev/comprehend-output/
+- Use lambda aws-label.py to process the AWS Comprehend Medical results, and save process results into s3://iso-data-zone/iso-service-dev/input/data/
+- FrontEnd use the Amazon API Gateway(https://hp5pe11vg7.execute-api.us-east-1.amazonaws.com/prod/) to call lambda(upload.py) to get the results in s3://iso-data-zone/iso-service-dev/input/data/, and show it in the UI
 
 ## Design Flow
 ![Architecture](docs/images/arch.jpg)
