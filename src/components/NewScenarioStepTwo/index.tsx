@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react';
 import jsPDF from "jspdf";
 // import "jspdf-autotable";
 import html2canvas from 'html2canvas'
+import FileSaver from 'file-saver'
 import {Button, Collapse, Divider, Slider, Dropdown,Menu, Modal, Table, Row, Col} from "antd";
 import {getSummaryDefaultList, addScenario, listStudy} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
@@ -18,9 +19,8 @@ const { Panel } = Collapse;
 const step1 = 'Scenario';
 const step2 = 'Criteria';
 const step3 = 'Schedule';
-const frequencyFilter = [50, 60]
+const frequencyFilter = [2, 10]
 
-const rates = [];
 let demographicsElements = [];
 let interventionElements = [];
 let medConditionElements = [];
@@ -440,6 +440,69 @@ const jsonExport = async (jsonData, filename) => {
 };
 
 const csvExport = async () => {
+    let str='';
+    str += 'Eligibility Criteria' + ',' + 'Values' + ',' + 'Timeframe' + ',' + 'Condition Or Exception';
+  
+    str += '\n'+'Demographics(' +demographicsElements.length+')'
+    for(const a in demographicsElements) {
+      str += '\n' + demographicsElements[a]['Eligibility Criteria'] + ',' + demographicsElements[a].Values + 
+        ',' + demographicsElements[a].Timeframe + ',' + demographicsElements[a]['Condition Or Exception']
+      if(demographicsElements[a].subCriteria != undefined){
+        const subCriteria = demographicsElements[a].subCriteria
+        for(const aa in subCriteria){
+          str += '\n' + '----' + subCriteria[aa].subCriteria[aa]['Eligibility Criteria'] + ',' + subCriteria[aa].Values + 
+          ',' + subCriteria[aa].Timeframe
+        }
+      }
+    }
+
+    str += '\n\n'+'Medical Condition(' +medConditionElements.length+')'
+    for(const b in medConditionElements) {
+      str += '\n' + medConditionElements[b]['Eligibility Criteria'] + ',' + medConditionElements[b].Values + 
+        ',' + medConditionElements[b].Timeframe + ',' + medConditionElements[b]['Condition Or Exception']
+      if(medConditionElements[b].subCriteria != undefined){
+        const subCriteria = medConditionElements[b].subCriteria
+        for(const aa in subCriteria){
+          str += '\n' + '----' + subCriteria[aa].subCriteria[aa]['Eligibility Criteria'] + ',' + subCriteria[aa].Values + 
+          ',' + subCriteria[aa].Timeframe
+        }
+      }
+    }
+
+    str += '\n\n'+'Intervention(' +interventionElements.length+')'
+    for(const c in interventionElements) {
+      str += '\n' + interventionElements[c]['Eligibility Criteria'] + ',' + interventionElements[c].Values + 
+        ',' + interventionElements[c].Timeframe + ',' + interventionElements[c]['Condition Or Exception']
+      if(interventionElements[c].subCriteria != undefined){
+        const subCriteria = interventionElements[c].subCriteria
+        for(const aa in subCriteria){
+          str += '\n' + '----' + subCriteria[aa].subCriteria[aa]['Eligibility Criteria'] + ',' + subCriteria[aa].Values + 
+          ',' + subCriteria[aa].Timeframe
+        }
+      }
+    }
+
+    str += '\n\n'+'Lab / Test(' +labTestElements.length+')'
+    for(const d in labTestElements) {
+      str += '\n' + labTestElements[d]['Eligibility Criteria'] + ',' + labTestElements[d].Values + 
+        ',' + labTestElements[d].Timeframe + ',' + labTestElements[d]['Condition Or Exception']
+      if(labTestElements[d].subCriteria != undefined){
+        const subCriteria = labTestElements[d].subCriteria
+        for(const aa in subCriteria){
+          str += '\n' + '----' + subCriteria[aa].subCriteria[aa]['Eligibility Criteria'] + ',' + subCriteria[aa].Values + 
+          ',' + subCriteria[aa].Timeframe
+        }
+      }
+    }
+
+    let exportContent = "\uFEFF";
+    let blob = new Blob([exportContent + str], {
+      type: "text/plain;charset=utf-8"
+    });
+
+    const date = Date().split(" ");
+    const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
+    FileSaver.saveAs(blob, `Inclusion_Criteria_${dateStr}.csv`);
 };
 
 const pdfMake = async () =>{
