@@ -1,26 +1,33 @@
 import React from 'react';
-import { Table, Button } from 'antd';
+import { Table } from 'antd';
 
 const columns = [
   {
     title: 'Study Title',
-    dataIndex: 'study_type',
+    dataIndex: 'brief_title',
+    ellipsis: true
   },
   {
     title: 'Company',
-    dataIndex: 'country',
+    dataIndex: '-',
+    ellipsis: true,
+    render: text => <span>-</span>
   },
   {
     title: 'Drug',
-    dataIndex: 'study_type',
+    dataIndex: 'indication',
+    ellipsis: true
   },
   {
     title: 'Status',
-    dataIndex: 'indication',
+    dataIndex: '-',
+    ellipsis: true,
+    render: text => <span>-</span>
   },
   {
     title: 'Phase',
     dataIndex: 'phase',
+    ellipsis: true
   }
 ];
 
@@ -30,10 +37,6 @@ export interface SelectableTableProps {
   dataList: any;
 }
  
-export interface SvgComponentState {
-  
-}
-
 class SelectableTable extends React.Component <SelectableTableProps>{
     
     constructor(props : SelectableTableProps){
@@ -41,48 +44,45 @@ class SelectableTable extends React.Component <SelectableTableProps>{
         console.log(props.dataList)
         data = props.dataList
     }
-    
-  state = {
-    selectedRowKeys: [], // Check here to configure the default column
-    loading: false,
-  };
 
-  start = () => {
-    this.setState({ loading: true });
-    // ajax request after empty completing
-    setTimeout(() => {
+    state = {
+      total: data.length,
+      current: 1,
+      pageSize: 5,
+      pageSizeOptions: ['5', '10', '20', '50', '100']
+    };
+
+    changePage = (page) => {
       this.setState({
-        selectedRowKeys: [],
-        loading: false,
-      });
-    }, 1000);
-  };
+        current: page
+      })
+    }
 
-  onSelectChange = selectedRowKeys => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
-    this.setState({ selectedRowKeys });
-  };
+    onShowSizeChange = (current, pageSize) => {
+      this.setState({
+        current: current,
+        pageSize: pageSize
+      })
+    }
 
   render() {
-    const { loading, selectedRowKeys } = this.state;
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    };
-    const hasSelected = selectedRowKeys.length > 0;
     return (
-      <div id="selectedTable">
-        {/* <div style={{ marginBottom: 16 }}>
-          <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>
-            Reload
-          </Button>
-          <span style={{ marginLeft: 8 }}>
-            {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
-          </span>
-        </div> */}
-        <Table rowSelection={rowSelection} columns={columns} dataSource={data} 
-        pagination={{pageSize: 5, showSizeChanger: true}}/>
-      </div>
+      <>
+        <Table 
+        columns={columns} dataSource={data} 
+        pagination={{ 
+          position: ['bottomRight'],
+          pageSize: this.state.pageSize, 
+          onChange: this.changePage,
+          current: this.state.current,
+          total: data.length,
+          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+          showSizeChanger: true, 
+          onShowSizeChange: this.onShowSizeChange,
+          pageSizeOptions: this.state.pageSizeOptions
+        }}
+        />
+      </>
     );
   }
 }

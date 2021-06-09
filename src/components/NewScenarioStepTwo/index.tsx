@@ -186,30 +186,31 @@ useEffect(() => {
 
         if (resp.statusCode == 200) {
             const response = JSON.parse(resp.body)
+            console.log(response)
             // setInclusionCriteria(response[0].InclusionCriteria)
             // setExclusionCriteria(response[1].ExclusionCriteria)
 
-            const criteria = response[0].InclusionCriteria
+            const inclusionCriteria = response[0].InclusionCriteria
             
-            for(var i = 0; i < criteria.length; i ++){
-                if(getCatorgoryIndex(i, criteria) == 0){
-                    setOriginMedCondition(criteria[i]['Medical Condition'])
-                    setMedCondition(criteria[i]['Medical Condition'].filter((d) => {
+            for(var i = 0; i < inclusionCriteria.length; i ++){
+                if(getCatorgoryIndex(i, inclusionCriteria) == 0){
+                    setOriginMedCondition(inclusionCriteria[i]['Medical Condition'])
+                    setMedCondition(inclusionCriteria[i]['Medical Condition'].filter((d) => {
                         return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                     }))
-                } else if(getCatorgoryIndex(i, criteria) == 1){ 
-                    setOriginDemographics(criteria[i]['Demographics'])
-                    setDemographics(criteria[i]['Demographics'].filter((d) => {
+                } else if(getCatorgoryIndex(i, inclusionCriteria) == 1){ 
+                    setOriginDemographics(inclusionCriteria[i]['Demographics'])
+                    setDemographics(inclusionCriteria[i]['Demographics'].filter((d) => {
                         return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                     }))
-                } else if(getCatorgoryIndex(i, criteria) == 2){
-                    setOriginLabTest(criteria[i]['Lab/Test'])
-                    setLabTest(criteria[i]['Lab/Test'].filter((d) => {
+                } else if(getCatorgoryIndex(i, inclusionCriteria) == 2){
+                    setOriginLabTest(inclusionCriteria[i]['Lab/Test'])
+                    setLabTest(inclusionCriteria[i]['Lab/Test'].filter((d) => {
                         return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                     }))
-                } else if(getCatorgoryIndex(i, criteria) == 3){
-                    setOriginIntervention(criteria[i]['Intervention'])
-                    setIntervention(criteria[i]['Intervention'].filter((d) => {
+                } else if(getCatorgoryIndex(i, inclusionCriteria) == 3){
+                    setOriginIntervention(inclusionCriteria[i]['Intervention'])
+                    setIntervention(inclusionCriteria[i]['Intervention'].filter((d) => {
                         return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                     }))
                 }
@@ -226,7 +227,7 @@ function getCatorgoryIndex(index, list){
         return 1;
     } else if(list[index]['Lab/Test'] != undefined){
         return 2;
-    } else {
+    } else if(list[index]['Intervention'] != undefined){
         return 3;
     }
 }
@@ -294,9 +295,9 @@ const amendmentRateoption = {
     ]
 };
 
-const screenFaliureOption = {
+const screenFailureOption = {
     title : {
-      text: 'Screen Faliure Rate',
+      text: 'Screen Failure Rate',
       subtext: 'Therapeutic Area Average - 20%',
       x:'left',
       y:'center',
@@ -446,7 +447,7 @@ const pdfMake = async () =>{
       const rate2 = ['Screen Failure Rate', '45%', '26%', '4%', '24%']
       tableRows.push(rate1);
       tableRows.push(rate2);
-      pdf.table(5,2,[],[],[           ])
+      // pdf.table(5,2,[],[],[           ])
       // pdf.autoTable(tableColumn, tableRows, { startY: 40 });
       pdf.text("Predicated Impact", 14, 35);
       pdf.text("Inclusion Criteria", 14, 140);
@@ -736,7 +737,7 @@ const handleCancel = () => {
                               <span>Click on each metrics to filter</span>
                             </div>
                             <CustomChart
-                              option={screenFaliureOption}
+                              option={screenFailureOption}
                               height={120}
                             ></CustomChart>
                           </div>
@@ -799,30 +800,11 @@ const handleCancel = () => {
         </div>
 
         <Modal visible={showHistorical} title="Historical Trial List" onOk={handleOk} onCancel={handleCancel}
-          footer={null} style={{ left: '20%', top:0 }} centered={false} width={200} > 
+          footer={null} style={{ left: '20%', top:50 }} centered={false} width={200} > 
           <div className="trialListModal">
-              {/* <div className="filter">
-                <div>
-                    <h4>Find similar protocols based on</h4>
-                    
-                    <span>STUDY PHASE</span>
-
-                    <span>STUDY TYPE</span>
-
-                    <span>INDICATION</span>
-
-                    <span>PEDIATRIC</span>
-                </div>
-              </div> */}
-              <div className="selectableTable">
-                <div>
-                <span>Refine the list of similar historical trials that to design your trial.</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <Button type="primary" style={{float:'right'}}>Add Protocol</Button>
-                </div>
-                <SelectableTable dataList={historicalTrialdata} />
-              </div>
+          <Row>
+              <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
+          </Row>
           </div>
         </Modal>
       </div>

@@ -355,13 +355,9 @@ export const getSummaryDefaultList = async () => {
   },
   body: JSON.stringify({
     "summary": "",
-    // "method": "default",
-    "method": "summaryNctids",
+    "method": "default",
     "body": {
-      "nct_ids": [
-        "NCT00974974",
-        "NCT00974961"
-      ]
+      "nct_ids": []
     }
     })
   })
