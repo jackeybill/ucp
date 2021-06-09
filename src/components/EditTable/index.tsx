@@ -171,7 +171,7 @@ const panelContent = (rates) => {
           <Popover content={<div style={{display:'grid'}}>
                       <span className="popover-action" onClick={() => handleAddSubCriteria(record)}>Add sub-criteria</span>
                       <span className="popover-action" onClick={() => editConditionOrException(record)}>Add condition or exception</span>
-                      <span className="popover-action" onClick={() => handleDelete(record)}>delet</span>
+                      <span className="popover-action" onClick={() => handleDelete(record)}>Delete</span>
                     </div>} 
                 title={false} placement="bottomRight">
             <MoreOutlined style={{float:'right'}}/>

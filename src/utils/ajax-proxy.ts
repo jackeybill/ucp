@@ -355,11 +355,11 @@ export const getSummaryDefaultList = async () => {
   },
   body: JSON.stringify({
     "summary": "",
-    "method": "summaryNctids",
+    "method": "default",
     "body": {
       "nct_ids": [
-        "NCT00974974",
-        "NCT00974961"
+        // "NCT00974974",
+        // "NCT00974961"
       ]
     }
     })
@@ -397,6 +397,22 @@ export const updateStudy = async (params:any) => {
       "module": "criteria",
       "method": "updateStudy",
       "body": params
+      })
+  })
+
+  return await response.json();
+}
+
+export const listStudy = async () => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "studies": "",
+      "method": "list"
       })
   })
 

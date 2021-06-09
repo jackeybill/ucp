@@ -1,6 +1,9 @@
 import React, { useState, useEffect} from 'react';
-import {Button, Collapse, Divider, Slider, Dropdown,Menu} from "antd";
-import {getSummaryDefaultList, addScenario} from "../../utils/ajax-proxy";
+import jsPDF from "jspdf";
+// import "jspdf-autotable";
+import html2canvas from 'html2canvas'
+import {Button, Collapse, Divider, Slider, Dropdown,Menu, Modal, Table, Row, Col} from "antd";
+import {getSummaryDefaultList, addScenario, listStudy} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined} from "@ant-design/icons";
 import "./index.scss";
@@ -8,6 +11,7 @@ import "./index.scss";
 import CriteriaOption from "../CriteriaOption";
 import CustomChart from "../CustomChart";
 import EditTable from "../../components/EditTable";
+import SelectableTable from "../../components/SelectableTable";
 
 const { Panel } = Collapse;
 
@@ -21,22 +25,6 @@ let demographicsElements = [];
 let interventionElements = [];
 let medConditionElements = [];
 let labTestElements = [];
-
-const columns = [
-    {
-      title: 'Eligibility Criteria',
-      dataIndex: 'Eligibility Criteria',
-      width: '30%',
-      editable: false,
-    },
-    {
-      title: 'Values',
-      dataIndex: 'Values',
-    },
-    {
-      title: 'Timeframe',
-      dataIndex: 'Timeframe',
-    }]
 
 const panelHeader = () => {
     return (
@@ -72,6 +60,8 @@ const NewScenarioStepTwo = (props) => {
     const [defaultActiveKey, setDefaultActiveKey] = useState([])
     const [activeKey, setActiveKey] = useState([])
     const [collapsible, setCollapsible] = useState(true)
+    const [showHistorical, setShowHistorical] = useState(false)
+    const [historicalTrialdata, setHistoricalTrialdata] = useState([])
 
 const next = (step) =>{
     setCurrentAddStep(step)
@@ -420,11 +410,112 @@ const jsonExport = async (jsonData, filename) => {
     document.body.removeChild(link);
     console.log("export josn file:" +filename)
 };
-    
-const handleExport = () => {
+
+const csvExport = async () => {
+};
+
+const pdfMake = async () =>{
+  var element = document.getElementById("inclusion-criteria");
+  var w = element.offsetWidth;
+  var h = element.offsetWidth;
+  var offsetTop = element.offsetTop;
+  var offsetLeft = element.offsetLeft;
+  var canvas = document.createElement("canvas");
+  var abs = 0;
+  var win_i =  document.body.clientWidth;
+  var win_o = window.innerWidth;
+  if (win_o > win_i) {
+      abs = (win_o - win_i) / 2;
+  }
+  canvas.width = w * 2;
+  canvas.height = h * 2;
+  var context = canvas.getContext("2d");
+  context.scale(2, 2);
+  context.translate(-offsetLeft - abs, -offsetTop);
+
+
+    html2canvas(element,{
+        allowTaint: true,
+        scale: 2
+    }).then(function (canvas) {
+      const pdf = new jsPDF("portrait", 'pt', 'a4');
+      const tableColumn = ["Predicated Impact", "Labs / Tests", "Intervention", "Demographics", "Medical"];
+
+      const tableRows = [];
+      const rate1 = ['Protocol Amendenment Rate', '45%', '26%', '4%', '24%']
+      const rate2 = ['Screen Failure Rate', '45%', '26%', '4%', '24%']
+      tableRows.push(rate1);
+      tableRows.push(rate2);
+      pdf.table(5,2,[],[],[           ])
+      // pdf.autoTable(tableColumn, tableRows, { startY: 40 });
+      pdf.text("Predicated Impact", 14, 35);
+      pdf.text("Inclusion Criteria", 14, 140);
+
+        var contentWidth = canvas.width;
+        var contentHeight = canvas.height;
+        var pageHeight = contentWidth / 592.28 * 841.89;
+        var leftHeight = contentHeight;
+        var position = 0;
+        var imgWidth = 595.28-70;
+        var imgHeight = 592.28 / contentWidth * contentHeight;
+
+        var pageData = canvas.toDataURL('image/jpeg', 1.0);
+
+        if (leftHeight < pageHeight) {
+            pdf.addImage(pageData, 'JPEG', 35, 150, imgWidth, imgHeight);
+        } else {
+            while (leftHeight > 0) {
+                pdf.addImage(pageData, 'JPEG', 35, position, imgWidth, imgHeight)
+                leftHeight -= pageHeight;
+                position -= 841.89;
+                if (leftHeight > 0) {
+                    pdf.addPage();
+                }
+            }
+        }
+
+        const date = Date().split(" ");
+        console.log(date)
+        const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
+        pdf.save(`Inclusion_Criteria_${dateStr}.pdf`);
+    });
+};
+     
+const handleExport = (fileType) => {
     //to do    
     console.log("export josn file:")
-    jsonExport(props.record, "Scenario");
+    switch(fileType){
+      case 'csv':
+        csvExport();
+        break;
+      case 'pdf':
+        pdfMake()
+        break;
+      default:
+        jsonExport(props.record, "Scenario");
+    }
+    
+}
+
+const searchHistoricalTrials = async () => {
+    if(historicalTrialdata.length == 0){
+    const resp = await listStudy();
+    if (resp.statusCode == 200) {
+      setHistoricalTrialdata(JSON.parse(resp.body))
+      setShowHistorical(true)
+    }
+  } else {
+    setShowHistorical(true)
+  }
+  
+}
+
+const handleOk = () => {
+  setShowHistorical(false)
+}
+
+const handleCancel = () => {
+  setShowHistorical(false)
 }
 
     
@@ -465,7 +556,9 @@ const handleExport = () => {
               <Dropdown.Button
                 overlay={
                   <Menu>
-                    <Menu.Item key="json" onClick={handleExport}>JSON</Menu.Item>
+                    <Menu.Item key="json" onClick={() => handleExport('json')}>JSON</Menu.Item>
+                    <Menu.Item key="pdf" onClick={() => handleExport('pdf')}>PDF</Menu.Item>
+                    <Menu.Item key="csv" onClick={() => handleExport('csv')}>CSV</Menu.Item>
                   </Menu>
                 }
                 icon={<DownOutlined />}>
@@ -480,7 +573,7 @@ const handleExport = () => {
                   <div className="item">
                     <span>Inclusion Criteria Library</span>
                     <CloseOutlined className="right-icon"></CloseOutlined>
-                    <HistoryOutlined className="right-icon"></HistoryOutlined>
+                    <HistoryOutlined className="right-icon" onClick={searchHistoricalTrials}></HistoryOutlined>
                   </div>
                   <Divider
                     style={{
@@ -658,7 +751,7 @@ const handleExport = () => {
                     </div>
 
                     <div className="content-outer">
-                      <div
+                      <div id="inclusion-criteria" 
                         className={`collapse-inner ${
                           rollHeight == true ? "taller" : ""
                         }`}
@@ -704,6 +797,34 @@ const handleExport = () => {
             NEXT
           </Button>
         </div>
+
+        <Modal visible={showHistorical} title="Historical Trial List" onOk={handleOk} onCancel={handleCancel}
+          footer={null} style={{ left: '20%', top:0 }} centered={false} width={200} > 
+          <div className="trialListModal">
+              {/* <div className="filter">
+                <div>
+                    <h4>Find similar protocols based on</h4>
+                    
+                    <span>STUDY PHASE</span>
+
+                    <span>STUDY TYPE</span>
+
+                    <span>INDICATION</span>
+
+                    <span>PEDIATRIC</span>
+                </div>
+              </div> */}
+              <div className="selectableTable">
+                <div>
+                <span>Refine the list of similar historical trials that to design your trial.</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <Button type="primary" style={{float:'right'}}>Add Protocol</Button>
+                </div>
+                <SelectableTable dataList={historicalTrialdata} />
+              </div>
+          </div>
+        </Modal>
       </div>
     );
     
