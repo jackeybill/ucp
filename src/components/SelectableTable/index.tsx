@@ -80,7 +80,8 @@ class SelectableTable extends React.Component <SelectableTableProps>{
           showSizeChanger: true, 
           onShowSizeChange: this.onShowSizeChange,
           pageSizeOptions: this.state.pageSizeOptions
-        }}
+        }} sticky 
+        // scroll={{y: 300}}
         />
       </>
     );

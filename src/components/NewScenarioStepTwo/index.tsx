@@ -40,6 +40,13 @@ const panelHeader = () => {
     );
 };
 
+const defaultChartValue = [
+  {value: 0, name: 'Labs / Tests'},
+  {value: 0, name: 'Intervention'},
+  {value: 0, name: 'Demographics'},
+  {value: 0, name: 'Medical'}
+]
+
 const NewScenarioStepTwo = (props) => {
     const [currentAddStep, setCurrentAddStep] = useState(step1)
     const [demographics, setDemographics] = useState([]);
@@ -62,6 +69,10 @@ const NewScenarioStepTwo = (props) => {
     const [collapsible, setCollapsible] = useState(true)
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
+    const [protocolRateData, setProtocolRateData] = useState(defaultChartValue)
+    const [screenRateData, setScreenRateData] = useState(defaultChartValue)
+    const [therapeutic_Amend_Avg, setTherapeutic_Amend_Avg] = useState('0%')
+    const [therapeutic_Screen_Avg, setTherapeutic_Screen_Avg] = useState('0%')
 
 const next = (step) =>{
     setCurrentAddStep(step)
@@ -93,15 +104,41 @@ const saveInclusionCriteria = async () => {
     }
     props.record.scenarios[props.record.scenarios.length-1]["Inclusion Criteria"] = inclusion
 
-    //TODO to release to command for SIT
     const resp = await addScenario(props.record);
     console.log(props.record)
     if (resp.statusCode == 200) {
+      var currentScenario = resp.body.scenarios[resp.body.scenarios.length - 1]
+      var inclu = currentScenario["Inclusion Criteria"]
+      
+      setProtocolRateData([
+        {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
+        {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
+        {value: formatNumber(inclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
+        {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
+      ])
+      setScreenRateData([
+        {value: formatNumber(inclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
+        {value: formatNumber(inclu.Intervention.screen_failure_rate), name: 'Intervention'},
+        {value: formatNumber(inclu.Demographics.screen_failure_rate), name: 'Demographics'},
+        {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
+      ])
+
+      setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + currentScenario.protocol_amendment_rate)
+      setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + currentScenario.screen_failure_rate)
+
       if(activeKey.indexOf("1") < 0){
         setRollHeight(false)
         setActiveKey(['1'])
       }
     }
+}
+
+function formatNumber (str){
+  if(str == undefined || str == ''){
+    return 0
+  } else {
+    return Number(str.substr(0, str.lastIndexOf('%')))
+  }
 }
 
 const handleOptionSelect = (item, activeType, id, key) =>{
@@ -245,7 +282,7 @@ function callback(key) {
 const amendmentRateoption = {
     title : {
       text: 'Protocol Amendment Rate',
-      subtext: 'Therapeutic Area Average - 40%',
+      subtext: therapeutic_Amend_Avg,
         x:'left',
         y:'center',
         textStyle: {
@@ -285,12 +322,7 @@ const amendmentRateoption = {
                 show: true
             },
             color:['#0001ff', '#578be2', '#80aacc', '#ddd'],
-            data: [
-                {value: 45, name: 'Labs / Tests'},
-                {value: 26, name: 'Intervention'},
-                {value: 5, name: 'Demographics'},
-                {value: 24, name: 'Medical'}
-            ]
+            data: protocolRateData
         }
     ]
 };
@@ -298,7 +330,7 @@ const amendmentRateoption = {
 const screenFailureOption = {
     title : {
       text: 'Screen Failure Rate',
-      subtext: 'Therapeutic Area Average - 20%',
+      subtext: therapeutic_Screen_Avg,
       x:'left',
       y:'center',
       textStyle: {
@@ -338,12 +370,7 @@ const screenFailureOption = {
                 show: true
             },
             color:['#0001ff', '#578be2', '#80aacc', '#ddd'],
-            data: [
-                {value: 45, name: 'Labs / Tests'},
-                {value: 26, name: 'Intervention'},
-                {value: 5, name: 'Demographics'},
-                {value: 24, name: 'Medical'}
-            ]
+            data: screenRateData
         }
     ]
 };
@@ -801,11 +828,9 @@ const handleCancel = () => {
 
         <Modal visible={showHistorical} title="Historical Trial List" onOk={handleOk} onCancel={handleCancel}
           footer={null} style={{ left: '20%', top:50 }} centered={false} width={200} > 
-          <div className="trialListModal">
           <Row>
               <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
           </Row>
-          </div>
         </Modal>
       </div>
     );
