@@ -321,7 +321,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
   render() {
     const { entityData } = this.props;
     let content = this.props.content + '\n'
-    console.log('-entityData.Entities-----',entityData.Entities)
+    // console.log('-entityData.Entities-----',entityData.Entities)
     let entities = flattenAttributeIntoEntities(entityData.Entities)
 
     // let entities = flattenAttributeIntoEntities(testEntities)
