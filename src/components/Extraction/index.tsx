@@ -37,7 +37,7 @@ const Extraction = (props: any, ref) => {
     window.location.href = window.location.origin + "/overview";
   }
   const initEntity = entityOptions[0];
-  const allEntity = "Entities"
+  const allEntity = "Entities";
   const { activeSection } = props;
   const file = props.fileReader.file;
 
@@ -54,15 +54,17 @@ const Extraction = (props: any, ref) => {
   );
   let [content, setContent] = useState(initContent);
   const [entityTypes, setEntityTypes] = useState([]);
-  
+
   // const allWordsCollection = file[key][activeSection][0].comprehendMedical["Entities"].label
   // const allSummary = file[key][activeSection][0].comprehendMedical["Entities"].Summary;
 
-  const initSvgEntity = file[key][activeSection][0].comprehendMedical["Entities"];
+  const initSvgEntity =
+    file[key][activeSection][0].comprehendMedical["Entities"];
   const [svgEntity, setSvgEntity] = useState(initSvgEntity);
 
-  const initLabels = file[key][activeSection][0].comprehendMedical[entity].label
-  const [labels, setLabels] = useState(initLabels);// labels and wordsColelction are same now
+  const initLabels =
+    file[key][activeSection][0].comprehendMedical[entity].label;
+  const [labels, setLabels] = useState(initLabels); // labels and wordsColelction are same now
   const [wordsCollection, setWordsCollection] = useState(initLabels);
   const entities =
     file[key][activeSection][0].comprehendMedical[entity].Entities;
@@ -99,7 +101,9 @@ const Extraction = (props: any, ref) => {
     setActiveType("");
     setContent(file[key][activeSection][0].content);
     setLabels(file[key][activeSection][0].comprehendMedical[entity].label);
-    setWordsCollection(file[key][activeSection][0].comprehendMedical[entity].label)
+    setWordsCollection(
+      file[key][activeSection][0].comprehendMedical[entity].label
+    );
     const paramBody = {
       [key]: {
         [activeSection]: [
@@ -143,7 +147,7 @@ const Extraction = (props: any, ref) => {
     setWordsCollection(labels);
     props.updateCurrentEntity(entity);
     setSvgEntity(file[key][activeSection][0].comprehendMedical["Entities"]);
-  }, [entity, activeSection, labels, activeTabKey,props.fileReader.file]);
+  }, [entity, activeSection, labels, activeTabKey, props.fileReader.file]);
 
   const getDisplayTitle = (s) => {
     let displayTitle;
@@ -178,7 +182,7 @@ const Extraction = (props: any, ref) => {
     setSearchTxt("");
     setActiveTabKey(key);
     if (key !== "ENTITY RECOGNITION") {
-      setEntity('Entities')
+      setEntity("Entities");
     }
     props.readFile({ activeTabKey: key });
   }
@@ -196,7 +200,7 @@ const Extraction = (props: any, ref) => {
     if (!currentLabel) return;
     const tempWordsCollection = wordsCollection.slice(0);
     tempWordsCollection[targetIdx].category = currentLabel;
-    tempWordsCollection[targetIdx].score = currentScore
+    tempWordsCollection[targetIdx].score = currentScore;
     updateWordsCollection(tempWordsCollection);
 
     const markCollection = tempWordsCollection.filter((w) => w.type == "mark");
@@ -218,16 +222,17 @@ const Extraction = (props: any, ref) => {
     };
 
     const saveRes = await saveText(paramBody, path);
-    const prevFile = props.fileReader.file[hashKey]
+    const prevFile = props.fileReader.file[hashKey];
 
-    let temFile = props.fileReader.file
-    temFile[hashKey][activeSection][0].comprehendMedical[entity].label = tempWordsCollection
+    let temFile = props.fileReader.file;
+    temFile[hashKey][activeSection][0].comprehendMedical[entity].label =
+      tempWordsCollection;
 
     if (saveRes.statusCode == "200") {
       message.success("Save successfully");
       props.readFile({
         updatedSection: paramBody,
-        file:temFile
+        file: temFile,
       });
     }
   };
@@ -291,36 +296,41 @@ const Extraction = (props: any, ref) => {
                 >
                   All
                 </div>
-                {Object.entries(summary) && Object.entries(summary).map((s: any) => {
-                  return (
-                    <div
-                      className={`type-item ${s[0]} ${
-                        s[0] == activeType ? "active" : ""
-                      }`}
-                      key={s[0]}
-                      onClick={() => onChangeActiveType(s[0])}
-                    >
-                      {formatWord(s[0])}&nbsp;(<span>{s[1]}</span>)
-                    </div>
-                  );
-                })}
+                {Object.entries(summary) &&
+                  Object.entries(summary).map((s: any) => {
+                    return (
+                      <div
+                        className={`type-item ${s[0]} ${
+                          s[0] == activeType ? "active" : ""
+                        }`}
+                        key={s[0]}
+                        onClick={() => onChangeActiveType(s[0])}
+                      >
+                        {formatWord(s[0])}&nbsp;(<span>{s[1]}</span>)
+                      </div>
+                    );
+                  })}
               </div>
             </div>
-            <TextWithEntity
-              key="1"
-              summary={summary}
-              wordsCollection={wordsCollection}
-              activeType={activeType}
-              searchTxt={searchTxt}
-              onChangeActiveType={onChangeActiveType}
-              currentLabel={currentLabel}
-              handleChange={handleChange}
-              entityTypes={entityTypes}
-              firstMarkId={firstMarkId}
-              path={path}
-              showConfidence={false}
-              entity={entity}
-            />
+            {wordsCollection && wordsCollection.length != 0 ? (
+              <TextWithEntity
+                key="1"
+                summary={summary}
+                wordsCollection={wordsCollection}
+                activeType={activeType}
+                searchTxt={searchTxt}
+                onChangeActiveType={onChangeActiveType}
+                currentLabel={currentLabel}
+                handleChange={handleChange}
+                entityTypes={entityTypes}
+                firstMarkId={firstMarkId}
+                path={path}
+                showConfidence={false}
+                entity={entity}
+              />
+            ) : (
+              <div className="raw-content"> {content} </div>
+            )}
           </div>
         </TabPane>
         <TabPane
@@ -410,25 +420,29 @@ const Extraction = (props: any, ref) => {
                 &lt; 80% confidence
               </span>
             </div>
-            <TextWithEntity
-              key="2"
-              hashKey={key}
-              entity={allEntity}
-              summary={summary}
-              wordsCollection={wordsCollection}
-              activeType=""
-              searchTxt={searchTxt}
-              onChangeActiveType={onChangeActiveType}
-              currentLabel={currentLabel}
-              handleChange={handleChange}
-              entityTypes={entityTypes}
-              showTooltip={true}
-              showConfidence={true}
-              handleSaveContent={handleSaveContent}
-              updateWordsCollection={updateWordsCollection}
-              activeSection={activeSection}
-              path={path}
-            />
+            {wordsCollection && wordsCollection.length != 0 ? (
+              <TextWithEntity
+                key="2"
+                hashKey={key}
+                entity={allEntity}
+                summary={summary}
+                wordsCollection={wordsCollection}
+                activeType=""
+                searchTxt={searchTxt}
+                onChangeActiveType={onChangeActiveType}
+                currentLabel={currentLabel}
+                handleChange={handleChange}
+                entityTypes={entityTypes}
+                showTooltip={true}
+                showConfidence={true}
+                handleSaveContent={handleSaveContent}
+                updateWordsCollection={updateWordsCollection}
+                activeSection={activeSection}
+                path={path}
+              />
+            ) : (
+              <div className="raw-content"> {content} </div>
+            )}
           </div>
         </TabPane>
       </Tabs>

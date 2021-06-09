@@ -108,7 +108,8 @@ const renderMark = (markParams, entity) => {
     let text = word.children.map(c => {
       return c.text
   }).join(' ')
-  if(text.indexOf(",")>-1) text = text.slice(0,text.length-1)
+    if (text.indexOf(",") > -1) text = text.slice(0, text.length - 1)
+   
     return (
       <Tooltip key={word.id} placement="right" title={renderConcepts(concepts, text, entity)}>
         <mark
@@ -157,6 +158,11 @@ const renderMark = (markParams, entity) => {
       }`}
     >
       {word.children.map((child) => {
+        if (child.id = "57") {
+            console.log('nnn-----', child.text.indexOf('\t'))
+        }
+      
+        child.text.indexOf('\t')!=-1 && child.text.replace('\n','<br/>')
         return (
           <span
             id={child.id}
@@ -184,7 +190,8 @@ const renderMark = (markParams, entity) => {
       >
         {formatWord(word.category)}
       </span>
-    </mark>
+      </mark>
+      
   );
 };
 
@@ -416,6 +423,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
 
   return (
     <div className="text-with-entity-container">
+      {/* <pre> */}
       <div
         className="content text"
         id="pdf-content"
@@ -514,7 +522,8 @@ const TextWithEntity = (props: TextWithEntityIF) => {
             }
           }
         })}
-      </div>
+        </div>
+        {/* </pre> */}
     </div>
   );
 };
