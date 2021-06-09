@@ -51,10 +51,10 @@ const SectionText = (props: SectionTextIF) => {
                   {displayTitle && displayTitle.label == exceptionLabel ? (
                     <>
                       <div className="inclusion-txt">{inclusionTxt}</div>
-                      <div>{exclusionTxt}</div>
+                      <div><pre>{exclusionTxt}</pre> </div>
                     </>
                   ) : (
-                    <>{sectionTxt}</>
+                    <> <pre>{sectionTxt}</pre></>
                   )}
                 </div>
               </div>

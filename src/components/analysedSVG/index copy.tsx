@@ -1,8 +1,7 @@
 import React from 'react'
-import { testEntities } from './temp.js';
 import './styles.scss'
 
-const testEntities1=  [
+const testEntities=  [
   {
     "Id": 0,
     "BeginOffset": 120,
@@ -23,19 +22,6 @@ const testEntities1=  [
         "Score": 0.5091345906257629,
         "Text": "healthy",
         "Category": "MEDICAL_CONDITION",
-        "Type": "DX_TIME",
-        // "Traits": [
-        //   { "Name": "SIGN", "Score": 0.5761796832084656 },
-        //   { "Name": "DIAGNOSIS", "Score": 0.519044041633606 }
-        // ],
-      },
-      {
-        "Id": 1,
-        "BeginOffset": 129,
-        "EndOffset": 133,
-        "Score": 0.5091345906257629,
-        "Text": "males",
-        "Category": "MEDICAL_CONDITION",
         "Type": "DX_NAME",
         // "Traits": [
         //   { "Name": "SIGN", "Score": 0.5761796832084656 },
@@ -45,6 +31,227 @@ const testEntities1=  [
       
     ]
   },
+  {
+    "Id": 4,
+    "BeginOffset": 169,
+    "EndOffset": 189,
+    "Score": 0.6891158223152161,
+    "Text": "physical examination",
+    "Category": "TEST_TREATMENT_PROCEDURE",
+    "Type": "TEST_NAME",
+    "Traits": []
+  },
+  {
+    "Id": 5,
+    "BeginOffset": 191,
+    "EndOffset": 216,
+    "Score": 0.8302452564239502,
+    "Text": "clinical laboratory tests",
+    "Category": "TEST_TREATMENT_PROCEDURE",
+    "Type": "TEST_NAME",
+    "Traits": []
+  },
+  {
+    "Id": 6,
+    "BeginOffset": 222,
+    "EndOffset": 226,
+    "Score": 0.9611588716506958,
+    "Text": "ECGs",
+    "Category": "TEST_TREATMENT_PROCEDURE",
+    "Type": "TEST_NAME",
+    "Traits": []
+  },
+  {
+    "Id": 7,
+    "BeginOffset": 266,
+    "EndOffset": 275,
+    "Score": 0.9893045425415039,
+    "Text": "vasectomy",
+    "Category": "TEST_TREATMENT_PROCEDURE",
+    "Type": "PROCEDURE_NAME",
+    "Traits": []
+  },
+  {
+    "Id": 1,
+    "BeginOffset": 317,
+    "EndOffset": 332,
+    "Score": 0.5408316850662231,
+    "Text": "sexually active",
+    "Category": "MEDICAL_CONDITION",
+    "Type": "DX_NAME",
+    "Traits": []
+  },
+  {
+    "Id": 8,
+    "BeginOffset": 466,
+    "EndOffset": 479,
+    "Score": 0.7368716597557068,
+    "Text": "contraception",
+    "Category": "TEST_TREATMENT_PROCEDURE",
+    "Type": "TREATMENT_NAME",
+    "Traits": []
+  },
+  {
+    "Id": 9,
+    "BeginOffset": 665,
+    "EndOffset": 701,
+    "Score": 0.44387367367744446,
+    "Text": "contraceptive sponge with spermicide",
+    "Category": "TEST_TREATMENT_PROCEDURE",
+    "Type": "TREATMENT_NAME",
+    "Traits": []
+  },
+  {
+    "Id": 10,
+    "BeginOffset": 818,
+    "EndOffset": 843,
+    "Score": 0.3403765559196472,
+    "Text": "injectable contraceptives",
+    "Category": "TEST_TREATMENT_PROCEDURE",
+    "Type": "TREATMENT_NAME",
+    "Traits": []
+  },
+  {
+    "Id": 2,
+    "BeginOffset": 880,
+    "EndOffset": 882,
+    "Score": 0.23306140303611755,
+    "Text": "18",
+    "Category": "PROTECTED_HEALTH_INFORMATION",
+    "Type": "AGE",
+    "Traits": []
+  },
+  {
+    "Id": 3,
+    "BeginOffset": 886,
+    "EndOffset": 888,
+    "Score": 0.2877652049064636,
+    "Text": "65",
+    "Category": "PROTECTED_HEALTH_INFORMATION",
+    "Type": "AGE",
+    "Traits": []
+  },
+  {
+    "Id": 13,
+    "BeginOffset": 953,
+    "EndOffset": 968,
+    "Score": 0.9661270976066589,
+    "Text": "body mass index",
+    "Category": "TEST_TREATMENT_PROCEDURE",
+    "Type": "TEST_NAME",
+    "Traits": [],
+    "Attributes": [
+      {
+        "Type": "TEST_VALUE",
+        "Score": 0.5489019155502319,
+        "RelationshipScore": 0.9923492670059204,
+        "RelationshipType": "TEST_VALUE",
+        "Id": 15,
+        "BeginOffset": 978,
+        "EndOffset": 990,
+        "Text": "18.5 to 32.0",
+        "Category": "TEST_TREATMENT_PROCEDURE",
+        "Traits": [],
+        "parentId": 13
+      },
+      {
+        "Type": "TEST_UNIT",
+        "Score": 0.9718713164329529,
+        "RelationshipScore": 0.9920738935470581,
+        "RelationshipType": "TEST_UNIT",
+        "Id": 16,
+        "BeginOffset": 991,
+        "EndOffset": 996,
+        "Text": "kg/m²",
+        "Category": "TEST_TREATMENT_PROCEDURE",
+        "Traits": [],
+        "parentId": 13
+      }
+    ]
+  },
+  {
+    "Id": 14,
+    "BeginOffset": 970,
+    "EndOffset": 973,
+    "Score": 0.9746179580688477,
+    "Text": "BMI",
+    "Category": "TEST_TREATMENT_PROCEDURE",
+    "Type": "TEST_NAME",
+    "Traits": [],
+    "Attributes": [
+      {
+        "Type": "TEST_VALUE",
+        "Score": 0.5489019155502319,
+        "RelationshipScore": 0.9992759823799133,
+        "RelationshipType": "TEST_VALUE",
+        "Id": 15,
+        "BeginOffset": 978,
+        "EndOffset": 990,
+        "Text": "18.5 to 32.0",
+        "Category": "TEST_TREATMENT_PROCEDURE",
+        "Traits": [],
+        "parentId": 14
+      },
+      {
+        "Type": "TEST_UNIT",
+        "Score": 0.9718713164329529,
+        "RelationshipScore": 0.9981539845466614,
+        "RelationshipType": "TEST_UNIT",
+        "Id": 16,
+        "BeginOffset": 991,
+        "EndOffset": 996,
+        "Text": "kg/m²",
+        "Category": "TEST_TREATMENT_PROCEDURE",
+        "Traits": [],
+        "parentId": 14
+      }
+    ]
+  },
+  {
+    "Id": 17,
+    "BeginOffset": 1037,
+    "EndOffset": 1061,
+    "Score": 0.36624854803085327,
+    "Text": "clinical laboratory test",
+    "Category": "TEST_TREATMENT_PROCEDURE",
+    "Type": "TEST_NAME",
+    "Traits": [],
+    "Attributes": [
+      {
+        "Type": "TEST_VALUE",
+        "Score": 0.5022315979003906,
+        "RelationshipScore": 0.9997087121009827,
+        "RelationshipType": "TEST_VALUE",
+        "Id": 18,
+        "BeginOffset": 1070,
+        "EndOffset": 1083,
+        "Text": "within normal",
+        "Category": "TEST_TREATMENT_PROCEDURE",
+        "Traits": [],
+        "parentId": 17
+      }
+    ]
+  },
+  {
+    "Id": 19,
+    "BeginOffset": 1301,
+    "EndOffset": 1315,
+    "Score": 0.8628961443901062,
+    "Text": "blood sampling",
+    "Category": "TEST_TREATMENT_PROCEDURE",
+    "Type": "TEST_NAME",
+    "Traits": []
+  },
+  {
+    "Id": 12,
+    "BeginOffset": 1531,
+    "EndOffset": 1536,
+    "Score": 0.8888705372810364,
+    "Text": "Lilly",
+    "Category": "PROTECTED_HEALTH_INFORMATION",
+    "Type": "NAME",
+    "Traits": []
+  }
 ]
 
 
@@ -166,7 +373,9 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
             ? `M${headTextCenterX},${topY+12}A12,12,0,0,1,${headTextCenterX+12},${topY}`
             : `M${headTextCenterX-12},${topY}A12,12,0,0,1,${headTextCenterX},${topY+12}`
         )
-        headJointCurveNode.setAttribute('style', 'stroke: rgb(116, 184, 220); fill: none; stroke-width: 1; cursor: default;')   
+        headJointCurveNode.setAttribute('style', 'stroke: rgb(116, 184, 220); fill: none; stroke-width: 1; cursor: default;')
+
+        
 
         const connLineNode = headJointCurveNode.nextElementSibling
         connLineNode.setAttribute('style', 'stroke: rgb(116, 184, 220); stroke-width: 1; cursor: default;')
@@ -273,8 +482,8 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       const headConnLineNode: any = document.getElementById(`relation_head_horizontal_line_${tailId}_${headId}`)
       const tailRowNode: any = tailConnLineNode!.parentElement
       const headRowNode: any = headConnLineNode!.parentElement
-      const tailY = Number(tailRowNode!.getAttribute('y')) + Number(tailConnLineNode!.getAttribute('y'))-22
-      const headY = Number(headRowNode!.getAttribute('y')) + Number(headConnLineNode!.getAttribute('y'))-22
+      const tailY = Number(tailRowNode!.getAttribute('y')) + Number(tailConnLineNode!.getAttribute('y'))
+      const headY = Number(headRowNode!.getAttribute('y')) + Number(headConnLineNode!.getAttribute('y'))
       const y1 = Math.min(tailY, headY)
       const y2 = Math.max(tailY, headY)
       const x = svgLeftPadding - 6 - 12 * i
@@ -313,6 +522,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       rectNode.setAttribute('height', relationLabelNode.getBBox().height + 2)
       rectNode.setAttribute('fill', '#fafafa')
       rectNode.setAttribute('stroke', '#fafafa')
+
     }
     svgNode!.setAttribute("width", width.toString())
     svgNode!.setAttribute("height", height.toString())
@@ -320,11 +530,9 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
 
   render() {
     const { entityData } = this.props;
-    let content = this.props.content + '\n'
-    console.log('-entityData.Entities-----',entityData.Entities)
-    let entities = flattenAttributeIntoEntities(entityData.Entities)
-
-    // let entities = flattenAttributeIntoEntities(testEntities)
+    let content = this.props.content+'\n'
+    // let entities = flattenAttributeIntoEntities(entityData.Entities)
+    let entities = flattenAttributeIntoEntities(testEntities)
 
 
     const lines = []
@@ -364,50 +572,20 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
         } else {
           if (addedEntities.findIndex(e => e.Id === nextEntity.Id) === -1) {
             // Add entity text
-            let color = "#1e8900" 
+            let color = "#1e8900"
             if (nextEntity.Type.toLowerCase().includes('name')) {
               color = "#df3312"
             } else if (nextEntity.Type.toLowerCase().includes('time')) {
               color = "#CE6DBD"
             }
-            if (nextEntity.SubChild) {
-              let subColor = "#1e8900"
-            
-               gList.push(
-                <g key={nextEntity.Id} className="svg_text_chunk entity"  style={{paddingLeft:10}}>
-                  <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text> 
-                  <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}/>               
-                   {
-                     nextEntity.SubChild.map((c, idx) => {
-                       const pxRatio = 7.6
-                        if (c.Type.toLowerCase().includes('name')) {
-                          subColor = "#0a69A0";
-                        }else if (c.Type.toLowerCase().includes('time')) {
-                          subColor = "#D64CCC";
-                        }
-                        return (
-                          <g key={c.Id} data-start-offset={c.BeginOffset} data-end-offset={c.EndOffset}>
-                           <line strokeWidth="3" strokeLinecap="round" x1={`${(Math.abs(c.BeginOffset - nextEntity.BeginOffset-1))*pxRatio}px`} y1={10} x2={`${(c.EndOffset - nextEntity.BeginOffset)*pxRatio}px`}y2={10} style={{ stroke: subColor }} />                   
-                           <circle fill={subColor} cx="3" cy={20 + 10 * (idx + 1)} r="3"></circle>
-                           <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={20+10*(idx+1)} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(c.Type)} (${c.Text})` }&nbsp;&nbsp;&nbsp;</text>                  
-                        </g>
-                       )
-                     })
-                  }
-                  <circle fill={color} cx="3" cy="20" r="3"></circle>             
-                  <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={20} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>         
-                </g>
-            )            
-            } else {
-               gList.push(
-                <g key={nextEntity.Id} className="svg_text_chunk entity" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset} style={{paddingLeft:10}}>
-                  <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text>              
-                  <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} />              
-                  <circle fill={color} cx="3" cy="15" r="3"></circle>
-                  <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={15} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>         
-                </g>
-            )           
-            }         
+            gList.push(
+              <g key={nextEntity.Id} className="svg_text_chunk entity" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset} style={{paddingLeft:10}}>
+                <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text> 
+                <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} />
+                <circle fill={color} cx="3" cy="15" r="3"></circle>
+                <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={15} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>         
+              </g>
+            )
             addedEntities.push(nextEntity)
             entityLocation[nextEntity.Id] = lines.length
           }
@@ -498,7 +676,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       <div>
         <div id="svg-wrapper" className="svg-view-container" style={{overflow: "scroll", maxWidth: '100%', background: "#fafafa"}}>
           <svg id="svg-viewport" overflow="scroll" style={{ position: "relative", display: "block" }}>        
-            {lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{ display: 'inline-block' }}>{line}</g>)}
+            {lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{display:'inline-block'}}>{line}</g>)}
             {verticalRelations}
           </svg>
         </div>

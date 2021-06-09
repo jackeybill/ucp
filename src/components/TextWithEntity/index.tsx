@@ -153,7 +153,7 @@ const renderMark = (markParams, entity) => {
       key={word.id}
       id={word.id}
       className={`id_${word.category} ${
-        showConfidence?(word.score && word.score.toFixed(0) * 100>=80 ? "suc" : "warn"):""
+        showConfidence?(word.score && word.score.toFixed(2) * 100>=80 ? "suc" : "warn"):""
       }`}
     >
       {word.children.map((child) => {
@@ -208,7 +208,10 @@ const renderTooltipTitle = (
   let text = word.children.map(c => {
       return c.text
   }).join(' ')
-  if(text.indexOf(",")>-1) text = text.slice(0,text.length-1)
+  if (text.indexOf(",") > -1) text = text.slice(0, text.length - 1)
+  // console.log('currentScore----', currentScore,currentId)
+  // console.log('score----', score,id,score.toFixed(0))
+  
   return (
     <div className="mark-tooltip-container">
       <div className="highlighted-text">
@@ -218,11 +221,11 @@ const renderTooltipTitle = (
         Confidence Score:
         {
           !currentScore &&
-          <span className={`${score && score.toFixed(0) * 100 >= 80 ? "suc" : "warn"}`}>{(score * 100).toFixed(0)}%</span>
+          <span className={`${score && score.toFixed(2) * 100 >= 80 ? "suc" : "warn"}`}>{(score * 100).toFixed(0)}%</span>
         }
         {
           currentScore&&id!==currentId &&
-           <span className={`${score && score.toFixed(0) * 100 >= 80 ? "suc" : "warn"}`}>{(score * 100).toFixed(0)}%</span>       
+           <span className={`${score && score.toFixed(2) * 100 >= 80 ? "suc" : "warn"}`}>{(score * 100).toFixed(0)}%</span>       
         }
         {
           currentScore&&id==currentId &&
