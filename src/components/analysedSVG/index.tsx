@@ -1,53 +1,6 @@
 import React from 'react'
-import { testEntities } from './temp.js';
+// import { testEntities } from './temp.js';
 import './styles.scss'
-
-const testEntities1=  [
-  {
-    "Id": 0,
-    "BeginOffset": 120,
-    "EndOffset": 133,
-    "Score": 0.5091345906257629,
-    "Text": "healthy males",
-    "Category": "MEDICAL_CONDITION",
-    "Type": "DX_NAME",
-    "Traits": [
-      { "Name": "SIGN", "Score": 0.5761796832084656 },
-      { "Name": "DIAGNOSIS", "Score": 0.519044041633606 }
-    ],
-    "SubChild": [
-      {
-        "Id": 0,
-        "BeginOffset": 120,
-        "EndOffset": 128,
-        "Score": 0.5091345906257629,
-        "Text": "healthy",
-        "Category": "MEDICAL_CONDITION",
-        "Type": "DX_TIME",
-        // "Traits": [
-        //   { "Name": "SIGN", "Score": 0.5761796832084656 },
-        //   { "Name": "DIAGNOSIS", "Score": 0.519044041633606 }
-        // ],
-      },
-      {
-        "Id": 1,
-        "BeginOffset": 129,
-        "EndOffset": 133,
-        "Score": 0.5091345906257629,
-        "Text": "males",
-        "Category": "MEDICAL_CONDITION",
-        "Type": "DX_NAME",
-        // "Traits": [
-        //   { "Name": "SIGN", "Score": 0.5761796832084656 },
-        //   { "Name": "DIAGNOSIS", "Score": 0.519044041633606 }
-        // ],
-      },
-      
-    ]
-  },
-]
-
-
 
 
 const formatStr = (s: string) => {
@@ -321,10 +274,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
   render() {
     const { entityData } = this.props;
     let content = this.props.content + '\n'
-    console.log('-entityData.Entities-----',entityData.Entities)
     let entities = flattenAttributeIntoEntities(entityData.Entities)
-
-    // let entities = flattenAttributeIntoEntities(testEntities)
 
 
     const lines = []
@@ -356,7 +306,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       while(nextEntity) {
         if(cur < nextEntity.BeginOffset) {
           gList.push(
-            <g className="svg_text_chunk gap" data-start-offset={cur} data-end-offset={nextEntity.BeginOffset} style={{display:'inline-block',padding:'0 5px'}}>
+            <g className="svg_text_chunk gap" data-start-offset={cur} data-end-offset={nextEntity.BeginOffset} style={{display:'inline-block',padding:'0 2px'}}>
               <text startOffset={cur-pos}>&nbsp;&nbsp;&nbsp;{content.slice(cur, nextEntity.BeginOffset)}&nbsp;&nbsp;&nbsp;</text>
             </g>
           )
@@ -374,7 +324,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
               let subColor = "#1e8900"
             
                gList.push(
-                <g key={nextEntity.Id} className="svg_text_chunk entity"  style={{paddingLeft:10}}>
+                <g key={nextEntity.Id} className="svg_text_chunk entity"  style={{paddingLeft:2}}>
                   <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text> 
                   <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}/>               
                    {
@@ -400,7 +350,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
             )            
             } else {
                gList.push(
-                <g key={nextEntity.Id} className="svg_text_chunk entity" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset} style={{paddingLeft:10}}>
+                <g key={nextEntity.Id} className="svg_text_chunk entity" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset} style={{paddingLeft:2}}>
                   <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text>              
                   <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} />              
                   <circle fill={color} cx="3" cy="15" r="3"></circle>
@@ -420,7 +370,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       
       if (cur < last) {
         gList.push(
-          <g className={`svg_text_chunk gap`} data-start-offset={cur} data-end-offset={last} style={{display:'inline-block',padding:'0 5px'}}>
+          <g className={`svg_text_chunk gap`} data-start-offset={cur} data-end-offset={last} style={{display:'inline-block',padding:'0 2px'}}>
             <text>&nbsp;&nbsp;&nbsp;{content.slice(cur, last)}&nbsp;&nbsp;&nbsp;</text>
           </g>
         )
@@ -481,7 +431,6 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
     }
     
     while (enterBreakIndex !== -1) {
-      // console.log(`========= enterBreakIndex: ${enterBreakIndex} ==============`)
       lines.push(getSvgLine(enterBreakIndex))
       enterBreakIndex = content.indexOf('\n', enterBreakIndex + 1)
     }
@@ -497,7 +446,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
     return (
       <div>
         <div id="svg-wrapper" className="svg-view-container" style={{overflow: "scroll", maxWidth: '100%', background: "#fafafa"}}>
-          <svg id="svg-viewport" overflow="scroll" style={{ position: "relative", display: "block" }}>        
+          <svg viewBox="0 0" id="svg-viewport" overflow="scroll" style={{ position: "relative", display: "block" }}>        
             {lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{ display: 'inline-block' }}>{line}</g>)}
             {verticalRelations}
           </svg>
