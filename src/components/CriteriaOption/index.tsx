@@ -1,6 +1,6 @@
 import React, { useState, useReducer, useEffect} from 'react';
 import {Input, Button, Tooltip} from "antd";
-import "./index.scss";
+import {CheckOutlined} from "@ant-design/icons";
 
 const CriteriaOption = (props) => {
     const domain = props.demographic
@@ -19,12 +19,12 @@ const CriteriaOption = (props) => {
     return (
         <div style={{display: 'inline-block'}}>
             {activeType == 0?(
-                <Tooltip title={'Frequency ' + domain.Frequency*100 + '%'}>
+                <Tooltip title={'Frequency ' + Math.floor(domain.Frequency*10000)/100 + '%'}>
                 <span className="select-option" onClick={(e) => handleOptionSelect(domain, e)}>{domain.Text}</span>
             </Tooltip>
             ):(
                 <div className="select-option selected">
-                    <span className="tick-icon"></span>
+                    <CheckOutlined/>
                     <span onClick={(e) => handleOptionSelect(domain, e)}>{domain.Text}</span>
                 </div>
             )}
