@@ -84,7 +84,7 @@ def selectSponsorbullet(text):
         bullets = s2.split("$$$")
         bullets_lst.append([len(bullets),bullets,bullet_p1,bullet_p2])
     bullets_lst = sorted(bullets_lst, key=lambda x:x[0],reverse=True)
-    return bullets_lst[0][1],bullets_lst[0][2],bullets_lst[0][2]
+    return bullets_lst[0][1],bullets_lst[0][2],bullets_lst[0][3]
 
 def bulletsToJson(text,pretty=False,dictionary=False):
     #s1 = re.sub(bullet_p1,"$$$", text)
@@ -131,8 +131,12 @@ def getsubsections(toc,index):
     return result
 
 def processTextforUI(text,bullet_p1,bullet_p2):
-    r1 = re.compile(r"("+bullet_p1+")[\n ]")
-    r2 = re.compile(r"("+bullet_p2+")[\n ]")
+    if bullet_p1 == r'\n[\[]+[\d{1,3}]+[\]]':
+        r1 = re.compile(r"("+bullet_p1+")[\n ]")
+        r2 = re.compile(r"("+bullet_p2+")[\n ]")
+    else:
+        r1 = re.compile(r"("+bullet_p1+")")
+        r2 = re.compile(r"("+bullet_p2+")")
     output = r1.sub(r' $$$\1 ', text)
     output = r2.sub(r' ###\1 ', output)
     output = output.replace('\n',' ')
@@ -212,8 +216,9 @@ def nctExtractSections(s3BucketName,documentPath,filename,sectionNames,pretty=Fa
 #             print(f'Reading: {filename}')
 #             return f.read().decode()
 #     return None
-# path = 'study_protocols_Eli_Lilly_and_Company_phase1_textract_HF' #'study_protocols_pfizer_phase1_textract_HF/'
-# filename = 'NCT03023826.txt' #'NCT01307267.txt' 
+# #path = 'study_protocols_Eli_Lilly_and_Company_phase1_textract_HF' #'study_protocols_pfizer_phase1_textract_HF/'
+# path = 'study_protocols_pfizer_phase1_textract_HF/'
+# filename = 'NCT01307267.txt' #'NCT01307267.txt' 
 # sectionNames = ['Inclusion Criteria','Exclusion Criteria']
 # text = loadtext(filename)
 # result = extractSections(text,sectionNames,pretty=True)
