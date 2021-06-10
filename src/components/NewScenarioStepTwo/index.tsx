@@ -445,59 +445,18 @@ const jsonExport = async (jsonData, filename) => {
 
 const csvExport = async () => {
     let str='';
-    str += 'Eligibility Criteria' + ',' + 'Values' + ',' + 'Timeframe' + ',' + 'Condition Or Exception';
+    str += 'Caregory' + ',' + 'S/No.' + ',' + 'Eligibility Criteria' + ',' + 'Values' + ',' + 'Timeframe' + ',' + 'Condition Or Exception';
   
-    str += '\n'+'Demographics(' +demographicsElements.length+')'
-    for(const a in demographicsElements) {
-      str += '\n' + demographicsElements[a]['Eligibility Criteria'] + ',' + demographicsElements[a].Values + 
-        ',' + demographicsElements[a].Timeframe + ',' + demographicsElements[a]['Condition Or Exception']
-      if(demographicsElements[a].subCriteria != undefined){
-        const subCriteria = demographicsElements[a].subCriteria
-        for(const aa in subCriteria){
-          str += '\n' + '----' + subCriteria[aa].subCriteria[aa]['Eligibility Criteria'] + ',' + subCriteria[aa].Values + 
-          ',' + subCriteria[aa].Timeframe
-        }
-      }
-    }
+    var serialNum = 0
 
-    str += '\n\n'+'Medical Condition(' +medConditionElements.length+')'
-    for(const b in medConditionElements) {
-      str += '\n' + medConditionElements[b]['Eligibility Criteria'] + ',' + medConditionElements[b].Values + 
-        ',' + medConditionElements[b].Timeframe + ',' + medConditionElements[b]['Condition Or Exception']
-      if(medConditionElements[b].subCriteria != undefined){
-        const subCriteria = medConditionElements[b].subCriteria
-        for(const aa in subCriteria){
-          str += '\n' + '----' + subCriteria[aa].subCriteria[aa]['Eligibility Criteria'] + ',' + subCriteria[aa].Values + 
-          ',' + subCriteria[aa].Timeframe
-        }
-      }
-    }
-
-    str += '\n\n'+'Intervention(' +interventionElements.length+')'
-    for(const c in interventionElements) {
-      str += '\n' + interventionElements[c]['Eligibility Criteria'] + ',' + interventionElements[c].Values + 
-        ',' + interventionElements[c].Timeframe + ',' + interventionElements[c]['Condition Or Exception']
-      if(interventionElements[c].subCriteria != undefined){
-        const subCriteria = interventionElements[c].subCriteria
-        for(const aa in subCriteria){
-          str += '\n' + '----' + subCriteria[aa].subCriteria[aa]['Eligibility Criteria'] + ',' + subCriteria[aa].Values + 
-          ',' + subCriteria[aa].Timeframe
-        }
-      }
-    }
-
-    str += '\n\n'+'Lab / Test(' +labTestElements.length+')'
-    for(const d in labTestElements) {
-      str += '\n' + labTestElements[d]['Eligibility Criteria'] + ',' + labTestElements[d].Values + 
-        ',' + labTestElements[d].Timeframe + ',' + labTestElements[d]['Condition Or Exception']
-      if(labTestElements[d].subCriteria != undefined){
-        const subCriteria = labTestElements[d].subCriteria
-        for(const aa in subCriteria){
-          str += '\n' + '----' + subCriteria[aa].subCriteria[aa]['Eligibility Criteria'] + ',' + subCriteria[aa].Values + 
-          ',' + subCriteria[aa].Timeframe
-        }
-      }
-    }
+    const chars = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    str += getCSVContent('Demographics', demographicsElements, serialNum, chars)
+    serialNum += demographicsElements.length
+    str += getCSVContent('Medical Condition', medConditionElements, serialNum, chars)
+    serialNum += medConditionElements.length
+    str += getCSVContent('Intervention', interventionElements, serialNum, chars)
+    serialNum += interventionElements.length
+    str += getCSVContent('Lab / Test', labTestElements, serialNum, chars)
 
     let exportContent = "\uFEFF";
     let blob = new Blob([exportContent + str], {
@@ -508,6 +467,27 @@ const csvExport = async () => {
     const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
     FileSaver.saveAs(blob, `Inclusion_Criteria_${dateStr}.csv`);
 };
+
+function getCSVContent(category, elements, serialNum, chars){
+  let str='';
+  for(const a in elements) {
+    serialNum = serialNum + 1
+    str += '\n'+ category + ',' + serialNum + ',' + elements[a]['Eligibility Criteria'] + ',' 
+      + elements[a].Values + ',' + elements[a].Timeframe + ',' 
+      + (elements[a]['Condition Or Exception'] == undefined ? '': elements[a]['Condition Or Exception'])
+    if(elements[a].subCriteria != undefined){
+      const subCriteria = elements[a].subCriteria
+      var subSerialNum;
+      for(const aa in subCriteria){
+        subSerialNum = serialNum + chars[aa]
+        str += '\n' + 'category' + ',' + subSerialNum + ',' + subCriteria[aa]['Eligibility Criteria'] 
+        + ',' + subCriteria[aa].Values + ',' + subCriteria[aa].Timeframe
+      }
+    }
+  }
+
+  return str;
+}
 
 const pdfMake = async () =>{
   var element = document.getElementById("inclusion-criteria");
