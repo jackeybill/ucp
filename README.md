@@ -31,6 +31,8 @@ pwd: !QAZ2wsx#EDC4rfv
 - processXMLToJsonBatchRollup.py   - This lambda function converts XML files to JSON files batch
 - SaveDataUtils.py     - Utils to save data to dynamodb and elasticsearch
 - topicModelling.py    - Process AWS TopicModelling for txt
+- criteriaSummary.py   - Process certeria frequency
+- criteria.py
 
 ## code pipeline
 - Provide a upload API by upload.py in Amazon API Gateway(https://hp5pe11vg7.execute-api.us-east-1.amazonaws.com/prod/)
