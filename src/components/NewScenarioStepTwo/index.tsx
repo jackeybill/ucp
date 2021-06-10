@@ -125,8 +125,10 @@ const saveInclusionCriteria = async () => {
         {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
       ])
 
-      setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + currentScenario.protocol_amendment_rate)
-      setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + currentScenario.screen_failure_rate)
+      if(resp.body['Therapeutic Area Average']){
+        setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
+        setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
+      }
 
       if(activeKey.indexOf("1") < 0){
         setRollHeight(false)
@@ -895,6 +897,13 @@ const handleCancel = () => {
             </TabPane>
           </Tabs>
         </div>
+
+        <Modal visible={showHistorical} title="Historical Trial List" onOk={handleOk} onCancel={handleCancel}
+          footer={null} style={{ left: '20%', top:50 }} centered={false} width={200} > 
+          <Row>
+              <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
+          </Row>
+        </Modal>
       </div>
       
     );

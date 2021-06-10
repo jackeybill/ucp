@@ -42,9 +42,10 @@ const ScenarioPage = (props) => {
     });
 
     const next = async () =>{
+        console.log(currentStep)
         const step = currentStep + 1
         props.location.state.scenarios.push(scenario)
-        if(currentStep == 1){
+        if(currentStep == 0){
             const resp = await addScenario(props.location.state);
             console.log(props.location.state)
             if (resp.statusCode == 200) {
