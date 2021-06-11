@@ -5,12 +5,9 @@ import { Router, Switch, Route, Redirect } from "react-router-dom";
 
 import history from "./history";
 
-//PA
+
 import LoginPage from "./pages/Login";
 import Layout from "./pages/Layout";
-import Overview from "./pages/Overview";
-import ProtocolSection from "./pages/ProtocolSection";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/global.scss";
 import "./App.css";

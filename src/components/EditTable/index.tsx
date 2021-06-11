@@ -1,9 +1,10 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useReducer} from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import './index.scss';
 import { Table, Input, InputNumber, Popconfirm, Form, Typography, Button, Popover, Modal, Collapse} from 'antd';
 import {MoreOutlined, CheckOutlined, CloseOutlined, PlusCircleOutlined, CaretRightOutlined} from "@ant-design/icons";
+import { divide } from 'lodash';
 
 const { TextArea } = Input;
 const { Panel } = Collapse;
@@ -24,13 +25,87 @@ const EditableCell = ({editing, dataIndex, title, inputType, record, index, chil
   );
 };
 
+const initialStates = {
+  "Eligibility Criteria": "",
+  "Timeframe": "",
+  "Values": "",
+}
+
+ const data1 = [
+    {
+      "Eligibility Criteria": "pregnancy test",
+      "Timeframe": "-",
+      "Values": "-",
+    },
+    {
+      "Eligibility Criteria": "ANC",
+      "Timeframe": "-",
+      "Values": "-",
+    },
+    {
+      "Eligibility Criteria": "contraception",
+      "Timeframe": "-",
+      "Values": "-",
+    },
+    {
+      "Eligibility Criteria": "tubal ligation",
+      "Timeframe": "-",
+      "Values": "-",
+      "Children": [
+        {
+          "Eligibility Criteria": "child1",
+          "Timeframe": "c-1",
+          "Values": "c-1",
+        },
+        {
+          "Eligibility Criteria": "child2",
+          "Timeframe": "c-2",
+          "Values": "c-2",
+        }
+      ]
+    },
+
+ ]
+  
+const initialEditable = {}
 const EditTable = (props) => {
+  // console.log(props.data)
   const [form] = Form.useForm();
   const [data, setData] = useState(props.data);
+  // const [data, setData] = useState(data1);
   const [editingKey, setEditingKey] = useState('');
   const [conOrExcpKey, setConOrExcpKey] = useState('');
   const [conOrExp, setConOrExp] = useState('');
   const [visible, setVisible] = useState(false);
+  const [editable, setEditable] = useReducer(
+        (state, newState) => ({ ...state, ...newState }),
+        { ...initialEditable }
+    );
+  // const [subCriteria, setSubCriteria] =  useReducer(
+  //       (state, newState) => ({ ...state, ...newState }),
+  //       { ...initialStates }
+  //   );
+ 
+
+  const handleSubCriteraInputChange = (key, e, record?, idx?, header?) => {
+    
+    // setSubCriteria({
+    //   [key]:e.target.value
+    // })
+debugger
+   
+    let tmpData = data.slice(0)
+    const targetRecord = tmpData.find(e=> e['Eligibility Criteria']==record['Eligibility Criteria']&&e['Values']==record['Values']&&e['Timeframe']==record['Timeframe'])
+    // console.log('------target----', targetRecord)
+    targetRecord.Children[idx][key]=e.target.value
+    // targetRecord[idx] = Object.assign(targetRecord[idx],{[key]:e.target.value})
+    // const targetSubRecordIndex = targetRecord.Children.findIndex(e => e['Eligibility Criteria'] == subRecord['Eligibility Criteria'] && e['Values'] == subRecord['Values'] && e['Timeframe'] == subRecord['Timeframe']) 
+    // targetRecord.Children.splice(targetSubRecordIndex, 1)
+    // console.log('-targetRecord----', targetRecord)
+    // console.log( '-----',tmpData)
+    setData(tmpData)
+    
+  }
 
   const isEditing = (record) => record['Eligibility Criteria'] === editingKey;
 
@@ -51,7 +126,10 @@ const EditTable = (props) => {
   const save = async (key) => {
     try {
       const row = await form.validateFields();
+     
       const newData = [...data];
+      // const newData=JSON.parse(JSON.stringify(data))
+       console.log('----', newData)
       const index = newData.findIndex((item) => key === item['Eligibility Criteria']);
 
       if (index > -1) {
@@ -97,8 +175,54 @@ const EditTable = (props) => {
   };
 
   const handleAddSubCriteria = (record) => {
+    const tmpData = data.slice(0)
+    const targetRecord = tmpData.find(e=> e['Eligibility Criteria']==record['Eligibility Criteria']&&e['Values']==record['Values']&&e['Timeframe']==record['Timeframe'])
+   
+    if (!targetRecord.Children) {
+      targetRecord.Children = [
+      {
+        "Eligibility Criteria": "",
+        "Timeframe": "",
+        "Values": "",
+      }
+    ]
+    setEditable({
+    0:true
+  })
+  } 
+    else {
+      targetRecord.Children.push(
+        {
+          "Eligibility Criteria": "",
+          "Timeframe": "",
+          "Values": "",
+        }
+      )
+       setEditable({
+    [targetRecord.Children.length-1]:true
+  })
+  }
+    setData(tmpData)
+  }
+  const deleteSubCriteria = (record, idx) => {
+   
+   
+    const tmpData = data.slice(0)
+    const targetRecord = tmpData.find(e=> e['Eligibility Criteria']==record['Eligibility Criteria']&&e['Values']==record['Values']&&e['Timeframe']==record['Timeframe'])
+    targetRecord.Children.splice(idx, 1)
+    setData(tmpData)
     
   }
+  const saveSubCriteria = (record,subRecord,idx) => {
+    setEditable({
+      [idx]:false
+    })
+    const tmpData = data.slice(0)
+    const targetRecord = tmpData.find(e=> e['Eligibility Criteria']==record['Eligibility Criteria']&&e['Values']==record['Values']&&e['Timeframe']==record['Timeframe'])
+    targetRecord.Children[idx]= subRecord
+    setData(tmpData)
+    
+  } 
 
   function callback(key) {
     // if(key.indexOf("1") < 0){
@@ -181,8 +305,9 @@ const panelContent = (rates) => {
     }
   ];
 
-  const editConditionOrException = (record) =>{
-    console.log('addSubCriteria for '+record['Eligibility Criteria'])
+  const editConditionOrException = (record) => {
+    // console.log('-----', record)
+    // console.log('addSubCriteria for '+record['Eligibility Criteria'])
     setConOrExcpKey(record['Eligibility Criteria'])
     setConOrExp(record['Condition Or Exception'])
     setVisible(true)
@@ -231,7 +356,6 @@ const panelContent = (rates) => {
     setVisible(false)
     setConOrExp(null)
   }
-
   return (
     <Form form={form} component={false}>
       {/* <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
@@ -243,7 +367,43 @@ const panelContent = (rates) => {
             key={props.tableIndex} forceRender={false}>
       <Table pagination={false} showHeader={false} rowKey={record => record["Eligibility Criteria"]}
         components={{ body: { cell: EditableCell } }} locale={{emptyText: 'No Data'}}
-        dataSource={data} columns={mergedColumns} rowClassName="editable-row" />
+            dataSource={data} columns={mergedColumns} rowClassName="editable-row"
+             expandable={{
+               expandedRowRender: record => {
+                 return (
+                   <>
+                     {
+                       record.Children && record.Children.length > 0 && record.Children.map((subRecord,idx) => {
+                         return(
+                           <div className="sub-criteria-wrapper" key={idx}>
+                             {editable[idx] ? (
+                               <>
+                                <Input value={subRecord['Eligibility Criteria']} onChange={ (e)=>handleSubCriteraInputChange('Eligibility Criteria',e,record,idx,props.header)}/>
+                                <Input value={subRecord['Timeframe']} onChange={(e) => handleSubCriteraInputChange('Timeframe', e, record, idx, props.header)} />
+                                <Input value={subRecord['Values']} onChange={ (e)=>handleSubCriteraInputChange('Values',e,record,idx,props.header)} />
+                               </>                            
+                             ) 
+                              : (
+                                <>
+                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[idx]:true})} >{subRecord['Eligibility Criteria']}</div>
+                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[idx]:true})}>{subRecord['Timeframe']}</div>
+                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[idx]:true})}>{subRecord['Values']}</div>
+                              </>
+                              )}                      
+                             <div className="actions">
+                              {editable[idx]&& <CheckOutlined style={{ color: 'green' }} onClick={()=>saveSubCriteria(record, subRecord,idx)}/>}
+                              <CloseOutlined style={{ color: 'red' }} onClick={() =>deleteSubCriteria(record, idx)}/>
+                            </div>                 
+                        </div>
+                         )                       
+                       })                   
+                     }                 
+                   </>               
+                 ) 
+                },
+      rowExpandable: record => record.Children,
+    }}
+          />
       </Panel>
       </Collapse>
         <Modal visible={visible} title="Add Condition or Exception" onOk={handleOk} onCancel={handleCancel}

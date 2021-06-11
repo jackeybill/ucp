@@ -1,3 +1,3 @@
 
-export const FILE_READER = 'FILE_READER';
+export const SHOW_SEARCH = 'SHOW_SEARCH';
 

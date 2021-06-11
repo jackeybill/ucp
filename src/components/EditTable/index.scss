@@ -1,46 +1,50 @@
 .editable-cell {
-    position: relative;
-  }
-  
-  .editable-cell-value-wrap {
-    padding: 5px 12px;
-    cursor: pointer;
-  }
-  
-  .editable-row:hover .editable-cell-value-wrap {
-    padding: 4px 11px;
-    border: 1px solid #d9d9d9;
-    border-radius: 4px;
-  }
-  
-  [data-theme='dark'] .editable-row:hover .editable-cell-value-wrap {
-    border: 1px solid #434343;
-  }
-
-a.ant-typography, .ant-typography a {
-    color: #000000d9;
-    span{
-        width: 100%;
-    }
+  position: relative;
 }
 
-a.ant-typography:focus, .ant-typography a:focus, a.ant-typography:hover, .ant-typography a:hover {
+.editable-cell-value-wrap {
+  padding: 5px 12px;
+  cursor: pointer;
+}
+
+.editable-row:hover .editable-cell-value-wrap {
+  padding: 4px 11px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+}
+
+[data-theme="dark"] .editable-row:hover .editable-cell-value-wrap {
+  border: 1px solid #434343;
+}
+
+a.ant-typography,
+.ant-typography a {
+  color: #000000d9;
+  span {
+    width: 100%;
+  }
+}
+
+a.ant-typography:focus,
+.ant-typography a:focus,
+a.ant-typography:hover,
+.ant-typography a:hover {
   color: #000000d9;
 }
 
 .ant-table-cell > span {
-  span.anticon-close{
-    color:red;
+  span.anticon-close {
+    color: red;
     font-weight: bold;
   }
-  span.anticon-check{
-    color:green;
+  span.anticon-check {
+    color: green;
     font-weight: bold;
   }
 }
 
 span.popover-action {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 span.anticon.anticon-close.ant-modal-close-icon {
@@ -48,17 +52,43 @@ span.anticon.anticon-close.ant-modal-close-icon {
   color: white;
 }
 
-.ant-modal-footer{
-  background-color:black;
+.ant-modal-footer {
+  background-color: black;
 }
 
-.ant-btn-primary{
+.ant-btn-primary {
   background-color: #ca4a04;
   border-color: #ca4a04;
 }
 
-.ant-btn-primary.login__button{
+.ant-btn-primary.login__button {
   background-color: black;
   border-color: black;
   height: 40px;
+}
+.sub-criteria-wrapper {
+  display: flex;
+  background-color: #ffffff;
+
+  .ant-input,
+  .sub-row-non-editable {
+    margin-right: 20px;
+  }
+
+  .actions {
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    .anticon {
+      cursor: pointer;
+    }
+    .anticon.anticon-check {
+      margin-right: 5px;
+    }
+  }
+}
+.sub-row-non-editable {
+  flex: 1;
+  padding: 4px 11px;
 }

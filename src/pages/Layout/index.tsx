@@ -26,6 +26,7 @@ const { Header, Content ,Footer} = Layout;
 const GlobalLayout = (props: any) => {
   const [username, setUsername] = useState("");
   const [searchTxt, setSearchTxt] = useState("");
+  const [showSearch, setShowSearch] = useState(true)
   let content: any;
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const GlobalLayout = (props: any) => {
     const current = props.location.pathname;
     switch (current) {
       case "/trials":
-        content = <TrialPortfolio keyWords={searchTxt}/>;
+        content = <TrialPortfolio keyWords={searchTxt} showSearch={ showSearch} setShowSearch={(v)=>setShowSearch(v)}/>;
         break;
       // case "/trials/design":
       //   content = <TrialDesign />;
@@ -87,13 +88,15 @@ const GlobalLayout = (props: any) => {
           </div>
         </div>
         <div className="header-right">
-          <Input
+          {
+            showSearch && <Input
             placeholder="Search"
             prefix={<SearchOutlined />}
             style={{ width: 200, height: 30 }}
             onChange={onTextChange}
             value={searchTxt}
           />
+          }      
           <div className="user__info">
             <Popconfirm
               className="logout__container"

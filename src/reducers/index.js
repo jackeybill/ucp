@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import fileReducer from './fileReducer';
+import trialReducer from './trialReducer';
 
 export default combineReducers({
-    fileReducer,
+    trialReducer,
 })

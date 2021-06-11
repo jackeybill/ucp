@@ -10,6 +10,8 @@ import {
   HomeOutlined,
   SearchOutlined,LoadingOutlined
 } from "@ant-design/icons";
+import { connect } from "react-redux";
+import * as trialActions from "../../actions/trial.js";
 import TrialList from "../../components/TrialList";
 import TrialDetails from "../../components/TrialDetails";
 import Endpoints from "../../components/Endpoints";
@@ -67,7 +69,8 @@ const step1 = "details";
 const step2 = "endpoints";
 
 const TrialPortfolio = (props) => {
-  const { keyWords } = props;
+  console.log( props)
+  const { keyWords,showSearch, setShowSearch } = props;
   const username = Cookies.get("username");
   const [showDetails, setShowDetails] = useState(false);
   const [status, setStatus] = useState("IN PROGRESS");
@@ -105,11 +108,13 @@ const TrialPortfolio = (props) => {
 
     if (resp.statusCode == 200) {
       setVisible(false);
+      // setShowSearch(true)
       // setStep(step1)
       message.success("Create successfully");
       setLoading(true)
       const resp = await getTrialList();
       setShowDetails(true);
+      
       setLoading(false)
       const latestTrial = resp.body && resp.body.find( i=> i['trial_title']==trial['trial_title'])
       setTrial(latestTrial)
@@ -145,6 +150,10 @@ const TrialPortfolio = (props) => {
       [key]: v,
     });
   };
+
+  useEffect(() => {
+    setShowSearch(!showDetails )
+  },[showDetails])
 
   useEffect(() => {
     const tmpData = rawData.filter((d) => {
@@ -513,4 +522,16 @@ const TrialPortfolio = (props) => {
   );
 };
 
-export default withRouter(TrialPortfolio);
+
+
+const mapDispatchToProps = (dispatch) => ({
+  showSearch: (val) => dispatch(trialActions.showSearch(val)),
+});
+
+const mapStateToProps = (state) => ({
+  show: state.trialReducer,
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(TrialPortfolio));
