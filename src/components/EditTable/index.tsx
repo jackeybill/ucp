@@ -78,12 +78,12 @@ const EditTable = (props) => {
         setData(newData);
         setEditingKey('');
 
-        props.updateIclusionCriteria(newData, props.tableIndex)
+        props.updateCriteria(newData, props.tableIndex)
       } else {
         newData.push(row);
         setData(newData);
         setEditingKey('');
-        props.updateIclusionCriteria(newData, props.tableIndex)
+        props.updateCriteria(newData, props.tableIndex)
       }
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
@@ -113,7 +113,7 @@ const EditTable = (props) => {
         })
         setData(tempData);
 
-        props.updateIclusionCriteria(newData, props.tableIndex)
+        props.updateCriteria(newData, props.tableIndex)
       }
   };
 
@@ -288,7 +288,7 @@ const panelHeaderSection = (header, count) => {
       setConOrExp(null)
     }
     
-    props.updateIclusionCriteria(newData, props.tableIndex)
+    props.updateCriteria(newData, props.tableIndex)
   }
   const handleCancel = () =>{
     setVisible(false)
