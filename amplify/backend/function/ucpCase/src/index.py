@@ -8,7 +8,10 @@ import base64
 from awsUtils import sendMail, insertData, extractForm, s3Copy, isFileInS3
 from pdfUtils import splitPDF
 from loginUtils import checkJWT, login
-import ucpCases
+#import gwCases
+import gwCriteria
+import criteriaSummary
+import studies
 #import testMe
 def getFileName(documentName):
     base, filename = os.path.split(documentName)
@@ -83,19 +86,38 @@ def handler(event, context):
     print('event:', event)
     #testMe.main()
     #return
+    datas = None
+
+    if 'module' in event:
+        moduleName = event['module']
+        if moduleName == 'criteria':
+            ret = gwCriteria.handler(event, context)
+            #print('datas=', json.loads(datas['Payload'].read()))
+            datas = json.loads(ret['Payload'].read())
 
     if 'method' in event:
         methodName = event['method']
         if methodName == 'login':
             return login(event['body']['username'], event['body']['password'])
-        if methodName == 'listCases':
-            datas = ucpCases.listCases(event['body']['filters'])
-        if methodName == 'getCase':
-            datas = ucpCases.getCase(event['body']['caseID'])
-        return {
-            'statusCode': 200,
-            'body': json.dumps(datas)
-        }
+        # if methodName == 'listCases':
+        #     datas = gwCases.listCases(event['body']['filters'])
+        # if methodName == 'getCase':
+        #     datas = gwCases.getCase(event['body']['caseID'])
+            
+    if 'summary' in event:
+        method = event['method']
+        if method == 'summaryNctids':
+            return criteriaSummary.handler(event['body']['nct_ids'])
+        if method == 'default':
+            s3 = boto3.client('s3')
+            data = s3.get_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/all_summary.json')['Body'].read()
+            # return {'statusCode':200, 'body': certeriaSummary.load_from_dynamodb('NCT0000000')['Summary'] }
+            return {'statusCode':200, 'body': data }
+            
+    if 'studies' in event:
+        method = event['method']
+        if method == 'list':
+            return studies.list()
     
     if "path" in event:
         uploadFile(event)
@@ -112,7 +134,7 @@ def handler(event, context):
         
     return {
         'statusCode': 200,
-        'body': "success"
+        'body': datas
     }
     #sendMail('Patient 3_PA _ Medical Form_final.pdf')
     #data = {"Member's name: ":"Jane Doe","Member's plan ID number: ":'A2473'}
