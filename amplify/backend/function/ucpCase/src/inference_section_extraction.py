@@ -131,6 +131,7 @@ def getsubsections(toc,index):
     return result
 
 def processTextforUI(text,bullet_p1,bullet_p2):
+    text = text.replace('0 or\n1.','0 or 1.') #Work-around
     if bullet_p1 == r'\n[\[]+[\d{1,3}]+[\]]':
         r1 = re.compile(r"("+bullet_p1+")[\n ]")
         r2 = re.compile(r"("+bullet_p2+")[\n ]")
