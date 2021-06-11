@@ -126,7 +126,7 @@ const SceneriosDashbaord = (props: any) => {
                 </div>
               );
             })}
-          {/* {
+          {
             props.record.scenarios &&
             props.record.scenarios.length > 0 && (
               <div className="average scenario">
@@ -144,7 +144,7 @@ const SceneriosDashbaord = (props: any) => {
                 </div>
               </div>
             )
-          } */}
+          } 
           <div className="create-btn-wrapper">
             <div className="create-btn" onClick={() => props.history.push(path)}>
               <img src={addIcon} alt="" width="68px" height="68px" />

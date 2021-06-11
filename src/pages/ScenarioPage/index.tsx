@@ -27,6 +27,7 @@ const initialStates = {
   var scenarioSize = 0
 
 const ScenarioPage = (props) => {
+    console.log(props.location.state)
 
     const [currentStep, setCurrentStep] = useState(0)
     const [scenario, setScenario] = useReducer(

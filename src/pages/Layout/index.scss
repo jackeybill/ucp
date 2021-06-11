@@ -47,6 +47,16 @@
           border-bottom: 2px solid #ffffff;
         }
       }
+      .ant-menu-horizontal:not(.ant-menu-dark)
+        > .ant-menu-item-selected::after {
+        border-bottom: 2px solid transparent;
+      }
+      .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover {
+        color: #ffffff;
+      }
+      .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after {
+        border-bottom: 2px solid transparent;
+      }
     }
 
     .user__info {
