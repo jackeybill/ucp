@@ -1125,7 +1125,7 @@ const pdfMake = async () =>{
                   </Row>
                   <Row style={{backgroundColor: '#fff'}}>
                     <Col span={24}>
-                      <div className={`updateTrial ${ collapsible ? "" : "none-click" }`}>
+                      <div className="updateTrial">
                         <Button className="update-btn" onClick={() => updateTrial(1)}>
                           UPDATE MY TRIAL
                         </Button>
@@ -1378,7 +1378,7 @@ const pdfMake = async () =>{
                   </Row>
                   <Row style={{backgroundColor: '#fff'}}>
                     <Col span={24}>
-                      <div className={`updateTrial ${ excluCollapsible ? "" : "none-click" }`}>
+                      <div className="updateTrial">
                         <Button className="update-btn" onClick={() => updateTrial(2)}>
                           UPDATE MY TRIAL
                         </Button>
