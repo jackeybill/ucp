@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 // import "jspdf-autotable";
 import html2canvas from 'html2canvas'
 import FileSaver from 'file-saver'
-import {Button, Collapse, Divider, Slider, Dropdown,Menu, Modal, Table, Row, Col} from "antd";
+import {Button, Collapse, Divider, Slider, Dropdown,Menu, Modal, Table, Row, Col, Tabs, Tooltip} from "antd";
 import {getSummaryDefaultList, addScenario, listStudy} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined} from "@ant-design/icons";
@@ -15,6 +15,7 @@ import EditTable from "../../components/EditTable";
 import SelectableTable from "../../components/SelectableTable";
 
 const { Panel } = Collapse;
+const { TabPane } = Tabs;
 
 const step1 = 'Scenario';
 const step2 = 'Criteria';
@@ -48,6 +49,7 @@ const defaultChartValue = [
 ]
 
 const NewScenarioStepTwo = (props) => {
+    const [defaultActiveTabKey, setDefaultActiveTabKey] = useState<string>('1')
     const [currentAddStep, setCurrentAddStep] = useState(step1)
     const [demographics, setDemographics] = useState([]);
     const [intervention, setIntervention] = useState([]);
@@ -71,8 +73,8 @@ const NewScenarioStepTwo = (props) => {
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
     const [protocolRateData, setProtocolRateData] = useState(defaultChartValue)
     const [screenRateData, setScreenRateData] = useState(defaultChartValue)
-    const [therapeutic_Amend_Avg, setTherapeutic_Amend_Avg] = useState('0%')
-    const [therapeutic_Screen_Avg, setTherapeutic_Screen_Avg] = useState('0%')
+    const [therapeutic_Amend_Avg, setTherapeutic_Amend_Avg] = useState('Therapeutic Area Average - 0%')
+    const [therapeutic_Screen_Avg, setTherapeutic_Screen_Avg] = useState('Therapeutic Area Average - 0%')
 
 const next = (step) =>{
     setCurrentAddStep(step)
@@ -123,8 +125,10 @@ const saveInclusionCriteria = async () => {
         {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
       ])
 
-      setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + currentScenario.protocol_amendment_rate)
-      setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + currentScenario.screen_failure_rate)
+      if(resp.body['Therapeutic Area Average']){
+        setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
+        setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
+      }
 
       if(activeKey.indexOf("1") < 0){
         setRollHeight(false)
@@ -275,7 +279,7 @@ function callback(key) {
     } else {
         setRollHeight(false)
     }
-    setDefaultActiveKey(key)
+    // setDefaultActiveKey(key)
     setActiveKey(key)
 }
 
@@ -441,59 +445,18 @@ const jsonExport = async (jsonData, filename) => {
 
 const csvExport = async () => {
     let str='';
-    str += 'Eligibility Criteria' + ',' + 'Values' + ',' + 'Timeframe' + ',' + 'Condition Or Exception';
+    str += 'Caregory' + ',' + 'S/No.' + ',' + 'Eligibility Criteria' + ',' + 'Values' + ',' + 'Timeframe' + ',' + 'Condition Or Exception';
   
-    str += '\n'+'Demographics(' +demographicsElements.length+')'
-    for(const a in demographicsElements) {
-      str += '\n' + demographicsElements[a]['Eligibility Criteria'] + ',' + demographicsElements[a].Values + 
-        ',' + demographicsElements[a].Timeframe + ',' + demographicsElements[a]['Condition Or Exception']
-      if(demographicsElements[a].subCriteria != undefined){
-        const subCriteria = demographicsElements[a].subCriteria
-        for(const aa in subCriteria){
-          str += '\n' + '----' + subCriteria[aa].subCriteria[aa]['Eligibility Criteria'] + ',' + subCriteria[aa].Values + 
-          ',' + subCriteria[aa].Timeframe
-        }
-      }
-    }
+    var serialNum = 0
 
-    str += '\n\n'+'Medical Condition(' +medConditionElements.length+')'
-    for(const b in medConditionElements) {
-      str += '\n' + medConditionElements[b]['Eligibility Criteria'] + ',' + medConditionElements[b].Values + 
-        ',' + medConditionElements[b].Timeframe + ',' + medConditionElements[b]['Condition Or Exception']
-      if(medConditionElements[b].subCriteria != undefined){
-        const subCriteria = medConditionElements[b].subCriteria
-        for(const aa in subCriteria){
-          str += '\n' + '----' + subCriteria[aa].subCriteria[aa]['Eligibility Criteria'] + ',' + subCriteria[aa].Values + 
-          ',' + subCriteria[aa].Timeframe
-        }
-      }
-    }
-
-    str += '\n\n'+'Intervention(' +interventionElements.length+')'
-    for(const c in interventionElements) {
-      str += '\n' + interventionElements[c]['Eligibility Criteria'] + ',' + interventionElements[c].Values + 
-        ',' + interventionElements[c].Timeframe + ',' + interventionElements[c]['Condition Or Exception']
-      if(interventionElements[c].subCriteria != undefined){
-        const subCriteria = interventionElements[c].subCriteria
-        for(const aa in subCriteria){
-          str += '\n' + '----' + subCriteria[aa].subCriteria[aa]['Eligibility Criteria'] + ',' + subCriteria[aa].Values + 
-          ',' + subCriteria[aa].Timeframe
-        }
-      }
-    }
-
-    str += '\n\n'+'Lab / Test(' +labTestElements.length+')'
-    for(const d in labTestElements) {
-      str += '\n' + labTestElements[d]['Eligibility Criteria'] + ',' + labTestElements[d].Values + 
-        ',' + labTestElements[d].Timeframe + ',' + labTestElements[d]['Condition Or Exception']
-      if(labTestElements[d].subCriteria != undefined){
-        const subCriteria = labTestElements[d].subCriteria
-        for(const aa in subCriteria){
-          str += '\n' + '----' + subCriteria[aa].subCriteria[aa]['Eligibility Criteria'] + ',' + subCriteria[aa].Values + 
-          ',' + subCriteria[aa].Timeframe
-        }
-      }
-    }
+    const chars = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    str += getCSVContent('Demographics', demographicsElements, serialNum, chars)
+    serialNum += demographicsElements.length
+    str += getCSVContent('Medical Condition', medConditionElements, serialNum, chars)
+    serialNum += medConditionElements.length
+    str += getCSVContent('Intervention', interventionElements, serialNum, chars)
+    serialNum += interventionElements.length
+    str += getCSVContent('Lab / Test', labTestElements, serialNum, chars)
 
     let exportContent = "\uFEFF";
     let blob = new Blob([exportContent + str], {
@@ -504,6 +467,27 @@ const csvExport = async () => {
     const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
     FileSaver.saveAs(blob, `Inclusion_Criteria_${dateStr}.csv`);
 };
+
+function getCSVContent(category, elements, serialNum, chars){
+  let str='';
+  for(const a in elements) {
+    serialNum = serialNum + 1
+    str += '\n'+ category + ',' + serialNum + ',' + elements[a]['Eligibility Criteria'] + ',' 
+      + elements[a].Values + ',' + elements[a].Timeframe + ',' 
+      + (elements[a]['Condition Or Exception'] == undefined ? '': elements[a]['Condition Or Exception'])
+    if(elements[a].subCriteria != undefined){
+      const subCriteria = elements[a].subCriteria
+      var subSerialNum;
+      for(const aa in subCriteria){
+        subSerialNum = serialNum + chars[aa]
+        str += '\n' + 'category' + ',' + subSerialNum + ',' + subCriteria[aa]['Eligibility Criteria'] 
+        + ',' + subCriteria[aa].Values + ',' + subCriteria[aa].Timeframe
+      }
+    }
+  }
+
+  return str;
+}
 
 const pdfMake = async () =>{
   var element = document.getElementById("inclusion-criteria");
@@ -573,7 +557,6 @@ const pdfMake = async () =>{
 };
      
 const handleExport = (fileType) => {
-    //to do    
     console.log("export josn file:")
     switch(fileType){
       case 'csv':
@@ -612,39 +595,14 @@ const handleCancel = () => {
     
 
     return (
-      <div className="trial-portfolio-container">
-        <div>
-          <div className="upper step-item">
-            <div className="action-part">
-              <div className="status-filter">
-                <div
-                  className={`in-progress item ${
-                    criteriaStatus == "Inclusion" ? "active" : ""
-                  }`}
-                  onClick={() => setCriteriaStatus("Inclusion")}
-                >
-                  <span className="status">Inclusion Criteria</span>
-                </div>
-                <div
-                  className={`in-progress item ${
-                    criteriaStatus == "Exclusion" ? "active" : ""
-                  }`}
-                  onClick={() => setCriteriaStatus("Exclusion")}
-                >
-                  <span className="status">Exclusion Criteria</span>
-                </div>
-                <div
-                  className={`in-progress item ${
-                    criteriaStatus == "Enrollment" ? "active" : ""
-                  }`}
-                  onClick={() => setCriteriaStatus("Enrollment")}
-                >
-                  <span className="status">Enrollment Feasibility</span>
-                </div>
-              </div>
-            </div>
-            <div className="export-part">
-              <Dropdown.Button
+      <div className="ie-container">
+        <div className="export-container">
+          <Row>
+            <Col span={21}>
+              <div style={{ bottom: '0',height: '50px' }}></div>
+            </Col>
+            <Col span={3}>
+              <Dropdown.Button style={{zIndex: 1}}
                 overlay={
                   <Menu>
                     <Menu.Item key="json" onClick={() => handleExport('json')}>JSON</Menu.Item>
@@ -656,237 +614,268 @@ const handleCancel = () => {
                 <DownloadOutlined />
                 EXPORT AS
               </Dropdown.Button>
-            </div>
-
-            {criteriaStatus == "Inclusion" ? (
-              <div className="main-container">
-                <div className="left-container">
-                  <div className="item">
-                    <span>Inclusion Criteria Library</span>
-                    <CloseOutlined className="right-icon"></CloseOutlined>
-                    <HistoryOutlined className="right-icon" onClick={searchHistoricalTrials}></HistoryOutlined>
-                  </div>
-                  <Divider
-                    style={{
-                      borderWidth: 2,
-                      borderColor: "#c4bfbf",
-                      marginTop: 5,
-                      marginBottom: 5,
-                    }}
-                  />
-                  <div className="item">
-                    <div className="tip-1">
-                      <span>Select / Unselect criteria to add to Trial</span>
-                    </div>
-                    <div className="tip-2">
-                      <span className="label">CRITERIA FREQUENCY</span>
-                      <br />
-                      <div
-                        id="freqModal"
-                        ref={null}
-                        onClick={() => setVisible(true)}
-                      >
-                        <span className="label">
-                          {minValue}%-{maxValue}%
-                        </span>
-                        <EditFilled />
-                      </div>
-                    </div>
-                  </div>
-                  {visible ? (
-                    <div className="freqSection">
-                      <div className="title">
-                        <span>Set Frequency</span>
-                        <CloseOutlined
-                          className="right-icon"
-                          onClick={() => setVisible(false)}
-                        ></CloseOutlined>
-                      </div>
-                      <div className="content">
-                        <span>Criteria Frequency</span>
-                        <span style={{ float: "right" }}>
-                          {minValue}% - {maxValue}%
-                        </span>
-                      </div>
-                      <Slider
-                        range={{ draggableTrack: true }}
-                        defaultValue={[frequencyFilter[0], frequencyFilter[1]]}
-                        tipFormatter={formatter}
-                        onAfterChange={getFrequency}
-                      />
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  <div className="content-outer">
-                    <div className="content-over">
-                      <div className="item box">
-                        <span>Demographics</span>
-                        <br />
-                        {demographics.map((demographic, idx) => {
-                          return (
-                            <CriteriaOption
-                              key={`demographic_${idx}`}
-                              demographic={demographic}
-                              index={0}
-                              idx={idx}
-                              handleOptionSelect={handleOptionSelect}
-                            ></CriteriaOption>
-                          );
-                        })}
-                      </div>
-
-                      <div className="item box">
-                        <span>Medical Condition</span>
-                        <br />
-                        {medCondition.map((medCon, idx) => {
-                          return (
-                            <CriteriaOption
-                              key={`medCon_${idx}`}
-                              demographic={medCon}
-                              index={1}
-                              idx={idx}
-                              handleOptionSelect={handleOptionSelect}
-                            ></CriteriaOption>
-                          );
-                        })}
-                      </div>
-
-                      <div className="item box">
-                        <span>Intervention</span>
-                        <br />
-                        {intervention.map((intervent, idx) => {
-                          return (
-                            <CriteriaOption
-                              key={`intervent_${idx}`}
-                              demographic={intervent}
-                              index={2}
-                              idx={idx}
-                              handleOptionSelect={handleOptionSelect}
-                            ></CriteriaOption>
-                          );
-                        })}
-                      </div>
-
-                      <div className="item box">
-                        <span>Lab / Test</span>
-                        <br />
-                        {labTest.map((lib, idx) => {
-                          return (
-                            <CriteriaOption
-                              key={`lib_${idx}`}
-                              demographic={lib}
-                              index={3}
-                              idx={idx}
-                              handleOptionSelect={handleOptionSelect}
-                            ></CriteriaOption>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="updateTrial">
-                    <Button className="update-btn" onClick={updateTrial}>
-                      UPDATE MY TRIAL
-                    </Button>
-                  </div>
-                </div>
-                <div
-                  className={`right-container ${
-                    collapsible ? "none-click" : ""
-                  }`}
-                >
-                  <h4>Add Inclusion Criteria</h4>
-                  <span className="tip1-desc">
-                    Use the historical trial library on the left to build the
-                    I/E criteria for your scenario.
-                  </span>
-                  <div className="option-item">
-                    <div>
-                      <Collapse
-                        activeKey={activeKey}
-                        onChange={callback}
-                        expandIconPosition="right"
-                      >
-                        <Panel
-                          header={panelHeader()}
-                          key="1"
-                          forceRender={false}
-                        >
-                          <div className="chart-container">
-                            <div className="label">
-                              <span>Click on each metrics to filter</span>
-                            </div>
-                            <CustomChart
-                              option={amendmentRateoption}
-                              height={120}
-                            ></CustomChart>
-                          </div>
-                          <div className="chart-container  box">
-                            <div className="label">
-                              <span>Click on each metrics to filter</span>
-                            </div>
-                            <CustomChart
-                              option={screenFailureOption}
-                              height={120}
-                            ></CustomChart>
-                          </div>
-                        </Panel>
-                      </Collapse>
-                    </div>
-                    <div className="impact-summary">
-                      <span>Inclusion Criteria</span>
-                      <Button type="primary" onClick={saveInclusionCriteria}>
-                        Save
-                      </Button>
-                    </div>
-
-                    <div className="content-outer">
-                      <div id="inclusion-criteria" 
-                        className={`collapse-inner ${
-                          rollHeight == true ? "taller" : ""
-                        }`}
-                      >
-                        <div className="criteria-list">
-                          <div className="list-columns">
-                            <div className="col-item">Eligibility Criteria</div>
-                            <div className="col-item">Values</div>
-                            <div className="col-item">Timeframe</div>
-                          </div>
-                        </div>
-                        <div className="sectionPanel">
-                        <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={2} 
-                                data={demographicsElements} defaultActiveKey={defaultActiveKey}
-                                collapsible={collapsible} panelHeader={"Demographics"}/>
-                        <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={3} 
-                                data={medConditionElements} defaultActiveKey={defaultActiveKey}
-                                collapsible={collapsible} panelHeader={"Medical Condition"}/>
-                        <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={4} 
-                                data={interventionElements} defaultActiveKey={defaultActiveKey}
-                                collapsible={collapsible} panelHeader={"Intervention"}/>
-                        <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={5} 
-                                data={labTestElements} defaultActiveKey={defaultActiveKey}
-                                collapsible={collapsible} panelHeader={"Lab / Test"}/>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : criteriaStatus == "Exclusion" ? (
-              <CustomChart
-                option={amendmentRateoption}
-                height={120}
-              ></CustomChart>
-            ) : (
-              <span>Enrollment</span>
-            )}
-          </div>
+            </Col>
+          </Row>
         </div>
-        <div className="action-footer">
-          <Button type="primary" onClick={() => next(step2)}>
-            NEXT
-          </Button>
+        <div className="tab-container">
+          <Tabs defaultActiveKey={defaultActiveTabKey} centered>
+            <TabPane tab="Inclusion Criteria" key="1">
+              <Row>
+                <Col span={6} style={{backgroundColor: '#f3f3f3'}}>
+                  <Row style={{backgroundColor: '#f3f3f3'}}>
+                    <Col span={24}>
+                      <div className="item-header">
+                        <span>Inclusion Criteria Library</span>
+                        <CloseOutlined className="right-icon"></CloseOutlined>
+                        <Tooltip title={'View Historical Trial List'}>
+                          <HistoryOutlined className="right-icon" onClick={searchHistoricalTrials}></HistoryOutlined>
+                        </Tooltip>
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row style={{borderBottom:'10px solid #f3f3f3'}}>
+                    <Col flex="none">
+                      <div style={{ padding: '0 10px' }}></div>
+                    </Col>
+                    <Col className="left-section">
+                      <Row style={{alignItems: 'center', marginBottom: '10px'}}>
+                        <Col span={16}>
+                          <div className="item-option">
+                            <span>Select / Unselect criteria to add to Trial</span>
+                          </div>
+                        </Col>
+                        <Col span={8} style={{textAlign:'right'}}>
+                          <Row>
+                          <Col span={24}><span>CRITERIA FREQUENCY</span></Col>
+                          </Row>
+                          <Row style={{width:'100%'}}>
+                          <Col span={24}>
+                            <div id="freqModal" ref={null} onClick={() => setVisible(true)}>
+                              <span className="label">
+                                {minValue}%-{maxValue}%
+                              </span>
+                              <EditFilled />
+                            </div>
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                      
+                      {visible ? (
+                      <div className="freqSection">
+                        <div className="title">
+                          <span>Set Frequency</span>
+                          <CloseOutlined
+                            className="right-icon"
+                            onClick={() => setVisible(false)}
+                          ></CloseOutlined>
+                        </div>
+                        <div className="content">
+                          <span>Criteria Frequency</span>
+                          <span style={{ float: "right" }}>
+                            {minValue}% - {maxValue}%
+                          </span>
+                        </div>
+                        <Slider
+                          range={{ draggableTrack: true }}
+                          defaultValue={[frequencyFilter[0], frequencyFilter[1]]}
+                          tipFormatter={formatter}
+                          onAfterChange={getFrequency}
+                        />
+                      </div>
+                      ) : (
+                      <></>
+                      )}
+                      <Row>
+                        <Col span={24}>
+                          <div className="content-outer">
+                            <div className="content-over">
+                              <div className="library box">
+                                <span>Demographics</span>
+                                <br />
+                                {demographics.map((demographic, idx) => {
+                                  return (
+                                    <CriteriaOption
+                                      key={`demographic_${idx}`}
+                                      demographic={demographic}
+                                      index={0}
+                                      idx={idx}
+                                      handleOptionSelect={handleOptionSelect}
+                                    ></CriteriaOption>
+                                  );
+                                })}
+                              </div>
+
+                              <div className="library box">
+                                <span>Medical Condition</span>
+                                <br />
+                                {medCondition.map((medCon, idx) => {
+                                  return (
+                                    <CriteriaOption
+                                      key={`medCon_${idx}`}
+                                      demographic={medCon}
+                                      index={1}
+                                      idx={idx}
+                                      handleOptionSelect={handleOptionSelect}
+                                    ></CriteriaOption>
+                                  );
+                                })}
+                              </div>
+
+                              <div className="library box">
+                                <span>Intervention</span>
+                                <br />
+                                {intervention.map((intervent, idx) => {
+                                  return (
+                                    <CriteriaOption
+                                      key={`intervent_${idx}`}
+                                      demographic={intervent}
+                                      index={2}
+                                      idx={idx}
+                                      handleOptionSelect={handleOptionSelect}
+                                    ></CriteriaOption>
+                                  );
+                                })}
+                              </div>
+
+                              <div className="library box lastOne">
+                                <span>Lab / Test</span>
+                                <br />
+                                {labTest.map((lib, idx) => {
+                                  return (
+                                    <CriteriaOption
+                                      key={`lib_${idx}`}
+                                      demographic={lib}
+                                      index={3}
+                                      idx={idx}
+                                      handleOptionSelect={handleOptionSelect}
+                                    ></CriteriaOption>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col flex="none">
+                      <div style={{ padding: '0 10px' }}></div>
+                    </Col>
+                  </Row>
+                  <Row style={{backgroundColor: '#fff'}}>
+                    <Col span={24}>
+                      <div className="updateTrial">
+                        <Button className="update-btn" onClick={updateTrial}>
+                          UPDATE MY TRIAL
+                        </Button>
+                      </div>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col span={18} className={`${ collapsible ? "none-click" : "" }`}>
+                  <Row style={{ paddingTop: '10px' }}>
+                    <Col flex="none">
+                      <div style={{ padding: '0 10px' }}></div>
+                    </Col>
+                    <Col flex="auto">
+                      <Row>
+                        <Col span={24}><h4>Add Inclusion Criteria</h4></Col>
+                      </Row>
+                      <Row>
+                        <Col span={24}>
+                        <span className="tip1-desc">
+                          Use the historical trial library on the left to build the
+                          I/E criteria for your scenario.
+                        </span>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col span={24}>
+                        <div className="option-item">
+                          <div>
+                            <Collapse activeKey={activeKey} onChange={callback} expandIconPosition="right" >
+                              <Panel header={panelHeader()} key="1" forceRender={false} >
+                                <div className="chart-container">
+                                  <div className="label">
+                                    <span>Click on each metrics to filter</span>
+                                  </div>
+                                  <CustomChart
+                                    option={amendmentRateoption}
+                                    height={120}
+                                  ></CustomChart>
+                                </div>
+                                <div className="chart-container  box">
+                                  <div className="label">
+                                    <span>Click on each metrics to filter</span>
+                                  </div>
+                                  <CustomChart
+                                    option={screenFailureOption}
+                                    height={120}
+                                  ></CustomChart>
+                                </div>
+                              </Panel>
+                            </Collapse>
+                          </div>
+                        </div>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col span={24}>
+                          <div className="impact-summary">
+                            <span>Inclusion Criteria</span>
+                            <Button type="primary" onClick={saveInclusionCriteria}>
+                              Save
+                            </Button>
+                          </div>
+                          </Col>
+                      </Row>
+                      <Row>
+                        <Col span={24} >
+                          <div className="collapse-container">
+                          <div className="content-outer">
+                            <div id="inclusion-criteria" 
+                              className={`collapse-inner ${rollHeight == true ? "taller" : ""} ${collapsible == true ? "collapsed" : ""}`}>
+                              <div className="criteria-list">
+                                <div className="list-columns">
+                                  <div className="col-item">Eligibility Criteria</div>
+                                  <div className="col-item">Values</div>
+                                  <div className="col-item">Timeframe</div>
+                                </div>
+                              </div>
+                              <div className="sectionPanel">
+                              <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={2} 
+                                      data={demographicsElements} defaultActiveKey={defaultActiveKey}
+                                      collapsible={collapsible} panelHeader={"Demographics"}/>
+                              <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={3} 
+                                      data={medConditionElements} defaultActiveKey={defaultActiveKey}
+                                      collapsible={collapsible} panelHeader={"Medical Condition"}/>
+                              <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={4} 
+                                      data={interventionElements} defaultActiveKey={defaultActiveKey}
+                                      collapsible={collapsible} panelHeader={"Intervention"}/>
+                              <EditTable updateIclusionCriteria={updateIclusionCriteria} tableIndex={5} 
+                                      data={labTestElements} defaultActiveKey={defaultActiveKey}
+                                      collapsible={collapsible} panelHeader={"Lab / Test"}/>
+                              </div>
+                            </div>
+                          </div>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col flex="none">
+                      <div style={{ padding: '0 10px' }}></div>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </TabPane>
+            <TabPane tab="Exclusion Criteria" key="2">
+              Content of Tab Pane 2
+            </TabPane>
+            <TabPane tab="Enrollment Feasibility" key="3">
+              Content of Tab Pane 3
+            </TabPane>
+          </Tabs>
         </div>
 
         <Modal visible={showHistorical} title="Historical Trial List" onOk={handleOk} onCancel={handleCancel}
@@ -896,6 +885,7 @@ const handleCancel = () => {
           </Row>
         </Modal>
       </div>
+      
     );
     
 }
