@@ -32,7 +32,7 @@ export const sectionOptions = [
   // },
   { label: "INCLUSION CRITERIA", value: "inclusionCriteria" },
   { label: "EXCLUSION CRITERIA", value: "exclusionCriteria" },
-  { label: "SCHEDULE OF ACTIVITIES", value: "scheduleActivities" },
+  // { label: "SCHEDULE OF ACTIVITIES", value: "scheduleActivities" },
 ];
 export const initSelectedSections = sectionOptions.map((s) => {
   return s.value;
