@@ -69,6 +69,7 @@ span.anticon.anticon-close.ant-modal-close-icon {
 .sub-criteria-wrapper {
   display: flex;
   background-color: #ffffff;
+  border: 1px solid #fbfbfb;
 
   .ant-input,
   .sub-row-non-editable {
@@ -87,6 +88,14 @@ span.anticon.anticon-close.ant-modal-close-icon {
       margin-right: 5px;
     }
   }
+
+  .serial-number{
+    padding-left: 45px;
+    padding-right: 60px;
+  }
+}
+.sub-criteria-wrapper:hover, .sub-criteria-wrapper:focus {
+  background-color: #e7e7e7;
 }
 .sub-row-non-editable {
   flex: 1;

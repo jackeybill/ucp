@@ -218,7 +218,7 @@ const handleOptionSelect = (item, activeType, id, key) =>{
             break;
     }
 
-    setDefaultActiveKey([''])
+    // setDefaultActiveKey([''])
 }
 
 useEffect(() => {
@@ -407,6 +407,18 @@ const getFrequency = (value) => {
 }
 
 const updateTrial = () => {
+    medConditionElements = medConditionElements.map((item,index) =>{
+      return Object.assign(item,{Key:(index + 1) + ''})
+    })
+    demographicsElements = demographicsElements.map((item,index) =>{
+      return Object.assign(item,{Key:(index + 1) + ''})
+    })
+    labTestElements = labTestElements.map((item,index) =>{
+      return Object.assign(item,{Key:(index + 1) + ''})
+    })
+    interventionElements = interventionElements.map((item,index) =>{
+      return Object.assign(item,{Key:(index + 1) + ''})
+    })
     setCollapsible(false)
     setDefaultActiveKey(['2','3','4','5'])
 }
@@ -449,14 +461,13 @@ const csvExport = async () => {
   
     var serialNum = 0
 
-    const chars = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-    str += getCSVContent('Demographics', demographicsElements, serialNum, chars)
+    str += getCSVContent('Demographics', demographicsElements, serialNum)
     serialNum += demographicsElements.length
-    str += getCSVContent('Medical Condition', medConditionElements, serialNum, chars)
+    str += getCSVContent('Medical Condition', medConditionElements, serialNum)
     serialNum += medConditionElements.length
-    str += getCSVContent('Intervention', interventionElements, serialNum, chars)
+    str += getCSVContent('Intervention', interventionElements, serialNum)
     serialNum += interventionElements.length
-    str += getCSVContent('Lab / Test', labTestElements, serialNum, chars)
+    str += getCSVContent('Lab / Test', labTestElements, serialNum)
 
     let exportContent = "\uFEFF";
     let blob = new Blob([exportContent + str], {
@@ -468,19 +479,19 @@ const csvExport = async () => {
     FileSaver.saveAs(blob, `Inclusion_Criteria_${dateStr}.csv`);
 };
 
-function getCSVContent(category, elements, serialNum, chars){
+function getCSVContent(category, elements, serialNum){
   let str='';
   for(const a in elements) {
     serialNum = serialNum + 1
     str += '\n'+ category + ',' + serialNum + ',' + elements[a]['Eligibility Criteria'] + ',' 
       + elements[a].Values + ',' + elements[a].Timeframe + ',' 
       + (elements[a]['Condition Or Exception'] == undefined ? '': elements[a]['Condition Or Exception'])
-    if(elements[a].subCriteria != undefined){
-      const subCriteria = elements[a].subCriteria
+    if(elements[a].Children != undefined && elements[a].Children.length > 0){
+      const subCriteria = elements[a].Children
       var subSerialNum;
       for(const aa in subCriteria){
-        subSerialNum = serialNum + chars[aa]
-        str += '\n' + 'category' + ',' + subSerialNum + ',' + subCriteria[aa]['Eligibility Criteria'] 
+        subSerialNum = serialNum + subCriteria[aa].Key
+        str += '\n' + category + ',' + subSerialNum + ',' + subCriteria[aa]['Eligibility Criteria'] 
         + ',' + subCriteria[aa].Values + ',' + subCriteria[aa].Timeframe
       }
     }
@@ -764,7 +775,7 @@ const handleCancel = () => {
                   </Row>
                   <Row style={{backgroundColor: '#fff'}}>
                     <Col span={24}>
-                      <div className="updateTrial">
+                      <div className={`updateTrial ${ collapsible ? "" : "none-click" }`}>
                         <Button className="update-btn" onClick={updateTrial}>
                           UPDATE MY TRIAL
                         </Button>
@@ -837,9 +848,12 @@ const handleCancel = () => {
                               className={`collapse-inner ${rollHeight == true ? "taller" : ""} ${collapsible == true ? "collapsed" : ""}`}>
                               <div className="criteria-list">
                                 <div className="list-columns">
-                                  <div className="col-item">Eligibility Criteria</div>
-                                  <div className="col-item">Values</div>
-                                  <div className="col-item">Timeframe</div>
+                                  <Row>
+                                    <Col span={3}><div className="col-item">S/No.</div></Col>
+                                    <Col span={7}><div className="col-item">Eligibility Criteria</div></Col>
+                                    <Col span={7}><div className="col-item">Values</div></Col>
+                                    <Col span={7}><div className="col-item">Timeframe</div></Col>
+                                  </Row>
                                 </div>
                               </div>
                               <div className="sectionPanel">

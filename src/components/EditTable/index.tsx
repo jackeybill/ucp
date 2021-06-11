@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useReducer} from 'react';
-import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import './index.scss';
 import { Table, Input, InputNumber, Popconfirm, Form, Typography, Button, Popover, Modal, Collapse} from 'antd';
 import {MoreOutlined, CheckOutlined, CloseOutlined, PlusCircleOutlined, CaretRightOutlined} from "@ant-design/icons";
-import { divide } from 'lodash';
 
 const { TextArea } = Input;
 const { Panel } = Collapse;
@@ -25,89 +23,33 @@ const EditableCell = ({editing, dataIndex, title, inputType, record, index, chil
   );
 };
 
-const initialStates = {
-  "Eligibility Criteria": "",
-  "Timeframe": "",
-  "Values": "",
-}
-
- const data1 = [
-    {
-      "Eligibility Criteria": "pregnancy test",
-      "Timeframe": "-",
-      "Values": "-",
-    },
-    {
-      "Eligibility Criteria": "ANC",
-      "Timeframe": "-",
-      "Values": "-",
-    },
-    {
-      "Eligibility Criteria": "contraception",
-      "Timeframe": "-",
-      "Values": "-",
-    },
-    {
-      "Eligibility Criteria": "tubal ligation",
-      "Timeframe": "-",
-      "Values": "-",
-      "Children": [
-        {
-          "Eligibility Criteria": "child1",
-          "Timeframe": "c-1",
-          "Values": "c-1",
-        },
-        {
-          "Eligibility Criteria": "child2",
-          "Timeframe": "c-2",
-          "Values": "c-2",
-        }
-      ]
-    },
-
- ]
+const chars = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
   
 const initialEditable = {}
 const EditTable = (props) => {
-  // console.log(props.data)
   const [form] = Form.useForm();
   const [data, setData] = useState(props.data);
-  // const [data, setData] = useState(data1);
   const [editingKey, setEditingKey] = useState('');
-  const [conOrExcpKey, setConOrExcpKey] = useState('');
+  const [conOrExcpKey, setConOrExcpKey] = useState();
+  const [conOrExcpContent, setConOrExcpContent] = useState();
   const [conOrExp, setConOrExp] = useState('');
   const [visible, setVisible] = useState(false);
   const [editable, setEditable] = useReducer(
         (state, newState) => ({ ...state, ...newState }),
         { ...initialEditable }
     );
-  // const [subCriteria, setSubCriteria] =  useReducer(
-  //       (state, newState) => ({ ...state, ...newState }),
-  //       { ...initialStates }
-  //   );
  
 
   const handleSubCriteraInputChange = (key, e, record?, idx?, header?) => {
-    
-    // setSubCriteria({
-    //   [key]:e.target.value
-    // })
-debugger
    
     let tmpData = data.slice(0)
-    const targetRecord = tmpData.find(e=> e['Eligibility Criteria']==record['Eligibility Criteria']&&e['Values']==record['Values']&&e['Timeframe']==record['Timeframe'])
-    // console.log('------target----', targetRecord)
+    const targetRecord = tmpData.find(e=> e.Key==record.Key)
     targetRecord.Children[idx][key]=e.target.value
-    // targetRecord[idx] = Object.assign(targetRecord[idx],{[key]:e.target.value})
-    // const targetSubRecordIndex = targetRecord.Children.findIndex(e => e['Eligibility Criteria'] == subRecord['Eligibility Criteria'] && e['Values'] == subRecord['Values'] && e['Timeframe'] == subRecord['Timeframe']) 
-    // targetRecord.Children.splice(targetSubRecordIndex, 1)
-    // console.log('-targetRecord----', targetRecord)
-    // console.log( '-----',tmpData)
     setData(tmpData)
     
   }
 
-  const isEditing = (record) => record['Eligibility Criteria'] === editingKey;
+  const isEditing = (record) => record.Key == editingKey;
 
   const edit = (record) => {
     form.setFieldsValue({
@@ -116,7 +58,7 @@ debugger
       Timeframe: '',
       ...record,
     });
-    setEditingKey(record['Eligibility Criteria']);
+    setEditingKey(record.Key);
   };
 
   const cancel = () => {
@@ -128,9 +70,7 @@ debugger
       const row = await form.validateFields();
      
       const newData = [...data];
-      // const newData=JSON.parse(JSON.stringify(data))
-       console.log('----', newData)
-      const index = newData.findIndex((item) => key === item['Eligibility Criteria']);
+      const index = newData.findIndex((item) => key === item.Key);
 
       if (index > -1) {
         const item = newData[index];
@@ -152,10 +92,10 @@ debugger
 
   const handleAdd = () => {
     const newData = {
-      key: mergedColumns.length,
-      "Eligibility Criteria": ``,
+      Key: (data.length + 1) + '',
+      "Eligibility Criteria": '',
       Values: '',
-      Timeframe: ``,
+      Timeframe: '',
     }
     setData([...data, newData])
     edit(newData)
@@ -166,9 +106,12 @@ debugger
       const index = newData.indexOf(record);
 
       if (index > -1) {
-        const item = newData[index];
         newData.splice(index, 1);
-        setData(newData);
+        const tempData = newData.map((item, id) =>{
+          item.Key = (id + 1) + ''
+          return item
+        })
+        setData(tempData);
 
         props.updateIclusionCriteria(newData, props.tableIndex)
       }
@@ -176,11 +119,12 @@ debugger
 
   const handleAddSubCriteria = (record) => {
     const tmpData = data.slice(0)
-    const targetRecord = tmpData.find(e=> e['Eligibility Criteria']==record['Eligibility Criteria']&&e['Values']==record['Values']&&e['Timeframe']==record['Timeframe'])
+    const targetRecord = tmpData.find(e=> e.Key==record.Key)
    
     if (!targetRecord.Children) {
       targetRecord.Children = [
       {
+        "Key": "A",
         "Eligibility Criteria": "",
         "Timeframe": "",
         "Values": "",
@@ -193,6 +137,7 @@ debugger
     else {
       targetRecord.Children.push(
         {
+          "Key": chars[targetRecord.Children.length],
           "Eligibility Criteria": "",
           "Timeframe": "",
           "Values": "",
@@ -208,8 +153,13 @@ debugger
    
    
     const tmpData = data.slice(0)
-    const targetRecord = tmpData.find(e=> e['Eligibility Criteria']==record['Eligibility Criteria']&&e['Values']==record['Values']&&e['Timeframe']==record['Timeframe'])
+    const targetRecord = tmpData.find(e=> e.Key==record.Key)
     targetRecord.Children.splice(idx, 1)
+    targetRecord.Children = targetRecord.Children.map((item,index) =>{
+      item.Key = chars[index]
+      return item
+    })
+
     setData(tmpData)
     
   }
@@ -218,21 +168,14 @@ debugger
       [idx]:false
     })
     const tmpData = data.slice(0)
-    const targetRecord = tmpData.find(e=> e['Eligibility Criteria']==record['Eligibility Criteria']&&e['Values']==record['Values']&&e['Timeframe']==record['Timeframe'])
+    const targetRecord = tmpData.find(e=> e.Key==record.Key)
     targetRecord.Children[idx]= subRecord
     setData(tmpData)
     
   } 
 
   function callback(key) {
-    // if(key.indexOf("1") < 0){
-    //     setRollHeight(true)
-    // } else {
-    //     setRollHeight(false)
-    // }
-    // setDefaultActiveKey(key)
-    // setActiveKey(key)
-}
+  }
 
 const panelHeaderSection = (header, count) => {
   return (
@@ -245,26 +188,22 @@ const panelHeaderSection = (header, count) => {
   );
 };
 
-const panelContent = (rates) => {
-  return (
-      <div className="trial-panelBody">
-      <div>
-          <span className="key">Trial Title</span><br/>
-          <span className="value"> test</span>
-      </div>
-      </div>
-  );
-};
-
-  const columns = [{
+  const columns = [
+    {
+      title: "Key",
+      dataIndex: "Key",
+      width: '7%',
+      editable: false,
+    },
+    {
       title: "Eligibility Criteria",
       dataIndex: "Eligibility Criteria",
-      width: '25%',
+      width: '28%',
       editable: true,
     }, {
       title: 'Values',
       dataIndex: 'Values',
-      width: '25%',
+      width: '28%',
       editable: true,
       render: (_, record) => {
         const editable = isEditing(record);
@@ -272,14 +211,14 @@ const panelContent = (rates) => {
             <Input value={record["Values"]}/>
         ) : (
           <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
-            <div><span>{record.Values}</span></div>
+            <div><span style={{fontSize: '14px'}}>{record.Values}</span></div>
           </Typography.Link>
         );
       }
     }, {
       title: 'Timeframe',
       dataIndex: 'Timeframe',
-      width: '40%',
+      width: '25%',
       editable: true
     }, {
       title: 'operation',
@@ -288,7 +227,7 @@ const panelContent = (rates) => {
         const editable = isEditing(record);
         return editable ? (
           <span style={{float:'right'}}>
-            <CheckOutlined onClick={() => save(record['Eligibility Criteria'])}/> &nbsp;&nbsp;
+            <CheckOutlined onClick={() => save(record.Key)}/> &nbsp;&nbsp;
             <CloseOutlined onClick={cancel}/>
           </span>
         ) : (
@@ -306,9 +245,8 @@ const panelContent = (rates) => {
   ];
 
   const editConditionOrException = (record) => {
-    // console.log('-----', record)
-    // console.log('addSubCriteria for '+record['Eligibility Criteria'])
-    setConOrExcpKey(record['Eligibility Criteria'])
+    setConOrExcpContent(record['Eligibility Criteria'])
+    setConOrExcpKey(record.Key)
     setConOrExp(record['Condition Or Exception'])
     setVisible(true)
   }
@@ -338,7 +276,7 @@ const panelContent = (rates) => {
     setVisible(false)
 
     const newData = [...data]
-    const index = newData.findIndex((item) => conOrExcpKey === item['Eligibility Criteria'])
+    const index = newData.findIndex((item) => conOrExcpKey === item.Key)
 
     if(index > -1){
       const oldItem = newData[index];
@@ -358,14 +296,11 @@ const panelContent = (rates) => {
   }
   return (
     <Form form={form} component={false}>
-      {/* <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
-          Add a row
-        </Button> */}
       <Collapse activeKey={props.defaultActiveKey} onChange={callback} expandIconPosition="left"
           expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
           <Panel header={panelHeaderSection(props.panelHeader, props.collapsible ? 0 : data.length)} 
             key={props.tableIndex} forceRender={false}>
-      <Table pagination={false} showHeader={false} rowKey={record => record["Eligibility Criteria"]}
+      <Table pagination={false} showHeader={false} rowKey={record => record.Key}
         components={{ body: { cell: EditableCell } }} locale={{emptyText: 'No Data'}}
             dataSource={data} columns={mergedColumns} rowClassName="editable-row"
              expandable={{
@@ -376,6 +311,9 @@ const panelContent = (rates) => {
                        record.Children && record.Children.length > 0 && record.Children.map((subRecord,idx) => {
                          return(
                            <div className="sub-criteria-wrapper" key={idx}>
+                             <div className="serial-number">
+                              <span>{subRecord.Key}</span>
+                             </div>
                              {editable[idx] ? (
                                <>
                                 <Input value={subRecord['Eligibility Criteria']} onChange={ (e)=>handleSubCriteraInputChange('Eligibility Criteria',e,record,idx,props.header)}/>
@@ -408,7 +346,7 @@ const panelContent = (rates) => {
       </Collapse>
         <Modal visible={visible} title="Add Condition or Exception" onOk={handleOk} onCancel={handleCancel}
           footer={[<Button key="submit" type="primary" onClick={handleOk}>Submit</Button>]}>
-          <p>Add condition or exception for <b>{conOrExcpKey}</b></p>
+          <p>Add condition or exception for <b>{conOrExcpContent}</b></p>
           <p>Condition or Exception</p>
           <TextArea value={conOrExp} onChange={(e) => handleInputChange(e)} autoSize={{ minRows: 3, maxRows: 5 }}/>
         </Modal>
