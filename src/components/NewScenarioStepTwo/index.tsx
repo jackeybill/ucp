@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import jsPDF from "jspdf";
 import html2canvas from 'html2canvas'
 import FileSaver from 'file-saver'
-import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip} from "antd";
+import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Checkbox, Input} from "antd";
 import {getSummaryDefaultList, addScenario, listStudy} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined} from "@ant-design/icons";
@@ -944,6 +944,63 @@ const NewScenarioStepTwo = (props) => {
       }
     }
 
+    const option = [{
+      Name:'Age',
+      Count: '500',
+      Desc:'85%',
+      SubDesc: '(52% Female / 48% Male)',
+      span: 24
+    },{
+      Name:'Gender',
+      Count: '450',
+      Desc:'75%',
+      SubDesc: '',
+      span: 22
+    },{
+      Name:'Stable body weight',
+      Count: '370',
+      Desc:'55%',
+      SubDesc: '',
+      span: 20
+    },{
+      Name:'Type 2 Diabetes',
+      Count: '260',
+      Desc:'45%',
+      SubDesc: '',
+      span: 18
+    },{
+      Name:'Metformin',
+      Count: '120',
+      Desc:'25%',
+      SubDesc: '29%',
+      span: 16
+    },{
+      Name:'Insulin',
+      Count: '120',
+      Desc:'25%',
+      SubDesc: '',
+      span: 16
+    },{
+      Name:'TSH',
+      Count: '100',
+      Desc:'22%',
+      SubDesc: '',
+      span: 15
+    },{
+      Name:'Fasting C peptide',
+      Count: '90',
+      Desc:'20%',
+      SubDesc: '',
+      span: 14
+    },{
+      Name:'HbA1c',
+      Count: '70',
+      Desc:'15%',
+      SubDesc: '',
+      span: 12
+    }]
+
+
   //--------------------------------------------
 
 const jsonExport = async (jsonData, filename) => {
@@ -1590,7 +1647,160 @@ const pdfMake = async () =>{
               </Row>
             </TabPane>
             <TabPane tab="Enrollment Feasibility" key="3">
-              Content of Tab Pane 3
+            <Row>
+                <Col span={6} style={{backgroundColor: '#f3f3f3'}}>
+                  <Row style={{backgroundColor: '#f3f3f3'}}>
+                    <Col span={24}>
+                      <div style={{padding: '5px 15px'}}>
+                        <span style={{fontSize: '16px', fontWeight: 500}}>My Protocol</span>
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row style={{borderBottom:'10px solid #f3f3f3'}}>
+                    <Col flex="none">
+                      <div style={{ padding: '0 10px' }}></div>
+                    </Col>
+                    <Col className="enrollment-left-section">
+                      <Row className="check-header">
+                        <Col span={24}><Checkbox onChange={null} defaultChecked={true} >Demographic</Checkbox></Col>
+                      </Row>
+                      <Row className="list-item">
+                        <Col span={5}><span>Age</span></Col>
+                        <Col span={6}><Input defaultValue=">18" /></Col>
+                      </Row>
+                      <Row className="list-item">
+                        <Col span={5}><span>Gender</span></Col>
+                        <Col span={18}><Input defaultValue="Men or nonpregnant women" /></Col>
+                      </Row>
+                      <Row className="list-item">
+                        <Col span={9}><span>Stable body weight</span></Col>
+                        <Col span={14}><Input defaultValue="Not charged by more than 5%" /></Col>
+                      </Row>
+                      <Row className="check-header">
+                        <Col span={24}><Checkbox onChange={null} defaultChecked={true} >Medical Condition</Checkbox></Col>
+                      </Row>
+                      <Row className="list-item">
+                        <Col span={10}><span>Type 2 Diabetes</span></Col>
+                      </Row>
+                      <Row className="check-header">
+                        <Col span={24}><Checkbox onChange={null} defaultChecked={true} >Intervention</Checkbox></Col>
+                      </Row>
+                      <Row className="list-item">
+                        <Col span={6}><span>Meformin</span></Col>
+                        <Col span={6}><Input defaultValue="Stable" /></Col>
+                      </Row>
+                      <Row className="check-header">
+                        <Col span={24}><Checkbox onChange={null} defaultChecked={true} >Lab / Test</Checkbox></Col>
+                      </Row>
+                      <Row className="list-item">
+                        <Col span={3}><span>TSH</span></Col>
+                        <Col span={20}><Input defaultValue="Normal or clinically euthyroid" /></Col>
+                      </Row>
+                      <Row className="list-item">
+                        <Col span={10}><span>Fasting C-peptide</span></Col>
+                        <Col span={8}><Input defaultValue="&ge;0.8 ng/mL" /></Col>
+                      </Row>
+                      <Row className="list-item">
+                        <Col span={5}><span>HbA1c</span></Col>
+                        <Col span={12}><Input defaultValue="&ge;7.0% and &le;9.0%" /></Col>
+                      </Row>
+                    </Col>
+                    <Col flex="none">
+                      <div style={{ padding: '0 10px' }}></div>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col span={10}>
+                  <Row style={{ paddingTop: '10px' }}>
+                    <Col flex="none">
+                      <div style={{ padding: '0 10px' }}></div>
+                    </Col>
+                    <Col flex="auto" className="enrollment-right-section">
+                      <Row>
+                        <Col span={24}><h4>Enrollment Feasibility</h4></Col>
+                      </Row>
+                      <Row>
+                        <Col span={24}>
+                        <span className="tip1-desc">
+                          View the impact of selected inclusion criteria on propspective patient enrollment.
+                        </span>
+                        </Col>
+                      </Row>
+                      <Row style={{paddingTop: 20}}>
+                        <Col span={24}>
+                          <span className="chart-title">Patient Funnel</span>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col span={24}>
+                          <div className="content-outer">
+                            <div className="enrollment-item">
+                              {option.map((item, index) => {
+                                return (
+                                  <>
+                                  {index == 0 ? (
+                                    <div className="first-item">
+                                      <Row className="title-box">
+                                        <Col span={18} className="name-box"><span>{item.Name}</span></Col>
+                                        <Col span={6} className="count-box"><span>{item.Count}K</span></Col>
+                                      </Row>
+                                      <Row>
+                                        <Col span={item.span} className="item-bar"></Col>
+                                      </Row>
+                                      <Row>
+                                        <Col span={option[index+1].span} className="content-box">
+                                          <Row>
+                                            <Col flex="50px" className="desc-box"><span>{item.Desc}</span></Col>
+                                            <Col flex="auto" className="subdesc-box"><span>{item.SubDesc}</span></Col>
+                                          </Row>
+                                          <br/>
+                                          <Row className="title-box">
+                                            <Col span={18} className="name-box"><span>{option[index+1].Name}</span></Col>
+                                            <Col span={6} className="count-box"><span>{option[index+1].Count}K</span></Col>
+                                          </Row>
+                                        </Col>
+                                        <Col span={item.span-option[index+1].span} className="triangle-topleft"></Col>
+                                      </Row>
+                                    </div>
+                                  ):(index != option.length -1?(
+                                    <div className="normal-item">
+                                      <Row>
+                                        <Col span={item.span} className="item-bar"></Col>
+                                      </Row>
+                                      <Row>
+                                        <Col span={option[index+1].span} className="content-box">
+                                          <Row>
+                                            <Col flex="100px" className="desc-box"><span>{item.Desc}</span></Col>
+                                            <Col flex="auto" className="subdesc-box"><span>{item.SubDesc}</span></Col>
+                                          </Row>
+                                          <br/>
+                                          <Row className="title-box">
+                                            <Col span={18} className="name-box"><span>{option[index+1].Name}</span></Col>
+                                            <Col span={6} className="count-box"><span>{option[index+1].Count}K</span></Col>
+                                          </Row>
+                                        </Col>
+                                        <Col span={item.span - option[index+1].span} className="triangle-topleft"></Col>
+                                      </Row>
+                                    </div>
+                                  ):(
+                                    <Row>
+                                        <Col span={item.span} className="item-bar"></Col>
+                                      </Row>
+                                  ))}
+                                  </>
+                                )
+                              })}
+                            </div>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col flex="none">
+                      <div style={{ padding: '0 10px' }}></div>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
             </TabPane>
           </Tabs>
         </div>

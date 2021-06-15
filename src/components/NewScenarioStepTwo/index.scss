@@ -316,6 +316,99 @@
         .collapse-inner.taller.collapsed{
             height:230px
         }
+
+        .enrollment-left-section{
+            width: calc(100% - 30px);
+            margin: 0 15px;
+
+            .check-header{
+                background-color: #DEDEDE;
+                height: 42px;
+                align-items: center;
+                padding-left: 15px;
+
+                .ant-checkbox-wrapper > span{
+                    color: #333333;
+                    font-size: 14px;
+                    font-weight: 500;
+                }
+            }
+
+            .list-item{
+                background-color: #fff;
+                height: 42px;
+                align-items: center;
+                padding-left: 15px;
+                border: 1px solid #DEDEDE;
+
+                span{
+                    font-size: 14px;
+                }
+            }
+        }
+
+        .enrollment-right-section{
+            span.chart-title {
+                font-size: 16px;
+                font-weight: bold;
+                margin-top: 10px;
+                padding: 10px 0;
+            }
+        }
+
+        .enrollment-item{
+            height: 420px;
+            width: calc(100% + 22px);
+            overflow-y:scroll;
+            box-sizing: content-box;
+
+            .title-box{
+                span{
+                    font-size:16px;
+                    font-weight: bold;
+                }
+
+                .name-box{
+                    padding-left:20px;
+                }
+
+                .count-box{
+                    text-align: right;
+                    color:#9C7ED1;
+                    padding-right: 5px;
+                }
+            }
+            
+            .item-bar{
+                background-color:#634A8F;
+                height:15px;
+            }
+
+            .content-box{
+                background-color:#d5cce5;
+                height:80px;
+
+                .desc-box{
+                    padding-left:20px;
+
+                    span{
+                        font-size: 14px;
+                        font-weight: 500;
+                    }
+                }
+
+                .subdesc-box{
+                    span{
+                        font-size: 14px;
+                        color:#9C7ED1;
+                    }
+                }
+            }
+
+            .triangle-topleft{
+                background:linear-gradient(to bottom right, #d5cce5 0%, #d5cce5 50%,transparent calc(50% + 1px),#fff 100%);
+            }
+        }
     }
 }
 
