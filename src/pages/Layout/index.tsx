@@ -26,7 +26,7 @@ const { Header, Content ,Footer} = Layout;
 const GlobalLayout = (props: any) => {
   const [username, setUsername] = useState("");
   const [searchTxt, setSearchTxt] = useState("");
-  const [showSearch, setShowSearch] = useState(true)
+  const [showSearch, setShowSearch] = useState(false)
   let content: any;
 
   useEffect(() => {
@@ -55,9 +55,6 @@ const GlobalLayout = (props: any) => {
       case "/trials":
         content = <TrialPortfolio keyWords={searchTxt} showSearch={ showSearch} setShowSearch={(v)=>setShowSearch(v)}/>;
         break;
-      // case "/trials/design":
-      //   content = <TrialDesign />;
-      //   break;
       case "/scenario":
         content = (
           <ScenarioPage/>

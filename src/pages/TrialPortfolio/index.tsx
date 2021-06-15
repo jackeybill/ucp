@@ -152,7 +152,7 @@ const TrialPortfolio = (props) => {
   };
 
   useEffect(() => {
-    setShowSearch(!showDetails )
+    setShowSearch(!showDetails)
   },[showDetails])
 
   useEffect(() => {

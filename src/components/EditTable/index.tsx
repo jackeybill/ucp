@@ -7,7 +7,7 @@ import {MoreOutlined, CheckOutlined, CloseOutlined, PlusCircleOutlined, CaretRig
 const { TextArea } = Input;
 const { Panel } = Collapse;
 
-const EditableCell = ({editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
+const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
   const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
   return (
     <td {...restProps}>
@@ -27,8 +27,9 @@ const chars = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','
   
 const initialEditable = {}
 const EditTable = (props) => {
+  
   const [form] = Form.useForm();
-  const [data, setData] = useState(props.data);
+  const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [conOrExcpKey, setConOrExcpKey] = useState();
   const [conOrExcpContent, setConOrExcpContent] = useState();
@@ -37,7 +38,10 @@ const EditTable = (props) => {
   const [editable, setEditable] = useReducer(
         (state, newState) => ({ ...state, ...newState }),
         { ...initialEditable }
-    );
+  );
+  useEffect(() => {
+    setData(props.data)
+  },[props.data])
  
 
   const handleSubCriteraInputChange = (key, e, record?, idx?, header?) => {

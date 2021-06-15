@@ -12,23 +12,14 @@ import CriteriaOption from "../CriteriaOption";
 import CustomChart from "../CustomChart";
 import EditTable from "../../components/EditTable";
 import SelectableTable from "../../components/SelectableTable";
+import { debug } from 'console';
+
 
 const { Panel } = Collapse;
 const { TabPane } = Tabs;
 
 const frequencyFilter = [2, 10]
 
-//To store the selected inclusion criteria libs
-let demographicsElements = [];
-let interventionElements = [];
-let medConditionElements = [];
-let labTestElements = [];
-
-//To store the selected exclusion criteria libs
-let excluDemographicsElements = [];
-let excluMedConditionElements = [];
-let excluInterventionElements = [];
-let excluLabTestElements = [];
 
 const panelHeader = () => {
     return (
@@ -83,6 +74,18 @@ const NewScenarioStepTwo = (props) => {
     const [defaultActiveKey, setDefaultActiveKey] = useState([])  //default expanded collapse for edittable
     const [activeKey, setActiveKey] = useState([])                //To control chart collapse expanding
     const [collapsible, setCollapsible] = useState(true)// Set collapse can be click to collapse/expand or not
+  
+    //To store the selected inclusion criteria libs
+   let [demographicsElements, setDemographicsElements] = useState([])
+   let [interventionElements , setInterventionElements ] = useState([])
+   let [medConditionElements, setMedConditionElements] = useState([])
+   let [labTestElements, setLabTestElements] = useState([])
+  
+    // inclusion criteria data for EditTable
+  let [demographicsTableData, setDemographicsTableData] = useState([])
+  let [interventionTableData, setInterventionTableData] = useState([])
+  let [medConditionTableData, setMedConditionTableData] = useState([])
+  let [labTestTableData, setLabTestTableData] = useState([])
     //------------------------INCLUSION CRITERIA CONST END-----------------------------
 
     //------------------------EXCLUSION CRITERIA CONST START-----------------------------
@@ -111,7 +114,20 @@ const NewScenarioStepTwo = (props) => {
     const [excluDefaultActiveKey, setExcluDefaultActiveKey] = useState([])  //default expanded collapse for edittable
     const [excluActiveKey, setExcluActiveKey] = useState([])                //To control chart collapse expanding
     const [excluCollapsible, setExcluCollapsible] = useState(true)          // Set collapse can be click to collapse/expand or not
+    
+    //To store the selected exclusion criteria libs
+    let [excluDemographicsElements, setExcluDemographicsElements] = useState([])
+    let [excluMedConditionElements , setExcluMedConditionElements ] = useState([])
+    let [excluInterventionElements, setExcluInterventionElements] = useState([])
+    let [excluLabTestElements, setExcluLabTestElements] = useState([])
+  
+    // exclusion criteria data for EditTable
+  let [excluDemographicsTableData, setExcluDemographicsTableData] = useState([])
+  let [excluInterventionTableData, setExcluInterventionTableData] = useState([])
+  let [excluMedConditionTableData, setExcluMedConditionTableData] = useState([])
+  let [excluLabTestTableData, setExcluLabTestTableData] = useState([])
     //------------------------EXCLUSION CRITERIA CONST END-----------------------------
+  
 
     useEffect(() => {
       const summaryDefaultList = async () => {
@@ -193,7 +209,8 @@ const NewScenarioStepTwo = (props) => {
       return value+'%'
     }
     
-    const getFrequency = (value) => {
+  const getFrequency = (value) => {
+
         setMinValue(value[0])
         setMaxValue(value[1])
     
@@ -209,11 +226,6 @@ const NewScenarioStepTwo = (props) => {
         setIntervention(originIntervention.filter((d) => {
             return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
         }))
-    
-        medConditionElements = []
-        demographicsElements = []
-        labTestElements = []
-        interventionElements = []
     }
     
     const getExcluFrequency = (value) => {
@@ -232,11 +244,6 @@ const NewScenarioStepTwo = (props) => {
       setExcluIntervention(originExcluIntervention.filter((d) => {
           return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
       }))
-    
-      excluDemographicsElements = [];
-      excluMedConditionElements = [];
-      excluInterventionElements = [];
-      excluLabTestElements = [];
     }
 
     const handleOptionSelect = (item, activeType, id, key) =>{
@@ -248,13 +255,14 @@ const NewScenarioStepTwo = (props) => {
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": "-",
-                "Timeframe": "-"
+                "Timeframe": "-",
+                "Frequency":item.Frequency
               }
               demographicsElements.push(newItem)
             }
           } else {
             if(index >= 0){
-              demographicsElements.splice(index,1)
+              demographicsElements.splice(index, 1)         
             }
           }
           break;
@@ -265,13 +273,14 @@ const NewScenarioStepTwo = (props) => {
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": "-",
-                "Timeframe": "-"
+                "Timeframe": "-",
+                "Frequency":item.Frequency
               }
               medConditionElements.push(newItem)
             }
           } else {
             if(index >= 0){
-              medConditionElements.splice(index,1)
+              medConditionElements.splice(index, 1)
             }
           }
           break;
@@ -282,13 +291,14 @@ const NewScenarioStepTwo = (props) => {
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": "-",
-                "Timeframe": "-"
+                "Timeframe": "-",
+                "Frequency":item.Frequency
               }
-              interventionElements.push(newItem)
+              interventionElements.push(newItem)           
             }
           } else {
             if(index >= 0){
-              interventionElements.splice(index,1)
+              interventionElements.splice(index, 1)             
             }
           }
           break;
@@ -299,13 +309,14 @@ const NewScenarioStepTwo = (props) => {
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": "-",
-                "Timeframe": "-"
+                "Timeframe": "-",
+                "Frequency":item.Frequency
               }
               labTestElements.push(newItem)
             }
           } else {
             if(index >= 0){
-              labTestElements.splice(index,1)
+              labTestElements.splice(index, 1)
             }
           }
           break;
@@ -321,7 +332,8 @@ const NewScenarioStepTwo = (props) => {
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": "-",
-                "Timeframe": "-"
+                "Timeframe": "-",
+                "Frequency":item.Frequency
               }
               excluDemographicsElements.push(newItem)
             }
@@ -338,7 +350,8 @@ const NewScenarioStepTwo = (props) => {
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": "-",
-                "Timeframe": "-"
+                "Timeframe": "-",
+                "Frequency":item.Frequency
               }
               excluMedConditionElements.push(newItem)
             }
@@ -355,7 +368,8 @@ const NewScenarioStepTwo = (props) => {
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": "-",
-                "Timeframe": "-"
+                "Timeframe": "-",
+                "Frequency":item.Frequency
               }
               excluInterventionElements.push(newItem)
             }
@@ -372,7 +386,8 @@ const NewScenarioStepTwo = (props) => {
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": "-",
-                "Timeframe": "-"
+                "Timeframe": "-",
+                "Frequency":item.Frequency
               }
               excluLabTestElements.push(newItem)
             }
@@ -387,36 +402,92 @@ const NewScenarioStepTwo = (props) => {
 
     const updateTrial = (type:number) => {
       if(type == 1){//Inclusion
-        medConditionElements = medConditionElements.map((item,index) =>{
+        let medConditionElementsTmp = medConditionElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
-        demographicsElements = demographicsElements.map((item,index) =>{
+        let medConditionTableDataTmp = medConditionElementsTmp.filter(d => {
+          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+        })
+        setMedConditionElements(medConditionElementsTmp)
+        setMedConditionTableData(medConditionTableDataTmp)
+  
+        let demographicsElementsTmp = demographicsElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
-        labTestElements = labTestElements.map((item,index) =>{
+        let demographicsTableDataTmp = demographicsElementsTmp.filter(d => {
+          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+        })
+        setDemographicsElements(demographicsElementsTmp)
+        setDemographicsTableData(demographicsTableDataTmp)
+
+        let labTestElementsTmp = labTestElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
-        interventionElements = interventionElements.map((item,index) =>{
+        let labTestTableDataTmp = labTestElementsTmp.filter(d => {
+          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+        }) 
+        setLabTestElements(labTestElementsTmp)
+        setLabTestTableData(labTestTableDataTmp)
+
+        let interventionElementsTmp = interventionElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
+         let interventionDataTmp = interventionElementsTmp.filter(d => {
+          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+        }) 
+        setInterventionElements(interventionElementsTmp)
+        setInterventionTableData(interventionDataTmp)
+
+
         setCollapsible(false)
         setDefaultActiveKey(['2','3','4','5'])
-      } else if(type == 2) {//Exclusion
-        excluMedConditionElements = excluMedConditionElements.map((item,index) =>{
+      } else if (type == 2) {//Exclusion
+         
+        let excluMedConditionElementsTmp = excluMedConditionElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
-        excluDemographicsElements = excluDemographicsElements.map((item,index) =>{
+         let excluMedConditionDataTmp = excluMedConditionElementsTmp.filter(d => {
+          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+        }) 
+
+        setExcluMedConditionElements(excluMedConditionElementsTmp )
+        setExcluMedConditionTableData(excluMedConditionDataTmp)
+
+        let excluDemographicsElementsTmp = excluDemographicsElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
-        excluLabTestElements = excluLabTestElements.map((item,index) =>{
+        let excluDemographicsDataTmp = excluDemographicsElementsTmp.filter(d => {
+          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+        })
+        setExcluDemographicsElements(excluDemographicsElementsTmp )
+        setExcluDemographicsTableData(excluDemographicsDataTmp)
+        
+
+        let excluLabTestElementsTmp = excluLabTestElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
-        excluInterventionElements = excluInterventionElements.map((item,index) =>{
+         let excluLabTestDataTmp = excluLabTestElementsTmp.filter(d => {
+          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+         })
+        setExcluLabTestElements(excluLabTestElementsTmp )
+        setExcluLabTestTableData(excluLabTestDataTmp)
+        
+
+
+        let excluInterventionElementsTmp = excluInterventionElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
+         let excluInterventionDataTmp = excluInterventionElementsTmp.filter(d => {
+          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+         })
+        setExcluInterventionElements(excluInterventionElementsTmp )
+        setExcluInterventionTableData(excluInterventionDataTmp)
+
         setExcluCollapsible(false)
         setExcluDefaultActiveKey(['2','3','4','5'])
       }
+
+    
     }
 
     function callback(key) {
@@ -954,7 +1025,9 @@ const pdfMake = async () =>{
         pdf.save(`Inclusion_Criteria_${dateStr}.pdf`);
     });
 };
-
+  
+  
+  
     return (
       <div className="ie-container">
         <div className="export-container">
@@ -1054,9 +1127,12 @@ const pdfMake = async () =>{
                               <div className="library box">
                                 <span>Demographics</span>
                                 <br />
-                                {demographics.map((demographic, idx) => {
+                                {demographics.map((demographic, idx) => {                              
                                   return (
                                     <CriteriaOption
+                                      selectedEle = {demographicsElements}
+                                      minValue={minValue}
+                                      maxValue={maxValue}
                                       key={`demographic_${idx}`}
                                       demographic={demographic}
                                       index={0}
@@ -1073,6 +1149,9 @@ const pdfMake = async () =>{
                                 {medCondition.map((medCon, idx) => {
                                   return (
                                     <CriteriaOption
+                                      selectedEle = {medConditionElements}
+                                      minValue={minValue}
+                                      maxValue={maxValue}
                                       key={`medCon_${idx}`}
                                       demographic={medCon}
                                       index={1}
@@ -1087,8 +1166,12 @@ const pdfMake = async () =>{
                                 <span>Intervention</span>
                                 <br />
                                 {intervention.map((intervent, idx) => {
+                                   
                                   return (
                                     <CriteriaOption
+                                      selectedEle = {interventionElements}
+                                      minValue={minValue}
+                                      maxValue={maxValue}
                                       key={`intervent_${idx}`}
                                       demographic={intervent}
                                       index={2}
@@ -1103,8 +1186,12 @@ const pdfMake = async () =>{
                                 <span>Lab / Test</span>
                                 <br />
                                 {labTest.map((lib, idx) => {
+                                 
                                   return (
                                     <CriteriaOption
+                                      selectedEle = {labTestElements}
+                                      minValue={minValue}
+                                      maxValue={maxValue}
                                       key={`lib_${idx}`}
                                       demographic={lib}
                                       index={3}
@@ -1208,16 +1295,16 @@ const pdfMake = async () =>{
                               </div>
                               <div className="sectionPanel">
                               <EditTable updateCriteria={updateInclusionCriteria} tableIndex={2} 
-                                      data={demographicsElements} defaultActiveKey={defaultActiveKey}
+                                      data={demographicsTableData} defaultActiveKey={defaultActiveKey}
                                       collapsible={collapsible} panelHeader={"Demographics"}/>
                               <EditTable updateCriteria={updateInclusionCriteria} tableIndex={3} 
-                                      data={medConditionElements} defaultActiveKey={defaultActiveKey}
+                                      data={medConditionTableData} defaultActiveKey={defaultActiveKey}
                                       collapsible={collapsible} panelHeader={"Medical Condition"}/>
                               <EditTable updateCriteria={updateInclusionCriteria} tableIndex={4} 
-                                      data={interventionElements} defaultActiveKey={defaultActiveKey}
+                                      data={interventionTableData} defaultActiveKey={defaultActiveKey}
                                       collapsible={collapsible} panelHeader={"Intervention"}/>
                               <EditTable updateCriteria={updateInclusionCriteria} tableIndex={5} 
-                                      data={labTestElements} defaultActiveKey={defaultActiveKey}
+                                      data={labTestTableData} defaultActiveKey={defaultActiveKey}
                                       collapsible={collapsible} panelHeader={"Lab / Test"}/>
                               </div>
                             </div>
@@ -1308,8 +1395,12 @@ const pdfMake = async () =>{
                                 <span>Demographics</span>
                                 <br />
                                 {excluDemographics.map((demographic, idx) => {
+                                  const activeType = excluDemographicsElements.find(e=> e['Eligibility Criteria']==demographic.Text) ?1:0
                                   return (
                                     <CriteriaOption
+                                      selectedEle = {excluDemographicsElements}
+                                      minValue={minValue}
+                                      maxValue={maxValue}
                                       key={`demographic_${idx}`}
                                       demographic={demographic}
                                       index={0}
@@ -1324,8 +1415,12 @@ const pdfMake = async () =>{
                                 <span>Medical Condition</span>
                                 <br />
                                 {excluMedCondition.map((medCon, idx) => {
+                                 
                                   return (
                                     <CriteriaOption
+                                      selectedEle = {excluMedConditionElements}
+                                      minValue={minValue}
+                                      maxValue={maxValue}
                                       key={`medCon_${idx}`}
                                       demographic={medCon}
                                       index={1}
@@ -1336,12 +1431,16 @@ const pdfMake = async () =>{
                                 })}
                               </div>
 
-                              <div className="library box">
+                               <div className="library box">
                                 <span>Intervention</span>
                                 <br />
                                 {excluIntervention.map((intervent, idx) => {
+                                  
                                   return (
                                     <CriteriaOption
+                                      selectedEle = {excluInterventionElements}
+                                      minValue={minValue}
+                                      maxValue={maxValue}
                                       key={`intervent_${idx}`}
                                       demographic={intervent}
                                       index={2}
@@ -1350,14 +1449,18 @@ const pdfMake = async () =>{
                                     ></CriteriaOption>
                                   );
                                 })}
-                              </div>
+                              </div> 
 
                               <div className="library box lastOne">
                                 <span>Lab / Test</span>
                                 <br />
                                 {excluLabTest.map((lib, idx) => {
+                                  
                                   return (
                                     <CriteriaOption
+                                     selectedEle = {excluLabTestElements}
+                                      minValue={minValue}
+                                      maxValue={maxValue}
                                       key={`lib_${idx}`}
                                       demographic={lib}
                                       index={3}
@@ -1461,16 +1564,16 @@ const pdfMake = async () =>{
                               </div>
                               <div className="sectionPanel">
                               <EditTable updateCriteria={updateExclusionCriteria} tableIndex={2} 
-                                      data={excluDemographicsElements} defaultActiveKey={excluDefaultActiveKey}
+                                      data={excluDemographicsTableData} defaultActiveKey={excluDefaultActiveKey}
                                       collapsible={excluCollapsible} panelHeader={"Demographics"}/>
                               <EditTable updateCriteria={updateExclusionCriteria} tableIndex={3} 
-                                      data={excluMedConditionElements} defaultActiveKey={excluDefaultActiveKey}
+                                      data={excluMedConditionTableData} defaultActiveKey={excluDefaultActiveKey}
                                       collapsible={excluCollapsible} panelHeader={"Medical Condition"}/>
                               <EditTable updateCriteria={updateExclusionCriteria} tableIndex={4} 
-                                      data={excluInterventionElements} defaultActiveKey={excluDefaultActiveKey}
+                                      data={excluInterventionTableData} defaultActiveKey={excluDefaultActiveKey}
                                       collapsible={excluCollapsible} panelHeader={"Intervention"}/>
                               <EditTable updateCriteria={updateExclusionCriteria} tableIndex={5} 
-                                      data={excluLabTestElements} defaultActiveKey={excluDefaultActiveKey}
+                                      data={excluLabTestTableData} defaultActiveKey={excluDefaultActiveKey}
                                       collapsible={excluCollapsible} panelHeader={"Lab / Test"}/>
                               </div>
                             </div>
