@@ -128,7 +128,7 @@ const EditTable = (props) => {
     if (!targetRecord.Children) {
       targetRecord.Children = [
       {
-        "Key": "A",
+        "Key": record.Key + "A",
         "Eligibility Criteria": "",
         "Timeframe": "",
         "Values": "",
@@ -141,7 +141,7 @@ const EditTable = (props) => {
     else {
       targetRecord.Children.push(
         {
-          "Key": chars[targetRecord.Children.length],
+          "Key": record.Key + chars[targetRecord.Children.length],
           "Eligibility Criteria": "",
           "Timeframe": "",
           "Values": "",
@@ -160,7 +160,7 @@ const EditTable = (props) => {
     const targetRecord = tmpData.find(e=> e.Key==record.Key)
     targetRecord.Children.splice(idx, 1)
     targetRecord.Children = targetRecord.Children.map((item,index) =>{
-      item.Key = chars[index]
+      item.Key = record.Key + chars[index]
       return item
     })
 
@@ -204,6 +204,16 @@ const panelHeaderSection = (header, count) => {
       dataIndex: "Eligibility Criteria",
       width: '28%',
       editable: true,
+      render: (_, record) => {
+        const editable = isEditing(record);
+        return editable ? (
+            <Input value={record["Eligibility Criteria"]}/>
+        ) : (
+          <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
+            <div><span style={{fontSize: '14px'}}>{record['Eligibility Criteria']}</span></div>
+          </Typography.Link>
+        );
+      }
     }, {
       title: 'Values',
       dataIndex: 'Values',
@@ -223,7 +233,17 @@ const panelHeaderSection = (header, count) => {
       title: 'Timeframe',
       dataIndex: 'Timeframe',
       width: '25%',
-      editable: true
+      editable: true,
+      render: (_, record) => {
+        const editable = isEditing(record);
+        return editable ? (
+            <Input value={record["Timeframe"]}/>
+        ) : (
+          <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
+            <div><span style={{fontSize: '14px'}}>{record.Timeframe}</span></div>
+          </Typography.Link>
+        );
+      }
     }, {
       title: 'operation',
       dataIndex: 'operation',

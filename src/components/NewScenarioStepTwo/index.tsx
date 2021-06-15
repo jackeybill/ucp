@@ -782,7 +782,7 @@ const NewScenarioStepTwo = (props) => {
           const subCriteria = elements[a].Children
           var subSerialNum;
           for(const aa in subCriteria){
-            subSerialNum = serialNum + subCriteria[aa].Key
+            subSerialNum = serialNum + subCriteria[aa].Key.charAt((subCriteria[aa].Key.length-1))
             str += '\n' + category + ',' + subSerialNum + ',' + subCriteria[aa]['Eligibility Criteria'] 
             + ',' + subCriteria[aa].Values + ',' + subCriteria[aa].Timeframe
           }
@@ -1737,7 +1737,7 @@ const pdfMake = async () =>{
                             <div className="enrollment-item">
                               {option.map((item, index) => {
                                 return (
-                                  <>
+                                  <div key={index}>
                                   {index == 0 ? (
                                     <div className="first-item">
                                       <Row className="title-box">
@@ -1787,7 +1787,7 @@ const pdfMake = async () =>{
                                         <Col span={item.span} className="item-bar"></Col>
                                       </Row>
                                   ))}
-                                  </>
+                                  </div>
                                 )
                               })}
                             </div>
