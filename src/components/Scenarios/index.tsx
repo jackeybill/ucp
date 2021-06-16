@@ -6,7 +6,6 @@ import addIcon from "../../assets/add.svg";
 import "./index.scss";
 
 const SceneriosDashbaord = (props: any) => {
-  console.log(props);
 
   const renderTitle = () => {
     return (

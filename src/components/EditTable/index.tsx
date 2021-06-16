@@ -27,6 +27,7 @@ const chars = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','
   
 const initialEditable = {}
 const EditTable = (props) => {
+  // console.log(props)
   
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
@@ -39,6 +40,7 @@ const EditTable = (props) => {
         (state, newState) => ({ ...state, ...newState }),
         { ...initialEditable }
   );
+
   useEffect(() => {
     setData(props.data)
   }, [props.data])

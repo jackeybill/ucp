@@ -24,6 +24,7 @@ import addIcon from "../../assets/add.svg";
 import "./index.scss";
 
 
+
 const { Search } = Input;
 const { TextArea } = Input;
 const { Option } = Select;
@@ -60,6 +61,7 @@ const initialStates = {
   molecule_name: "",
   pediatric_study: "",
   study_country: "",
+  scenarios:[]
   // primary_endpoints:[],
   // secondary_endpoints: [],
   // tertiary_endpoints:[]
@@ -69,7 +71,6 @@ const step1 = "details";
 const step2 = "endpoints";
 
 const TrialPortfolio = (props) => {
-  console.log( props)
   const { keyWords,showSearch, setShowSearch } = props;
   const username = Cookies.get("username");
   const [showDetails, setShowDetails] = useState(false);
@@ -107,21 +108,22 @@ const TrialPortfolio = (props) => {
   };
 
 
-  const handleOk = async () => { 
+  const handleOk = async () => {
     const resp = await addStudy(newTrial);
 
     if (resp.statusCode == 200) {
       setVisible(false);
+      const trialId = resp.body
       // setShowSearch(true)
       // setStep(step1)
       message.success("Create successfully");
       setLoading(true)
-      const resp = await getTrialList();
+      const result = await getTrialList();
       setShowDetails(true);
       
       setLoading(false)
-      const latestTrial = resp.body && resp.body.find( i=> i['trial_title']==newTrial['trial_title'])
-      setTrial(latestTrial)
+      const latestTrial = result.body && result.body.find(i => i['_id'] == trialId)
+      setTrial(JSON.parse(JSON.stringify(latestTrial)))
       setNewTrial(initialStates)
     }
   };
@@ -135,9 +137,10 @@ const TrialPortfolio = (props) => {
   }
 
   const onViewTrial = (e, record) => {
+    debugger
     e.preventDefault();
     setShowDetails(true);
-    setTrial(record)
+    setTrial(JSON.parse(JSON.stringify(record)))
   };
 
   const handleCancel = () => {
