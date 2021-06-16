@@ -41,8 +41,8 @@ const EditTable = (props) => {
   );
   useEffect(() => {
     setData(props.data)
-  },[props.data])
- 
+  }, [props.data])
+  
 
   const handleSubCriteraInputChange = (key, e, record?, idx?, header?) => {
    
@@ -79,10 +79,14 @@ const EditTable = (props) => {
       if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, { ...item, ...row });
-        setData(newData);
-        setEditingKey('');
+        const tempData = newData.map((item, id) => {       
+          item.Key =  (id + 1) + '' 
+          return item
+        })
+        setData(tempData);
+        setEditingKey(''); 
 
-        props.updateCriteria(newData, props.tableIndex)
+        props.updateCriteria(tempData, props.tableIndex)
       } else {
         newData.push(row);
         setData(newData);
@@ -105,19 +109,21 @@ const EditTable = (props) => {
     edit(newData)
   };
 
-  const handleDelete = async (record) => {
-      const newData = [...data];
-      const index = newData.indexOf(record);
 
+
+  const handleDelete = async (record) => {   
+    const newData = [...data]; 
+    const index = newData.indexOf(record);
+      
       if (index > -1) {
         newData.splice(index, 1);
-        const tempData = newData.map((item, id) =>{
-          item.Key = (id + 1) + ''
+        const tempData = newData.map((item, id) => {       
+          item.Key =  (id + 1) + '' 
           return item
         })
         setData(tempData);
 
-        props.updateCriteria(newData, props.tableIndex)
+        props.updateCriteria(tempData, props.tableIndex)
       }
   };
 
@@ -154,7 +160,6 @@ const EditTable = (props) => {
     setData(tmpData)
   }
   const deleteSubCriteria = (record, idx) => {
-   
    
     const tmpData = data.slice(0)
     const targetRecord = tmpData.find(e=> e.Key==record.Key)
@@ -318,6 +323,7 @@ const panelHeaderSection = (header, count) => {
     setVisible(false)
     setConOrExp(null)
   }
+
   return (
     <Form form={form} component={false}>
       <Collapse activeKey={props.defaultActiveKey} onChange={callback} expandIconPosition="left"

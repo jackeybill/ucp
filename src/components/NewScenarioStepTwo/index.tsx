@@ -15,6 +15,7 @@ import SelectableTable from "../../components/SelectableTable";
 import { debug } from 'console';
 
 
+
 const { Panel } = Collapse;
 const { TabPane } = Tabs;
 
@@ -400,20 +401,9 @@ const NewScenarioStepTwo = (props) => {
       }
     }
 
-    const updateTrial = (type:number) => {
-      if(type == 1){//Inclusion
-        let medConditionElementsTmp = medConditionElements.map((item,index) =>{
-          return Object.assign(item,{Key:(index + 1) + ''})
-        })
-        let medConditionTableDataTmp = medConditionElementsTmp.filter(d => {
-          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-        })
-        setMedConditionElements(medConditionElementsTmp)
-        setMedConditionTableData(medConditionTableDataTmp.map((item, id) =>{
-          item.Key = (id + 1) + ''
-          return item
-        }))
-  
+  const updateTrial = (type: number) => {
+      if (type == 1) {//Inclusion
+        
         let demographicsElementsTmp = demographicsElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
@@ -426,6 +416,32 @@ const NewScenarioStepTwo = (props) => {
           return item
         }))
 
+
+        let medConditionElementsTmp = medConditionElements.map((item,index) =>{
+          return Object.assign(item,{Key:(index + 1) + ''})
+        })
+        let medConditionTableDataTmp = medConditionElementsTmp.filter(d => {
+          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+        })
+        setMedConditionElements(medConditionElementsTmp)
+        setMedConditionTableData(medConditionTableDataTmp.map((item, id) =>{
+          item.Key = demographicsTableDataTmp.length + (id + 1) + ''
+          return item
+        }))
+
+         let interventionElementsTmp = interventionElements.map((item,index) =>{
+          return Object.assign(item,{Key:(index + 1) + ''})
+        })
+         let interventionTableDataTmp = interventionElementsTmp.filter(d => {
+          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+        }) 
+        setInterventionElements(interventionElementsTmp)
+        setInterventionTableData(interventionTableDataTmp.map((item, id) =>{
+          item.Key = demographicsTableDataTmp.length + medConditionTableDataTmp.length + (id + 1) + ''        
+          return item
+        }))
+  
+       
         let labTestElementsTmp = labTestElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
@@ -434,85 +450,78 @@ const NewScenarioStepTwo = (props) => {
         }) 
         setLabTestElements(labTestElementsTmp)
         setLabTestTableData(labTestTableDataTmp.map((item, id) =>{
-          item.Key = (id + 1) + ''
+          item.Key = demographicsTableDataTmp.length + medConditionTableDataTmp.length + interventionTableDataTmp.length+(id + 1) + ''
           return item
         }))
-
-        let interventionElementsTmp = interventionElements.map((item,index) =>{
-          return Object.assign(item,{Key:(index + 1) + ''})
-        })
-         let interventionDataTmp = interventionElementsTmp.filter(d => {
-          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-        }) 
-        setInterventionElements(interventionElementsTmp)
-        setInterventionTableData(interventionDataTmp.map((item, id) =>{
-          item.Key = (id + 1) + ''
-          return item
-        }))
-
+    
 
         setCollapsible(false)
-        setDefaultActiveKey(['2','3','4','5'])
+        setDefaultActiveKey(['2', '3', '4', '5'])
+        
       } else if (type == 2) {//Exclusion
-         
-        let excluMedConditionElementsTmp = excluMedConditionElements.map((item,index) =>{
-          return Object.assign(item,{Key:(index + 1) + ''})
-        })
-         let excluMedConditionDataTmp = excluMedConditionElementsTmp.filter(d => {
-          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-        }) 
 
-        setExcluMedConditionElements(excluMedConditionElementsTmp )
-        setExcluMedConditionTableData(excluMedConditionDataTmp.map((item, id) =>{
-          item.Key = (id + 1) + ''
-          return item
-        }))
 
         let excluDemographicsElementsTmp = excluDemographicsElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
-        let excluDemographicsDataTmp = excluDemographicsElementsTmp.filter(d => {
+        let excluDemographicsTableDataTmp = excluDemographicsElementsTmp.filter(d => {
           return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
         })
         setExcluDemographicsElements(excluDemographicsElementsTmp )
-        setExcluDemographicsTableData(excluDemographicsDataTmp.map((item, id) =>{
+        setExcluDemographicsTableData(excluDemographicsTableDataTmp.map((item, id) =>{
           item.Key = (id + 1) + ''
           return item
         }))
-        
 
-        let excluLabTestElementsTmp = excluLabTestElements.map((item,index) =>{
+
+         
+        let excluMedConditionElementsTmp = excluMedConditionElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
-         let excluLabTestDataTmp = excluLabTestElementsTmp.filter(d => {
+         let excluMedConditionTableDataTmp = excluMedConditionElementsTmp.filter(d => {
           return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-         })
-        setExcluLabTestElements(excluLabTestElementsTmp )
-        setExcluLabTestTableData(excluLabTestDataTmp.map((item, id) =>{
-          item.Key = (id + 1) + ''
+        }) 
+
+        setExcluMedConditionElements(excluMedConditionElementsTmp )
+        setExcluMedConditionTableData(excluMedConditionTableDataTmp.map((item, id) =>{
+          item.Key = excluDemographicsTableDataTmp.length + (id + 1) + ''
           return item
         }))
-        
 
 
         let excluInterventionElementsTmp = excluInterventionElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
-         let excluInterventionDataTmp = excluInterventionElementsTmp.filter(d => {
+         let excluInterventionTableDataTmp = excluInterventionElementsTmp.filter(d => {
           return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
          })
         setExcluInterventionElements(excluInterventionElementsTmp )
-        setExcluInterventionTableData(excluInterventionDataTmp.map((item, id) =>{
-          item.Key = (id + 1) + ''
+        setExcluInterventionTableData(excluInterventionTableDataTmp.map((item, id) =>{
+          item.Key = excluDemographicsTableDataTmp.length + excluMedConditionTableDataTmp.length + (id + 1) + ''
           return item
         }))
+
+
+        let excluLabTestElementsTmp = excluLabTestElements.map((item,index) =>{
+          return Object.assign(item,{Key:(index + 1) + ''})
+        })
+         let excluLabTestTableDataTmp = excluLabTestElementsTmp.filter(d => {
+          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+         })
+        setExcluLabTestElements(excluLabTestElementsTmp )
+        setExcluLabTestTableData(excluLabTestTableDataTmp.map((item, id) =>{
+          item.Key = excluDemographicsTableDataTmp.length + excluMedConditionTableDataTmp.length + excluInterventionTableDataTmp.length + (id + 1) + ''
+          return item
+        }))
+
 
         setExcluCollapsible(false)
         setExcluDefaultActiveKey(['2','3','4','5'])
       }
 
     
-    }
+  }
+
 
     function callback(key) {
       if(key.indexOf("1") < 0){
@@ -819,32 +828,36 @@ const NewScenarioStepTwo = (props) => {
     const updateInclusionCriteria = (newData, index) => {
       switch(index){
         case 2: 
-          demographicsElements = newData
+          setDemographicsElements(newData)
           break;
-        case 3:
-          medConditionElements = newData
+        case 3:      
+          setMedConditionElements(newData)      
           break;
         case 4:
-          interventionElements = newData
+          setInterventionElements(newData)
           break;
         default:
-          labTestElements = newData
+          setLabTestElements(newData)         
       }
     }
 
     const updateExclusionCriteria = (newData, index) => {
       switch(index){
         case 2: 
-          excluDemographicsElements = newData
+         
+          setExcluDemographicsElements(newData)
           break;
         case 3:
-          excluMedConditionElements = newData
+         
+          setExcluMedConditionElements(newData)
           break;
         case 4:
-          excluInterventionElements = newData
+         
+          setExcluDemographicsElements(newData)
           break;
         default:
-          excluLabTestElements = newData
+          
+          setExcluLabTestElements(newData)
       }
     }
 
@@ -1106,6 +1119,72 @@ const pdfMake = async () =>{
         pdf.save(`Inclusion_Criteria_${dateStr}.pdf`);
     });
 };
+  
+  useEffect(() => {
+    updateTableData()
+   
+  }, [demographicsElements, medConditionElements, interventionElements, labTestElements])
+
+  useEffect(() => {
+    updateExcluTableData()
+  }, [excluDemographicsElements, excluMedConditionElements, excluInterventionElements, excluLabTestElements])
+
+
+  
+  
+  const updateTableData = () => {
+
+    let demographicsTmp = demographicsElements.map((e,idx) => {
+      e.Key = (idx + 1) + ''
+      return e     
+    })
+    setDemographicsTableData(demographicsTmp)
+
+    let medConditionTmp = medConditionElements.map((e,idx) => {
+      e.Key = demographicsTmp.length + (idx + 1) + ''
+        return e
+    })    
+    setMedConditionTableData(medConditionTmp)
+  
+    let interventionTmp =  interventionElements.map((e,idx) => {
+      e.Key = demographicsTmp.length + medConditionTmp.length + (idx + 1) + ''
+        return e
+    })    
+    setInterventionTableData(interventionTmp)
+
+    let labTestTmp =  labTestElements.map((e,idx) => {
+      e.Key = demographicsTmp.length + medConditionTmp.length + interventionTmp.length + (idx + 1) + ''
+        return e
+    })
+    setLabTestTableData(labTestTmp)   
+  }
+
+  const updateExcluTableData = () => {
+
+    let demographicsTmp = excluDemographicsElements.map((e,idx) => {
+      e.Key = (idx + 1) + ''
+      return e     
+    })
+    setExcluDemographicsTableData(demographicsTmp)
+
+    let medConditionTmp = excluMedConditionElements.map((e,idx) => {
+      e.Key = demographicsTmp.length + (idx + 1) + ''
+        return e
+    })    
+    setExcluMedConditionTableData(medConditionTmp)
+  
+    let interventionTmp =  excluInterventionElements.map((e,idx) => {
+      e.Key = demographicsTmp.length + medConditionTmp.length + (idx + 1) + ''
+        return e
+    })    
+    setExcluInterventionTableData(interventionTmp)
+
+    let labTestTmp =  excluLabTestElements.map((e,idx) => {
+      e.Key = demographicsTmp.length + medConditionTmp.length + interventionTmp.length + (idx + 1) + ''
+        return e
+    })
+    setExcluLabTestTableData(labTestTmp)   
+  }
   
   
   
@@ -1380,18 +1459,25 @@ const pdfMake = async () =>{
                                 </div>
                               </div>
                               <div className="sectionPanel">
-                              <EditTable updateCriteria={updateInclusionCriteria} tableIndex={2} 
-                                      data={demographicsTableData} defaultActiveKey={defaultActiveKey}
-                                      collapsible={collapsible} panelHeader={"Demographics"}/>
-                              <EditTable updateCriteria={updateInclusionCriteria} tableIndex={3} 
-                                      data={medConditionTableData} defaultActiveKey={defaultActiveKey}
-                                      collapsible={collapsible} panelHeader={"Medical Condition"}/>
+                                  <EditTable updateCriteria={updateInclusionCriteria} tableIndex={2}                                
+                                    data={demographicsTableData}
+                                    defaultActiveKey={defaultActiveKey}
+                                    collapsible={collapsible} panelHeader={"Demographics"} updateTrial={() => updateTrial(1)}                                  
+                                  />
+                                  <EditTable updateCriteria={updateInclusionCriteria} tableIndex={3}
+                                    data={medConditionTableData}
+                                    defaultActiveKey={defaultActiveKey}
+                                    collapsible={collapsible} panelHeader={"Medical Condition"} updateTrial={() => updateTrial(1)}                               
+                                  />
                               <EditTable updateCriteria={updateInclusionCriteria} tableIndex={4} 
-                                      data={interventionTableData} defaultActiveKey={defaultActiveKey}
-                                      collapsible={collapsible} panelHeader={"Intervention"}/>
+                                    data={interventionTableData}                                  
+                                    defaultActiveKey={defaultActiveKey}
+                                    collapsible={collapsible} panelHeader={"Intervention"} updateTrial={() => updateTrial(1)}                                   
+                                  />
                               <EditTable updateCriteria={updateInclusionCriteria} tableIndex={5} 
-                                      data={labTestTableData} defaultActiveKey={defaultActiveKey}
-                                      collapsible={collapsible} panelHeader={"Lab / Test"}/>
+                                    data={labTestTableData}
+                                    defaultActiveKey={defaultActiveKey}
+                                    collapsible={collapsible} panelHeader={"Lab / Test"} updateTrial={() => updateTrial(1)}/>
                               </div>
                             </div>
                           </div>
