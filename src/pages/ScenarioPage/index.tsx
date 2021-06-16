@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useEffect} from 'react';
-import {addScenario} from "../../utils/ajax-proxy";
+import {getStudy, addScenario} from "../../utils/ajax-proxy";
 import { withRouter } from 'react-router';
 import {Input, Button, Row, Col, Steps, Divider} from "antd";
 import {LeftOutlined } from "@ant-design/icons";
@@ -24,31 +24,83 @@ const initialStates = {
     "Schedule of Events": {}
   };
 
-  var scenarioSize = 0
+const initialTrial = {
+    scenarios:[]
+}
+
 
 const ScenarioPage = (props) => {
-    console.log(props.location.state)
-
+    const [scenarioId, setScenarioId] = useState('')   //To new/editing scenario id
+    const [trialId, setTrialId] = useState('')
+    const [editFlag, setEditFlag] = useState(false)
     const [currentStep, setCurrentStep] = useState(0)
     const [scenario, setScenario] = useReducer(
         (state, newState) => ({ ...state, ...newState }),
         { ...initialStates }
     );
+    const [trial, setTrial] = useReducer(
+        (state, newState) => ({ ...state, ...newState }),
+        { ...initialTrial }
+    );
 
     useEffect(() => {
-        if(props.location.state.scenarios == undefined){
-            props.location.state.scenarios = []
+        if(props.location.state.trial_id == undefined || props.location.state.trial_id == ''){
+            //Go back to trials list page
+        } else {
+            setTrialId(props.location.state.trial_id)
+            const getTrialById = async () => {
+                const resp = await getStudy(props.location.state.trial_id);
+                if(resp.statusCode == 200){
+                    const tempTrial = resp.body
+
+                    if(props.location.state.scenario_id == undefined){
+                        //Add new scenario
+                        if(tempTrial.scenarios == undefined){
+                            tempTrial.scenarios = []
+                        }
+
+                        const newScenarioId = '' + (tempTrial.scenarios.length + 1)
+                        setScenario({
+                            ['scenario_id']: newScenarioId,
+                        });
+
+                        tempTrial.scenarios.push({'scenario_id':newScenarioId})
+                        setTrial(tempTrial)
+                        setScenarioId(newScenarioId)
+                    } else {
+                        //Edit scenario
+                        setScenario(tempTrial.scenarios.find( i=> i['scenario_id']==props.location.state.scenario_id))
+                        setTrial(tempTrial)
+                        setScenarioId(props.location.state.scenario_id)
+                        setEditFlag(true)
+                    }
+                }
+            };
+            getTrialById();
         }
-        scenarioSize = props.location.state.scenarios.length + 1
-    });
+    },[]);
 
     const next = async () =>{
-        console.log(currentStep)
+        // console.log(currentStep)
         const step = currentStep + 1
-        props.location.state.scenarios.push(scenario)
         if(currentStep == 0){
-            const resp = await addScenario(props.location.state);
-            console.log(props.location.state)
+            const tempScenarios = [...trial.scenarios]
+            const newScenarios = tempScenarios.map((item, id) =>{
+                if(item['scenario_id'] == scenarioId){
+                    return scenario
+                } else {
+                    return item
+                }
+            })
+
+            const tempTrial = trial
+            tempTrial.scenarios = newScenarios
+            setTrial({
+                scenarios: newScenarios
+            });
+
+            const resp = await addScenario(tempTrial);
+            console.log(trial)
             if (resp.statusCode == 200) {
                 setCurrentStep(step)
             }
@@ -56,11 +108,9 @@ const ScenarioPage = (props) => {
     }
 
     const handleInputChange = (key, e) => {
+        console.log(trial)
         setScenario({
           [key]: e.target.value,
-        });
-        setScenario({
-            ['scenario_id']: ''+scenarioSize,
         });
     };
     
@@ -111,7 +161,7 @@ const ScenarioPage = (props) => {
             </div>
             ) : currentStep == 1 ? (
                 <>
-                    <NewScenarioStepTwo record={props.location.state}/>
+                    <NewScenarioStepTwo record={trial} scenarioId={scenarioId} editFlag={editFlag}/>
                 </>
             ) : (
                 <>
@@ -122,7 +172,10 @@ const ScenarioPage = (props) => {
                             backgroundColor: '#000', alignItems: 'center'}}>
                 <Col flex="auto">
                     <Button type="primary" onClick={()=>next()}>NEXT</Button>
-                    <Button className="view-btn" onClick={()=>props.history.push('/trials')}>CANCEL</Button>
+                    <Button className="view-btn" onClick={()=>props.history.push({
+                        pathname: '/trials',
+                        state: { trial_id: trialId}
+                    })}>CANCEL</Button>
                 </Col>
                 <Col flex="50px">
                     <div style={{ bottom: '0' }}></div>
