@@ -88,6 +88,10 @@ const TrialPortfolio = (props) => {
     (state, newState) => ({ ...state, ...newState }),
     { ...initialStates }
   );
+  const [newTrial, setNewTrial] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    { ...initialStates }
+  );
   const [count, setCount] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     { ...initialCount }
@@ -104,7 +108,7 @@ const TrialPortfolio = (props) => {
 
 
   const handleOk = async () => { 
-    const resp = await addStudy(trial);
+    const resp = await addStudy(newTrial);
 
     if (resp.statusCode == 200) {
       setVisible(false);
@@ -116,9 +120,9 @@ const TrialPortfolio = (props) => {
       setShowDetails(true);
       
       setLoading(false)
-      const latestTrial = resp.body && resp.body.find( i=> i['trial_title']==trial['trial_title'])
+      const latestTrial = resp.body && resp.body.find( i=> i['trial_title']==newTrial['trial_title'])
       setTrial(latestTrial)
-      
+      setNewTrial(initialStates)
     }
   };
 
@@ -138,6 +142,7 @@ const TrialPortfolio = (props) => {
 
   const handleCancel = () => {
     setVisible(false);
+    setNewTrial(initialStates)
   };
 
   const handleTrialInputChange = (key, e) => {
@@ -147,6 +152,17 @@ const TrialPortfolio = (props) => {
   };
   const handleTrialSelectChange = (key, v) => {
     setTrial({
+      [key]: v,
+    });
+  };
+
+  const handleNewTrialInputChange = (key, e) => {
+    setNewTrial({
+      [key]: e.target.value,
+    });
+  };
+  const handleNewTrialSelectChange = (key, v) => {
+    setNewTrial({
       [key]: v,
     });
   };
@@ -378,15 +394,15 @@ const TrialPortfolio = (props) => {
                 <label htmlFor="">Trial Title</label>
                 <Input
                   style={{ width: 250, height: 30 }}
-                  onChange={(e) => handleTrialInputChange("trial_title", e)}
-                  value={trial["trial_title"]}
+                  onChange={(e) => handleNewTrialInputChange("trial_title", e)}
+                  value={newTrial["trial_title"]}
                 />
               </div>
               <div className="trial-item">
                 <label htmlFor="">Description</label>
                 <TextArea
-                  onChange={(v) => handleTrialInputChange("description", v)}
-                  value={trial["description"]}
+                  onChange={(v) => handleNewTrialInputChange("description", v)}
+                  value={newTrial["description"]}
                   autoSize={{ minRows: 3, maxRows: 5 }}
                 />
               </div>
@@ -395,10 +411,10 @@ const TrialPortfolio = (props) => {
                   <label>Therapeutic Area</label>
                   <Select
                     defaultValue="All"
-                    value={trial["therapeutic_area"]}
+                    value={newTrial["therapeutic_area"]}
                     showSearch
                     style={{ width: 250 }}
-                    onChange={(v) => handleTrialSelectChange("therapeutic_area", v)}
+                    onChange={(v) => handleNewTrialSelectChange("therapeutic_area", v)}
                     filterOption={(input, option) =>
                       option.children
                         .toLowerCase()
@@ -418,8 +434,8 @@ const TrialPortfolio = (props) => {
                   <label htmlFor="">Indication</label>
                   <Input
                     style={{ width: 250, height: 30 }}
-                    onChange={(v) => handleTrialInputChange("indication", v)}
-                    value={trial["indication"]}
+                    onChange={(v) => handleNewTrialInputChange("indication", v)}
+                    value={newTrial["indication"]}
                   />
                 </div>
               </div>
@@ -428,8 +444,8 @@ const TrialPortfolio = (props) => {
                   <label htmlFor="">Trial Alias</label>
                   <Input
                     style={{ width: 250, height: 30 }}
-                    onChange={(v) => handleTrialInputChange("trial_alias", v)}
-                    value={trial["trial_alias"]}
+                    onChange={(v) => handleNewTrialInputChange("trial_alias", v)}
+                    value={newTrial["trial_alias"]}
                     disabled
                   />
                 </div>
@@ -437,9 +453,9 @@ const TrialPortfolio = (props) => {
                   <label htmlFor="">Study Type</label>
                   <Select
                     defaultValue="All"
-                    value={trial["study_type"]}             
+                    value={newTrial["study_type"]}             
                     style={{ width: 250 }}
-                    onChange={(v) => handleTrialSelectChange("study_type", v)}
+                    onChange={(v) => handleNewTrialSelectChange("study_type", v)}
                   >
                     {study_types.map((t) => {
                       return (
@@ -456,17 +472,17 @@ const TrialPortfolio = (props) => {
                   <label htmlFor="">Molecule Name</label>
                   <Input
                     style={{ width: 250, height: 30 }}
-                    onChange={(v) => handleTrialInputChange("molecule_name", v)}
-                    value={trial["molecule_name"]}
+                    onChange={(v) => handleNewTrialInputChange("molecule_name", v)}
+                    value={newTrial["molecule_name"]}
                   />
                 </div>
                 <div className="trial-item">
                   <label htmlFor="">Study Phase</label>
                   <Select
                     defaultValue="All"
-                    value={trial["study_phase"]}
+                    value={newTrial["study_phase"]}
                     style={{ width: 250 }}
-                    onChange={(v) => handleTrialSelectChange("study_phase", v)}
+                    onChange={(v) => handleNewTrialSelectChange("study_phase", v)}
                   >
                     {phase_options.map((o) => {
                       return (
@@ -483,9 +499,9 @@ const TrialPortfolio = (props) => {
                   <label htmlFor="">Pediatric Study</label>
                   <Select
                     defaultValue="All"
-                    value={trial["pediatric_study"]}
+                    value={newTrial["pediatric_study"]}
                     style={{ width: 250 }}
-                    onChange={(v) => handleTrialSelectChange("pediatric_study", v)}
+                    onChange={(v) => handleNewTrialSelectChange("pediatric_study", v)}
                   >
                     <Option value="YES">YES</Option>
                     <Option value="NO">NO</Option>
@@ -495,9 +511,9 @@ const TrialPortfolio = (props) => {
                   <label htmlFor="">Study Country</label>
                   <Select
                     defaultValue="All"
-                    value={trial["study_country"]}
+                    value={newTrial["study_country"]}
                     style={{ width: 250 }}
-                    onChange={(v) => handleTrialSelectChange("study_country", v)}
+                    onChange={(v) => handleNewTrialSelectChange("study_country", v)}
                   >
                     {COUNTRY_MAP.map((o) => {
                       return (
