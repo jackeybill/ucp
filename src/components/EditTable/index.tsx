@@ -344,7 +344,7 @@ const panelHeaderSection = (header, count) => {
                          return(
                            <div className="sub-criteria-wrapper" key={idx}>
                              <div className="serial-number">
-                              <span>{subRecord.Key}</span>
+                              <span>{`${record.Key}.${idx+1}`}</span>
                              </div>
                              {editable[idx] ? (
                                <>
