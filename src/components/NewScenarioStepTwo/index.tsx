@@ -45,6 +45,7 @@ const defaultChartValue = [
 
 const NewScenarioStepTwo = (props) => {
     //Common const
+    const [scenarioId, setScenarioId] = useState('')
     const [defaultActiveTabKey, setDefaultActiveTabKey] = useState('1')
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
@@ -131,6 +132,64 @@ const NewScenarioStepTwo = (props) => {
   
 
     useEffect(() => {
+      console.log('edit scenario for: ' +  props.scenarioId + ': ' +  props.editFlag)
+      setScenarioId(props.scenarioId)
+
+      const tempScenario = props.record.scenarios.find( i=> i['scenario_id'] == props.scenarioId)
+      if(props.editFlag){
+        demographicsElements = tempScenario['Inclusion Criteria'].Demographics.Entities
+        interventionElements = tempScenario['Inclusion Criteria'].Intervention.Entities
+        medConditionElements = tempScenario['Inclusion Criteria']['Medical Condition'].Entities
+        labTestElements = tempScenario['Inclusion Criteria']['Lab / Test'].Entities
+        
+        excluDemographicsElements = tempScenario['Exclusion Criteria'].Demographics.Entities
+        excluMedConditionElements = tempScenario['Exclusion Criteria']['Medical Condition'].Entities
+        excluInterventionElements = tempScenario['Exclusion Criteria'].Intervention.Entities
+        excluLabTestElements = tempScenario['Exclusion Criteria']['Lab / Test'].Entities
+
+        //Get inclusion chart info
+        var inclu = tempScenario["Inclusion Criteria"]
+        
+        setProtocolRateData([
+          {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
+          {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
+          {value: formatNumber(inclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
+          {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
+        ])
+        setScreenRateData([
+          {value: formatNumber(inclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
+          {value: formatNumber(inclu.Intervention.screen_failure_rate), name: 'Intervention'},
+          {value: formatNumber(inclu.Demographics.screen_failure_rate), name: 'Demographics'},
+          {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
+        ])
+  
+        if(props.record['Therapeutic Area Average']){
+          setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + props.record['Therapeutic Area Average'].protocol_amendment_rate)
+          setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + props.record['Therapeutic Area Average'].screen_failure_rate)
+        }
+
+        //Get exclusion chart info
+        var exclu = tempScenario["Exclusion Criteria"]
+        
+        setExcluProtocolRateData([
+          {value: formatNumber(exclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
+          {value: formatNumber(exclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
+          {value: formatNumber(exclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
+          {value: formatNumber(exclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
+        ])
+        setExcluScreenRateData([
+          {value: formatNumber(exclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
+          {value: formatNumber(exclu.Intervention.screen_failure_rate), name: 'Intervention'},
+          {value: formatNumber(exclu.Demographics.screen_failure_rate), name: 'Demographics'},
+          {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
+        ])
+  
+        if(props.record['Therapeutic Area Average']){
+          setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + props.record['Therapeutic Area Average'].protocol_amendment_rate)
+          setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + props.record['Therapeutic Area Average'].screen_failure_rate)
+        }
+      }
+
       const summaryDefaultList = async () => {
           const resp = await getSummaryDefaultList();
   
@@ -187,6 +246,11 @@ const NewScenarioStepTwo = (props) => {
                         return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
                       }))
                   }
+              }
+
+              if(props.editFlag){
+                updateTrial(1)
+                updateTrial(2)
               }
           }
       };
@@ -862,59 +926,82 @@ const NewScenarioStepTwo = (props) => {
     }
 
     const saveCriteria = async () => {
-      //Get updated inclusion information
-      var inclusion = {
-        "Demographics": {
-          "protocol_amendment_rate": '',
-          "patient_burden": '',
-          "Entities": demographicsElements
-        },
-        "Medical Condition": {
-          "protocol_amendment_rate": '',
-          "patient_burden": '',
-          "Entities": medConditionElements
-        },
-        "Intervention": {
-          "protocol_amendment_rate": '',
-          "patient_burden": '',
-          "Entities": interventionElements
-        },
-        "Lab / Test": {
-          "protocol_amendment_rate": '',
-          "patient_burden": '',
-          "Entities": labTestElements
-        }
-      }
-      props.record.scenarios[props.record.scenarios.length-1]["Inclusion Criteria"] = inclusion
+      let newScenario = props.record.scenarios.find( i=> i['scenario_id'] == props.scenarioId)
 
-      //Get updated exclusion information
-      var exclusion = {
-        "Demographics": {
-          "protocol_amendment_rate": '',
-          "patient_burden": '',
-          "Entities": excluDemographicsElements
-        },
-        "Medical Condition": {
-          "protocol_amendment_rate": '',
-          "patient_burden": '',
-          "Entities": excluMedConditionElements
-        },
-        "Intervention": {
-          "protocol_amendment_rate": '',
-          "patient_burden": '',
-          "Entities": excluInterventionElements
-        },
-        "Lab / Test": {
-          "protocol_amendment_rate": '',
-          "patient_burden": '',
-          "Entities": excluLabTestElements
+      if(!props.editFlag){
+        var inclusion = {
+          "Demographics": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": demographicsElements
+          },
+          "Medical Condition": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": medConditionElements
+          },
+          "Intervention": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": interventionElements
+          },
+          "Lab / Test": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": labTestElements
+          }
         }
+
+        var exclusion = {
+          "Demographics": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": excluDemographicsElements
+          },
+          "Medical Condition": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": excluMedConditionElements
+          },
+          "Intervention": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": excluInterventionElements
+          },
+          "Lab / Test": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": excluLabTestElements
+          }
+        }
+        newScenario["Inclusion Criteria"] = inclusion
+        newScenario["Exclusion Criteria"] = exclusion
+      } else {
+        newScenario["Inclusion Criteria"].Demographics.Entities = demographicsElements
+        newScenario["Inclusion Criteria"]['Medical Condition'].Entities = medConditionElements
+        newScenario["Inclusion Criteria"].Intervention.Entities = interventionElements
+        newScenario["Inclusion Criteria"]['Lab / Test'].Entities = labTestElements
+
+        newScenario["Exclusion Criteria"].Demographics.Entities = excluDemographicsElements
+        newScenario["Exclusion Criteria"]['Medical Condition'].Entities = excluMedConditionElements
+        newScenario["Exclusion Criteria"].Intervention.Entities = excluInterventionElements
+        newScenario["Exclusion Criteria"]['Lab / Test'].Entities = excluLabTestElements
       }
-      props.record.scenarios[props.record.scenarios.length-1]["Exclusion Criteria"] = exclusion
+
+      const newScenarioList = props.record.scenarios.map((item, id) =>{
+        if(item['scenario_id'] == scenarioId){
+            return newScenario
+        } else {
+            return item
+        }
+      })
+
+      let newTrial = props.record
+      newTrial.scenarios = newScenarioList
   
       //Update record
-      const resp = await addScenario(props.record);
-      console.log(props.record)
+      const resp = await addScenario(newTrial);
+      console.log(newTrial)
       if (resp.statusCode == 200) {
         var currentScenario = resp.body.scenarios[resp.body.scenarios.length - 1]
 
