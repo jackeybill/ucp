@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import jsPDF from "jspdf";
 import html2canvas from 'html2canvas'
 import FileSaver from 'file-saver'
-import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Checkbox, Input} from "antd";
+import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Checkbox, Input, message} from "antd";
 import {getSummaryDefaultList, addScenario, listStudy} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined} from "@ant-design/icons";
@@ -409,7 +409,10 @@ const NewScenarioStepTwo = (props) => {
           return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
         })
         setMedConditionElements(medConditionElementsTmp)
-        setMedConditionTableData(medConditionTableDataTmp)
+        setMedConditionTableData(medConditionTableDataTmp.map((item, id) =>{
+          item.Key = (id + 1) + ''
+          return item
+        }))
   
         let demographicsElementsTmp = demographicsElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
@@ -418,7 +421,10 @@ const NewScenarioStepTwo = (props) => {
           return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
         })
         setDemographicsElements(demographicsElementsTmp)
-        setDemographicsTableData(demographicsTableDataTmp)
+        setDemographicsTableData(demographicsTableDataTmp.map((item, id) =>{
+          item.Key = (id + 1) + ''
+          return item
+        }))
 
         let labTestElementsTmp = labTestElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
@@ -427,7 +433,10 @@ const NewScenarioStepTwo = (props) => {
           return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
         }) 
         setLabTestElements(labTestElementsTmp)
-        setLabTestTableData(labTestTableDataTmp)
+        setLabTestTableData(labTestTableDataTmp.map((item, id) =>{
+          item.Key = (id + 1) + ''
+          return item
+        }))
 
         let interventionElementsTmp = interventionElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
@@ -436,7 +445,10 @@ const NewScenarioStepTwo = (props) => {
           return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
         }) 
         setInterventionElements(interventionElementsTmp)
-        setInterventionTableData(interventionDataTmp)
+        setInterventionTableData(interventionDataTmp.map((item, id) =>{
+          item.Key = (id + 1) + ''
+          return item
+        }))
 
 
         setCollapsible(false)
@@ -451,7 +463,10 @@ const NewScenarioStepTwo = (props) => {
         }) 
 
         setExcluMedConditionElements(excluMedConditionElementsTmp )
-        setExcluMedConditionTableData(excluMedConditionDataTmp)
+        setExcluMedConditionTableData(excluMedConditionDataTmp.map((item, id) =>{
+          item.Key = (id + 1) + ''
+          return item
+        }))
 
         let excluDemographicsElementsTmp = excluDemographicsElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
@@ -460,7 +475,10 @@ const NewScenarioStepTwo = (props) => {
           return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
         })
         setExcluDemographicsElements(excluDemographicsElementsTmp )
-        setExcluDemographicsTableData(excluDemographicsDataTmp)
+        setExcluDemographicsTableData(excluDemographicsDataTmp.map((item, id) =>{
+          item.Key = (id + 1) + ''
+          return item
+        }))
         
 
         let excluLabTestElementsTmp = excluLabTestElements.map((item,index) =>{
@@ -470,7 +488,10 @@ const NewScenarioStepTwo = (props) => {
           return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
          })
         setExcluLabTestElements(excluLabTestElementsTmp )
-        setExcluLabTestTableData(excluLabTestDataTmp)
+        setExcluLabTestTableData(excluLabTestDataTmp.map((item, id) =>{
+          item.Key = (id + 1) + ''
+          return item
+        }))
         
 
 
@@ -481,7 +502,10 @@ const NewScenarioStepTwo = (props) => {
           return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
          })
         setExcluInterventionElements(excluInterventionElementsTmp )
-        setExcluInterventionTableData(excluInterventionDataTmp)
+        setExcluInterventionTableData(excluInterventionDataTmp.map((item, id) =>{
+          item.Key = (id + 1) + ''
+          return item
+        }))
 
         setExcluCollapsible(false)
         setExcluDefaultActiveKey(['2','3','4','5'])
@@ -824,7 +848,8 @@ const NewScenarioStepTwo = (props) => {
       }
     }
 
-    const saveInclusionCriteria = async () => {
+    const saveCriteria = async () => {
+      //Get updated inclusion information
       var inclusion = {
         "Demographics": {
           "protocol_amendment_rate": '',
@@ -848,39 +873,8 @@ const NewScenarioStepTwo = (props) => {
         }
       }
       props.record.scenarios[props.record.scenarios.length-1]["Inclusion Criteria"] = inclusion
-  
-      const resp = await addScenario(props.record);
-      console.log(props.record)
-      if (resp.statusCode == 200) {
-        var currentScenario = resp.body.scenarios[resp.body.scenarios.length - 1]
-        var inclu = currentScenario["Inclusion Criteria"]
-        
-        setProtocolRateData([
-          {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
-          {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
-          {value: formatNumber(inclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
-          {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
-        ])
-        setScreenRateData([
-          {value: formatNumber(inclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
-          {value: formatNumber(inclu.Intervention.screen_failure_rate), name: 'Intervention'},
-          {value: formatNumber(inclu.Demographics.screen_failure_rate), name: 'Demographics'},
-          {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
-        ])
-  
-        if(resp.body['Therapeutic Area Average']){
-          setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
-          setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
-        }
-  
-        if(activeKey.indexOf("1") < 0){
-          setRollHeight(false)
-          setActiveKey(['1'])
-        }
-      }
-    }
 
-    const saveExclusionCriteria = async () => {
+      //Get updated exclusion information
       var exclusion = {
         "Demographics": {
           "protocol_amendment_rate": '',
@@ -905,10 +899,39 @@ const NewScenarioStepTwo = (props) => {
       }
       props.record.scenarios[props.record.scenarios.length-1]["Exclusion Criteria"] = exclusion
   
+      //Update record
       const resp = await addScenario(props.record);
       console.log(props.record)
       if (resp.statusCode == 200) {
         var currentScenario = resp.body.scenarios[resp.body.scenarios.length - 1]
+
+        //Get inclusion chart info
+        var inclu = currentScenario["Inclusion Criteria"]
+        
+        setProtocolRateData([
+          {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
+          {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
+          {value: formatNumber(inclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
+          {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
+        ])
+        setScreenRateData([
+          {value: formatNumber(inclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
+          {value: formatNumber(inclu.Intervention.screen_failure_rate), name: 'Intervention'},
+          {value: formatNumber(inclu.Demographics.screen_failure_rate), name: 'Demographics'},
+          {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
+        ])
+  
+        if(resp.body['Therapeutic Area Average']){
+          setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
+          setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
+        }
+  
+        // if(activeKey.indexOf("1") < 0){
+        //   setRollHeight(false)
+        //   setActiveKey(['1'])
+        // }
+
+        //Get exclusion chart info
         var exclu = currentScenario["Exclusion Criteria"]
         
         setExcluProtocolRateData([
@@ -929,10 +952,11 @@ const NewScenarioStepTwo = (props) => {
           setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
         }
   
-        if(excluActiveKey.indexOf("1") < 0){
-          setExcluRollHeight(false)
-          setExcluActiveKey(['1'])
-        }
+        // if(excluActiveKey.indexOf("1") < 0){
+        //   setExcluRollHeight(false)
+        //   setExcluActiveKey(['1'])
+        // }
+        message.success("Save successfully");
       }
     }
 
@@ -1089,8 +1113,13 @@ const pdfMake = async () =>{
       <div className="ie-container">
         <div className="export-container">
           <Row>
-            <Col span={21}>
+            <Col span={18}>
               <div style={{ bottom: '0',height: '50px' }}></div>
+            </Col>
+            <Col span={3} style={{paddingRight: '20px'}}>
+              <Button type="primary" onClick={saveCriteria} style={{zIndex: 1, marginTop: '8px'}}>
+                Save
+              </Button>
             </Col>
             <Col span={3}>
               <Dropdown.Button style={{zIndex: 1}}
@@ -1328,9 +1357,9 @@ const pdfMake = async () =>{
                         <Col span={24}>
                           <div className="impact-summary">
                             <span>Inclusion Criteria</span>
-                            <Button type="primary" onClick={saveInclusionCriteria}>
+                            {/* <Button type="primary" onClick={saveInclusionCriteria}>
                               Save
-                            </Button>
+                            </Button> */}
                           </div>
                           </Col>
                       </Row>
@@ -1597,9 +1626,9 @@ const pdfMake = async () =>{
                         <Col span={24}>
                           <div className="impact-summary">
                             <span>Exclusion Criteria</span>
-                            <Button type="primary" onClick={saveExclusionCriteria}>
+                            {/* <Button type="primary" onClick={saveExclusionCriteria}>
                               Save
-                            </Button>
+                            </Button> */}
                           </div>
                           </Col>
                       </Row>

@@ -165,7 +165,7 @@ const EditTable = (props) => {
     })
 
     setData(tmpData)
-    
+    props.updateCriteria(tmpData, props.tableIndex)
   }
   const saveSubCriteria = (record,subRecord,idx) => {
     setEditable({
@@ -175,7 +175,7 @@ const EditTable = (props) => {
     const targetRecord = tmpData.find(e=> e.Key==record.Key)
     targetRecord.Children[idx]= subRecord
     setData(tmpData)
-    
+    props.updateCriteria(tmpData, props.tableIndex)
   } 
 
   function callback(key) {
