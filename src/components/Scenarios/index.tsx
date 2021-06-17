@@ -1,7 +1,7 @@
-import React, { useState, useReducer} from "react";
-import { withRouter } from 'react-router';
-import { Tooltip, Modal, Button, Row, Col, Input} from "antd";
-import { updateStudy} from "../../utils/ajax-proxy";
+import React, { useState, useReducer } from "react";
+import { withRouter } from "react-router";
+import { Tooltip, Modal, Button, Row, Col, Input, Drawer } from "antd";
+import { updateStudy } from "../../utils/ajax-proxy";
 import Scatter from "../Chart";
 import addIcon from "../../assets/add.svg";
 import "./index.scss";
@@ -19,7 +19,7 @@ const initialStates = {
   "Inclusion Criteria": {},
   "Exclusion Criteria": {},
   "Enrollment Feasibility": {},
-  "Schedule of Events": {}
+  "Schedule of Events": {},
 };
 
 const SceneriosDashbaord = (props: any) => {
@@ -28,7 +28,7 @@ const SceneriosDashbaord = (props: any) => {
   const [scenario, setScenario] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     { ...initialStates }
-);
+  );
 
   const renderTitle = () => {
     return (
@@ -40,9 +40,9 @@ const SceneriosDashbaord = (props: any) => {
   };
 
   const path = {
-    pathname: '/scenario',
-    state: props.record
-  }
+    pathname: "/scenario",
+    state: props.record,
+  };
 
   const Metrics = () => {
     return (
@@ -57,41 +57,41 @@ const SceneriosDashbaord = (props: any) => {
           <span className="percent poor">--%</span>
         </div>
       </Tooltip>
-    )
-  }
+    );
+  };
 
-  const addNewScenario =(scenarioType) => {
-    const newScenarioId = '' + (props.record.scenarios.length + 1)
+  const addNewScenario = (scenarioType) => {
+    const newScenarioId = "" + (props.record.scenarios.length + 1);
     setScenario({
-      ['scenario_id']: newScenarioId,
+      ["scenario_id"]: newScenarioId,
     });
-    if(scenarioType === 'Protocol Design'){
-      setScenarioType(scenarioType)
-      setNewScenarioVisiable(true)
+    if (scenarioType === "Protocol Design") {
+      setScenarioType(scenarioType);
+      setNewScenarioVisiable(true);
     }
-  }
+  };
 
   const handleOk = async () => {
-      setNewScenarioVisiable(false)
-      const tempScenarios = props.record.scenarios
-      tempScenarios.push(scenario)
+    setNewScenarioVisiable(false);
+    const tempScenarios = props.record.scenarios;
+    tempScenarios.push(scenario);
 
-      const tempTrial = props.record
-      tempTrial.scenarios = tempScenarios
+    const tempTrial = props.record;
+    tempTrial.scenarios = tempScenarios;
 
-      const resp = await updateStudy(tempTrial);
-      console.log(tempTrial)
-      if (resp.statusCode == 200) {
-          props.history.push({
-            pathname: '/scenario',
-            state: { recod: resp.body}
-          })
-      }
-  }
-  const handleCancel = () =>{
-      setNewScenarioVisiable(false)
-      setScenario(initialStates)
-  }
+    const resp = await updateStudy(tempTrial);
+    console.log(tempTrial);
+    if (resp.statusCode == 200) {
+      props.history.push({
+        pathname: "/scenario",
+        state: { recod: resp.body },
+      });
+    }
+  };
+  const handleCancel = () => {
+    setNewScenarioVisiable(false);
+    setScenario(initialStates);
+  };
 
   const handleInputChange = (key, e) => {
     setScenario({
@@ -101,15 +101,122 @@ const SceneriosDashbaord = (props: any) => {
 
   return (
     <div className="scenarios-container">
-      <div className="container-top">
-        <span className="count">Scenarios({props.record.scenarios && props.record.scenarios.length || 0})</span>
-        <br />
-        <span>
-          Summary of design scenarios and key metrics on predicted impact.
-        </span>
+      <div className="container-top">What would you like to explore today?</div>
+      <div className="module-wrapper">
+        <div className="module-item">
+          <div className="top">
+            <div className="module-name">Protocol Design</div>
+            {props.record.scenarios && props.record.scenarios.length > 0 ? (
+              <div>
+                <span className="scenario-status">IN PROGRESS</span>
+                <Button
+                  type="primary"
+                  onClick={() => setNewScenarioVisiable(true)}
+                >
+                  CREATE SCENARIO
+                </Button>
+              </div>
+            ) : (
+              <Button
+                type="primary"
+                onClick={() => setNewScenarioVisiable(true)}
+              >
+                START MODULE
+              </Button>
+            )}
+          </div>
+          {props.record.scenarios && props.record.scenarios.length > 0 ? (
+            <div className="scenarios-list-container">
+              <div className="count">
+                <span>{props.record.scenarios.length}</span>
+                <br /> Scenarios
+              </div>
+              <div className="scenarios-list">
+                {props.record.scenarios.map((s, idx) => {
+                  return (
+                    <div className="item-wrapper">
+                      <div className="scenario-item">
+                        <div className="title">
+                          <p>Scenario {idx + 1}</p>
+                          <span>{s["scenario_description"]}</span>
+                        </div>
+                        <div className="item-values">
+                          <div>
+                            {s["protocol_amendment_rate"]}{" "}
+                            <span className="status poor">POOR</span>
+                          </div>
+                          <div>
+                            {s["screen_failure_rate"]}
+                            <span className="status fair">FAIR</span>
+                          </div>
+                          <div>
+                            {s["patient_burden"]}
+                            <span className="status good">GOOD</span>
+                          </div>
+                          <div>
+                            {s["cost"]}
+                            <span className="status good">POOR</span>
+                          </div>
+                          <div>
+                            <Button>EDIT SCENARIO</Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+                <div className="item-wrapper average-item">
+                  <div className="scenario-item">
+                    <div className="title average-title">
+                      Average from Similar Historical Trials
+                    </div>
+                    <div className="item-values average">
+                      <div>
+                        40%{" "}
+                        <span className="column">Protocal Amendment Rate</span>
+                      </div>
+                      <div>
+                        18% <span className="column">Screen Failure Rate</span>
+                      </div>
+                      <div>
+                        40 <span className="column">Patient Burden</span>
+                      </div>
+                      <div>
+                        $15-20M <span className="column">Cost</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="bottom">Duis pretium gravida enim,</div>
+          )}
+        </div>
+        <div className="module-item">
+          <div className="top">
+            <div className="module-name">Country Allocation</div>
+            <Button type="primary">START MODULE</Button>
+          </div>
+          <div className="bottom">Duis pretium gravida enim,</div>
+        </div>
+        <div className="module-item">
+          <div className="top">
+            <div className="module-name">Site Selection</div>
+            <Button type="primary">START MODULE</Button>
+          </div>
+          <div className="bottom">Duis pretium gravida enim,</div>
+        </div>
+        <div className="module-item">
+          <div className="top">
+            <div className="module-name">Trial Budgeting</div>
+            <Button type="primary">START MODULE</Button>
+          </div>
+          <div className="bottom">Duis pretium gravida enim,</div>
+        </div>
       </div>
 
-      <div className="scenario-dashboard">
+      {/* <div className="scenario-dashboard">
         {props.record.scenarios && props.record.scenarios.length > 0 && (
           <div className="columns">
             <div className="title"></div>
@@ -214,33 +321,56 @@ const SceneriosDashbaord = (props: any) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <Modal visible={newScenarioVisiable} title={scenarioType + ' - Scenario Builder'} 
-          onOk={handleOk} onCancel={handleCancel} 
-          footer={[
-            <Button key="submit" type="primary" onClick={handleOk} style={{float:'left'}}>CANCEL</Button>,
-            <Button key="submit" type="primary" onClick={handleOk}>CREATE SCENARIO</Button>
-          ]}
-          style={{ left: '20%', top:50 }} centered={false} width={200}>
-          <Row style={{minHeight:'300px'}}>
-            <Col span={24}>
-                <Row><h5>Scenario Details</h5></Row>
-                <Row><span>Scenario Name</span></Row>
-                <Row>
-                    <Input onChange={(e) => handleInputChange("scenario_name", e)}
-                        value={scenario["scenario_name"]}/>
-                </Row>
-                <br/>
-                <Row><span>Description</span></Row>
-                <Row>
-                    <TextArea value={scenario["scenario_description"]} 
-                        onChange={(e) => handleInputChange("scenario_description", e)}
-                        autoSize={{ minRows: 3, maxRows: 5 }}/>
-                </Row>
-            </Col>
+      <Drawer
+        title={scenarioType + " - Scenario Builder"}
+        placement="right"
+        closable={false}
+        onClose={handleCancel}
+        visible={newScenarioVisiable}
+        footer={[
+          <Button key="submit" onClick={handleOk}>
+            CANCEL
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            style={{ float: "right" }}
+          >
+            CREATE SCENARIO
+          </Button>,
+        ]}
+      >
+        <Row style={{ minHeight: "300px" }}>
+          <Col span={24}>
+            <Row>
+              <h5>Scenario Details</h5>
+            </Row>
+            <Row>
+              <span>Scenario Name</span>
+            </Row>
+            <Row>
+              <Input
+                onChange={(e) => handleInputChange("scenario_name", e)}
+                value={scenario["scenario_name"]}
+              />
+            </Row>
+            <br />
+            <Row>
+              <span>Description</span>
+            </Row>
+            <Row>
+              <TextArea
+                value={scenario["scenario_description"]}
+                onChange={(e) => handleInputChange("scenario_description", e)}
+                autoSize={{ minRows: 3, maxRows: 5 }}
+              />
+            </Row>
+          </Col>
         </Row>
-      </Modal>
+      </Drawer>
     </div>
   );
 };

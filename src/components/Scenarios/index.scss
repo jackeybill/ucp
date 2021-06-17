@@ -2,6 +2,7 @@
   padding: 25px 0 50px 0;
   .container-top {
     margin-bottom: 25px;
+    font-size: 20px;
     span {
       color: #333333;
       font-size: 12px;
@@ -10,6 +11,111 @@
       font-size: 18px;
     }
   }
+  .module-wrapper {
+    .module-item {
+      margin-bottom: 20px;
+      font-size: 14px;
+      border-radius: 2px;
+      background-color: #ffffff;
+      box-shadow: 0px 0px 6px #00000029;
+      .top {
+        display: flex;
+        padding: 10px;
+        border-bottom: 1px solid #eaeaea;
+        .scenario-status {
+          margin-right: 10px;
+        }
+
+        .module-name {
+          flex: 1;
+        }
+      }
+      .bottom {
+        padding: 10px;
+        color: #999999;
+      }
+      .scenarios-list-container {
+        display: flex;
+        .count {
+          padding: 20px 0;
+          border-right: 1px solid #eaeaea;
+          width: 100px;
+          text-align: center;
+          font-size: 12px;
+          span {
+            font-size: 24px;
+            font-weight: 600;
+            color: #000000;
+          }
+        }
+        .scenarios-list {
+          padding: 5px 10px;
+          .item-wrapper {
+            border-bottom: 1px solid #eaeaea;
+          }
+          .item-wrapper.average-item {
+            border-bottom: 1px solid transparent;
+          }
+          .scenario-item {
+            display: flex;
+            padding: 5px;
+            .title.average-title {
+              color: #333333;
+              font-size: 12px;
+            }
+
+            .title {
+              padding-right: 20px;
+              border-right: 1px solid #eaeaea;
+              width: 200px;
+              p {
+                margin-bottom: 5px !important;
+                font-weight: 600;
+              }
+              span {
+                font-size: 10px;
+                color: #999999;
+              }
+            }
+
+            .item-values {
+              display: flex;
+              padding-left: 20px;
+              div {
+                width: 150px;
+                font-size: 16px;
+                font-weight: 600;
+              }
+              .column {
+                display: block;
+                font-size: 10px;
+                font-weight: 400;
+              }
+              .status {
+                display: block;
+                font-size: 10px;
+                &.poor {
+                  color: #c33232;
+                }
+                &.good {
+                  color: #00a947;
+                }
+                .fair {
+                  color: #0084a9;
+                }
+              }
+            }
+            .item-values.average {
+              div {
+                font-weight: 400;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   .scenario-dashboard {
     display: flex;
     .create-btn-wrapper {
