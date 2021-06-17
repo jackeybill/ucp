@@ -62,22 +62,36 @@ const SceneriosDashbaord = (props: any) => {
     );
   };
 
+  const viewScenario = (s) =>{
+    setScenarioId(s['scenario_id'])
+    setScenario(s);
+    //TODO to be updated for the actual scenario
+    setScenarioType(s['scenario_type'])
+    setNewScenarioVisiable(true)
+    setEditFlag(true)
+  }
   const addNewScenario =(scenarioType) => {
     const newScenarioId = '' + (props.record.scenarios.length + 1)
     setScenarioId(newScenarioId)
     setScenario({
-      ["scenario_id"]: newScenarioId,
+      ['scenario_id']: newScenarioId,
+      ['scenario_type']:scenarioType
     });
-    if (scenarioType === "Protocol Design") {
-      setScenarioType(scenarioType);
-      setNewScenarioVisiable(true);
-    }
-  };
+    setScenarioType(scenarioType)
+    setNewScenarioVisiable(true)
+    setEditFlag(false)
+  }
 
   const handleOk = async () => {
       setNewScenarioVisiable(false)
       const tempScenarios = props.record.scenarios
-      tempScenarios.push(scenario)
+      
+      if(editFlag){
+        const index = tempScenarios.indexOf((e) => e['scenario_id'] === scenarioId)
+        tempScenarios.splice(index, 1, scenario)
+      } else {
+        tempScenarios.push(scenario)
+      }
 
       const tempTrial = props.record
       tempTrial.scenarios = tempScenarios
@@ -113,7 +127,7 @@ const SceneriosDashbaord = (props: any) => {
                 <span className="scenario-status">IN PROGRESS</span>
                 <Button
                   type="primary"
-                  onClick={() => setNewScenarioVisiable(true)}
+                  onClick={() => addNewScenario('Protocol Design')}
                 >
                   CREATE SCENARIO
                 </Button>
@@ -160,7 +174,7 @@ const SceneriosDashbaord = (props: any) => {
                             <span className="status good">POOR</span>
                           </div>
                           <div>
-                            <Button>EDIT SCENARIO</Button>
+                            <Button onClick={() => viewScenario(s)}>EDIT SCENARIO</Button>
                           </div>
                         </div>
                       </div>
@@ -332,17 +346,8 @@ const SceneriosDashbaord = (props: any) => {
         onClose={handleCancel}
         visible={newScenarioVisiable}
         footer={[
-          <Button key="submit" onClick={handleOk}>
-            CANCEL
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            onClick={handleOk}
-            style={{ float: "right" }}
-          >
-            CREATE SCENARIO
-          </Button>,
+          <Button key="cancel" type="text" onClick={handleCancel} style={{float:'left'}}>CANCEL</Button>,
+          <Button key="submit" type="primary" onClick={handleOk}>{editFlag? 'UPDATE SCENARIO':'CREATE SCENARIO'}</Button>
         ]}
       >
         <Row style={{ minHeight: "300px" }}>

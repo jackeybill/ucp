@@ -60,7 +60,6 @@ const initialScenario = {
 };
 
 const ScenarioPage = (props) => {
-    console.log(props.location.state)
     //Common cons
     const [trialRecord, setTrialRecord] = useReducer(
         (state, newState) => ({ ...state, ...newState }),
