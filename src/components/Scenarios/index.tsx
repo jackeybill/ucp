@@ -25,6 +25,8 @@ const initialStates = {
 const SceneriosDashbaord = (props: any) => {
   const [newScenarioVisiable, setNewScenarioVisiable] = useState(false);
   const [scenarioType, setScenarioType] = useState();
+  const [scenarioId, setScenarioId] = useState('');
+  const [editFlag, setEditFlag] = useState(false);
   const [scenario, setScenario] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     { ...initialStates }
@@ -60,8 +62,9 @@ const SceneriosDashbaord = (props: any) => {
     );
   };
 
-  const addNewScenario = (scenarioType) => {
-    const newScenarioId = "" + (props.record.scenarios.length + 1);
+  const addNewScenario =(scenarioType) => {
+    const newScenarioId = '' + (props.record.scenarios.length + 1)
+    setScenarioId(newScenarioId)
     setScenario({
       ["scenario_id"]: newScenarioId,
     });
@@ -72,26 +75,25 @@ const SceneriosDashbaord = (props: any) => {
   };
 
   const handleOk = async () => {
-    setNewScenarioVisiable(false);
-    const tempScenarios = props.record.scenarios;
-    tempScenarios.push(scenario);
+      setNewScenarioVisiable(false)
+      const tempScenarios = props.record.scenarios
+      tempScenarios.push(scenario)
 
-    const tempTrial = props.record;
-    tempTrial.scenarios = tempScenarios;
+      const tempTrial = props.record
+      tempTrial.scenarios = tempScenarios
 
-    const resp = await updateStudy(tempTrial);
-    console.log(tempTrial);
-    if (resp.statusCode == 200) {
-      props.history.push({
-        pathname: "/scenario",
-        state: { recod: resp.body },
-      });
-    }
-  };
-  const handleCancel = () => {
-    setNewScenarioVisiable(false);
-    setScenario(initialStates);
-  };
+      const resp = await updateStudy(tempTrial);
+      if (resp.statusCode == 200) {
+          props.history.push({
+            pathname: '/scenario',
+            state: { trial_id: props.record['_id'] , scenarioId: scenarioId, editFlag: editFlag, scenarioType: scenarioType}
+          })
+      }
+  }
+  const handleCancel = () =>{
+      setNewScenarioVisiable(false)
+      setScenario(initialStates)
+  }
 
   const handleInputChange = (key, e) => {
     setScenario({
