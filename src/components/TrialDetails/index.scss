@@ -21,11 +21,12 @@
       }
     }
     .status {
-      background-color: #333333;
+      background-color: #e68700;
       color: #ffffff;
       padding: 3px 5px;
       border-radius: 10px;
       font-size: 12px;
+      margin-left: 30px;
     }
   }
 
@@ -54,5 +55,12 @@
 
   .edit-save-btn {
     text-align: right;
+  }
+}
+
+.ant-tooltip-content .action-list {
+  color: #333333;
+  div {
+    cursor: pointer;
   }
 }

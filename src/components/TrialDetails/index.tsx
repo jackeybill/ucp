@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Input, Select, Button } from "antd";
+import { Input, Select, Button, Tooltip } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
 import { COUNTRY_MAP } from "../../utils/country-map";
-import { addStudy } from '../../utils/ajax-proxy';
+import { addStudy } from "../../utils/ajax-proxy";
 import { Therapeutic_Area_Map } from "../../utils/area-map";
 import { phase_options, study_types } from "../../pages/TrialPortfolio";
 import "./index.scss";
@@ -27,14 +28,25 @@ const TrialDetails = (props) => {
         <div className="title">
           <span className="nct-id">{record["nct_id"] || "-"}</span>
           <br />
-          <span className="trail-alias">
-            {record["trial_alias"]}
-          </span>
+          <span className="trail-alias">{record["trial_alias"]}</span>
+          <span className="status">{record["status"] || "In Progress"}</span>
           <br />
-          <span className="update-time">Last updated {record['updateDate']||record['createDate']|| '-'}</span>
+          <span className="update-time">
+            Last updated {record["updateDate"] || record["createDate"] || "-"}
+          </span>
         </div>
         <div>
-          <span className="status">{ record["status"]||'In Progress'}</span>
+          <Tooltip
+            placement="leftBottom"
+            color="#ffffff"
+            title={
+              <div className="action-list">
+                <div onClick={onEdit}>Edit Details</div>
+              </div>
+            }
+          >
+            <SettingOutlined />
+          </Tooltip>
         </div>
       </div>
       <div className="info">
@@ -44,7 +56,7 @@ const TrialDetails = (props) => {
             {editable ? (
               <Input
                 defaultValue={record["trial_title"]}
-                onChange={(e)=>onInputChange('trial_title',e)}
+                onChange={(e) => onInputChange("trial_title", e)}
                 style={{ width: 200, height: 30 }}
               />
             ) : (
@@ -57,7 +69,7 @@ const TrialDetails = (props) => {
               <Select
                 defaultValue={record["study_phase"]}
                 style={{ width: 200 }}
-                onChange={(e)=>onSelectChange('study_phase',e)}
+                onChange={(e) => onSelectChange("study_phase", e)}
               >
                 {phase_options.map((o) => {
                   return (
@@ -77,7 +89,7 @@ const TrialDetails = (props) => {
               <Select
                 defaultValue={record["study_type"]}
                 style={{ width: 200 }}
-               onChange={(e)=>onSelectChange('study_type',e)}
+                onChange={(e) => onSelectChange("study_type", e)}
               >
                 {study_types.map((t) => {
                   return (
@@ -90,7 +102,6 @@ const TrialDetails = (props) => {
             ) : (
               <span>{record["study_type"] || "-"}</span>
             )}
-            {/* <span>{record['study_type']||"-"}</span> */}
           </div>
           <div className="trial-item">
             <label>Study Country</label>
@@ -98,7 +109,7 @@ const TrialDetails = (props) => {
               <Select
                 defaultValue={record["study_country"]}
                 style={{ width: 200 }}
-                 onChange={(e)=>onSelectChange('study_country',e)}
+                onChange={(e) => onSelectChange("study_country", e)}
               >
                 {COUNTRY_MAP.map((o) => {
                   return (
@@ -110,7 +121,7 @@ const TrialDetails = (props) => {
               </Select>
             ) : (
               <span>{record["study_country"] || "-"}</span>
-            )}          
+            )}
           </div>
         </div>
         <div className="info-row">
@@ -120,7 +131,7 @@ const TrialDetails = (props) => {
               <Select
                 defaultValue={record["pediatric_study"]}
                 style={{ width: 200 }}
-                onChange={(e)=>onSelectChange('pediatric_study',e)}
+                onChange={(e) => onSelectChange("pediatric_study", e)}
               >
                 <Option value="YES">YES</Option>
                 <Option value="NO">NO</Option>
@@ -128,15 +139,14 @@ const TrialDetails = (props) => {
             ) : (
               <span>{record["pediatric_study"] || "-"}</span>
             )}
-           
           </div>
           <div className="trial-item">
             <label>Indication</label>
-           
+
             {editable ? (
               <Input
                 style={{ width: 200, height: 30 }}
-                onChange={(e)=>onInputChange('indication',e)}
+                onChange={(e) => onInputChange("indication", e)}
                 defaultValue={record["indication"]}
               />
             ) : (
@@ -148,10 +158,9 @@ const TrialDetails = (props) => {
             {editable ? (
               <Select
                 defaultValue={record["therapeutic_area"]}
-                
                 showSearch
                 style={{ width: 200 }}
-                onChange={(e)=>onSelectChange('therapeutic_area',e)}
+                onChange={(e) => onSelectChange("therapeutic_area", e)}
                 filterOption={(input, option) =>
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >=
                   0
@@ -175,11 +184,13 @@ const TrialDetails = (props) => {
           </div>
         </div>
       </div>
-      <div className="edit-save-btn">
-        <Button type="primary" onClick={!editable ? onEdit : handleSave}>
-          {!editable ? "Edit" : "Save"}
-        </Button>
-      </div>
+      {editable ? (
+        <div className="edit-save-btn">
+          <Button type="primary" onClick={handleSave}>
+            Save
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };
