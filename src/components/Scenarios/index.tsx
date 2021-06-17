@@ -25,6 +25,8 @@ const initialStates = {
 const SceneriosDashbaord = (props: any) => {
   const [newScenarioVisiable, setNewScenarioVisiable] = useState(false);
   const [scenarioType, setScenarioType] = useState();
+  const [scenarioId, setScenarioId] = useState('');
+  const [editFlag, setEditFlag] = useState(false);
   const [scenario, setScenario] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     { ...initialStates }
@@ -62,6 +64,7 @@ const SceneriosDashbaord = (props: any) => {
 
   const addNewScenario =(scenarioType) => {
     const newScenarioId = '' + (props.record.scenarios.length + 1)
+    setScenarioId(newScenarioId)
     setScenario({
       ['scenario_id']: newScenarioId,
     });
@@ -80,11 +83,10 @@ const SceneriosDashbaord = (props: any) => {
       tempTrial.scenarios = tempScenarios
 
       const resp = await updateStudy(tempTrial);
-      console.log(tempTrial)
       if (resp.statusCode == 200) {
           props.history.push({
             pathname: '/scenario',
-            state: { recod: resp.body}
+            state: { trial_id: props.record['_id'] , scenarioId: scenarioId, editFlag: editFlag, scenarioType: scenarioType}
           })
       }
   }
@@ -219,7 +221,7 @@ const SceneriosDashbaord = (props: any) => {
       <Modal visible={newScenarioVisiable} title={scenarioType + ' - Scenario Builder'} 
           onOk={handleOk} onCancel={handleCancel} 
           footer={[
-            <Button key="submit" type="primary" onClick={handleOk} style={{float:'left'}}>CANCEL</Button>,
+            <Button key="submit" type="text" onClick={handleCancel} style={{float:'left'}}>CANCEL</Button>,
             <Button key="submit" type="primary" onClick={handleOk}>CREATE SCENARIO</Button>
           ]}
           style={{ left: '20%', top:50 }} centered={false} width={200}>
