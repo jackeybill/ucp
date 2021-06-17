@@ -1,6 +1,15 @@
 import React, { useState, useReducer, useEffect } from "react";
 import { withRouter } from "react-router";
-import { Modal, Input, Select, message, Button, Spin,Breadcrumb } from "antd";
+import {
+  Modal,
+  Input,
+  Select,
+  message,
+  Button,
+  Spin,
+  Breadcrumb,
+  Drawer,
+} from "antd";
 import Cookies from "js-cookie";
 import {
   PlusCircleOutlined,
@@ -8,7 +17,8 @@ import {
   RightCircleOutlined,
   CheckCircleOutlined,
   HomeOutlined,
-  SearchOutlined,LoadingOutlined
+  SearchOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import { connect } from "react-redux";
 import * as trialActions from "../../actions/trial.js";
@@ -22,8 +32,6 @@ import { Therapeutic_Area_Map } from "../../utils/area-map";
 import addIcon from "../../assets/add.svg";
 
 import "./index.scss";
-
-
 
 const { Search } = Input;
 const { TextArea } = Input;
@@ -61,7 +69,7 @@ const initialStates = {
   molecule_name: "",
   pediatric_study: "",
   study_country: "",
-  scenarios:[]
+  scenarios: [],
   // primary_endpoints:[],
   // secondary_endpoints: [],
   // tertiary_endpoints:[]
@@ -71,7 +79,7 @@ const step1 = "details";
 const step2 = "endpoints";
 
 const TrialPortfolio = (props) => {
-  const { keyWords,showSearch, setShowSearch } = props;
+  const { keyWords, showSearch, setShowSearch } = props;
   const username = Cookies.get("username");
   const [showDetails, setShowDetails] = useState(false);
   const [status, setStatus] = useState("IN PROGRESS");
@@ -81,8 +89,7 @@ const TrialPortfolio = (props) => {
   const [area, setArea] = useState("All");
   const [visible, setVisible] = useState(false);
   const [currentTrial, setCurrentTrial] = useState({});
-  const [loading, setLoading] = useState(false)
-  
+  const [loading, setLoading] = useState(false);
   // const [step, setStep] = useState(step1);
 
   const [trial, setTrial] = useReducer(
@@ -98,8 +105,6 @@ const TrialPortfolio = (props) => {
     { ...initialCount }
   );
 
-
-
   const handlePhaseChange = (value) => {
     setPhase(value);
   };
@@ -107,45 +112,45 @@ const TrialPortfolio = (props) => {
     setArea(value);
   };
 
-
   const handleOk = async () => {
     const resp = await addStudy(newTrial);
 
     if (resp.statusCode == 200) {
       setVisible(false);
-      const trialId = resp.body
+      const trialId = resp.body;
       // setShowSearch(true)
       // setStep(step1)
       message.success("Create successfully");
-      setLoading(true)
+      setLoading(true);
       const result = await getTrialList();
       setShowDetails(true);
-      
-      setLoading(false)
-      const latestTrial = result.body && result.body.find(i => i['_id'] == trialId)
-      setTrial(JSON.parse(JSON.stringify(latestTrial)))
-      setNewTrial(initialStates)
+
+      setLoading(false);
+      const latestTrial =
+        result.body && result.body.find((i) => i["_id"] == trialId);
+      setTrial(JSON.parse(JSON.stringify(latestTrial)));
+      setNewTrial(initialStates);
     }
   };
 
   const handleUpdate = async () => {
     const resp = await updateStudy(trial);
-    
+
     if (resp.statusCode == 200) {
       message.success("Save successfully");
     }
-  }
+  };
 
   const onViewTrial = (e, record) => {
-    debugger
+    debugger;
     e.preventDefault();
     setShowDetails(true);
-    setTrial(JSON.parse(JSON.stringify(record)))
+    setTrial(JSON.parse(JSON.stringify(record)));
   };
 
   const handleCancel = () => {
     setVisible(false);
-    setNewTrial(initialStates)
+    setNewTrial(initialStates);
   };
 
   const handleTrialInputChange = (key, e) => {
@@ -171,15 +176,17 @@ const TrialPortfolio = (props) => {
   };
 
   useEffect(() => {
-    setShowSearch(!showDetails)
-  },[showDetails])
+    setShowSearch(!showDetails);
+  }, [showDetails]);
 
   useEffect(() => {
     const tmpData = rawData.filter((d) => {
       d.status = d.status ? d.status : "";
       d["study_phase"] = d["study_phase"] ? d["study_phase"] : "";
       d["study_country"] = d["study_country"] ? d["study_country"] : [""];
-      d["therapeutic_area"] = d["therapeutic_area"] ? d["therapeutic_area"] : "";
+      d["therapeutic_area"] = d["therapeutic_area"]
+        ? d["therapeutic_area"]
+        : "";
       // search text matches one of the below fields
       let searchedFields = [
         d["trial_title"],
@@ -190,40 +197,37 @@ const TrialPortfolio = (props) => {
         d["therapeutic_area"],
         d["status"],
         d["study_type"],
-        d["prediatric_study"],       
+        d["prediatric_study"],
       ];
       searchedFields = searchedFields.filter(Boolean);
       searchedFields = searchedFields.map((i) =>
         typeof i == "string" ? i.toLowerCase() : String(i)
       );
 
-      const isIncluded = searchedFields.map(f => {
-        return f.search(keyWords.toLowerCase())!=-1 
-      })
+      const isIncluded = searchedFields.map((f) => {
+        return f.search(keyWords.toLowerCase()) != -1;
+      });
 
       return (
         d.status.toLowerCase() == status.toLowerCase() &&
-        // (phase != "All" ? d["study_phase"].search(phase) != -1 : true) &&
-        // (area != "All" ? d["therapeutic_area"].search(area) != -1 : true) &&
-        (phase != "All" ? d["study_phase"]==phase : true) &&
-        (area != "All" ? d["therapeutic_area"]==area : true) &&
-        // (keyWords ? searchedFields.includes(keyWords.toLowerCase()) : true)
-        (keyWords ? isIncluded.find(e=>e==true)  : true)
+        (phase != "All" ? d["study_phase"] == phase : true) &&
+        (area != "All" ? d["therapeutic_area"] == area : true) &&
+        (keyWords ? isIncluded.find((e) => e == true) : true)
       );
     });
     setData(tmpData);
   }, [status, rawData, area, phase, keyWords]);
 
   useEffect(() => {
-    !showDetails && setTrial(initialStates)
-    
+    !showDetails && setTrial(initialStates);
+
     setStatus("IN PROGRESS");
     const fetchList = async () => {
-      setLoading(true)
+      setLoading(true);
       const resp = await getTrialList();
-      setLoading(false)
+      setLoading(false);
       if (resp.statusCode == 200) {
-        const source=resp.body
+        const source = resp.body;
         setRawData(source);
         console.log("all data-----", source);
         const inProgressArr = source.filter((d) => {
@@ -244,7 +248,7 @@ const TrialPortfolio = (props) => {
   return (
     <div className="trial-portfolio-container">
       {!showDetails ? (
-        <>        
+        <>
           <div className="upper">
             <span className="small-trial">MY TRIALS</span>
             <p className="title">Hello, {username}</p>
@@ -280,7 +284,10 @@ const TrialPortfolio = (props) => {
           </div>
 
           <div className="list-top">
-            <div className="count">Your {status=="IN PROGRESS"?"Current":"Completed"} Trials ({data.length})</div>
+            <div className="count">
+              Your {status == "IN PROGRESS" ? "Current" : "Completed"} Trials (
+              {data.length})
+            </div>
             <div className="filter-selector">
               <div className="selector-item">
                 <label>Therapeutic Area</label> <br />
@@ -290,7 +297,6 @@ const TrialPortfolio = (props) => {
                   showSearch
                   style={{ width: 200 }}
                   onChange={handleAreaChange}
-                 
                   filterOption={(input, option) =>
                     option.children
                       .toLowerCase()
@@ -326,73 +332,110 @@ const TrialPortfolio = (props) => {
               </div>
             </div>
           </div>
-          <Spin spinning={loading} indicator={<LoadingOutlined style={{color:'#ca4a04'}}/>}>
-           <TrialList data={data} onViewTrial={onViewTrial} />      
-        </Spin>    
+          <Spin
+            spinning={loading}
+            indicator={<LoadingOutlined style={{ color: "#ca4a04" }} />}
+          >
+            <TrialList data={data} onViewTrial={onViewTrial} />
+          </Spin>
         </>
       ) : (
-          <>
+        <>
           <Breadcrumb>
-              <Breadcrumb.Item className="homepage" onClick={() =>setShowDetails(false)}>         
-            <span><HomeOutlined />My Trials</span>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>Trial Design</Breadcrumb.Item>
-        </Breadcrumb>
-          <div className="trial-details-wrapper">             
-            <TrialDetails record={trial} onSave={handleUpdate} onInputChange={handleTrialInputChange} onSelectChange={handleTrialSelectChange}/>         
-            <Scenarios record={trial}/>
-            </div>
-            </>
+            <Breadcrumb.Item
+              className="homepage"
+              onClick={() => setShowDetails(false)}
+            >
+              <span>
+                <HomeOutlined />
+                My Trials
+              </span>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>Trial Design</Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="trial-details-wrapper">
+            <TrialDetails
+              record={trial}
+              onSave={handleUpdate}
+              onInputChange={handleTrialInputChange}
+              onSelectChange={handleTrialSelectChange}
+            />
+            <Scenarios record={trial} />
+          </div>
+        </>
       )}
 
-      <Modal
-        title={
-          <div className="trial-modal-header">
-            <span>New Trial</span>
-            {/* <div className="action-timeline">
-              <div className="step">
-                {
-                  step == step2 ? (
-                    <CheckCircleOutlined style={{ color: '#d04a02' }}/>
-                  ):<span className="num step1 active">1</span>
-                }              
-                <span className="name active">Trial Details</span>
-              </div>
-              <div className="line"></div>
-              <div className="step">
-                <span className={`num ${step == step2 ? 'active' : ''}`}>2</span>
-                <span className={`name ${step == step2 ? 'active' : ''}`}>Add Trial Endpoints</span>
-              </div>
-            </div> */}
+      <Drawer
+        title="New Trial"
+        placement="right"
+        closable={true}
+        onClose={handleCancel}
+        visible={visible}
+        footer={
+          <div className="action-btn-footer">
+            <Button onClick={handleCancel}>Cancel</Button>
+            <Button type="primary" onClick={handleOk}>
+              Create Trial
+            </Button>
           </div>
         }
-        footer={
-          <Button type="primary" onClick={handleOk}>
-            Create Trial
-          </Button>
-          // <div
-          //   className="trial-modal-footer"
-          // >
-          //   {step == step1 ? (
-          //     <div className="step1-footer">
-          //       <RightCircleOutlined onClick={()=>setStep(step2)}/>
-          //     </div>
-          //   ) : (
-          //     <div className="step2-footer">
-          //       <LeftCircleOutlined onClick={()=>setStep(step1)}/>
-          //       <Button type="primary" onClick={handleOk}>Create Trial</Button>
-          //     </div>
-          //   )}
-          // </div>
-        }
-        visible={visible}
-        onOk={handleOk}
-        onCancel={handleCancel}
       >
         <div>
-          {/* {step == step1 ? ( */}
-          <div>
-            <div className="trials-basic-info">
+          <div className="navigation-bar"></div>
+          <div className="trials-basic-info">
+            <div className="trial-item">
+              <label htmlFor="">Trial Alias</label>
+              <Input
+                style={{ width: "100%", height: 30 }}
+                onChange={(v) => handleNewTrialInputChange("trial_alias", v)}
+                value={newTrial["trial_alias"]}
+              />
+            </div>
+
+            <div className="trial-item">
+              <label htmlFor="">Description</label>
+              <TextArea
+                onChange={(v) => handleNewTrialInputChange("description", v)}
+                value={newTrial["description"]}
+                autoSize={{ minRows: 3, maxRows: 5 }}
+              />
+            </div>
+            <div className="parallel-item ">
+              <div className="trial-item">
+                <label>Therapeutic Area</label>
+                <Select
+                  defaultValue="All"
+                  value={newTrial["therapeutic_area"]}
+                  showSearch
+                  style={{ width: 250 }}
+                  onChange={(v) =>
+                    handleNewTrialSelectChange("therapeutic_area", v)
+                  }
+                  filterOption={(input, option) =>
+                    option.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {Therapeutic_Area_Map.map((o) => {
+                    return (
+                      <Option value={o} key={o}>
+                        {o}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </div>
+              <div className="trial-item">
+                <label htmlFor="">Indication</label>
+                <Input
+                  style={{ width: 250, height: 30 }}
+                  onChange={(v) => handleNewTrialInputChange("indication", v)}
+                  value={newTrial["indication"]}
+                />
+              </div>
+            </div>
+            <div className="parallel-item">
               <div className="trial-item">
                 <label htmlFor="">Trial Title</label>
                 <Input
@@ -402,146 +445,93 @@ const TrialPortfolio = (props) => {
                 />
               </div>
               <div className="trial-item">
-                <label htmlFor="">Description</label>
-                <TextArea
-                  onChange={(v) => handleNewTrialInputChange("description", v)}
-                  value={newTrial["description"]}
-                  autoSize={{ minRows: 3, maxRows: 5 }}
+                <label htmlFor="">Study Type</label>
+                <Select
+                  defaultValue="All"
+                  value={newTrial["study_type"]}
+                  style={{ width: 250 }}
+                  onChange={(v) => handleNewTrialSelectChange("study_type", v)}
+                >
+                  {study_types.map((t) => {
+                    return (
+                      <Option value={t} key={t}>
+                        {t}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </div>
+            </div>
+            <div className="parallel-item">
+              <div className="trial-item">
+                <label htmlFor="">Molecule Name</label>
+                <Input
+                  style={{ width: 250, height: 30 }}
+                  onChange={(v) =>
+                    handleNewTrialInputChange("molecule_name", v)
+                  }
+                  value={newTrial["molecule_name"]}
                 />
               </div>
-              <div className="parallel-item ">
-                <div className="trial-item">
-                  <label>Therapeutic Area</label>
-                  <Select
-                    defaultValue="All"
-                    value={newTrial["therapeutic_area"]}
-                    showSearch
-                    style={{ width: 250 }}
-                    onChange={(v) => handleNewTrialSelectChange("therapeutic_area", v)}
-                    filterOption={(input, option) =>
-                      option.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    {Therapeutic_Area_Map.map((o) => {
-                      return (
-                        <Option value={o} key={o}>
-                          {o}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </div>
-                <div className="trial-item">
-                  <label htmlFor="">Indication</label>
-                  <Input
-                    style={{ width: 250, height: 30 }}
-                    onChange={(v) => handleNewTrialInputChange("indication", v)}
-                    value={newTrial["indication"]}
-                  />
-                </div>
+              <div className="trial-item">
+                <label htmlFor="">Study Phase</label>
+                <Select
+                  defaultValue="All"
+                  value={newTrial["study_phase"]}
+                  style={{ width: 250 }}
+                  onChange={(v) => handleNewTrialSelectChange("study_phase", v)}
+                >
+                  {phase_options.map((o) => {
+                    return (
+                      <Option value={o} key={o}>
+                        {o}
+                      </Option>
+                    );
+                  })}
+                </Select>
               </div>
-              <div className="parallel-item">
-                <div className="trial-item">
-                  <label htmlFor="">Trial Alias</label>
-                  <Input
-                    style={{ width: 250, height: 30 }}
-                    onChange={(v) => handleNewTrialInputChange("trial_alias", v)}
-                    value={newTrial["trial_alias"]}
-                    disabled
-                  />
-                </div>
-                <div className="trial-item">
-                  <label htmlFor="">Study Type</label>
-                  <Select
-                    defaultValue="All"
-                    value={newTrial["study_type"]}             
-                    style={{ width: 250 }}
-                    onChange={(v) => handleNewTrialSelectChange("study_type", v)}
-                  >
-                    {study_types.map((t) => {
-                      return (
-                        <Option value={t} key={t}>
-                          {t}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </div>
+            </div>
+            <div className="parallel-item">
+              <div className="trial-item">
+                <label htmlFor="">Pediatric Study</label>
+                <Select
+                  defaultValue="All"
+                  value={newTrial["pediatric_study"]}
+                  style={{ width: 250 }}
+                  onChange={(v) =>
+                    handleNewTrialSelectChange("pediatric_study", v)
+                  }
+                >
+                  <Option value="YES">YES</Option>
+                  <Option value="NO">NO</Option>
+                </Select>
               </div>
-              <div className="parallel-item">
-                <div className="trial-item">
-                  <label htmlFor="">Molecule Name</label>
-                  <Input
-                    style={{ width: 250, height: 30 }}
-                    onChange={(v) => handleNewTrialInputChange("molecule_name", v)}
-                    value={newTrial["molecule_name"]}
-                  />
-                </div>
-                <div className="trial-item">
-                  <label htmlFor="">Study Phase</label>
-                  <Select
-                    defaultValue="All"
-                    value={newTrial["study_phase"]}
-                    style={{ width: 250 }}
-                    onChange={(v) => handleNewTrialSelectChange("study_phase", v)}
-                  >
-                    {phase_options.map((o) => {
-                      return (
-                        <Option value={o} key={o}>
-                          {o}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </div>
-              </div>
-              <div className="parallel-item">
-                <div className="trial-item">
-                  <label htmlFor="">Pediatric Study</label>
-                  <Select
-                    defaultValue="All"
-                    value={newTrial["pediatric_study"]}
-                    style={{ width: 250 }}
-                    onChange={(v) => handleNewTrialSelectChange("pediatric_study", v)}
-                  >
-                    <Option value="YES">YES</Option>
-                    <Option value="NO">NO</Option>
-                  </Select>
-                </div>
-                <div className="trial-item">
-                  <label htmlFor="">Study Country</label>
-                  <Select
-                    defaultValue="All"
-                    value={newTrial["study_country"]}
-                    style={{ width: 250 }}
-                    onChange={(v) => handleNewTrialSelectChange("study_country", v)}
-                  >
-                    {COUNTRY_MAP.map((o) => {
-                      return (
-                        <Option value={o} key={o}>
-                          {o}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </div>
+              <div className="trial-item">
+                <label htmlFor="">Study Country</label>
+                <Select
+                  defaultValue="All"
+                  value={newTrial["study_country"]}
+                  style={{ width: 250 }}
+                  onChange={(v) =>
+                    handleNewTrialSelectChange("study_country", v)
+                  }
+                >
+                  {COUNTRY_MAP.map((o) => {
+                    return (
+                      <Option value={o} key={o}>
+                        {o}
+                      </Option>
+                    );
+                  })}
+                </Select>
               </div>
             </div>
           </div>
-          {/* ) : (
-            <div>
-                <Endpoints onInput={handleTrialInputChange}/>
-            </div>
-          )} */}
         </div>
-      </Modal>
+      </Drawer>
     </div>
   );
 };
-
-
 
 const mapDispatchToProps = (dispatch) => ({
   showSearch: (val) => dispatch(trialActions.showSearch(val)),

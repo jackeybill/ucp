@@ -16,6 +16,10 @@ const SceneriosDashbaord = (props: any) => {
     );
   };
 
+  const path = {
+    pathname: '/scenario',
+    state: props.record
+  }
 
   const Metrics = () => {
     return (
@@ -115,7 +119,7 @@ const SceneriosDashbaord = (props: any) => {
                   <div className="footer btn-wrapper">
                     <div className="view-btn" onClick={() => props.history.push({
                       pathname: '/scenario',
-                      state: { trial_id: props.record['_id'], scenario_id: s['scenario_id'] }
+                      state: { scenario_id: s['scenario_id'] }
                     })}>View Scenario</div>
                   </div>
                 </div>
@@ -141,10 +145,7 @@ const SceneriosDashbaord = (props: any) => {
             )
           } 
           <div className="create-btn-wrapper">
-            <div className="create-btn" onClick={() => props.history.push({
-              pathname: '/scenario',
-              state: { trial_id: props.record['_id']}
-            })}>
+            <div className="create-btn" onClick={() => props.history.push(path)}>
               <img src={addIcon} alt="" width="68px" height="68px" />
               <br />
               <span> ADD NEW SCENARIO</span>

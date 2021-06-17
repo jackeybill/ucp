@@ -1,6 +1,6 @@
 import React, { useState, } from "react";
 import { withRouter } from 'react-router';
-import { Select, Collapse,Modal,Input} from "antd";
+import { Select, Collapse,Modal,Input,Tooltip} from "antd";
 import "./index.scss";
 const { Panel } = Collapse;
 
@@ -19,9 +19,39 @@ const panelHeader = (props, record) => {
       </div>
       <div>{record["molecule_name"] || "-"}</div>
       <div>{record["study_phase"] || "-"}</div>
-          <div>{record["therapeutic_area"] || "-"}</div>
-           <div> <span className={`status-tag ${record["status"].toLowerCase()=="completed"?'completed':'in-progress'}`}>{record["status"] || "-"}</span>
+      <div>{record["therapeutic_area"] || "-"}</div>
+      <div className="module_status_item">{record["module_status"] || "1/4"}
+        <Tooltip placement="bottom"
+          overlayClassName="module_status_tooltip"
+          color="#ffffff"
+          title={(
+          <div className="module_status_wrapper">
+            <div className="title">Module Status</div>
+            <div className="status_row">
+              <span className="name">Protocal Design</span>
+              <span className="status in_progress">IN PROGRESS</span>
+              </div>
+               <div className="status_row">
+              <span className="name">Country Allocation</span>
+              <span className="status not_started">NOT STARTED</span>
+              </div>
+               <div className="status_row">
+              <span className="name">Site Selection</span>
+              <span className="status not_started">NOT STARTED</span>
+              </div>
+               <div className="status_row">
+              <span className="name">Trial Budgeting</span>
+              <span className="status not_started">NOT STARTED</span>
+            </div>
+
           </div>
+        )}>
+         <span className="m-icon"><i>M</i></span>
+      </Tooltip>
+       
+      </div>
+      <div> <span className={`status-tag ${record["status"].toLowerCase()=="completed"?'completed':'in-progress'}`}>{record["status"] || "-"}</span>
+      </div>
       <div>
       <span className="view-btn" onClick={(e)=>props.onViewTrial(e,record)}>View Trial</span>
        </div>
@@ -86,6 +116,7 @@ const TrailList = (props: any) => {
           <div className="col-item">MOLECULE NAME</div>
           <div className="col-item">STUDY PHASE</div>
           <div className="col-item">THERAPEUTIC AREA</div>
+          <div className="col-item">MODULE STATUS</div>
           <div className="col-item">STATUS</div>
           <div className="col-item"></div>
         </div>
