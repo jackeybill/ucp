@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useState, useReducer} from "react";
 import { withRouter } from 'react-router';
-import { Tooltip } from "antd";
+import { Tooltip, Modal, Button, Row, Col, Input} from "antd";
+import { updateStudy} from "../../utils/ajax-proxy";
 import Scatter from "../Chart";
 import addIcon from "../../assets/add.svg";
 import "./index.scss";
 
+const { TextArea } = Input;
+
+const initialStates = {
+  scenario_id: "",
+  scenario_name: "",
+  scenario_description: "",
+  protocol_amendment_rate: "",
+  screen_failure_rate: "",
+  patient_burden: "",
+  cost: "",
+  "Inclusion Criteria": {},
+  "Exclusion Criteria": {},
+  "Enrollment Feasibility": {},
+  "Schedule of Events": {}
+};
+
 const SceneriosDashbaord = (props: any) => {
+  const [newScenarioVisiable, setNewScenarioVisiable] = useState(false);
+  const [scenarioType, setScenarioType] = useState();
+  const [scenario, setScenario] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    { ...initialStates }
+);
 
   const renderTitle = () => {
     return (
@@ -32,6 +55,45 @@ const SceneriosDashbaord = (props: any) => {
       </Tooltip>
     )
   }
+
+  const addNewScenario =(scenarioType) => {
+    const newScenarioId = '' + (props.record.scenarios.length + 1)
+    setScenario({
+      ['scenario_id']: newScenarioId,
+    });
+    if(scenarioType === 'Protocol Design'){
+      setScenarioType(scenarioType)
+      setNewScenarioVisiable(true)
+    }
+  }
+
+  const handleOk = async () => {
+      setNewScenarioVisiable(false)
+      const tempScenarios = props.record.scenarios
+      tempScenarios.push(scenario)
+
+      const tempTrial = props.record
+      tempTrial.scenarios = tempScenarios
+
+      const resp = await updateStudy(tempTrial);
+      console.log(tempTrial)
+      if (resp.statusCode == 200) {
+          props.history.push({
+            pathname: '/scenario',
+            state: { recod: resp.body}
+          })
+      }
+  }
+  const handleCancel = () =>{
+      setNewScenarioVisiable(false)
+      setScenario(initialStates)
+  }
+
+  const handleInputChange = (key, e) => {
+    setScenario({
+      [key]: e.target.value,
+    });
+  };
 
   return (
     <div className="scenarios-container">
@@ -141,10 +203,7 @@ const SceneriosDashbaord = (props: any) => {
             )
           } 
           <div className="create-btn-wrapper">
-            <div className="create-btn" onClick={() => props.history.push({
-              pathname: '/scenario',
-              state: { trial_id: props.record['_id']}
-            })}>
+            <div className="create-btn" onClick={() => addNewScenario('Protocol Design')}>
               <img src={addIcon} alt="" width="68px" height="68px" />
               <br />
               <span> ADD NEW SCENARIO</span>
@@ -152,6 +211,32 @@ const SceneriosDashbaord = (props: any) => {
           </div>
         </div>
       </div>
+
+      <Modal visible={newScenarioVisiable} title={scenarioType + ' - Scenario Builder'} 
+          onOk={handleOk} onCancel={handleCancel} 
+          footer={[
+            <Button key="submit" type="primary" onClick={handleOk} style={{float:'left'}}>CANCEL</Button>,
+            <Button key="submit" type="primary" onClick={handleOk}>CREATE SCENARIO</Button>
+          ]}
+          style={{ left: '20%', top:50 }} centered={false} width={200}>
+          <Row style={{minHeight:'300px'}}>
+            <Col span={24}>
+                <Row><h5>Scenario Details</h5></Row>
+                <Row><span>Scenario Name</span></Row>
+                <Row>
+                    <Input onChange={(e) => handleInputChange("scenario_name", e)}
+                        value={scenario["scenario_name"]}/>
+                </Row>
+                <br/>
+                <Row><span>Description</span></Row>
+                <Row>
+                    <TextArea value={scenario["scenario_description"]} 
+                        onChange={(e) => handleInputChange("scenario_description", e)}
+                        autoSize={{ minRows: 3, maxRows: 5 }}/>
+                </Row>
+            </Col>
+        </Row>
+      </Modal>
     </div>
   );
 };
