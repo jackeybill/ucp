@@ -199,5 +199,38 @@
   .action-btn-footer {
     display: flex;
     justify-content: space-between;
+    .left-action {
+      display: flex;
+      .go-prev-step {
+        font-size: 14px;
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        color: $theme-color;
+      }
+    }
+  }
+}
+.current-step {
+  color: $theme-color;
+}
+
+.new-trial-wrapper {
+  display: flex;
+  .navigation-title {
+    color: #333333;
+    font-weight: 600;
+    margin-bottom: 30px;
+    display: block;
+  }
+  .main-content {
+    flex: 1;
+    .title {
+      color: #333333;
+      font-weight: 600;
+      margin-bottom: 30px;
+      display: block;
+    }
   }
 }

@@ -9,6 +9,7 @@ import {
   Spin,
   Breadcrumb,
   Drawer,
+  Timeline
 } from "antd";
 import Cookies from "js-cookie";
 import {
@@ -19,13 +20,18 @@ import {
   HomeOutlined,
   SearchOutlined,
   LoadingOutlined,
+  LeftOutlined
 } from "@ant-design/icons";
 import { connect } from "react-redux";
 import * as trialActions from "../../actions/trial.js";
 import TrialList from "../../components/TrialList";
 import TrialDetails from "../../components/TrialDetails";
 import Endpoints from "../../components/Endpoints";
+import TrialEndpoints from "../../components/NewTrialSteps/TrialEndpoints";
+import TeamMembers from '../../components/NewTrialSteps/TeamMembers';
+import SimilarHistoricalTrials from '../../components/NewTrialSteps/SimilarHistoricalTrials';
 import Scenarios from "../../components/Scenarios";
+import TrialSummary from '../../components/NewTrialSteps/TrialSummary';
 import { getTrialList, addStudy, updateStudy } from "../../utils/ajax-proxy";
 import { COUNTRY_MAP } from "../../utils/country-map";
 import { Therapeutic_Area_Map } from "../../utils/area-map";
@@ -57,6 +63,8 @@ const initialCount = {
   inProgress: 0,
   completed: 0,
 };
+
+const timeline = ["Trial Summary", "Trial Endpoint", "Similar Historical Trials","Team Members"]
 
 const initialStates = {
   trial_title: "",
@@ -90,7 +98,7 @@ const TrialPortfolio = (props) => {
   const [visible, setVisible] = useState(false);
   const [currentTrial, setCurrentTrial] = useState({});
   const [loading, setLoading] = useState(false);
-  // const [step, setStep] = useState(step1);
+  const [step, setStep] = useState(0);
 
   const [trial, setTrial] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -111,6 +119,10 @@ const TrialPortfolio = (props) => {
   const handleAreaChange = (value) => {
     setArea(value);
   };
+
+  const hanldeNextStep = () => {
+    setStep(step+1)
+  }
 
   const handleOk = async () => {
     const resp = await addStudy(newTrial);
@@ -149,6 +161,7 @@ const TrialPortfolio = (props) => {
   };
 
   const handleCancel = () => {
+    setStep(0)
     setVisible(false);
     setNewTrial(initialStates);
   };
@@ -373,160 +386,37 @@ const TrialPortfolio = (props) => {
         visible={visible}
         footer={
           <div className="action-btn-footer">
-            <Button onClick={handleCancel}>Cancel</Button>
-            <Button type="primary" onClick={handleOk}>
-              Create Trial
-            </Button>
+            <div className="left-action">
+              <Button size="small"  onClick={handleCancel}>Cancel</Button>
+              {step > 0 && step <=(timeline.length-1)? <span className="go-prev-step" onClick={()=>setStep(step-1)}><LeftOutlined />{ timeline[step-1]}</span>:null}
+            </div>          
+            {
+              <Button  size="small" type="primary" onClick={step>=(timeline.length-1)?handleOk:hanldeNextStep}>
+                {
+                  step>=(timeline.length-1)? "Create Trial":`Next Step:${timeline[step+1]}`
+                }            
+              </Button>
+            }
           </div>
         }
       >
-        <div>
-          <div className="navigation-bar"></div>
-          <div className="trials-basic-info">
-            <div className="trial-item">
-              <label htmlFor="">Trial Alias</label>
-              <Input
-                style={{ width: "100%", height: 30 }}
-                onChange={(v) => handleNewTrialInputChange("trial_alias", v)}
-                value={newTrial["trial_alias"]}
-              />
-            </div>
-
-            <div className="trial-item">
-              <label htmlFor="">Description</label>
-              <TextArea
-                onChange={(v) => handleNewTrialInputChange("description", v)}
-                value={newTrial["description"]}
-                autoSize={{ minRows: 3, maxRows: 5 }}
-              />
-            </div>
-            <div className="parallel-item ">
-              <div className="trial-item">
-                <label>Therapeutic Area</label>
-                <Select
-                  defaultValue="All"
-                  value={newTrial["therapeutic_area"]}
-                  showSearch
-                  style={{ width: 250 }}
-                  onChange={(v) =>
-                    handleNewTrialSelectChange("therapeutic_area", v)
-                  }
-                  filterOption={(input, option) =>
-                    option.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
-                >
-                  {Therapeutic_Area_Map.map((o) => {
-                    return (
-                      <Option value={o} key={o}>
-                        {o}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </div>
-              <div className="trial-item">
-                <label htmlFor="">Indication</label>
-                <Input
-                  style={{ width: 250, height: 30 }}
-                  onChange={(v) => handleNewTrialInputChange("indication", v)}
-                  value={newTrial["indication"]}
-                />
-              </div>
-            </div>
-            <div className="parallel-item">
-              <div className="trial-item">
-                <label htmlFor="">Trial Title</label>
-                <Input
-                  style={{ width: 250, height: 30 }}
-                  onChange={(e) => handleNewTrialInputChange("trial_title", e)}
-                  value={newTrial["trial_title"]}
-                />
-              </div>
-              <div className="trial-item">
-                <label htmlFor="">Study Type</label>
-                <Select
-                  defaultValue="All"
-                  value={newTrial["study_type"]}
-                  style={{ width: 250 }}
-                  onChange={(v) => handleNewTrialSelectChange("study_type", v)}
-                >
-                  {study_types.map((t) => {
-                    return (
-                      <Option value={t} key={t}>
-                        {t}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </div>
-            </div>
-            <div className="parallel-item">
-              <div className="trial-item">
-                <label htmlFor="">Molecule Name</label>
-                <Input
-                  style={{ width: 250, height: 30 }}
-                  onChange={(v) =>
-                    handleNewTrialInputChange("molecule_name", v)
-                  }
-                  value={newTrial["molecule_name"]}
-                />
-              </div>
-              <div className="trial-item">
-                <label htmlFor="">Study Phase</label>
-                <Select
-                  defaultValue="All"
-                  value={newTrial["study_phase"]}
-                  style={{ width: 250 }}
-                  onChange={(v) => handleNewTrialSelectChange("study_phase", v)}
-                >
-                  {phase_options.map((o) => {
-                    return (
-                      <Option value={o} key={o}>
-                        {o}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </div>
-            </div>
-            <div className="parallel-item">
-              <div className="trial-item">
-                <label htmlFor="">Pediatric Study</label>
-                <Select
-                  defaultValue="All"
-                  value={newTrial["pediatric_study"]}
-                  style={{ width: 250 }}
-                  onChange={(v) =>
-                    handleNewTrialSelectChange("pediatric_study", v)
-                  }
-                >
-                  <Option value="YES">YES</Option>
-                  <Option value="NO">NO</Option>
-                </Select>
-              </div>
-              <div className="trial-item">
-                <label htmlFor="">Study Country</label>
-                <Select
-                  defaultValue="All"
-                  value={newTrial["study_country"]}
-                  style={{ width: 250 }}
-                  onChange={(v) =>
-                    handleNewTrialSelectChange("study_country", v)
-                  }
-                >
-                  {COUNTRY_MAP.map((o) => {
-                    return (
-                      <Option value={o} key={o}>
-                        {o}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </div>
-            </div>
+        <div className="new-trial-wrapper">
+          <div className="navigation-bar">
+            <span className="navigation-title">Steps</span>
+            <Timeline>
+              {
+                timeline.map((t, idx) => <Timeline.Item color={ idx==step?"#ca4a04":"gray"} className={idx==step?"current-step":""}> {t}</Timeline.Item> )
+              }
+            </Timeline>    
           </div>
+          <div className="main-content">
+            <span className="title">{timeline[step]}</span>         
+            {step==0 && <TrialSummary handleNewTrialInputChange={handleNewTrialInputChange} handleNewTrialSelectChange={ handleNewTrialSelectChange} newTrial={newTrial}/>}
+            {step==1 && <TrialEndpoints />}
+            {step==2 && <SimilarHistoricalTrials/>}
+            {step==3 && <TeamMembers/>}     
+          </div>
+         
         </div>
       </Drawer>
     </div>
