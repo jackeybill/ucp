@@ -26,7 +26,6 @@ import { connect } from "react-redux";
 import * as trialActions from "../../actions/trial.js";
 import TrialList from "../../components/TrialList";
 import TrialDetails from "../../components/TrialDetails";
-import Endpoints from "../../components/Endpoints";
 import TrialEndpoints from "../../components/NewTrialSteps/TrialEndpoints";
 import TeamMembers from '../../components/NewTrialSteps/TeamMembers';
 import SimilarHistoricalTrials from '../../components/NewTrialSteps/SimilarHistoricalTrials';
@@ -64,7 +63,7 @@ const initialCount = {
   completed: 0,
 };
 
-const timeline = ["Trial Summary", "Trial Endpoint", "Similar Historical Trials","Team Members"]
+const timeline = ["Trial Summary", "Trial Endpoints", "Similar Historical Trials","Team Members"]
 
 const initialStates = {
   trial_title: "",
@@ -405,7 +404,7 @@ const TrialPortfolio = (props) => {
             <span className="navigation-title">Steps</span>
             <Timeline>
               {
-                timeline.map((t, idx) => <Timeline.Item color={ idx==step?"#ca4a04":"gray"} className={idx==step?"current-step":""}> {t}</Timeline.Item> )
+                timeline.map((t, idx) => <Timeline.Item color={ idx==step?"#ca4a04":"gray"} className={idx==step?"current-step":""} key={t}> {t}</Timeline.Item> )
               }
             </Timeline>    
           </div>
@@ -416,7 +415,6 @@ const TrialPortfolio = (props) => {
             {step==2 && <SimilarHistoricalTrials/>}
             {step==3 && <TeamMembers/>}     
           </div>
-         
         </div>
       </Drawer>
     </div>

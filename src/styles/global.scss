@@ -143,7 +143,7 @@ ul.ant-table-pagination {
 }
 
 .ant-drawer.ant-drawer-right.ant-drawer-open .ant-drawer-content-wrapper {
-  width: 700px !important;
+  min-width: 800px !important;
 }
 
 .ant-checkbox-checked::after {
@@ -155,4 +155,17 @@ ul.ant-table-pagination {
 }
 .ant-checkbox-checked .ant-checkbox-inner::after {
   border-color: #ffffff;
+}
+
+.count.count-icon {
+  padding: 0 4px;
+  color: #ffffff;
+  border-radius: 2px;
+  margin-left: 5px;
+  &.active-count {
+    background-color: $theme-color;
+  }
+  &.inactive-count {
+    background-color: gray;
+  }
 }
