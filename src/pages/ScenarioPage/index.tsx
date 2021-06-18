@@ -19,6 +19,8 @@ const { TabPane } = Tabs;
 const { Step } = Steps;
 
 const frequencyFilter = [80, 100]
+const inActiveChartColors = ['#514c4a', '#65615f', '#86817f', '#a59e9b']
+const activeChartColors = ['#d04a02', '#ed7738', '#ed9d72', '#f5b795']
 
 
 const panelHeader = () => {
@@ -74,10 +76,11 @@ const ScenarioPage = (props) => {
     // const [scenario, setScenario] = useState({})
     const [editFlag, setEditFlag] = useState(false)
     const [scenarioType, setScenarioType] = useState('')
-
+    const [activeEnrollmentTabKey, setActiveEnrollmentTabKey] = useState('1')
     const [activeTabKey, setActiveTabKey] = useState('1')
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
+    const [enableSave, setEnableSave] = useState(false)
 
     //------------------------INCLUSION CRITERIA CONST START-----------------------------
     //Original libs for filter purpose
@@ -97,6 +100,7 @@ const ScenarioPage = (props) => {
     const [screenRateData, setScreenRateData] = useState(defaultChartValue)
     const [therapeutic_Amend_Avg, setTherapeutic_Amend_Avg] = useState('Therapeutic Area Average - 0%')
     const [therapeutic_Screen_Avg, setTherapeutic_Screen_Avg] = useState('Therapeutic Area Average - 0%')
+    const [impactColors, setImpactColors] = useState(inActiveChartColors)
 
     const [rollHeight, setRollHeight] = useState(true)            // Control editTable scroll height
     const [visible, setVisible] = useState(false)                 // Control libs filter slider bar display or not
@@ -137,6 +141,7 @@ const ScenarioPage = (props) => {
     const [excluScreenRateData, setExcluScreenRateData] = useState(defaultChartValue)
     const [exclu_Therapeutic_Amend_Avg, setExcluTherapeutic_Amend_Avg] = useState('Therapeutic Area Average - 0%')
     const [exclu_Therapeutic_Screen_Avg, setExcluTherapeutic_Screen_Avg] = useState('Therapeutic Area Average - 0%')
+    const [excluImpactColors, setExcluImpactColors] = useState(inActiveChartColors)
 
     const [excluRollHeight, setExcluRollHeight] = useState(true)            // Control editTable scroll height
     const [excluVisible, setExcluVisible] = useState(false);                // Control libs filter slider bar display or not
@@ -574,6 +579,9 @@ const ScenarioPage = (props) => {
 
         setCollapsible(false)
         setDefaultActiveKey(['2', '3', '4', '5'])
+
+        setRollHeight(false)
+        setActiveKey(['1'])
         
       } else if (type == 2) {//Exclusion
 
@@ -634,6 +642,9 @@ const ScenarioPage = (props) => {
 
         setExcluCollapsible(false)
         setExcluDefaultActiveKey(['2','3','4','5'])
+
+        setExcluRollHeight(false)
+        setExcluActiveKey(['1'])
       }
 
     
@@ -699,7 +710,7 @@ const ScenarioPage = (props) => {
           labelLine: {
             show: true
           },
-          color:['#0001ff', '#578be2', '#80aacc', '#ddd'],
+          color: impactColors,
           data: protocolRateData
         }
       ]
@@ -746,7 +757,7 @@ const ScenarioPage = (props) => {
           labelLine: {
             show: true
           },
-          color:['#0001ff', '#578be2', '#80aacc', '#ddd'],
+          color: impactColors,
           data: screenRateData
         }
       ]
@@ -794,7 +805,7 @@ const ScenarioPage = (props) => {
             labelLine: {
                 show: true
             },
-            color:['#0001ff', '#578be2', '#80aacc', '#ddd'],
+            color: excluImpactColors,
             data: excluProtocolRateData
         }
       ]
@@ -842,10 +853,61 @@ const ScenarioPage = (props) => {
           labelLine: {
             show: true
           },
-          color:['#0001ff', '#578be2', '#80aacc', '#ddd'],
+          color: excluImpactColors,
           data: excluScreenRateData
         }
       ]
+    };
+
+    const raceOption = {
+      title : {
+        text: 'Race & Ethnicity',
+        x:'left',
+        y:'top',
+        textStyle: {
+          fontSize: 14,
+          fontWeight: 'bold'
+        }
+      },
+      legend: {
+        x:'40%',
+        y:'25%',
+        orient: 'vertical',
+        itemHeight: 7,
+        textStyle: {
+          fontSize: 9
+        },
+        formatter: function(name) {
+          let data = raceOption.series[0].data;
+          let total = 0;
+          let tarValue = 0;
+          for (let i = 0, l = data.length; i < l; i++) {
+              total += data[i].value;
+              if (data[i].name == name) {
+                  tarValue = data[i].value;
+              }
+          }
+          let p = (tarValue / total * 100).toFixed(2);
+          return name + ' - ' + p + '%';
+        },
+        data: ['Caucasian','Hispanic','Asian','Afican American']
+      },
+      series: [{
+        type: 'pie',
+        center: ['20%', '65%'],
+        radius: ['30%', '70%'],
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+        },
+        color:['#0001ff', '#578be2', '#80aacc', '#ddd'],
+        data: [
+          {value: 75, name: 'Caucasian'},
+          {value: 12, name: 'Hispanic'},
+          {value: 8, name: 'Asian'},
+          {value: 5, name: 'Afican American'}
+        ]
+      }]
     };
   
     const handleOk = () => {
@@ -1323,6 +1385,15 @@ const pdfMake = async () =>{
     setActiveTabKey(activeKey)
     console.log(activeKey)
   }
+
+  const updateImpact = (type) =>{
+    setEnableSave(true)
+    if(type === 1){
+      setImpactColors(activeChartColors)
+    } else {
+      setExcluImpactColors(activeChartColors)
+    }
+  }
   
   
   
@@ -1336,6 +1407,8 @@ const pdfMake = async () =>{
                 </div>
             </Col>
             <Col span={5} style={{maxHeight: '32px'}}>
+              <Row>
+              <Col span={23}>
                 <Row className="item-translate">
 
                     <Col flex="10px"></Col>
@@ -1346,6 +1419,9 @@ const pdfMake = async () =>{
                     <Col flex="10px"></Col>
                     <Col flex="auto" style={{fontSize: '15px', fontWeight: 'bold'}}>{scenario['scenario_name']}</Col>
                 </Row>
+                </Col>
+                <Col span={1} style={{borderLeft: '1.5px solid #c4bfbf', maxHeight: '32px'}}></Col>
+                </Row>
             </Col>
             <Col span={8}>
                 <Steps progressDot current={0} size="small" >
@@ -1353,7 +1429,7 @@ const pdfMake = async () =>{
                     <Step title="Add Schedule of Events"/>
                 </Steps>
             </Col>
-            <Col span={9}>
+            <Col span={9} className={`${ collapsible ? "none-click" : "" }`}>
                 {activeTabKey === '1'?(
                     <>
                         <Button type="primary" className="step-btn" onClick={() => setActiveTabKey('2')}>
@@ -1385,7 +1461,7 @@ const pdfMake = async () =>{
       </div>
       <div className="ie-container">
         <div className="export-container">
-          <Row>
+          <Row className={`${ enableSave ? "" : "none-click" }`}>
             <Col span={18}>
               <div style={{ bottom: '0',height: '50px' }}></div>
             </Col>
@@ -1630,9 +1706,9 @@ const pdfMake = async () =>{
                         <Col span={24}>
                           <div className="impact-summary">
                             <span>Inclusion Criteria</span>
-                            {/* <Button type="primary" onClick={saveInclusionCriteria}>
-                              Save
-                            </Button> */}
+                            <Button className="view-btn" onClick={() => updateImpact(1)}>
+                              UPDATE IMPACT
+                            </Button>
                           </div>
                           </Col>
                       </Row>
@@ -1686,7 +1762,7 @@ const pdfMake = async () =>{
                 </Col>
               </Row>
             </TabPane>
-            <TabPane tab="Exclusion Criteria" key="2">
+            <TabPane tab="Exclusion Criteria" key="2" disabled={collapsible}>
               <Row>
                 <Col span={6} style={{backgroundColor: '#f3f3f3'}}>
                   <Row style={{backgroundColor: '#f3f3f3'}}>
@@ -1906,9 +1982,9 @@ const pdfMake = async () =>{
                         <Col span={24}>
                           <div className="impact-summary">
                             <span>Exclusion Criteria</span>
-                            {/* <Button type="primary" onClick={saveExclusionCriteria}>
-                              Save
-                            </Button> */}
+                            <Button className="view-btn" onClick={() => updateImpact(2)}>
+                              UPDATE IMPACT
+                            </Button>
                           </div>
                           </Col>
                       </Row>
@@ -1955,10 +2031,10 @@ const pdfMake = async () =>{
                 </Col>
               </Row>
             </TabPane>
-            <TabPane tab="Enrollment Feasibility" key="3">
+            <TabPane tab="Enrollment Feasibility" key="3" disabled={collapsible}>
             <Row>
-                <Col span={6} style={{backgroundColor: '#f3f3f3'}}>
-                  <Row style={{backgroundColor: '#f3f3f3'}}>
+                <Col span={5}>
+                  {/* <Row style={{backgroundColor: '#f3f3f3'}}>
                     <Col span={24}>
                       <div style={{padding: '5px 15px'}}>
                         <span style={{fontSize: '16px', fontWeight: 500}}>My Protocol</span>
@@ -2017,9 +2093,9 @@ const pdfMake = async () =>{
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>
                     </Col>
-                  </Row>
+                  </Row> */}
                 </Col>
-                <Col span={10}>
+                <Col span={14}>
                   <Row style={{ paddingTop: '10px' }}>
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>
@@ -2031,16 +2107,16 @@ const pdfMake = async () =>{
                       <Row>
                         <Col span={24}>
                         <span className="tip1-desc">
-                          View the impact of selected inclusion criteria on propspective patient enrollment.
+                          View the impact of selected inclusion exclusion criteria on propspective patient enrollment.
                         </span>
                         </Col>
                       </Row>
                       <Row style={{paddingTop: 20}}>
                         <Col span={24}>
-                          <span className="chart-title">Patient Funnel</span>
+                          <span className="chart-title">My Protocol</span>
                         </Col>
                       </Row>
-                      <Row>
+                      {/* <Row>
                         <Col span={24}>
                           <div className="content-outer">
                             <div className="enrollment-item">
@@ -2102,6 +2178,36 @@ const pdfMake = async () =>{
                             </div>
                           </div>
                         </Col>
+                      </Row> */}
+                      <Row className="enroll-tab">
+                        <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('1')}>
+                          <Row><Col className="tab-item">
+                            <Row className="tab-label">Patients Eligible</Row>
+                            <Row className="tab-title">80K</Row>
+                            <Row className="tab-desc">16% of Dataset</Row>
+                          </Col></Row>
+                        </Col>
+                        <Col span={1}></Col>
+                        <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '2' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('2')}>
+                          <Row><Col className="tab-item" span={24}>
+                            <Row className="tab-label">
+                              <Col span={22}>Female patients eligible</Col>
+                              <Col span={1} style={{color:'#12129f'}}>&#9724;</Col>
+                            </Row>
+                            <Row className="tab-title">20%</Row>
+                          </Col></Row>
+                        </Col>
+                        <Col span={1}></Col>
+                        <Col span={8} className={`chart-tab ${activeEnrollmentTabKey === '3' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('3')}>
+                          <Row><Col className="tab-item" span={24}>
+                            <CustomChart option={raceOption} height={110}></CustomChart>
+                          </Col></Row>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col span={24} className="result-chart">
+                          test
+                        </Col>
                       </Row>
                     </Col>
                     <Col flex="none">
@@ -2109,6 +2215,7 @@ const pdfMake = async () =>{
                     </Col>
                   </Row>
                 </Col>
+                <Col span={5}></Col>
               </Row>
             </TabPane>
           </Tabs>

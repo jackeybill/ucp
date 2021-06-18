@@ -5,6 +5,10 @@
     background-color: #fff;
     min-height: calc(100vh - 88px);
 
+    .none-click{
+        pointer-events: none;
+    }
+
     .ant-btn-primary:focus{
         color: #fff;
         background-color: #ca4a04;
@@ -38,7 +42,7 @@
     Button.view-btn {
         background-color: #fff;
         color: #ca4a04;
-        border-color: #fff;
+        border-color: #ca4a04;
     }
 
     .step-btn{
@@ -290,19 +294,19 @@
                     }
     
                     .item1{
-                        background-color: #0001ff;
+                        background-color: #d04a02;
                     }
     
                     .item2{
-                        background-color: #578be2;
+                        background-color: #ed7738;
                     }
     
                     .item3{
-                        background-color: #80aacc;
+                        background-color: #ed9d72;
                     }
     
                     .item4{
-                        background-color: #ddd;
+                        background-color: #f5b795;
                     }
                 }
     
@@ -347,10 +351,6 @@
                     border-left: 1px solid #ddd;
                     padding-left: 16px;
                 }
-            }
-    
-            .none-click{
-                pointer-events: none;
             }
     
             .impact-summary{
@@ -410,35 +410,35 @@
                 height:230px
             }
     
-            .enrollment-left-section{
-                width: calc(100% - 30px);
-                margin: 0 15px;
+            // .enrollment-left-section{
+            //     width: calc(100% - 30px);
+            //     margin: 0 15px;
     
-                .check-header{
-                    background-color: #DEDEDE;
-                    height: 42px;
-                    align-items: center;
-                    padding-left: 15px;
+            //     .check-header{
+            //         background-color: #DEDEDE;
+            //         height: 42px;
+            //         align-items: center;
+            //         padding-left: 15px;
     
-                    .ant-checkbox-wrapper > span{
-                        color: #333333;
-                        font-size: 14px;
-                        font-weight: 500;
-                    }
-                }
+            //         .ant-checkbox-wrapper > span{
+            //             color: #333333;
+            //             font-size: 14px;
+            //             font-weight: 500;
+            //         }
+            //     }
     
-                .list-item{
-                    background-color: #fff;
-                    height: 42px;
-                    align-items: center;
-                    padding-left: 15px;
-                    border: 1px solid #DEDEDE;
+            //     .list-item{
+            //         background-color: #fff;
+            //         height: 42px;
+            //         align-items: center;
+            //         padding-left: 15px;
+            //         border: 1px solid #DEDEDE;
     
-                    span{
-                        font-size: 14px;
-                    }
-                }
-            }
+            //         span{
+            //             font-size: 14px;
+            //         }
+            //     }
+            // }
     
             .enrollment-right-section{
                 span.chart-title {
@@ -447,61 +447,101 @@
                     margin-top: 10px;
                     padding: 10px 0;
                 }
-            }
-    
-            .enrollment-item{
-                height: 420px;
-                width: calc(100% + 22px);
-                overflow-y:scroll;
-                box-sizing: content-box;
-    
-                .title-box{
-                    span{
-                        font-size:16px;
-                        font-weight: bold;
+
+                .tip1-desc{
+                    color:#aba9a9;
+                    font-size: 13px;
+                }
+
+                .enroll-tab{
+                    margin-top: 10px;
+
+                    .chart-tab{
+                        border: 2px solid #f5f5f5;
+                        border-radius: 7px;
+                        box-shadow: #f5f5f5 1px 1px 1px 1px;
+
+                        .tab-item{
+                            padding:10px;
+
+                            .tab-title{
+                                font-size:24px;
+                                font-weight:bold;
+                            }
+
+                            .tab-desc{
+                                font-weight: 500;
+                            }
+                        }
                     }
-    
-                    .name-box{
-                        padding-left:20px;
-                    }
-    
-                    .count-box{
-                        text-align: right;
-                        color:#9C7ED1;
-                        padding-right: 5px;
+
+                    .chart-tab.active{
+                        background-color:#fddfe4;
+                        // box-shadow: #f5f5f5 1px 1px 1px 1px;
                     }
                 }
+
+                .result-chart{
+                    margin-top:20px;
+                    border: 2px solid #f5f5f5;
+                    border-radius: 7px;
+                    box-shadow: #f5f5f5 1px 1px 1px 1px;
+                }
+            }
+    
+            // .enrollment-item{
+            //     height: 420px;
+            //     width: calc(100% + 22px);
+            //     overflow-y:scroll;
+            //     box-sizing: content-box;
+    
+            //     .title-box{
+            //         span{
+            //             font-size:16px;
+            //             font-weight: bold;
+            //         }
+    
+            //         .name-box{
+            //             padding-left:20px;
+            //         }
+    
+            //         .count-box{
+            //             text-align: right;
+            //             color:#9C7ED1;
+            //             padding-right: 5px;
+            //         }
+            //     }
                 
-                .item-bar{
-                    background-color:#634A8F;
-                    height:15px;
-                }
+            //     .item-bar{
+            //         background-color:#634A8F;
+            //         height:15px;
+            //     }
     
-                .content-box{
-                    background-color:#d5cce5;
-                    height:80px;
+            //     .content-box{
+            //         background-color:#d5cce5;
+            //         height:80px;
     
-                    .desc-box{
-                        padding-left:20px;
+            //         .desc-box{
+            //             padding-left:20px;
     
-                        span{
-                            font-size: 14px;
-                            font-weight: 500;
-                        }
-                    }
+            //             span{
+            //                 font-size: 14px;
+            //                 font-weight: 500;
+            //             }
+            //         }
     
-                    .subdesc-box{
-                        span{
-                            font-size: 14px;
-                            color:#9C7ED1;
-                        }
-                    }
-                }
+            //         .subdesc-box{
+            //             span{
+            //                 font-size: 14px;
+            //                 color:#9C7ED1;
+            //             }
+            //         }
+            //     }
     
-                .triangle-topleft{
-                    background:linear-gradient(to bottom right, #d5cce5 0%, #d5cce5 50%,transparent calc(50% + 1px),#fff 100%);
-                }
-            }
+            //     .triangle-topleft{
+            //         background:linear-gradient(to bottom right, #d5cce5 0%, #d5cce5 50%,transparent calc(50% + 1px),#fff 100%);
+            //     }
+            // }
         }
     }
     
