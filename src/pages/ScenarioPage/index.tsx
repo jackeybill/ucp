@@ -201,7 +201,8 @@ const ScenarioPage = (props) => {
 
                 console.log('edit scenario for: ' +  tempScenarioId + ': ' +  tempEditFlag)
 
-                if(tempEditFlag){
+                if(tempEditFlag && tempScenario['Inclusion Criteria'].Demographics !== undefined
+                  && tempScenario['Inclusion Criteria'].Demographics.Entities !== undefined){
                     demographicsElements = tempScenario['Inclusion Criteria'].Demographics.Entities
                     interventionElements = tempScenario['Inclusion Criteria'].Intervention.Entities
                     medConditionElements = tempScenario['Inclusion Criteria']['Medical Condition'].Entities
