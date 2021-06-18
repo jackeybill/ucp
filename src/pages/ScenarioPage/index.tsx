@@ -393,7 +393,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": "-",
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -411,7 +411,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": "-",
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -429,7 +429,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": "-",
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -447,7 +447,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": "-",
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -470,7 +470,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": "-",
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -488,7 +488,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": "-",
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -506,7 +506,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": "-",
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -524,7 +524,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": "-",
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
