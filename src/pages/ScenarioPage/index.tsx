@@ -61,6 +61,10 @@ const initialScenario = {
     "Schedule of Events": {}
 };
 
+let resultdata = [80, 100, 200, 250, 300, 400, 475, 500];
+let femaleFreq = [20, 24, 25, 30, 35, 49, 52, 55];
+let raceFreq = [5, 8, 9, 10, 15, 20, 24, 25];
+
 const ScenarioPage = (props) => {
     //Common cons
     const [trialRecord, setTrialRecord] = useReducer(
@@ -81,6 +85,10 @@ const ScenarioPage = (props) => {
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
     const [enableSave, setEnableSave] = useState(false)
+    const [freqColor, setFreqColor] = useState('#12129f')
+    const [totalData, setTotalData] = useState([])
+    const [freqData, setFreqdata] = useState([])
+    const [chartTitle, setChartTitle] = useState('Patients Eligible - 80K(16% of Dataset)')
 
     //------------------------INCLUSION CRITERIA CONST START-----------------------------
     //Original libs for filter purpose
@@ -166,6 +174,13 @@ const ScenarioPage = (props) => {
   
 
     useEffect(() => {
+      let tempData = [];
+      for(let i = 0, l = resultdata.length; i < l; i++){
+          var num = resultdata[i] + 100;
+          tempData.push({'total': resultdata[i]+'K', 'value':num});
+      }
+      setTotalData(tempData)
+
       if(props.location.state.trial_id == undefined || props.location.state.trial_id == ''){
         props.history.push({pathname: '/trials'})
       } else {
@@ -900,7 +915,7 @@ const ScenarioPage = (props) => {
         label: {
           show: false,
         },
-        color:['#0001ff', '#578be2', '#80aacc', '#ddd'],
+        color:['#0001ff', '#2e9df7', '#8ac7fa', '#a3cef1'],
         data: [
           {value: 75, name: 'Caucasian'},
           {value: 12, name: 'Hispanic'},
@@ -909,6 +924,135 @@ const ScenarioPage = (props) => {
         ]
       }]
     };
+
+    const resultOption = {
+      title : {
+        text: chartTitle,
+        x:'45%',
+        y:'top',
+        textStyle: {
+          fontSize: 14,
+          fontWeight: 'bold'
+        }
+      },
+      grid: {
+          left: '3%',
+          right: '4%',
+          top: '8%',
+          bottom: '3%',
+          containLabel: true
+      },
+      xAxis: {
+          type: 'value',
+          axisLabel: {
+              show: false
+          },
+          splitLine:{
+              show:false
+          },
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+              show: false
+          },
+      },
+      yAxis: {
+          type: 'category',
+          axisLine: {
+              show: false
+          },
+          axisTick: {
+              show: false
+          },
+          data: [
+          'HbA1c - >= 7.0% and <= 9.0%',    
+          'Fasting C-peptide - >= 0.8 ng/mL', 
+          'TSH - Normal or clinically euthyroid', 
+          'Meformin - Stable dose', 
+          'Type 2 Diabetes', 
+          'Stable body weight - Not charged by more than 5%', 
+          'Gender - Men or nonpregnant women', 
+          'Age - >18']
+      },
+      series: [{
+              name: 'Direct',
+              type: 'bar',
+              stack: 'total',
+              color: freqColor,
+              label: {
+                  show: true,
+                  formatter: function(p) {
+                      return p.data.freq+'%'
+                  },
+                  position: 'insideRight'
+              },
+              data: freqData
+          }, {
+              name: 'total',
+              type: 'bar',
+              stack: 'total',
+              barWidth:'20px',
+              color: '#d21414',
+              label: {
+                  show: true,
+                  formatter: function(p) {
+                      return p.data.total
+                  },
+                  position: 'insideRight'
+              },
+              data: totalData
+          }
+      ]
+  };
+
+  const switchTabkey = (key) =>{
+    setActiveEnrollmentTabKey(key)
+    if(key === '1'){
+      setChartTitle('Patients Eligible - 80K(16% of Dataset)')
+      let tempData = [];
+      for(let i = 0, l = resultdata.length; i < l; i++){
+          var num = resultdata[i] + 100;
+          tempData.push({'total': resultdata[i]+'K', 'value':num});
+      }
+      setTotalData(tempData)
+      setFreqdata([])
+    } else if(key === '2'){
+      setChartTitle('Female patients eligible - 20%')
+      setFreqColor('#12129f')
+
+      let tempData = [];
+      for(let i = 0, l = resultdata.length; i < l; i++){
+          var num = resultdata[i] * (100 - femaleFreq[i]) / 100;
+          tempData.push({'total': resultdata[i]+'K', 'value':num});
+      }
+      setTotalData(tempData)
+
+      let tempData2 = [];
+      for(let i = 0, l = resultdata.length; i < l; i++){
+          var num = resultdata[i] * femaleFreq[i] / 100;
+          tempData2.push({'freq': femaleFreq[i], 'value' : num+100});
+      }
+      setFreqdata(tempData2)
+    } else {
+      setChartTitle('Race & Ethnicity - Afican American - 5%')
+      setFreqColor('#a3cef1')
+
+      let tempData = [];
+      for(let i = 0, l = resultdata.length; i < l; i++){
+          var num = resultdata[i] * (100 - raceFreq[i]) / 100;
+          tempData.push({'total': resultdata[i]+'K', 'value':num});
+      }
+      setTotalData(tempData)
+
+      let tempData2 = [];
+      for(let i = 0, l = resultdata.length; i < l; i++){
+          var num = resultdata[i] * raceFreq[i] / 100;
+          tempData2.push({'freq': raceFreq[i], 'value' : num+100});
+      }
+      setFreqdata(tempData2)
+    }
+  }
   
     const handleOk = () => {
       setShowHistorical(false)
@@ -1176,61 +1320,61 @@ const ScenarioPage = (props) => {
       }
     }
 
-    const option = [{
-      Name:'Age',
-      Count: '500',
-      Desc:'85%',
-      SubDesc: '(52% Female / 48% Male)',
-      span: 24
-    },{
-      Name:'Gender',
-      Count: '450',
-      Desc:'75%',
-      SubDesc: '',
-      span: 22
-    },{
-      Name:'Stable body weight',
-      Count: '370',
-      Desc:'55%',
-      SubDesc: '',
-      span: 20
-    },{
-      Name:'Type 2 Diabetes',
-      Count: '260',
-      Desc:'45%',
-      SubDesc: '',
-      span: 18
-    },{
-      Name:'Metformin',
-      Count: '120',
-      Desc:'25%',
-      SubDesc: '29%',
-      span: 16
-    },{
-      Name:'Insulin',
-      Count: '120',
-      Desc:'25%',
-      SubDesc: '',
-      span: 16
-    },{
-      Name:'TSH',
-      Count: '100',
-      Desc:'22%',
-      SubDesc: '',
-      span: 15
-    },{
-      Name:'Fasting C peptide',
-      Count: '90',
-      Desc:'20%',
-      SubDesc: '',
-      span: 14
-    },{
-      Name:'HbA1c',
-      Count: '70',
-      Desc:'15%',
-      SubDesc: '',
-      span: 12
-    }]
+    // const option = [{
+    //   Name:'Age',
+    //   Count: '500',
+    //   Desc:'85%',
+    //   SubDesc: '(52% Female / 48% Male)',
+    //   span: 24
+    // },{
+    //   Name:'Gender',
+    //   Count: '450',
+    //   Desc:'75%',
+    //   SubDesc: '',
+    //   span: 22
+    // },{
+    //   Name:'Stable body weight',
+    //   Count: '370',
+    //   Desc:'55%',
+    //   SubDesc: '',
+    //   span: 20
+    // },{
+    //   Name:'Type 2 Diabetes',
+    //   Count: '260',
+    //   Desc:'45%',
+    //   SubDesc: '',
+    //   span: 18
+    // },{
+    //   Name:'Metformin',
+    //   Count: '120',
+    //   Desc:'25%',
+    //   SubDesc: '29%',
+    //   span: 16
+    // },{
+    //   Name:'Insulin',
+    //   Count: '120',
+    //   Desc:'25%',
+    //   SubDesc: '',
+    //   span: 16
+    // },{
+    //   Name:'TSH',
+    //   Count: '100',
+    //   Desc:'22%',
+    //   SubDesc: '',
+    //   span: 15
+    // },{
+    //   Name:'Fasting C peptide',
+    //   Count: '90',
+    //   Desc:'20%',
+    //   SubDesc: '',
+    //   span: 14
+    // },{
+    //   Name:'HbA1c',
+    //   Count: '70',
+    //   Desc:'15%',
+    //   SubDesc: '',
+    //   span: 12
+    // }]
 
 
   //--------------------------------------------
@@ -1466,9 +1610,15 @@ const pdfMake = async () =>{
               <div style={{ bottom: '0',height: '50px' }}></div>
             </Col>
             <Col span={3} style={{paddingRight: '20px'}}>
-              <Button type="primary" onClick={saveCriteria} style={{zIndex: 1, marginTop: '8px'}}>
-                Save
-              </Button>
+              {activeTabKey === '3'? (
+                <></>
+              ) : (
+                <>
+                  <Button type="primary" onClick={saveCriteria} style={{zIndex: 1, marginTop: '8px'}}>
+                    Save
+                  </Button>
+                </>
+              )}
             </Col>
             <Col span={3}>
               <Dropdown.Button style={{zIndex: 1}}
@@ -2180,7 +2330,7 @@ const pdfMake = async () =>{
                         </Col>
                       </Row> */}
                       <Row className="enroll-tab">
-                        <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('1')}>
+                        <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => switchTabkey('1')}>
                           <Row><Col className="tab-item">
                             <Row className="tab-label">Patients Eligible</Row>
                             <Row className="tab-title">80K</Row>
@@ -2188,7 +2338,7 @@ const pdfMake = async () =>{
                           </Col></Row>
                         </Col>
                         <Col span={1}></Col>
-                        <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '2' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('2')}>
+                        <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '2' ? 'active' : ''}`} onClick={() => switchTabkey('2')}>
                           <Row><Col className="tab-item" span={24}>
                             <Row className="tab-label">
                               <Col span={22}>Female patients eligible</Col>
@@ -2198,7 +2348,7 @@ const pdfMake = async () =>{
                           </Col></Row>
                         </Col>
                         <Col span={1}></Col>
-                        <Col span={8} className={`chart-tab ${activeEnrollmentTabKey === '3' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('3')}>
+                        <Col span={8} className={`chart-tab ${activeEnrollmentTabKey === '3' ? 'active' : ''}`} onClick={() => switchTabkey('3')}>
                           <Row><Col className="tab-item" span={24}>
                             <CustomChart option={raceOption} height={110}></CustomChart>
                           </Col></Row>
@@ -2206,7 +2356,7 @@ const pdfMake = async () =>{
                       </Row>
                       <Row>
                         <Col span={24} className="result-chart">
-                          test
+                          <CustomChart option={resultOption} height={350}></CustomChart>
                         </Col>
                       </Row>
                     </Col>
