@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer} from 'react';
 import 'antd/dist/antd.css';
 import './index.scss';
-import { Table, Input, InputNumber, Popconfirm, Form, Typography, Button, Popover, Modal, Collapse} from 'antd';
+import { Table, Input, InputNumber, Form, Typography, Button, Popover, Modal, Collapse} from 'antd';
 import {MoreOutlined, CheckOutlined, CloseOutlined, PlusCircleOutlined, CaretRightOutlined} from "@ant-design/icons";
 
 const { TextArea } = Input;

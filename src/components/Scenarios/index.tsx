@@ -150,7 +150,7 @@ const SceneriosDashbaord = (props: any) => {
               <div className="scenarios-list">
                 {props.record.scenarios.map((s, idx) => {
                   return (
-                    <div className="item-wrapper">
+                    <div className="item-wrapper" key={s['scenario_id'] + idx}>
                       <div className="scenario-item">
                         <div className="title">
                           <p>Scenario {idx + 1}</p>

@@ -31,7 +31,7 @@ import TeamMembers from '../../components/NewTrialSteps/TeamMembers';
 import SimilarHistoricalTrials from '../../components/NewTrialSteps/SimilarHistoricalTrials';
 import Scenarios from "../../components/Scenarios";
 import TrialSummary from '../../components/NewTrialSteps/TrialSummary';
-import { getTrialList, addStudy, updateStudy } from "../../utils/ajax-proxy";
+import { getTrialList, addStudy, updateStudy, listStudy} from "../../utils/ajax-proxy";
 import { COUNTRY_MAP } from "../../utils/country-map";
 import { Therapeutic_Area_Map } from "../../utils/area-map";
 import addIcon from "../../assets/add.svg";
@@ -98,6 +98,7 @@ const TrialPortfolio = (props) => {
   const [currentTrial, setCurrentTrial] = useState({});
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
+  const [historicalTrialData, setHistoricalTrialData] = useState([])
 
   const [trial, setTrial] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -119,7 +120,13 @@ const TrialPortfolio = (props) => {
     setArea(value);
   };
 
-  const hanldeNextStep = () => {
+  const hanldeNextStep = async () => {
+    if(historicalTrialData.length == 0){
+      const resp = await listStudy();
+      if (resp.statusCode == 200) {
+        setHistoricalTrialData(JSON.parse(resp.body))
+      }
+    }
     setStep(step+1)
   }
 
@@ -412,7 +419,7 @@ const TrialPortfolio = (props) => {
             <span className="title">{timeline[step]}</span>         
             {step==0 && <TrialSummary handleNewTrialInputChange={handleNewTrialInputChange} handleNewTrialSelectChange={ handleNewTrialSelectChange} newTrial={newTrial}/>}
             {step==1 && <TrialEndpoints />}
-            {step==2 && <SimilarHistoricalTrials/>}
+            {step==2 && <SimilarHistoricalTrials dataList={historicalTrialData}/>}
             {step==3 && <TeamMembers/>}     
           </div>
         </div>

@@ -271,6 +271,7 @@ const ScenarioPage = (props) => {
     
             if (resp.statusCode == 200) {
                 const response = JSON.parse(resp.body)
+                console.log(response)
     
                 const inclusionCriteria = response[0].InclusionCriteria
                 for(var i = 0; i < inclusionCriteria.length; i ++){
