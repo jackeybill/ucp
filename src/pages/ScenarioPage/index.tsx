@@ -12,6 +12,7 @@ import CriteriaOption from "../../components/CriteriaOption";
 import CustomChart from "../../components/CustomChart";
 import EditTable from "../../components/EditTable";
 import SelectableTable from "../../components/SelectableTable";
+import ScheduleEvents from "../../components/ScheduleEvents";
 
 
 const { Panel } = Collapse;
@@ -82,9 +83,10 @@ const ScenarioPage = (props) => {
     const [scenarioType, setScenarioType] = useState('')
     const [activeEnrollmentTabKey, setActiveEnrollmentTabKey] = useState('1')
     const [activeTabKey, setActiveTabKey] = useState('1')
+    const [processStep, setProcessStep] = useState(0)
+
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
-    const [enableSave, setEnableSave] = useState(false)
     const [freqColor, setFreqColor] = useState('#12129f')
     const [totalData, setTotalData] = useState([])
     const [freqData, setFreqdata] = useState([])
@@ -1533,7 +1535,6 @@ const pdfMake = async () =>{
   }
 
   const updateImpact = (type) =>{
-    setEnableSave(true)
     if(type === 1){
       setImpactColors(activeChartColors)
     } else {
@@ -1570,7 +1571,7 @@ const pdfMake = async () =>{
                 </Row>
             </Col>
             <Col span={8}>
-                <Steps progressDot current={0} size="small" >
+                <Steps progressDot current={processStep} size="small" >
                     <Step title="Add Inclusion / Exclusion Criteria"/>
                     <Step title="Add Schedule of Events"/>
                 </Steps>
@@ -1591,23 +1592,37 @@ const pdfMake = async () =>{
                             PREV:INCLUSION CRITERIA
                         </Button>
                     </>
-                ):(
+                ):(processStep === 0?(
+
                     <>
-                        <Button type="primary" className="step-btn" onClick={() => setActiveTabKey('3')}>
+                        <Button type="primary" className="step-btn" onClick={() => setProcessStep(1)}>
                             NEXT:ADD SCHEDULE OF EVENTS
                         </Button>
                         <Button className="view-btn step-btn" onClick={() => setActiveTabKey('2')}>
                             PREV:EXCLUSION CRITERIA
                         </Button>
                     </>
-                ))}
+                ):(
+                    <>
+                        <Button type="primary" className="step-btn" >
+                            SUBMIT
+                        </Button>
+                        <Button type="primary" className="step-btn" >
+                            SAVE AND FINISH LATER
+                        </Button>
+                        <Button className="view-btn step-btn" onClick={() => setProcessStep(0)}>
+                            PREV:ENROLLMENT FEASIBILITY
+                        </Button>
+                    </>
+                )))}
             </Col>
             
         </Row>
       </div>
+      {processStep === 0 ? (
       <div className="ie-container">
         <div className="export-container">
-          <Row className={`${ enableSave ? "" : "none-click" }`}>
+          <Row>
             <Col span={18}>
               <div style={{ bottom: '0',height: '50px' }}></div>
             </Col>
@@ -2373,6 +2388,10 @@ const pdfMake = async () =>{
           </Tabs>
         </div>
       </div>
+
+      ) : (
+        <div className="ie-container"><ScheduleEvents/></div>
+      )}
       <Modal visible={showHistorical} title="Historical Trial List" onOk={handleOk} onCancel={handleCancel}
         footer={null} style={{ left: '20%', top:50 }} centered={false} width={200} > 
         <Row>
