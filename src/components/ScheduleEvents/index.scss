@@ -1,0 +1,142 @@
+.event-left-container{
+    background-color: #f3f3f3;
+    min-height: calc(100vh - 141px);
+
+    .event-section{
+        background-color: #fff;
+        font-size: 14px;
+        margin-top: 10px;
+
+        .section-header{
+            height: 40px;
+            padding: 0px 20px;
+            font-weight: bold;
+            align-items: center;
+
+            .count-span{
+                margin-left: 5px;
+                padding: 0px 2px;
+                background-color: black;
+                color: #fff;
+                font-weight: 400;
+                font-size: 6px;
+            }
+        }
+        .section-item{
+            border-top: 1px solid #f3f3f3;
+            height: 40px;
+            padding: 0px 20px;
+            align-items: center;
+
+            .add{
+                color: #d04a02;
+                cursor: pointer;
+                text-align: right;
+            }
+
+            .remove{
+                color:#ddd;
+            }
+        }
+
+        .section-item.hidde{
+            display:none;
+        }
+    }
+}
+
+.event-right-container{
+    height: 100%;
+    width: 75%;
+
+    .ant-dropdown-button{
+        border: 1px solid #d04a02;
+    }
+    .anticon.anticon-down{
+        color: #d04a02;
+    }
+
+    .ant-input-number .ant-input-number-handler-wrap {
+        opacity: 1;
+    }
+
+    .ant-input-number.ant-input-number-sm {
+        width: 60px;
+    }
+
+    .tip1-desc{
+        font-size:13px;
+        text-align: right;
+        align-items:right;
+    }
+
+    .tip1-desc.right{
+        float:right;
+    }
+    .tip1-desc.center{
+        display:flex;
+        justify-content:center;
+    }
+
+    .event-chart{
+        margin-top: 20px;
+    }
+
+    .event-panelHeader{
+        .bar-desc {
+            font-size: 16px;
+            font-weight: bold;
+            display:inline-block;
+            min-width:70px;
+            border-right: 2px solid #ddd;
+        }
+
+        .item-desc {
+            margin-left:20px;
+            display:inline-block;
+
+            span{
+                font-size:6px;
+            }
+
+            .bar-item{
+                display:inline-block;
+                content: "";
+                width: 7px;
+                height: 7px;
+                border-radius: 5px;
+                margin-right:5px;
+            }
+
+            .item1{
+                background-color: #d04a02;
+            }
+
+            .item2{
+                background-color: #ed7738;
+            }
+
+            .item3{
+                background-color: #ed9d72;
+            }
+
+            .item4{
+                background-color: #f5b795;
+            }
+
+            .item5{
+                background-color: #f3d5c5;
+            }
+        }
+
+        .header-section{
+            font-weight: 500;
+        }
+    }
+
+    .chart-container{
+        .filter-label{
+            padding-left: 40%;
+        }
+    }
+}

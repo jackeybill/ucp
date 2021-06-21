@@ -1553,11 +1553,10 @@ const pdfMake = async () =>{
                     <span><LeftOutlined /> Trial Page</span>
                 </div>
             </Col>
-            <Col span={5} style={{maxHeight: '32px'}}>
+            <Col span={4} style={{maxHeight: '32px'}}>
               <Row>
-              <Col span={23}>
+              <Col span={24}>
                 <Row className="item-translate">
-
                     <Col flex="10px"></Col>
                     <Col flex="auto"><span style={{fontSize: '15px'}}>Albiglutide: {scenarioType}</span></Col>
                 </Row>
@@ -1567,9 +1566,9 @@ const pdfMake = async () =>{
                     <Col flex="auto" style={{fontSize: '15px', fontWeight: 'bold'}}>{scenario['scenario_name']}</Col>
                 </Row>
                 </Col>
-                <Col span={1} style={{borderLeft: '1.5px solid #c4bfbf', maxHeight: '32px'}}></Col>
                 </Row>
             </Col>
+            <Col span={1} style={{borderLeft: '1.5px solid #c4bfbf'}}/>
             <Col span={8}>
                 <Steps progressDot current={processStep} size="small" >
                     <Step title="Add Inclusion / Exclusion Criteria"/>
@@ -1623,21 +1622,10 @@ const pdfMake = async () =>{
       <div className="ie-container">
         <div className="export-container">
           <Row>
-            <Col span={18}>
+            <Col span={17}>
               <div style={{ bottom: '0',height: '50px' }}></div>
             </Col>
-            <Col span={3} style={{paddingRight: '20px'}}>
-              {activeTabKey === '3'? (
-                <></>
-              ) : (
-                <>
-                  <Button type="primary" onClick={saveCriteria} style={{zIndex: 1, marginTop: '8px'}}>
-                    Save
-                  </Button>
-                </>
-              )}
-            </Col>
-            <Col span={3}>
+            <Col span={7}>
               <Dropdown.Button style={{zIndex: 1}}
                 overlay={
                   <Menu>
@@ -1650,6 +1638,13 @@ const pdfMake = async () =>{
                 <DownloadOutlined />
                 EXPORT AS
               </Dropdown.Button>
+              {activeTabKey === '3'? (
+                <></>
+              ) : (
+                <Button type="primary" onClick={saveCriteria} style={{zIndex: 1, marginTop: '8px', marginRight: '20px'}}>
+                  Save
+                </Button>
+              )}
             </Col>
           </Row>
         </div>
