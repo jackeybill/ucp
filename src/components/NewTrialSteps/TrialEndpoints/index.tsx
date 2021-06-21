@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, Radio, Space, Input, Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
+import { connect } from "react-redux";
+import * as createActions from "../../../actions/createTrial.js";
 
 import "./index.scss";
 
-const { TabPane } = Tabs;
 
 const TrialEndpoits = (props: any) => {
-  const { onInput } = props;
-  const [primary, setPrimary] = useState([]);
-  const [secondary, setSecondary] = useState([]);
-  const [tertiary, setTertiary] = useState([]);
+  console.log(props)
+  const [primary, setPrimary] = useState(props.newTrial.primary_endpoints);
+  const [secondary, setSecondary] = useState(props.newTrial.secondary_endpoints);
+  const [tertiary, setTertiary] = useState(props.newTrial.tertiary_endpoints);
   const [primaryValue, setPrimaryValue] = useState("");
   const [secondaryValue, setSecondaryValue] = useState("");
   const [tertiaryValue, setTertiaryValue] = useState("");
@@ -27,14 +28,23 @@ const TrialEndpoits = (props: any) => {
       const tmp = primary.slice(0);
       tmp.push(primaryValue);
       setPrimary(tmp);
+      props.createTrial({
+        primary_endpoints:tmp,
+      })
     } else if (key == "secondary") {
       const tmp = secondary.slice(0);
       tmp.push(secondaryValue);
       setSecondary(tmp);
+      props.createTrial({
+        secondary_endpoints: tmp,    
+      })
     } else if (key == "tertiary") {
       const tmp = tertiary.slice(0);
       tmp.push(tertiaryValue);
       setTertiary(tmp);
+      props.createTrial({ 
+        tertiary_endpoints:tmp
+      })
     }
   };
 
@@ -43,14 +53,23 @@ const TrialEndpoits = (props: any) => {
       const tmp = primary.slice(0);
       tmp.splice(idx, 1);
       setPrimary(tmp);
+       props.createTrial({
+        primary_endpoints:tmp,
+      })
     } else if (key == "secondary") {
       const tmp = secondary.slice(0);
       tmp.splice(idx, 1);
       setSecondary(tmp);
+      props.createTrial({
+        secondary_endpoints: tmp,    
+      })
     } else if (key == "tertiary") {
       const tmp = tertiary.slice(0);
       tmp.splice(idx, 1);
       setTertiary(tmp);
+      props.createTrial({ 
+        tertiary_endpoints:tmp
+      })
     }
   };
 
@@ -152,4 +171,16 @@ const TrialEndpoits = (props: any) => {
   );
 };
 
-export default TrialEndpoits;
+
+const mapDispatchToProps = (dispatch) => ({
+  createTrial: (val) => dispatch(createActions.createTrial(val)),
+});
+
+const mapStateToProps = (state) => ({
+  newTrial: state.trialReducer,
+
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TrialEndpoits);

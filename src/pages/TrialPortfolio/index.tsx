@@ -23,7 +23,7 @@ import {
   LeftOutlined
 } from "@ant-design/icons";
 import { connect } from "react-redux";
-import * as trialActions from "../../actions/trial.js";
+import * as createActions from "../../actions/createTrial.js";
 import TrialList from "../../components/TrialList";
 import TrialDetails from "../../components/TrialDetails";
 import TrialEndpoints from "../../components/NewTrialSteps/TrialEndpoints";
@@ -77,9 +77,6 @@ const initialStates = {
   pediatric_study: "",
   study_country: "",
   scenarios: [],
-  // primary_endpoints:[],
-  // secondary_endpoints: [],
-  // tertiary_endpoints:[]
 };
 
 const step1 = "details";
@@ -97,8 +94,8 @@ const TrialPortfolio = (props) => {
   const [visible, setVisible] = useState(false);
   const [currentTrial, setCurrentTrial] = useState({});
   const [loading, setLoading] = useState(false);
+
   const [step, setStep] = useState(0);
-  const [historicalTrialData, setHistoricalTrialData] = useState([])
 
   const [trial, setTrial] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -120,24 +117,19 @@ const TrialPortfolio = (props) => {
     setArea(value);
   };
 
-  const hanldeNextStep = async () => {
-    if(historicalTrialData.length == 0){
-      const resp = await listStudy();
-      if (resp.statusCode == 200) {
-        setHistoricalTrialData(JSON.parse(resp.body))
-      }
+  const handleNextStep = async () => {
+    setStep(step + 1)
+    if (step + 1 == 1) {
+      props.createTrial(newTrial)
     }
-    setStep(step+1)
+    
   }
 
   const handleOk = async () => {
-    const resp = await addStudy(newTrial);
-
+    const resp = await addStudy(props.newTrial);
     if (resp.statusCode == 200) {
       setVisible(false);
       const trialId = resp.body;
-      // setShowSearch(true)
-      // setStep(step1)
       message.success("Create successfully");
       setLoading(true);
       const result = await getTrialList();
@@ -145,7 +137,7 @@ const TrialPortfolio = (props) => {
 
       setLoading(false);
       const latestTrial =
-        result.body && result.body.find((i) => i["_id"] == trialId);
+      result.body && result.body.find((i) => i["_id"] == trialId);
       setTrial(JSON.parse(JSON.stringify(latestTrial)));
       setNewTrial(initialStates);
     }
@@ -248,7 +240,7 @@ const TrialPortfolio = (props) => {
       if (resp.statusCode == 200) {
         const source = resp.body;
         setRawData(source);
-        console.log("all data-----", source);
+        console.log("trial list-----", source);
         const inProgressArr = source.filter((d) => {
           return d.status && d.status.toUpperCase() == "IN PROGRESS";
         });
@@ -397,7 +389,7 @@ const TrialPortfolio = (props) => {
               {step > 0 && step <=(timeline.length-1)? <span className="go-prev-step" onClick={()=>setStep(step-1)}><LeftOutlined />{ timeline[step-1]}</span>:null}
             </div>          
             {
-              <Button  size="small" type="primary" onClick={step>=(timeline.length-1)?handleOk:hanldeNextStep}>
+              <Button  size="small" type="primary" onClick={step>=(timeline.length-1)?handleOk:handleNextStep}>
                 {
                   step>=(timeline.length-1)? "Create Trial":`Next Step:${timeline[step+1]}`
                 }            
@@ -419,7 +411,7 @@ const TrialPortfolio = (props) => {
             <span className="title">{timeline[step]}</span>         
             {step==0 && <TrialSummary handleNewTrialInputChange={handleNewTrialInputChange} handleNewTrialSelectChange={ handleNewTrialSelectChange} newTrial={newTrial}/>}
             {step==1 && <TrialEndpoints />}
-            {step==2 && <SimilarHistoricalTrials dataList={historicalTrialData}/>}
+            {step == 2 && <SimilarHistoricalTrials/>}
             {step==3 && <TeamMembers/>}     
           </div>
         </div>
@@ -429,11 +421,12 @@ const TrialPortfolio = (props) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  showSearch: (val) => dispatch(trialActions.showSearch(val)),
+  createTrial: (val) => dispatch(createActions.createTrial(val)),
 });
 
 const mapStateToProps = (state) => ({
-  show: state.trialReducer,
+  newTrial: state.trialReducer,
+
 });
 export default connect(
   mapStateToProps,
