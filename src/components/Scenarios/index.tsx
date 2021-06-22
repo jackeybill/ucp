@@ -135,7 +135,7 @@ const SceneriosDashbaord = (props: any) => {
             ) : (
               <Button
                 type="primary"
-                onClick={() => setNewScenarioVisiable(true)}
+                onClick={() => addNewScenario('Protocol Design')}
               >
                 START MODULE
               </Button>

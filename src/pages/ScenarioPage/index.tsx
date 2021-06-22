@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer} from 'react';
 import jsPDF from "jspdf";
 import html2canvas from 'html2canvas'
 import FileSaver from 'file-saver'
-import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Checkbox, Input, message, Steps} from "antd";
+import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps} from "antd";
 import {getSummaryDefaultList, addScenario, listStudy, getStudy} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined} from "@ant-design/icons";
@@ -84,6 +84,8 @@ const ScenarioPage = (props) => {
     const [activeEnrollmentTabKey, setActiveEnrollmentTabKey] = useState('1')
     const [activeTabKey, setActiveTabKey] = useState('1')
     const [processStep, setProcessStep] = useState(0)
+    const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState([])
+    const [spinning, setSpinning] = useState(false)
 
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
@@ -191,6 +193,9 @@ const ScenarioPage = (props) => {
             if(resp.statusCode == 200){
                 const tempRecord = resp.body
                 setTrialRecord(tempRecord)
+                if(tempRecord.similarHistoricalTrials !== undefined){
+                  setSimilarHistoricalTrials(tempRecord.similarHistoricalTrials)
+                }
                 
                 const tempScenarioId = props.location.state.scenarioId
                 const tempEditFlag = props.location.state.editFlag
@@ -1081,14 +1086,14 @@ const ScenarioPage = (props) => {
     }
 
     const searchHistoricalTrials = async () => {
+      setShowHistorical(true)
       if(historicalTrialdata.length == 0){
+        setSpinning(true)
         const resp = await listStudy();
         if (resp.statusCode == 200) {
+          setSpinning(false)
           setHistoricalTrialdata(JSON.parse(resp.body))
-          setShowHistorical(true)
         }
-      } else {
-        setShowHistorical(true)
       }
     }
 
@@ -2404,7 +2409,9 @@ const pdfMake = async () =>{
       <Modal visible={showHistorical} title="Historical Trial List" onOk={handleOk} onCancel={handleCancel}
         footer={null} style={{ left: '20%', top:50 }} centered={false} width={200} > 
         <Row>
+          <Spin spinning={spinning}>
             <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
+          </Spin>
         </Row>
       </Modal>
     </div>
