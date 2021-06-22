@@ -396,7 +396,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": item.Value === '' ? "-" : item.Value + '',
+                "Values": formatValue(item),
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -414,7 +414,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": item.Value === '' ? "-" : item.Value + '',
+                "Values": formatValue(item),
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -432,7 +432,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": item.Value === '' ? "-" : item.Value + '',
+                "Values": formatValue(item),
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -450,7 +450,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": item.Value === '' ? "-" : item.Value + '',
+                "Values": formatValue(item),
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -465,6 +465,20 @@ const ScenarioPage = (props) => {
       }
     }
 
+    function formatValue(item){
+      var tempStr
+      if(item.Value === ''){
+        tempStr = '-'
+      } else {
+        tempStr = item.Value + ''
+        var id = tempStr.lastIndexOf('.')
+        if(id > -1){
+          tempStr = tempStr.substr(0, id)
+        }
+      }
+      return tempStr
+    }
+
     const handleExcluOptionSelect = (item, activeType, id, key) =>{
       switch(id){
         case 0:
@@ -473,7 +487,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": item.Value === '' ? "-" : item.Value + '',
+                "Values": formatValue(item),
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -491,7 +505,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": item.Value === '' ? "-" : item.Value + '',
+                "Values": formatValue(item),
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -509,7 +523,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": item.Value === '' ? "-" : item.Value + '',
+                "Values": formatValue(item),
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -527,7 +541,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": item.Value === '' ? "-" : item.Value + '',
+                "Values": formatValue(item),
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
