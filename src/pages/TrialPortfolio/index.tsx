@@ -31,7 +31,7 @@ import TeamMembers from '../../components/NewTrialSteps/TeamMembers';
 import SimilarHistoricalTrials from '../../components/NewTrialSteps/SimilarHistoricalTrials';
 import Scenarios from "../../components/Scenarios";
 import TrialSummary from '../../components/NewTrialSteps/TrialSummary';
-import { getTrialList, addStudy, updateStudy, listStudy} from "../../utils/ajax-proxy";
+import { getTrialList, addStudy, updateStudy} from "../../utils/ajax-proxy";
 import { COUNTRY_MAP } from "../../utils/country-map";
 import { Therapeutic_Area_Map } from "../../utils/area-map";
 import addIcon from "../../assets/add.svg";

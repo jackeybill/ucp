@@ -86,6 +86,7 @@ const ScenarioPage = (props) => {
     const [processStep, setProcessStep] = useState(0)
     const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState([])
     const [spinning, setSpinning] = useState(false)
+    const [showChartLabel, setShowChartLabel] = useState(false)
 
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
@@ -113,6 +114,8 @@ const ScenarioPage = (props) => {
     const [therapeutic_Amend_Avg, setTherapeutic_Amend_Avg] = useState('Therapeutic Area Average - 0%')
     const [therapeutic_Screen_Avg, setTherapeutic_Screen_Avg] = useState('Therapeutic Area Average - 0%')
     const [impactColors, setImpactColors] = useState(inActiveChartColors)
+    const [amend_avg_rate, setAmend_avg_rate] = useState('')
+    const [screen_avg_rate, setScreen_avg_rate] = useState('')
 
     const [rollHeight, setRollHeight] = useState(true)            // Control editTable scroll height
     const [visible, setVisible] = useState(false)                 // Control libs filter slider bar display or not
@@ -154,6 +157,8 @@ const ScenarioPage = (props) => {
     const [exclu_Therapeutic_Amend_Avg, setExcluTherapeutic_Amend_Avg] = useState('Therapeutic Area Average - 0%')
     const [exclu_Therapeutic_Screen_Avg, setExcluTherapeutic_Screen_Avg] = useState('Therapeutic Area Average - 0%')
     const [excluImpactColors, setExcluImpactColors] = useState(inActiveChartColors)
+    const [excluAmend_avg_rate, setExcluAmend_avg_rate] = useState('')
+    const [excluScreen_avg_rate, setExcluScreen_avg_rate] = useState('')
 
     const [excluRollHeight, setExcluRollHeight] = useState(true)            // Control editTable scroll height
     const [excluVisible, setExcluVisible] = useState(false);                // Control libs filter slider bar display or not
@@ -239,6 +244,8 @@ const ScenarioPage = (props) => {
                     if(tempRecord['Therapeutic Area Average']){
                         setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
                         setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
+                        setAmend_avg_rate(tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
+                        setScreen_avg_rate(tempRecord['Therapeutic Area Average'].screen_failure_rate)
                     }
 
                     //Get exclusion chart info
@@ -260,7 +267,11 @@ const ScenarioPage = (props) => {
                     if(tempRecord['Therapeutic Area Average']){
                         setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
                         setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
+                        setExcluAmend_avg_rate(tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
+                        setExcluScreen_avg_rate(tempRecord['Therapeutic Area Average'].screen_failure_rate)
                     }
+
+                    setShowChartLabel(true)
                 }
                 
                 if(tempEditFlag){
@@ -734,9 +745,29 @@ const ScenarioPage = (props) => {
           radius: ['50%', '80%'],
           avoidLabelOverlap: false,
           label: {
-            show: false,
+            show: true,
             position: 'center',
-            formatter: '{c}%'
+            formatter: function () {
+              if(showChartLabel){
+                return '{p|' + amend_avg_rate + '}\n{nm|GOOD}'
+              } else {
+                return ''
+              }
+            },
+            emphasis: '',
+            rich: {
+              p: {
+                color: '#aba9a9',
+                fontSize: 16,
+                backgroundColor: "white"
+              },
+              nm: {
+                color: 'green',
+                fontSize: 8,
+                fontWeight:'bold',
+                backgroundColor: "white"
+              }
+            }
           },
           emphasis: {
             label: {
@@ -781,9 +812,29 @@ const ScenarioPage = (props) => {
           radius: ['50%', '80%'],
           avoidLabelOverlap: false,
           label: {
-            show: false,
+            show: true,
             position: 'center',
-            formatter: '{c}%'
+            formatter: function () {
+              if(showChartLabel){
+                return '{p|' + screen_avg_rate + '}\n{nm|GOOD}'
+              } else {
+                return ''
+              }
+            },
+            emphasis: '',
+            rich: {
+              p: {
+                color: '#aba9a9',
+                fontSize: 16,
+                backgroundColor: "white"
+              },
+              nm: {
+                color: 'green',
+                fontSize: 8,
+                fontWeight:'bold',
+                backgroundColor: "white"
+              }
+            }
           },
           emphasis: {
             label: {
@@ -829,9 +880,29 @@ const ScenarioPage = (props) => {
             radius: ['50%', '80%'],
             avoidLabelOverlap: false,
             label: {
-                show: false,
-                position: 'center',
-                formatter: '{c}%'
+              show: true,
+              position: 'center',
+              formatter: function () {
+                if(showChartLabel){
+                  return '{p|' + excluAmend_avg_rate + '}\n{nm|GOOD}'
+                } else {
+                  return ''
+                }
+              },
+              emphasis: '',
+              rich: {
+                p: {
+                  color: '#aba9a9',
+                  fontSize: 16,
+                  backgroundColor: "white"
+                },
+                nm: {
+                  color: 'green',
+                  fontSize: 8,
+                  fontWeight:'bold',
+                  backgroundColor: "white"
+                }
+              }
             },
             emphasis: {
                 label: {
@@ -877,9 +948,29 @@ const ScenarioPage = (props) => {
           radius: ['50%', '80%'],
           avoidLabelOverlap: false,
           label: {
-            show: false,
+            show: true,
             position: 'center',
-            formatter: '{c}%'
+            formatter: function () {
+              if(showChartLabel){
+                return '{p|' + excluScreen_avg_rate + '}\n{nm|GOOD}'
+              } else {
+                return ''
+              }
+            },
+            emphasis: '',
+            rich: {
+              p: {
+                color: '#aba9a9',
+                fontSize: 16,
+                backgroundColor: "white"
+              },
+              nm: {
+                color: 'green',
+                fontSize: 8,
+                fontWeight:'bold',
+                backgroundColor: "white"
+              }
+            }
           },
           emphasis: {
             label: {
@@ -1210,8 +1301,7 @@ const ScenarioPage = (props) => {
     const saveCriteria = async () => {
       let newScenario = trialRecord.scenarios.find( i=> i['scenario_id'] == scenarioId)
 
-      if(!editFlag){
-        var inclusion = {
+        var newInclusion = {
           "Demographics": {
             "protocol_amendment_rate": '',
             "patient_burden": '',
@@ -1234,7 +1324,7 @@ const ScenarioPage = (props) => {
           }
         }
 
-        var exclusion = {
+        var newExclusion = {
           "Demographics": {
             "protocol_amendment_rate": '',
             "patient_burden": '',
@@ -1256,8 +1346,9 @@ const ScenarioPage = (props) => {
             "Entities": excluLabTestElements
           }
         }
-        newScenario["Inclusion Criteria"] = inclusion
-        newScenario["Exclusion Criteria"] = exclusion
+      if(newScenario["Inclusion Criteria"].Demographics === undefined){
+        newScenario["Inclusion Criteria"] = newInclusion
+        newScenario["Exclusion Criteria"] = newExclusion
       } else {
         newScenario["Inclusion Criteria"].Demographics.Entities = demographicsElements
         newScenario["Inclusion Criteria"]['Medical Condition'].Entities = medConditionElements
@@ -1282,7 +1373,9 @@ const ScenarioPage = (props) => {
       newTrial.scenarios = newScenarioList
 
       setTrialRecord(newTrial)
-  
+
+      setImpactColors(activeChartColors)
+      setExcluImpactColors(activeChartColors)
       //Update record
       const resp = await addScenario(newTrial);
       console.log(newTrial)
@@ -1308,6 +1401,8 @@ const ScenarioPage = (props) => {
         if(resp.body['Therapeutic Area Average']){
           setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
           setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
+          setAmend_avg_rate(resp.body['Therapeutic Area Average'].protocol_amendment_rate)
+          setScreen_avg_rate(resp.body['Therapeutic Area Average'].screen_failure_rate)
         }
 
         //Get exclusion chart info
@@ -1329,8 +1424,11 @@ const ScenarioPage = (props) => {
         if(resp.body['Therapeutic Area Average']){
           setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
           setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
+          setExcluAmend_avg_rate(resp.body['Therapeutic Area Average'].protocol_amendment_rate)
+          setExcluScreen_avg_rate(resp.body['Therapeutic Area Average'].screen_failure_rate)
         }
   
+        setShowChartLabel(true)
         message.success("Save successfully");
       }
     }
