@@ -6,6 +6,17 @@
   }
   .section-content {
     white-space: pre-line;
+    .content-table {
+      table {
+        th,td {
+          border: 1px solid #2d2d2d;
+          font-size: 12px;
+        &:nth-child(n+2) {
+          text-align: center;
+        }
+        }
+      }
+    }
   }
   .section {
     display: flex;
