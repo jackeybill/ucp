@@ -490,16 +490,31 @@ const ScenarioPage = (props) => {
         if(value.length !== undefined){
           var minValue = value[0]
           var maxValue = value[1]
-          if(minValue >= 0){
-            tempStr = '>=' + formatNum(minValue)
-            if(maxValue >= 0){
-              tempStr += ' and <=' + formatNum(maxValue)
+          // data type: Number 
+          if(minValue === Number(minValue)){
+            if(minValue >= 0){
+              tempStr = '>=' + formatNum(minValue)
+              if(maxValue >= 0){
+                tempStr += ' and <=' + formatNum(maxValue)
+              }
+            } else if(maxValue >= 0){
+              tempStr = '<=' + formatNum(maxValue)
+            } else {
+              tempStr = value.toString()
             }
-          } else if(maxValue >= 0){
-            tempStr = '<=' + formatNum(maxValue)
-          } else {
-            tempStr = value.toString()
+          } else{
+            if(minValue != ''){
+              tempStr = '>=' + minValue
+              if(maxValue != ''){
+                tempStr += ' and <=' + maxValue
+              }
+            } else if(maxValue != ''){
+              tempStr = '<=' + maxValue
+            } else {
+              tempStr = value.toString()
+            }
           }
+          
         } else {
           tempStr = formatNum(value)
         }
