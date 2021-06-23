@@ -416,6 +416,23 @@ export const listStudy = async () => {
   return await response.json();
 }
 
+export const getSimilarhistoricalTrialById = async (ids) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "studies": "",
+      "method": "list",
+      "nct_ids": ids
+    })
+  })
+
+  return await response.json();
+}
+
 export const getStudy = async (param: String) => {
   const response = await fetch(criteria_url, {
     method: 'POST',

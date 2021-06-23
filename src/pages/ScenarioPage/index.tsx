@@ -3,13 +3,13 @@ import jsPDF from "jspdf";
 import html2canvas from 'html2canvas'
 import FileSaver from 'file-saver'
 import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps} from "antd";
-import {getSummaryDefaultList, addScenario, listStudy, getStudy} from "../../utils/ajax-proxy";
+import {getSummaryDefaultList, addScenario, getSimilarhistoricalTrialById, getStudy} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined} from "@ant-design/icons";
+import ReactECharts from 'echarts-for-react';
 import "./index.scss";
 
 import CriteriaOption from "../../components/CriteriaOption";
-import CustomChart from "../../components/CustomChart";
 import EditTable from "../../components/EditTable";
 import SelectableTable from "../../components/SelectableTable";
 import ScheduleEvents from "../../components/ScheduleEvents";
@@ -486,13 +486,34 @@ const ScenarioPage = (props) => {
       if(item.Value === ''){
         tempStr = '-'
       } else {
-        tempStr = item.Value + ''
-        var id = tempStr.lastIndexOf('.')
-        if(id > -1){
-          tempStr = tempStr.substr(0, id)
+        var value = item.Value
+        if(value.length !== undefined){
+          var minValue = value[0]
+          var maxValue = value[1]
+          if(minValue >= 0){
+            tempStr = '>=' + formatNum(minValue)
+            if(maxValue >= 0){
+              tempStr += ' and <=' + formatNum(maxValue)
+            }
+          } else if(maxValue >= 0){
+            tempStr = '<=' + formatNum(maxValue)
+          } else {
+            tempStr = value.toString()
+          }
+        } else {
+          tempStr = formatNum(value)
         }
       }
       return tempStr
+    }
+
+    function formatNum(value){
+      var str = value.toString()
+      var id = str.lastIndexOf('.')
+      if(id > -1){
+        str = str.substr(0, id)
+      }
+      return str
     }
 
     const handleExcluOptionSelect = (item, activeType, id, key) =>{
@@ -1171,7 +1192,7 @@ const ScenarioPage = (props) => {
       setShowHistorical(true)
       if(historicalTrialdata.length == 0){
         setSpinning(true)
-        const resp = await listStudy();
+        const resp = await getSimilarhistoricalTrialById(similarHistoricalTrials);
         if (resp.statusCode == 200) {
           setSpinning(false)
           setHistoricalTrialdata(JSON.parse(resp.body))
@@ -1641,6 +1662,30 @@ const pdfMake = async () =>{
     setActiveTabKey(activeKey)
     console.log(activeKey)
   }
+
+  const onInclusionChartClick = (e) =>{
+    if(e.name === 'Medical'){
+      setDefaultActiveKey(['3'])
+    } else if(e.name === 'Labs / Tests'){
+      setDefaultActiveKey(['5'])
+    } else if(e.name === 'Intervention'){
+      setDefaultActiveKey(['4'])
+    } else if(e.name === 'Demographics'){
+      setDefaultActiveKey(['2'])
+    }
+  }
+
+  const onExclusionChartClick = (e) =>{
+    if(e.name === 'Medical'){
+      setExcluDefaultActiveKey(['3'])
+    } else if(e.name === 'Labs / Tests'){
+      setExcluDefaultActiveKey(['5'])
+    } else if(e.name === 'Intervention'){
+      setExcluDefaultActiveKey(['4'])
+    } else if(e.name === 'Demographics'){
+      setExcluDefaultActiveKey(['2'])
+    }
+  }
   
     return (
     <div className="scenario-container">
@@ -1942,19 +1987,19 @@ const pdfMake = async () =>{
                                   <div className="label">
                                     <span>Click on each metrics to filter</span>
                                   </div>
-                                  <CustomChart
+                                  <ReactECharts
                                     option={amendmentRateoption}
-                                    height={120}
-                                  ></CustomChart>
+                                    style={{ height: 120}}
+                                    onEvents={{'click': onInclusionChartClick}}/>
                                 </div>
                                 <div className="chart-container  box">
                                   <div className="label">
                                     <span>Click on each metrics to filter</span>
                                   </div>
-                                  <CustomChart
+                                  <ReactECharts
                                     option={screenFailureOption}
-                                    height={120}
-                                  ></CustomChart>
+                                    style={{ height: 120}}
+                                    onEvents={{'click': onInclusionChartClick}}/>
                                 </div>
                               </Panel>
                             </Collapse>
@@ -2215,19 +2260,19 @@ const pdfMake = async () =>{
                                   <div className="label">
                                     <span>Click on each metrics to filter</span>
                                   </div>
-                                  <CustomChart
+                                  <ReactECharts
                                     option={excluAmendmentRateoption}
-                                    height={120}
-                                  ></CustomChart>
+                                    style={{ height: 120}}
+                                    onEvents={{'click': onExclusionChartClick}}/>
                                 </div>
                                 <div className="chart-container  box">
                                   <div className="label">
                                     <span>Click on each metrics to filter</span>
                                   </div>
-                                  <CustomChart
+                                  <ReactECharts
                                     option={excluScreenFailureOption}
-                                    height={120}
-                                  ></CustomChart>
+                                    style={{ height: 120}}
+                                    onEvents={{'click': onExclusionChartClick}}/>
                                 </div>
                               </Panel>
                             </Collapse>
@@ -2455,13 +2500,13 @@ const pdfMake = async () =>{
                           <Row><Col className="tab-item chart" span={24}>
                             <Row className="tab-desc">Race & Ethnicity&nbsp;
                                 {activeEnrollmentTabKey === '3'?(<CaretRightOutlined />):(<></>)}</Row>
-                            <Row><Col span={24}><CustomChart option={raceOption} height={100}></CustomChart></Col></Row>
+                            <Row><Col span={24}><ReactECharts option={raceOption} style={{ height: 100}}></ReactECharts></Col></Row>
                           </Col></Row>
                         </Col>
                       </Row>
                       <Row>
                         <Col span={24} className="result-chart">
-                          <CustomChart option={resultOption} height={350}></CustomChart>
+                          <ReactECharts option={resultOption} style={{ height: 350}}></ReactECharts>
                         </Col>
                       </Row>
                     </Col>
