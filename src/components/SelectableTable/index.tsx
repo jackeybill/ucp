@@ -31,26 +31,31 @@ const columns = [
   }
 ];
 
-var data = [];
-
 export interface SelectableTableProps {
   dataList: any;
 }
  
 class SelectableTable extends React.Component <SelectableTableProps>{
-    
+  
     constructor(props : SelectableTableProps){
         super(props);
         console.log(props.dataList)
-        data = props.dataList
     }
 
     state = {
-      total: data.length,
+      data: [],
+      total: 0,
       current: 1,
       pageSize: 5,
       pageSizeOptions: ['5', '10', '20', '50', '100']
     };
+
+    componentWillReceiveProps(props) {
+      this.setState({
+        data: props.dataList,
+        total: props.dataList.length
+      })
+    }
 
     changePage = (page) => {
       this.setState({
@@ -69,13 +74,13 @@ class SelectableTable extends React.Component <SelectableTableProps>{
     return (
       <>
         <Table 
-        columns={columns} dataSource={data} 
+        columns={columns} dataSource={this.state.data} 
         pagination={{ 
           position: ['bottomRight'],
           pageSize: this.state.pageSize, 
           onChange: this.changePage,
           current: this.state.current,
-          total: data.length,
+          total: this.state.total,
           showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
           showSizeChanger: true, 
           onShowSizeChange: this.onShowSizeChange,
