@@ -1,10 +1,23 @@
 .footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: #282f34;
+  height: 40px;
   color: #ffffff;
   display: flex;
   font-size: 12px;
   padding: 14px 30px;
+  .left {
+    flex: 4;
+  }
   .right {
+    flex: 2;
     display: flex;
+    justify-content: space-between;
+    span {
+      padding: 0 2px;
+    }
   }
 }

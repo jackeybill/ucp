@@ -3,6 +3,7 @@ import { withRouter } from "react-router";
 import { Layout, Popconfirm, } from "antd";
 
 import ProtocolSection from "../ProtocolSection";
+import Footer from '../../components/Footer'
 import Overview from "../Overview";
 import Logo from "../../assets/pwc-logo-dark.svg";
 import Cookies from "js-cookie";
@@ -101,8 +102,7 @@ const GlobalLayout = (props: any) => {
         </div>
       </Header>
       <Content>{renderContent()}</Content>
-      
-      
+      <Footer></Footer>
     </Layout>
   );
 };

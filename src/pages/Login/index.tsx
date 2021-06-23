@@ -6,10 +6,13 @@ import { getUrlParams } from "../../utils/utils";
 import { login, verifyToken } from "../../utils/ajax-proxy";
 import background from "../../assets/background.png";
 import "./index.scss";
+import Footer from '../../components/Footer'
 
 const backgroundImg = {
   background: "url(" + background + ")",
   backgroundRepeat: "no-repeat",
+  overflow: "hidden",
+  marginLeft: "-3px",
 };
 
 const LoginErr = "Invalidate username or password";
@@ -58,76 +61,79 @@ const Login = (props: any) => {
   // }, [window.location.href]);
 
   return (
-    <div className="login__container">
-      <div className="continer__left" style={backgroundImg}></div>
-      <div className="continer__right">
-        <div className="login__form-wrapper">
-          <div className="welcome__title">
-            Welcome to <br />
-            Protocol Digitization
-          </div>
+    <>
+      <div className="login__container">
+        <div className="continer__left" style={backgroundImg}></div>
+        <div className="continer__right">
+          <div className="login__form-wrapper">
+            <div className="welcome__title">
+              Welcome to <br />
+              Protocol Digitization
+            </div>
 
-          <div className="login__form">
-            <Form
-              name="normal_login"
-              className="login-form"
-              onFinish={usernameLogin}
-              size="small"
-              form={form}
-            >
-              <label htmlFor="username" className="form__label">
-                Username
-              </label>
-              <Form.Item
-                name="username"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your username!",
-                  },
-                ]}
-                className="input__form-name"
+            <div className="login__form">
+              <Form
+                name="normal_login"
+                className="login-form"
+                onFinish={usernameLogin}
+                size="small"
+                form={form}
               >
-                <Input size="small" />
-              </Form.Item>
-              <label htmlFor="password" className="form__label">
-                Password
-              </label>
-              <Form.Item
-                name="password"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your password!",
-                  },
-                ]}
-                className="input__form-password"
-              >
-                <Input type="password" size="small" />
-              </Form.Item>
-
-              <Form.Item>
-                <div className="form__footer">
-                  <div className="left">
-                    <Checkbox className="check__remember">Remember me</Checkbox>
-                  </div>
-                </div>
-              </Form.Item>
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="login__button"
+                <label htmlFor="username" className="form__label">
+                  Username
+                </label>
+                <Form.Item
+                  name="username"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your username!",
+                    },
+                  ]}
+                  className="input__form-name"
                 >
-                  Login
-                </Button>
-                <div className="forget__password">Forget password?</div>
-              </Form.Item>
-            </Form>
+                  <Input size="small" />
+                </Form.Item>
+                <label htmlFor="password" className="form__label">
+                  Password
+                </label>
+                <Form.Item
+                  name="password"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your password!",
+                    },
+                  ]}
+                  className="input__form-password"
+                >
+                  <Input type="password" size="small" />
+                </Form.Item>
+
+                <Form.Item>
+                  <div className="form__footer">
+                    <div className="left">
+                      <Checkbox className="check__remember">Remember me</Checkbox>
+                    </div>
+                  </div>
+                </Form.Item>
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="login__button"
+                  >
+                    Login
+                  </Button>
+                  <div className="forget__password">Forget password?</div>
+                </Form.Item>
+              </Form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <Footer></Footer>
+    </>
   );
 };
 

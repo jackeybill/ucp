@@ -3,122 +3,122 @@
 .login__container {
   display: flex;
   width: 100%;
-  height: 100%;
-}
+  height: calc(100% - 40px);
 
-.continer__right {
-  flex: 1;
-  display: flex;
-  // padding: 40px 115px 0 115px;
-  // justify-content: center;
-  padding-left: 100px;
-  min-width: 608px;
-  background-color: #333333;
-
-  .login__form-wrapper {
+  .continer__right {
+    flex: 1;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 320px;
-  }
-
-  .welcome__word {
-    font-size: 16px;
-    margin-top: 20px;
-    color: #2d2d2d;
-    text-align: center;
-    font-weight: 500;
-  }
-
-  .welcome__title {
-    font-size: 30px;
-    // font-weight: 600;
-    color: #ffffff;
-  }
-  .logo__img {
-    width: 100px;
-    height: 78px;
-    margin-bottom: 20px;
-  }
-
-  .remember__check {
-    margin-top: -12px;
-  }
-
-  .login__form {
-    margin-top: 46px;
-
-    .ant-checkbox-wrapper.check__remember {
-      color: #ffffff;
-    }
-
-    .ant-input.ant-input-sm {
-      height: 40px;
-    }
-
-    .form__label {
-      font-size: 12px;
-      color: #ffffff;
-    }
-    #role__btn {
-      height: 40px;
-      .anticon.anticon-down {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-      }
-    }
-    .ant-menu.method__menu {
-      font-size: 12px;
-      font-weight: 500;
-      text-align: center;
-      margin: 0 auto;
-      margin-bottom: 40px;
-      width: 130px;
-      .ant-menu-item {
-        font-weight: 500;
-        color: #7d7d7d;
-      }
-      .ant-menu-item-selected,
-      .ant-menu-item-active {
-        color: $theme-color;
-        border-bottom: 2px solid $theme-color;
-      }
-    }
-    .role__selector {
-      .ant-select-selector {
-        height: 40px;
-      }
-      .ant-select-single.ant-select-sm:not(.ant-select-customize-input)
-        .ant-select-selector::after,
-      .ant-select-single.ant-select-sm:not(.ant-select-customize-input)
-        .ant-select-selector
-        .ant-select-selection-item,
-      .ant-select-single.ant-select-sm:not(.ant-select-customize-input)
-        .ant-select-selector
-        .ant-select-selection-placeholder {
-        height: 40px;
-        line-height: 40px;
-      }
-    }
-
-    .form__footer {
+    // padding: 40px 115px 0 115px;
+    // justify-content: center;
+    padding-left: 100px;
+    min-width: 608px;
+    background-color: #333333;
+  
+    .login__form-wrapper {
       display: flex;
-      .left {
-        flex: 1;
+      flex-direction: column;
+      justify-content: center;
+      width: 320px;
+    }
+  
+    .welcome__word {
+      font-size: 16px;
+      margin-top: 20px;
+      color: #2d2d2d;
+      text-align: center;
+      font-weight: 500;
+    }
+  
+    .welcome__title {
+      font-size: 30px;
+      // font-weight: 600;
+      color: #ffffff;
+    }
+    .logo__img {
+      width: 100px;
+      height: 78px;
+      margin-bottom: 20px;
+    }
+  
+    .remember__check {
+      margin-top: -12px;
+    }
+  
+    .login__form {
+      margin-top: 46px;
+  
+      .ant-checkbox-wrapper.check__remember {
+        color: #ffffff;
+      }
+  
+      .ant-input.ant-input-sm {
+        height: 40px;
+      }
+  
+      .form__label {
+        font-size: 12px;
+        color: #ffffff;
+      }
+      #role__btn {
+        height: 40px;
+        .anticon.anticon-down {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      }
+      .ant-menu.method__menu {
+        font-size: 12px;
+        font-weight: 500;
+        text-align: center;
+        margin: 0 auto;
+        margin-bottom: 40px;
+        width: 130px;
+        .ant-menu-item {
+          font-weight: 500;
+          color: #7d7d7d;
+        }
+        .ant-menu-item-selected,
+        .ant-menu-item-active {
+          color: $theme-color;
+          border-bottom: 2px solid $theme-color;
+        }
+      }
+      .role__selector {
+        .ant-select-selector {
+          height: 40px;
+        }
+        .ant-select-single.ant-select-sm:not(.ant-select-customize-input)
+          .ant-select-selector::after,
+        .ant-select-single.ant-select-sm:not(.ant-select-customize-input)
+          .ant-select-selector
+          .ant-select-selection-item,
+        .ant-select-single.ant-select-sm:not(.ant-select-customize-input)
+          .ant-select-selector
+          .ant-select-selection-placeholder {
+          height: 40px;
+          line-height: 40px;
+        }
+      }
+  
+      .form__footer {
+        display: flex;
+        .left {
+          flex: 1;
+        }
       }
     }
   }
-}
-
-.continer__left {
-  // flex: 1;
-  width: 620px;
-  text-align: center;
-  height: auto;
-  .background__img {
-    width: 100%;
+  
+  .continer__left {
+    // flex: 1;
+    width: 620px;
+    text-align: center;
+    height: auto;
+    .background__img {
+      width: 100%;
+    }
   }
 }
 
