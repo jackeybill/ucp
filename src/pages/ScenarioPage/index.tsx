@@ -5,7 +5,7 @@ import FileSaver from 'file-saver'
 import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps} from "antd";
 import {getSummaryDefaultList, addScenario, listStudy, getStudy} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
-import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined} from "@ant-design/icons";
+import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined} from "@ant-design/icons";
 import "./index.scss";
 
 import CriteriaOption from "../../components/CriteriaOption";
@@ -90,7 +90,7 @@ const ScenarioPage = (props) => {
 
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
-    const [freqColor, setFreqColor] = useState('#12129f')
+    const [freqColor, setFreqColor] = useState('#ed7738')
     const [totalData, setTotalData] = useState([])
     const [freqData, setFreqdata] = useState([])
     const [chartTitle, setChartTitle] = useState('Patients Eligible - 80K(16% of Dataset)')
@@ -989,18 +989,9 @@ const ScenarioPage = (props) => {
     };
 
     const raceOption = {
-      title : {
-        text: 'Race & Ethnicity',
-        x:'left',
-        y:'top',
-        textStyle: {
-          fontSize: 14,
-          fontWeight: 'bold'
-        }
-      },
       legend: {
         x:'40%',
-        y:'25%',
+        y:'10%',
         orient: 'vertical',
         itemHeight: 7,
         textStyle: {
@@ -1023,13 +1014,13 @@ const ScenarioPage = (props) => {
       },
       series: [{
         type: 'pie',
-        center: ['20%', '65%'],
+        center: ['20%', '45%'],
         radius: ['30%', '70%'],
         avoidLabelOverlap: false,
         label: {
           show: false,
         },
-        color:['#0001ff', '#2e9df7', '#8ac7fa', '#a3cef1'],
+        color:['#d04a02', '#ed7738', '#ed9d72', '#f5b795'],
         data: [
           {value: 75, name: 'Caucasian'},
           {value: 12, name: 'Hispanic'},
@@ -1107,7 +1098,7 @@ const ScenarioPage = (props) => {
               type: 'bar',
               stack: 'total',
               barWidth:'20px',
-              color: '#d21414',
+              color: '#fa4203',
               label: {
                   show: true,
                   formatter: function(p) {
@@ -1133,7 +1124,7 @@ const ScenarioPage = (props) => {
       setFreqdata([])
     } else if(key === '2'){
       setChartTitle('Female patients eligible - 20%')
-      setFreqColor('#12129f')
+      setFreqColor('#ed7738')
 
       let tempData = [];
       for(let i = 0, l = resultdata.length; i < l; i++){
@@ -1150,7 +1141,7 @@ const ScenarioPage = (props) => {
       setFreqdata(tempData2)
     } else {
       setChartTitle('Race & Ethnicity - Afican American - 5%')
-      setFreqColor('#a3cef1')
+      setFreqColor('#f5b795')
 
       let tempData = [];
       for(let i = 0, l = resultdata.length; i < l; i++){
@@ -1650,16 +1641,6 @@ const pdfMake = async () =>{
     setActiveTabKey(activeKey)
     console.log(activeKey)
   }
-
-  const updateImpact = (type) =>{
-    if(type === 1){
-      setImpactColors(activeChartColors)
-    } else {
-      setExcluImpactColors(activeChartColors)
-    }
-  }
-  
-  
   
     return (
     <div className="scenario-container">
@@ -1985,9 +1966,6 @@ const pdfMake = async () =>{
                         <Col span={24}>
                           <div className="impact-summary">
                             <span>Inclusion Criteria</span>
-                            <Button className="view-btn" onClick={() => updateImpact(1)}>
-                              UPDATE IMPACT
-                            </Button>
                           </div>
                           </Col>
                       </Row>
@@ -2261,9 +2239,6 @@ const pdfMake = async () =>{
                         <Col span={24}>
                           <div className="impact-summary">
                             <span>Exclusion Criteria</span>
-                            <Button className="view-btn" onClick={() => updateImpact(2)}>
-                              UPDATE IMPACT
-                            </Button>
                           </div>
                           </Col>
                       </Row>
@@ -2461,7 +2436,8 @@ const pdfMake = async () =>{
                       <Row className="enroll-tab">
                         <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => switchTabkey('1')}>
                           <Row><Col className="tab-item">
-                            <Row className="tab-label">Patients Eligible</Row>
+                            <Row className="tab-desc">Patients Eligible&nbsp;
+                              {activeEnrollmentTabKey === '1'?(<CaretRightOutlined />):(<></>)}</Row>
                             <Row className="tab-title">80K</Row>
                             <Row className="tab-desc">16% of Dataset</Row>
                           </Col></Row>
@@ -2469,17 +2445,17 @@ const pdfMake = async () =>{
                         <Col span={1}></Col>
                         <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '2' ? 'active' : ''}`} onClick={() => switchTabkey('2')}>
                           <Row><Col className="tab-item" span={24}>
-                            <Row className="tab-label">
-                              <Col span={22}>Female patients eligible</Col>
-                              <Col span={1} style={{color:'#12129f'}}>&#9724;</Col>
-                            </Row>
+                            <Row className="tab-desc">Female patients eligible&nbsp;
+                                {activeEnrollmentTabKey === '2'?(<CaretRightOutlined />):(<></>)}</Row>
                             <Row className="tab-title">20%</Row>
                           </Col></Row>
                         </Col>
                         <Col span={1}></Col>
                         <Col span={8} className={`chart-tab ${activeEnrollmentTabKey === '3' ? 'active' : ''}`} onClick={() => switchTabkey('3')}>
-                          <Row><Col className="tab-item" span={24}>
-                            <CustomChart option={raceOption} height={110}></CustomChart>
+                          <Row><Col className="tab-item chart" span={24}>
+                            <Row className="tab-desc">Race & Ethnicity&nbsp;
+                                {activeEnrollmentTabKey === '3'?(<CaretRightOutlined />):(<></>)}</Row>
+                            <Row><Col span={24}><CustomChart option={raceOption} height={100}></CustomChart></Col></Row>
                           </Col></Row>
                         </Col>
                       </Row>
