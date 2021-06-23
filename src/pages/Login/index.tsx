@@ -76,7 +76,7 @@ const Login = (props: any) => {
               form={form}
             >
               <label htmlFor="username" className="form__label">
-                USERNAME
+                Username
               </label>
               <Form.Item
                 name="username"
@@ -91,7 +91,7 @@ const Login = (props: any) => {
                 <Input size="small" />
               </Form.Item>
               <label htmlFor="password" className="form__label">
-                PASSWORD
+                Password
               </label>
               <Form.Item
                 name="password"
@@ -119,7 +119,7 @@ const Login = (props: any) => {
                   htmlType="submit"
                   className="login__button"
                 >
-                  LOGIN
+                  Login
                 </Button>
                 <div className="forget__password">Forget password?</div>
               </Form.Item>

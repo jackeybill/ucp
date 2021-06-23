@@ -10,9 +10,10 @@
   flex: 1;
   display: flex;
   // padding: 40px 115px 0 115px;
-  justify-content: center;
+  // justify-content: center;
+  padding-left: 100px;
   min-width: 608px;
-  background-color: $theme-color;
+  background-color: #333333;
 
   .login__form-wrapper {
     display: flex;
@@ -30,8 +31,8 @@
   }
 
   .welcome__title {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 30px;
+    // font-weight: 600;
     color: #ffffff;
   }
   .logo__img {
@@ -135,10 +136,11 @@
 }
 
 .login__button {
-  background-color: $theme-color;
   width: 100px;
   height: 40px;
   background-color: rgba(45, 45, 45, 0.9);
+  border: none;
+  margin-bottom: 10px;
 }
 
 .check__remember {
@@ -146,8 +148,8 @@
 }
 
 .forget__password {
-  font-size: 10px;
-  color: #d04a02;
+  font-size: 14px;
+  color: #FFFFFF;
   margin-top: 5px;
 }
 
