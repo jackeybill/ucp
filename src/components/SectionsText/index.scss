@@ -8,11 +8,18 @@
     white-space: pre-line;
     .content-table {
       table {
-        th,td {
-          border: 1px solid #2d2d2d;
+        border: 1px solid #CCCCCC;
+        border-collapse: collapse;
+        th, td {
+          border: 1px solid #CCCCCC;
           font-size: 12px;
+          padding: 5px 5px 5px 7px;
+          font-weight: 600;
+        &:first-child {
+            width: 249px;
+        }
         &:nth-child(n+2) {
-          text-align: center;
+          width: 100px;
         }
         }
       }
