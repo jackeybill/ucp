@@ -434,6 +434,22 @@ export const getStudy = async (param: String) => {
 
   return await response.json();
 }
+export const getIndicationList = async () => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "studies": "",
+      "method": "listIndication"
+      })
+  })
+
+  return await response.json();
+}
+
 
 
 

@@ -8,7 +8,6 @@ import "./index.scss";
 
 
 const TrialEndpoits = (props: any) => {
-  console.log(props)
   const [primary, setPrimary] = useState(props.newTrial.primary_endpoints);
   const [secondary, setSecondary] = useState(props.newTrial.secondary_endpoints);
   const [tertiary, setTertiary] = useState(props.newTrial.tertiary_endpoints);

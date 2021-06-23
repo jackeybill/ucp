@@ -1,4 +1,4 @@
-import { SHOW_SEARCH, CREATE_TRIAL } from '../constants/index';
+import { CREATE_TRIAL } from '../constants/index';
 
 const testUsers = [
   {
@@ -17,33 +17,33 @@ const testUsers = [
     role: "Trial Designer",
   },
 ];
-const initialState = {
-        trial_title: "",
-        description: "",
-        therapeutic_area: "",
-        indication: "",
-        trial_alias: "",
-        study_type: "",
-        study_phase: "",
-        molecule_name: "",
-        pediatric_study: "",
-        study_country: "",
-        scenarios: [],
-        primary_endpoints: [],
-        secondary_endpoints: [],
-        tertiary_endpoints: [],
-        similarHistoricalTrials: [],
-        members:testUsers      
+export const initialTrial = {
+    trial_title: "",
+    description: "",
+    therapeutic_area: "",
+    indication: "",
+    trial_alias: "",
+    study_type: "",
+    study_phase: "",
+    molecule_name: "",
+    pediatric_study: "",
+    study_country: "",
+    scenarios: [],
+    primary_endpoints: [],
+    secondary_endpoints: [],
+    tertiary_endpoints: [],
+    similarHistoricalTrials: [],
+    members:testUsers      
 }
 
-const trialReducer = (state = initialState, action) => {
+const trialReducer = (state = initialTrial, action) => {
 	switch(action.type){	
         case CREATE_TRIAL:
             state = {
                 ...state,
                 ...action.data
             }
-			break
+      break
 		default:			
     }
     return state

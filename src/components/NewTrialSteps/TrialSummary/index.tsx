@@ -14,7 +14,7 @@ import {
 } from "@ant-design/icons";
 import { COUNTRY_MAP } from "../../../utils/country-map";
 import { Therapeutic_Area_Map } from "../../../utils/area-map";
-import {study_types, phase_options} from '../../../pages/TrialPortfolio'
+import { study_types, phase_options } from '../../../pages/TrialPortfolio'
 
 const { Search } = Input;
 const { TextArea } = Input;
@@ -22,7 +22,6 @@ const { Option } = Select;
 
 const TrialSummary = (props) => {
     const {newTrial, handleNewTrialInputChange, handleNewTrialSelectChange} = props
-
 
     return (
         <div className="trial-summary-container">
@@ -72,11 +71,27 @@ const TrialSummary = (props) => {
               </div>
               <div className="trial-item">
                 <label htmlFor="">Indication</label>
-                <Input
+                {/* <Input
                   style={{ width: 250, height: 30 }}
                   onChange={(v) => handleNewTrialInputChange("indication", v)}
                   value={newTrial["indication"]}
-                />
+              /> */}
+                <Select
+                  defaultValue="All"
+                  value={newTrial["indication"]}
+                  style={{ width: 250 }}
+                  onChange={(v) => handleNewTrialSelectChange("indication", v)}
+              >
+                 <Option value='All' key="All">All</Option>
+                  {props.indicationList.map((t) => {
+                    return (
+                      <Option value={t} key={t}>
+                        {t}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              
               </div>
             </div>
             <div className="parallel-item">
@@ -160,7 +175,7 @@ const TrialSummary = (props) => {
                     handleNewTrialSelectChange("study_country", v)
                   }
                 >
-                  {COUNTRY_MAP.map((o) => {
+                  {COUNTRY_MAP.sort().map((o) => {
                     return (
                       <Option value={o} key={o}>
                         {o}

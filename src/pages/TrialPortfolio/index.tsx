@@ -24,6 +24,8 @@ import {
 } from "@ant-design/icons";
 import { connect } from "react-redux";
 import * as createActions from "../../actions/createTrial.js";
+import * as historyActions from "../../actions/historyTrial";
+import { initialTrial } from "../../reducers/trialReducer.js";
 import TrialList from "../../components/TrialList";
 import TrialDetails from "../../components/TrialDetails";
 import TrialEndpoints from "../../components/NewTrialSteps/TrialEndpoints";
@@ -31,7 +33,7 @@ import TeamMembers from '../../components/NewTrialSteps/TeamMembers';
 import SimilarHistoricalTrials from '../../components/NewTrialSteps/SimilarHistoricalTrials';
 import Scenarios from "../../components/Scenarios";
 import TrialSummary from '../../components/NewTrialSteps/TrialSummary';
-import { getTrialList, addStudy, updateStudy, listStudy} from "../../utils/ajax-proxy";
+import { getTrialList, addStudy, updateStudy, listStudy, getIndicationList} from "../../utils/ajax-proxy";
 import { COUNTRY_MAP } from "../../utils/country-map";
 import { Therapeutic_Area_Map } from "../../utils/area-map";
 import addIcon from "../../assets/add.svg";
@@ -57,6 +59,24 @@ export const study_types = [
   "Patient Registries",
   "Expanded Access Studies",
 ];
+
+export const study_status = [
+"Available",
+"Withdrawn",
+"Withheld",
+"Temporarily not available",
+"Recruiting",
+"Active",
+"Not recruiting",
+"Not yet recruiting",
+"No longer available",
+"Enrolling by invitation",
+"Suspended",
+"Approved for marketing",
+"Unknown status",
+"Completed",
+"Terminated"
+]
 
 const initialCount = {
   inProgress: 0,
@@ -94,6 +114,7 @@ const TrialPortfolio = (props) => {
   const [visible, setVisible] = useState(false);
   const [currentTrial, setCurrentTrial] = useState({});
   const [loading, setLoading] = useState(false);
+  const [indicationList, setIndicationList] = useState([])
 
   const [step, setStep] = useState(0);
 
@@ -110,6 +131,16 @@ const TrialPortfolio = (props) => {
     { ...initialCount }
   );
 
+  useEffect(() => {
+    const fetchIndication = async() => {
+      const resp = await getIndicationList()
+      if (resp.statusCode == 200) {
+        setIndicationList(JSON.parse(resp.body).sort())
+      }
+    }
+    fetchIndication()
+  }, [])
+
   const handlePhaseChange = (value) => {
     setPhase(value);
   };
@@ -122,7 +153,6 @@ const TrialPortfolio = (props) => {
     if (step + 1 == 1) {
       props.createTrial(newTrial)
     }
-    
   }
 
   const handleOk = async () => {
@@ -131,6 +161,12 @@ const TrialPortfolio = (props) => {
       setVisible(false);
       const trialId = resp.body;
       message.success("Create successfully");
+      props.createTrial(initialTrial)
+      props.fetchHistory({
+        shouldFetch: true,
+        historyData:[]
+      })
+      setStep(0)
       setLoading(true);
       const result = await getTrialList();
       setShowDetails(true);
@@ -152,7 +188,6 @@ const TrialPortfolio = (props) => {
   };
 
   const onViewTrial = (e, record) => {
-    debugger;
     e.preventDefault();
     setShowDetails(true);
     setTrial(JSON.parse(JSON.stringify(record)));
@@ -162,6 +197,11 @@ const TrialPortfolio = (props) => {
     setStep(0)
     setVisible(false);
     setNewTrial(initialStates);
+    props.createTrial(initialTrial)
+    props.fetchHistory({
+        shouldFetch: true,
+        historyData:[]
+      })
   };
 
   const handleTrialInputChange = (key, e) => {
@@ -409,9 +449,9 @@ const TrialPortfolio = (props) => {
           </div>
           <div className="main-content">
             <span className="title">{timeline[step]}</span>         
-            {step==0 && <TrialSummary handleNewTrialInputChange={handleNewTrialInputChange} handleNewTrialSelectChange={ handleNewTrialSelectChange} newTrial={newTrial}/>}
+            {step==0 && <TrialSummary handleNewTrialInputChange={handleNewTrialInputChange} handleNewTrialSelectChange={ handleNewTrialSelectChange} newTrial={newTrial} indicationList={ indicationList}/>}
             {step==1 && <TrialEndpoints />}
-            {step == 2 && <SimilarHistoricalTrials/>}
+            {step == 2 && <SimilarHistoricalTrials indicationList={ indicationList}/>}
             {step==3 && <TeamMembers/>}     
           </div>
         </div>
@@ -422,11 +462,12 @@ const TrialPortfolio = (props) => {
 
 const mapDispatchToProps = (dispatch) => ({
   createTrial: (val) => dispatch(createActions.createTrial(val)),
+  fetchHistory:(val) => dispatch(historyActions.fetchHistory(val)),
 });
 
 const mapStateToProps = (state) => ({
   newTrial: state.trialReducer,
-
+  historyTrial:state.historyReducer,
 });
 export default connect(
   mapStateToProps,

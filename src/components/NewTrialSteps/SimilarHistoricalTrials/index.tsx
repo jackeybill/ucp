@@ -1,37 +1,49 @@
 import React from "react";
-import { Table, Row, Col, Select, Button, Spin,Slider  } from "antd";
+import { Table, Row, Col, Select, Button, Spin, Slider, Tooltip } from "antd";
 import { FilterOutlined } from "@ant-design/icons";
 import CustomChart from "../../CustomChart";
-import { phase_options, study_types } from "../../../pages/TrialPortfolio";
-import { listStudy } from '../../../utils/ajax-proxy';
+import { phase_options, study_types,study_status } from "../../../pages/TrialPortfolio";
+import { listStudy } from "../../../utils/ajax-proxy";
 import { connect } from "react-redux";
+import ReactECharts from "echarts-for-react";
 import * as createActions from "../../../actions/createTrial.js";
+import * as historyActions from "../../../actions/historyTrial";
 import "./index.scss";
 
 const { Option } = Select;
 
 const columns = [
   {
+    title: "NCT ID",
+    dataIndex: "nct_id",
+    ellipsis: true,
+    // render: (text) => (
+    //   <Tooltip placement="topLeft" title={text}>
+    //     <span>{text || "-"}</span>
+    //   </Tooltip>
+    // ),
+  },
+  {
     title: "Study Title",
     dataIndex: "brief_title",
     ellipsis: true,
+    // render: (text) => (
+    //   <Tooltip placement="topLeft" title={text}>
+    //     <span>{text || "-"}</span>
+    //   </Tooltip>
+    // ),
   },
   {
-    title: "Company",
-    dataIndex: "-",
+    title: "Sponsor",
+    dataIndex: "sponsor",
     ellipsis: true,
-    render: (text) => <span>-</span>,
-  },
-  {
-    title: "Drug",
-    dataIndex: "indication",
-    ellipsis: true,
+    render: (text) => <span>{text || "-"}</span>,
   },
   {
     title: "Status",
-    dataIndex: "-",
+    dataIndex: "study_status",
     ellipsis: true,
-    render: (text) => <span>-</span>,
+    render: (text) => <span>{text || "-"}</span>,
   },
   {
     title: "Phase",
@@ -40,25 +52,25 @@ const columns = [
   },
 ];
 
-
-var chartData1 = [
-  { value: 75, name: "AstraZaeneca" },
-  { value: 12, name: "Pfizer" },
-  { value: 8, name: "Merck" },
-  { value: 8, name: "Boehringer Ingelheim" },
-  { value: 75, name: "Novo Nordisk" },
-  { value: 12, name: "Eli Lily" },
-  { value: 8, name: "Abbott" },
-];
-
-var chartData2 = [
-  { value: 75, name: "Completed" },
-  { value: 25, name: "Recruiting" },
-];
 interface HistoricalProps {
-  createTrial: any,
-  newTrial:any
+  createTrial?: any;
+  newTrial?: any;
+  indicationList?: any;
+  shouldFetch?: boolean;
+  fetchHistory?: any;
+  historyTrial?:any
 }
+const min = 2000;
+const max = 2020;
+const marks = {
+  2000: "2000",
+  2004: "2004",
+  2008: "2008",
+  2012: "2012",
+  2016: "2016",
+  2020: "2020",
+};
+
 
 
 class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
@@ -78,45 +90,77 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     studyStatus: "",
     indication: "",
     pediatric: "",
-    studyDate: [],
+    dateFrom: 2000,
+    dateTo: 2020,
     selectedRowKeys: this.props.newTrial.similarHistoricalTrials,
     spinning: false,
     data: [],
-    rawData: [],
-    marks: {
-      2010: '2010',
-      2012: '2012',
-      2014: '2014',
-      2016: '2016',
-      2018: '2018',
-      2020: '2020'
-    }
+    rawData: this.props.historyTrial.historyData,
+    statusChartData: [],
+    sponsorChartData: [],
+    optionOne: {},
+    optionTwo: {},
+    showStatusChart:true
   };
   componentDidMount() {
-    this.getHistoryList()
+    this.props.historyTrial.shouldFetch && this.getHistoryList();
+    !this.props.historyTrial.shouldFetch && this.onFindTrials()
+  }
+
+  getChartData(datasource, key) {
+    let keyValues = [];
+    datasource.forEach((e) => {
+      keyValues.push(e[key]);
+    });
+    keyValues = Array.from(new Set(keyValues));
+    const pieChartData = [];
+    keyValues.forEach((v) => {
+      const values = datasource.filter(
+        (d) => d[key].toLowerCase() == v.toLowerCase()
+      );
+      pieChartData.push({
+        value: values.length,
+        name: v,
+      });
+    });
+    return pieChartData;
   }
 
   getHistoryList = async () => {
     this.setState({
-      spinning:true
-    })
+      spinning: true,
+    });
     const resp = await listStudy();
     this.setState({
-      spinning:false
-    })
-      
+      spinning: false,
+    });
+
     if (resp.statusCode == 200) {
-      const tmpData = JSON.parse(resp.body).map((d) => {
-        d.key = d["nct_id"]
-        return d
+      console.log('history list-----',JSON.parse(resp.body))
+      const tmpData = JSON.parse(resp.body).map((d, idx) => {  
+        d.key = d["nct_id"];  
+        return d;
+      }).filter(d => {
+         const date = d['start_date'].split('-')[0]
+        return date >= this.state.dateFrom && date <= this.state.dateTo
       });
-      console.log('history list----', tmpData)
+       
+      const statusData = this.getChartData(tmpData, "study_status");
+      const sponsorData = this.getChartData(tmpData, "sponsor");
+
       this.setState({
-          data: tmpData,
-          rawData:tmpData 
-        })     
-      }
-  }
+        data: tmpData,
+        rawData: tmpData,
+        statusChartData: statusData,
+        sponsorChartData: sponsorData,
+      });
+      this.props.fetchHistory({
+        historyData: tmpData,
+        shouldFetch:false
+
+      })
+    }
+  };
 
   changePage = (page) => {
     this.setState({
@@ -151,144 +195,187 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     });
   };
 
+  handleLegendFormatter = (chartData, legenName) => {  
+    const sum = chartData.reduce((accumulator, currentValue) => {
+      return accumulator + currentValue.value
+    }, 0)
+    const targetVal = chartData.find(d => d.name == legenName).value
+    let p = ((targetVal / sum) * 100).toFixed(2);
+    return legenName + " - " + p + "%";  
+  }
+
   onFindTrials = () => {
+
     const filteredData = this.state.rawData.filter((d) => {
+      const date = d['start_date'].split('-')[0]
       return (
-        (this.state.studyPhase != ""
+        (this.state.studyPhase != "" && this.state.studyPhase != "All"
           ? d.phase == this.state.studyPhase
           : true) &&
-        (this.state.studyType != ""
+        (this.state.studyType != "" && this.state.studyType != "All"
           ? d.study_type == this.state.studyType
           : true) &&
-        (this.state.indication != ""
+        (this.state.studyStatus != "" && this.state.studyStatus != "All"
+          ? d['study_status'] == this.state.studyStatus
+          : true) &&
+        (this.state.indication != "" && this.state.indication != "All"
           ? d.indication == this.state.indication
-          : true)
+          : true) &&
+        (this.state.pediatric != "" && this.state.pediatric != "All"
+          ? d.pediatric == this.state.pediatric
+          : true) &&  
+        date>=this.state.dateFrom && date<=this.state.dateTo
       );
     });
+    const statusData = this.getChartData(filteredData, "study_status");
+    const sponsorData = this.getChartData(filteredData, "sponsor");
     this.setState({
       data: filteredData,
+      statusChartData: statusData,
+      sponsorChartData: sponsorData,
     });
+
+    if (this.state.studyStatus != "" && this.state.studyStatus != "All") {
+      this.setState({
+        showStatusChart:false
+      })
+    } else {
+      this.setState({
+        showStatusChart:true
+      })
+    }
   };
 
-  optionOne = {
-    title: {
-      text: "By Sponsor",
-      x: "left",
-      y: "top",
-      textStyle: {
-        fontSize: 14,
+  getOptionOne() {
+    const optionOne = {
+      title: {
+        text: "By Sponsor",
+        x: "left",
+        y: "top",
+        textStyle: {
+          fontSize: 14,
+        },
       },
-    },
-    legend: {
-      x: "left",
-      y: "50%",
-      itemHeight: 7,
-      textStyle: {
-        fontSize: 8,
+      tooltip: {
+        trigger: "item",
+        formatter: function (params) {
+          return (
+            [params.name] +
+            "-" +
+            [params.value] 
+          );
+        },
       },
-      formatter: function (name) {
-        let tempData = chartData1;
-        let total = 0;
-        let tarValue = 0;
-        for (let i = 0, l = tempData.length; i < l; i++) {
-          total += tempData[i].value;
-          if (tempData[i].name == name) {
-            tarValue = tempData[i].value;
-          }
-        }
-        let p = ((tarValue / total) * 100).toFixed(2);
-        return name + " - " + p + "%";
+      legend: {
+        // orient: 'vertical',
+        x: "left",
+        y: "50%",
+        itemHeight: 7,
+        textStyle: {
+          fontSize: 8,
+        },
+        formatter: function (params) {
+           const chartData = optionOne.series[0].data      
+          const sum = chartData.reduce((accumulator, currentValue) => {
+           return accumulator + currentValue.value
+          }, 0)
+          const targetVal = chartData.find(d => d.name == params).value
+          let p = ((targetVal / sum) * 100).toFixed(2);
+          return params + " - " + p + "%";
+        },
       },
-      data: [
-        "Abbott",
-        "Eli Lily",
-        "Novo Nordisk",
-        "Boehringer Ingelheim",
-        "Merck",
-        "Pfizer",
-        "AstraZaeneca",
+      series: [
+        {
+          type: "pie",
+          center: ["20%", "30%"],
+          radius: ["18%", "38%"],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+          },
+          color: [
+            "#d04a02",
+            "#d4520d",
+            "#d85d1c",
+            "#de6c30",
+            "#e47d47",
+            "#e68d5e",
+            "#e8aa89",
+          ],
+          data: this.state.sponsorChartData,
+        },
       ],
-    },
-    series: [
-      {
-        type: "pie",
-        center: ["20%", "30%"],
-        radius: ["18%", "38%"],
-        avoidLabelOverlap: false,
-        label: {
-          show: false,
-        },
-        color: [
-          "#d04a02",
-          "#d4520d",
-          "#d85d1c",
-          "#de6c30",
-          "#e47d47",
-          "#e68d5e",
-          "#e8aa89",
-        ],
-        data: chartData1,
-      },
-    ],
-  };
+    };
+    return optionOne;
+  }
 
-  optionTwo = {
-    title: {
-      text: "By Status",
-      x: "left",
-      y: "top",
-      textStyle: {
-        fontSize: 14,
-        fontWeight: "bold",
-      },
-    },
-    legend: {
-      x: "left",
-      y: "50%",
-      itemHeight: 7,
-      textStyle: {
-        fontSize: 8,
-      },
-      formatter: function (name) {
-        let tempData = chartData2;
-        let total = 0;
-        let tarValue = 0;
-        for (let i = 0, l = tempData.length; i < l; i++) {
-          total += tempData[i].value;
-          if (tempData[i].name == name) {
-            tarValue = tempData[i].value;
-          }
-        }
-        let p = ((tarValue / total) * 100).toFixed(2);
-        return name + " - " + p + "%";
-      },
-      data: ["Completed", "Recruiting"],
-    },
-    series: [
-      {
-        type: "pie",
-        center: ["40%", "30%"],
-        radius: ["30%", "65%"],
-        avoidLabelOverlap: false,
-        label: {
-          show: false,
+  getOptionTwo() {
+    const optionTwo = {
+      title: {
+        text: "By Status",
+        x: "left",
+        y: "top",
+        textStyle: {
+          fontSize: 14,
+          fontWeight: "bold",
         },
-        color: ["#d04a02", "#ed7738"],
-        data: chartData2,
       },
-    ],
-  };
+      tooltip: {
+        trigger: "item",
+        formatter: function (params) {
+          return (
+            [params.name] +
+            "-" +
+            [params.value]
+          );
+        },
+      },
+      legend: {
+        x: "left",
+        y: "50%",
+        itemHeight: 7,
+        textStyle: {
+          fontSize: 8,
+        },
+        formatter: function (params) {
+          const chartData = optionTwo.series[0].data      
+          const sum = chartData.reduce((accumulator, currentValue) => {
+           return accumulator + currentValue.value
+          }, 0)
+          const targetVal = chartData.find(d => d.name == params).value
+          let p = ((targetVal / sum) * 100).toFixed(2);
+          return params + " - " + p + "%";
+        },
+      },
+      series: [
+        {
+          type: "pie",
+          center: ["40%", "30%"],
+          radius: ["30%", "65%"],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+          },
+          color: ["#d04a02", "#ed7738"],
+          data: this.state.statusChartData,
+        },
+      ],
+    };
+    return optionTwo;
+  }
+
   onRowSelectChange = (selectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", selectedRowKeys);
     this.setState({ selectedRowKeys });
     this.props.createTrial({
-      similarHistoricalTrials:selectedRowKeys
-    })
+      similarHistoricalTrials: selectedRowKeys,
+    });
   };
   handleDateChange = (value) => {
-    console.log( value)
-    
-  }
+    this.setState({
+      dateFrom: value[0],
+      dateTo: value[1],
+    });
+  };
 
   render() {
     const rowSelection = {
@@ -350,7 +437,8 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("studyStatus", e)}
                   >
-                    {["Completed", "In Progress", "Not Started"].map((o) => {
+                     <Option value="All" key="All">All</Option>
+                    {study_status.sort().map((o) => {
                       return (
                         <Option value={o} key={o}>
                           {o}
@@ -366,7 +454,10 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("indication", e)}
                   >
-                    {["Type 2 Diabetes"].map((o) => {
+                    <Option value="All" key="all">
+                      All
+                    </Option>
+                    {this.props.indicationList.map((o) => {
                       return (
                         <Option value={o} key={o}>
                           {o}
@@ -382,7 +473,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("pediatric", e)}
                   >
-                    {["YES", "NO"].map((o) => {
+                    {["All", "YES", "NO"].map((o) => {
                       return (
                         <Option value={o} key={o}>
                           {o}
@@ -393,7 +484,16 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 </div>
                 <div className="filter-item">
                   <label>STUDY START DATE</label>
-                  <Slider min={2010} max={2020} range marks={this.state.marks} dots defaultValue={[2010, 2020]} onChange={ this.handleDateChange}/>
+                  <Slider
+                    step={null}
+                    min={min}
+                    max={max}
+                    range={{ draggableTrack: true }}
+                    marks={marks}
+                    dots
+                    value={[this.state.dateFrom, this.state.dateTo]}
+                    onChange={this.handleDateChange}
+                  />
                 </div>
                 <div>
                   <Button type="primary" onClick={this.onFindTrials}>
@@ -403,25 +503,19 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
               </>
             ) : null}
           </Col>
-         
+
           <Col span={24 - this.state.sideBar} className="historical-desc">
-             <Spin spinning={this.state.spinning}>
+            <Spin spinning={this.state.spinning} >
               <Row>
                 <Col span={6} style={{ borderRight: "1px solid #ddd" }}>
                   <h4>{this.state.data && this.state.data.length}</h4>
                   <span className="num-desc">Total Number of Trials</span>
                 </Col>
                 <Col span={12}>
-                  <CustomChart
-                    option={this.optionOne}
-                    height={200}
-                  ></CustomChart>
+                  <ReactECharts option={this.getOptionOne()}></ReactECharts>
                 </Col>
                 <Col span={6}>
-                  <CustomChart
-                    option={this.optionTwo}
-                    height={200}
-                  ></CustomChart>
+                  {this.state.showStatusChart?<ReactECharts option={this.getOptionTwo()}></ReactECharts>:null}               
                 </Col>
               </Row>
               <Row>
@@ -443,24 +537,24 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                   sticky
                   // scroll={{y: 300}}
                   rowSelection={rowSelection}
-                />          
+                />
               </Row>
-              </Spin>
-            </Col>
+            </Spin>
+          </Col>
         </Row>
       </div>
     );
   }
 }
 
-
 const mapDispatchToProps = (dispatch) => ({
   createTrial: (val) => dispatch(createActions.createTrial(val)),
+  fetchHistory:(val) => dispatch(historyActions.fetchHistory(val)),
 });
 
 const mapStateToProps = (state) => ({
   newTrial: state.trialReducer,
-
+  historyTrial:state.historyReducer,
 });
 export default connect(
   mapStateToProps,
