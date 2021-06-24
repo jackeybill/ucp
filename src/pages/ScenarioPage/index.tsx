@@ -487,34 +487,14 @@ const ScenarioPage = (props) => {
         tempStr = '-'
       } else {
         var value = item.Value
-        if(value.length !== undefined){
-          var minValue = value[0]
-          var maxValue = value[1]
-          // data type: Number 
-          if(minValue === Number(minValue)){
-            if(minValue >= 0){
-              tempStr = '>=' + formatNum(minValue)
-              if(maxValue >= 0){
-                tempStr += ' and <=' + formatNum(maxValue)
-              }
-            } else if(maxValue >= 0){
-              tempStr = '<=' + formatNum(maxValue)
-            } else {
-              tempStr = value.toString()
-            }
-          } else{
-            if(minValue != ''){
-              tempStr = '>=' + minValue
-              if(maxValue != ''){
-                tempStr += ' and <=' + maxValue
-              }
-            } else if(maxValue != ''){
-              tempStr = '<=' + maxValue
-            } else {
-              tempStr = value.toString()
-            }
+        if(value instanceof Array){
+          tempStr = formatNum(value[0])
+          if(value.length > 1){
+            tempStr += ' - ' + formatNum(value[1])
           }
-          
+          if(value.length > 2){
+            tempStr += ' ' + value[2]
+          }
         } else {
           tempStr = formatNum(value)
         }
@@ -1867,7 +1847,7 @@ const pdfMake = async () =>{
                         </div>
                         <Slider
                           range={{ draggableTrack: true }}
-                          defaultValue={[frequencyFilter[0], frequencyFilter[1]]}
+                          defaultValue={[minValue, maxValue]}
                           tipFormatter={formatter}
                           onAfterChange={getFrequency}
                         />
