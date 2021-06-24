@@ -44,3 +44,15 @@
     }
   }
 }
+
+.chart-wrapper {
+  display: flex;
+  .chart {
+    flex: 2;
+  }
+  .summary-count {
+    flex: 1;
+    padding: 0 2px;
+    border-right: 1px solid #ddd;
+  }
+}

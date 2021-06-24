@@ -55,18 +55,6 @@
     .anticon.anticon-down{
         color: #d04a02;
     }
-    .anticon.anticon-down.ant-input-number-handler-down-inner{
-        color:#00000073;
-    }
-    .ant-btn-group.ant-dropdown-button{
-        .ant-btn.ant-btn-default{
-            color:#d04a02;
-            border-left: unset;
-        }
-        .ant-btn.ant-btn-default.ant-btn-icon-only.ant-dropdown-trigger{
-            border-left: 1px solid #d04a02;
-        }
-    }
 
     .ant-input-number .ant-input-number-handler-wrap {
         opacity: 1;
@@ -108,7 +96,7 @@
             display:inline-block;
 
             span{
-                font-size:8px;
+                font-size:6px;
             }
 
             .bar-item{

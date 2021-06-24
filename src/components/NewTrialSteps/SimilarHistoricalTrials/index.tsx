@@ -60,17 +60,17 @@ interface HistoricalProps {
   fetchHistory?: any;
   historyTrial?:any
 }
-const min = 2000;
+const min = 1990;
 const max = 2020;
 const marks = {
+  1990: "1990",
+  1995: "1995",
   2000: "2000",
-  2004: "2004",
-  2008: "2008",
-  2012: "2012",
-  2016: "2016",
+  2005: "2005",
+  2010: "2010",
+  2015: "2015",
   2020: "2020",
 };
-
 
 
 class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
@@ -85,12 +85,12 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     pageSizeOptions: ["5", "10", "20", "50", "100"],
     sideBar: 2,
     showFilter: false,
-    studyType: "",
-    studyPhase: "",
+    studyType: this.props.newTrial.study_type||"",
+    studyPhase: this.props.newTrial.study_phase||"",
     studyStatus: "",
-    indication: "",
-    pediatric: "",
-    dateFrom: 2000,
+    indication: this.props.newTrial.indication||"",
+    pediatric: this.props.newTrial.pediatric_study||"",
+    dateFrom: 1990,
     dateTo: 2020,
     selectedRowKeys: this.props.newTrial.similarHistoricalTrials,
     spinning: false,
@@ -138,7 +138,9 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     if (resp.statusCode == 200) {
       console.log('history list-----',JSON.parse(resp.body))
       const tmpData = JSON.parse(resp.body).map((d, idx) => {  
-        d.key = d["nct_id"];  
+        d.key = d["nct_id"];
+        d.sponsor = d.sponsor || '';
+        d.study_status = d.study_status || '';
         return d;
       }).filter(d => {
          const date = d['start_date'].split('-')[0]
@@ -267,7 +269,6 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         },
       },
       legend: {
-        // orient: 'vertical',
         x: "left",
         y: "50%",
         itemHeight: 7,
@@ -275,7 +276,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
           fontSize: 8,
         },
         formatter: function (params) {
-           const chartData = optionOne.series[0].data      
+          const chartData = optionOne.series[0].data      
           const sum = chartData.reduce((accumulator, currentValue) => {
            return accumulator + currentValue.value
           }, 0)
@@ -287,8 +288,8 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       series: [
         {
           type: "pie",
-          center: ["20%", "30%"],
-          radius: ["18%", "38%"],
+          center: ["30%", "35%"],
+          radius: ["20%", "50%"],
           avoidLabelOverlap: false,
           label: {
             show: false,
@@ -332,7 +333,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       },
       legend: {
         x: "left",
-        y: "50%",
+        y: "60%",
         itemHeight: 7,
         textStyle: {
           fontSize: 8,
@@ -350,13 +351,20 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       series: [
         {
           type: "pie",
-          center: ["40%", "30%"],
-          radius: ["30%", "65%"],
+           center: ["30%", "35%"],
+          radius: ["20%", "50%"],
           avoidLabelOverlap: false,
           label: {
             show: false,
           },
-          color: ["#d04a02", "#ed7738"],
+          color: [
+            "#d04a02",
+            "#d4520d",
+            "#d85d1c",
+            "#de6c30",
+            "#e47d47",
+            "#e68d5e",
+            "#e8aa89"],
           data: this.state.statusChartData,
         },
       ],
@@ -378,6 +386,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
   };
 
   render() {
+    console.log(this.state.sponsorChartData, this.state.statusChartData)
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onRowSelectChange,
@@ -506,18 +515,30 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
 
           <Col span={24 - this.state.sideBar} className="historical-desc">
             <Spin spinning={this.state.spinning} >
-              <Row>
+              <div className="chart-wrapper">
+                <div className="summary-count">
+                  <h4>{this.state.data && this.state.data.length}</h4>
+                  <span className="num-desc">Total Number of Trials</span>
+                </div>
+                <div className="chart">
+                  <ReactECharts option={this.getOptionOne()}></ReactECharts>          
+                </div>
+                <div className="chart">
+                    {this.state.showStatusChart?<ReactECharts option={this.getOptionTwo()}></ReactECharts>:null}     
+                </div>
+              </div>
+              {/* <Row>
                 <Col span={6} style={{ borderRight: "1px solid #ddd" }}>
                   <h4>{this.state.data && this.state.data.length}</h4>
                   <span className="num-desc">Total Number of Trials</span>
                 </Col>
                 <Col span={12}>
-                  <ReactECharts option={this.getOptionOne()}></ReactECharts>
+                      
                 </Col>
                 <Col span={6}>
                   {this.state.showStatusChart?<ReactECharts option={this.getOptionTwo()}></ReactECharts>:null}               
                 </Col>
-              </Row>
+              </Row> */}
               <Row>
                 <Table
                   columns={columns}

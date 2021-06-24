@@ -2,10 +2,10 @@ import React, { useState, useEffect, useReducer} from 'react';
 import jsPDF from "jspdf";
 import html2canvas from 'html2canvas'
 import FileSaver from 'file-saver'
-import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps} from "antd";
+import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Checkbox, Input, message, Steps} from "antd";
 import {getSummaryDefaultList, addScenario, listStudy, getStudy} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
-import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined} from "@ant-design/icons";
+import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined} from "@ant-design/icons";
 import "./index.scss";
 
 import CriteriaOption from "../../components/CriteriaOption";
@@ -84,13 +84,10 @@ const ScenarioPage = (props) => {
     const [activeEnrollmentTabKey, setActiveEnrollmentTabKey] = useState('1')
     const [activeTabKey, setActiveTabKey] = useState('1')
     const [processStep, setProcessStep] = useState(0)
-    const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState([])
-    const [spinning, setSpinning] = useState(false)
-    const [showChartLabel, setShowChartLabel] = useState(false)
 
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
-    const [freqColor, setFreqColor] = useState('#ed7738')
+    const [freqColor, setFreqColor] = useState('#12129f')
     const [totalData, setTotalData] = useState([])
     const [freqData, setFreqdata] = useState([])
     const [chartTitle, setChartTitle] = useState('Patients Eligible - 80K(16% of Dataset)')
@@ -114,8 +111,6 @@ const ScenarioPage = (props) => {
     const [therapeutic_Amend_Avg, setTherapeutic_Amend_Avg] = useState('Therapeutic Area Average - 0%')
     const [therapeutic_Screen_Avg, setTherapeutic_Screen_Avg] = useState('Therapeutic Area Average - 0%')
     const [impactColors, setImpactColors] = useState(inActiveChartColors)
-    const [amend_avg_rate, setAmend_avg_rate] = useState('')
-    const [screen_avg_rate, setScreen_avg_rate] = useState('')
 
     const [rollHeight, setRollHeight] = useState(true)            // Control editTable scroll height
     const [visible, setVisible] = useState(false)                 // Control libs filter slider bar display or not
@@ -157,8 +152,6 @@ const ScenarioPage = (props) => {
     const [exclu_Therapeutic_Amend_Avg, setExcluTherapeutic_Amend_Avg] = useState('Therapeutic Area Average - 0%')
     const [exclu_Therapeutic_Screen_Avg, setExcluTherapeutic_Screen_Avg] = useState('Therapeutic Area Average - 0%')
     const [excluImpactColors, setExcluImpactColors] = useState(inActiveChartColors)
-    const [excluAmend_avg_rate, setExcluAmend_avg_rate] = useState('')
-    const [excluScreen_avg_rate, setExcluScreen_avg_rate] = useState('')
 
     const [excluRollHeight, setExcluRollHeight] = useState(true)            // Control editTable scroll height
     const [excluVisible, setExcluVisible] = useState(false);                // Control libs filter slider bar display or not
@@ -198,9 +191,6 @@ const ScenarioPage = (props) => {
             if(resp.statusCode == 200){
                 const tempRecord = resp.body
                 setTrialRecord(tempRecord)
-                if(tempRecord.similarHistoricalTrials !== undefined){
-                  setSimilarHistoricalTrials(tempRecord.similarHistoricalTrials)
-                }
                 
                 const tempScenarioId = props.location.state.scenarioId
                 const tempEditFlag = props.location.state.editFlag
@@ -244,8 +234,6 @@ const ScenarioPage = (props) => {
                     if(tempRecord['Therapeutic Area Average']){
                         setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
                         setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
-                        setAmend_avg_rate(tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
-                        setScreen_avg_rate(tempRecord['Therapeutic Area Average'].screen_failure_rate)
                     }
 
                     //Get exclusion chart info
@@ -267,11 +255,7 @@ const ScenarioPage = (props) => {
                     if(tempRecord['Therapeutic Area Average']){
                         setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
                         setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
-                        setExcluAmend_avg_rate(tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
-                        setExcluScreen_avg_rate(tempRecord['Therapeutic Area Average'].screen_failure_rate)
                     }
-
-                    setShowChartLabel(true)
                 }
                 
                 if(tempEditFlag){
@@ -412,7 +396,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -430,7 +414,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -448,7 +432,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -466,7 +450,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -481,20 +465,6 @@ const ScenarioPage = (props) => {
       }
     }
 
-    function formatValue(item){
-      var tempStr
-      if(item.Value === ''){
-        tempStr = '-'
-      } else {
-        tempStr = item.Value + ''
-        var id = tempStr.lastIndexOf('.')
-        if(id > -1){
-          tempStr = tempStr.substr(0, id)
-        }
-      }
-      return tempStr
-    }
-
     const handleExcluOptionSelect = (item, activeType, id, key) =>{
       switch(id){
         case 0:
@@ -503,7 +473,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -521,7 +491,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -539,7 +509,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -557,7 +527,7 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
+                "Values": item.Value === '' ? "-" : item.Value + '',
                 "Timeframe": "-",
                 "Frequency":item.Frequency
               }
@@ -745,29 +715,9 @@ const ScenarioPage = (props) => {
           radius: ['50%', '80%'],
           avoidLabelOverlap: false,
           label: {
-            show: true,
+            show: false,
             position: 'center',
-            formatter: function () {
-              if(showChartLabel){
-                return '{p|' + amend_avg_rate + '}\n{nm|GOOD}'
-              } else {
-                return ''
-              }
-            },
-            emphasis: '',
-            rich: {
-              p: {
-                color: '#aba9a9',
-                fontSize: 16,
-                backgroundColor: "white"
-              },
-              nm: {
-                color: 'green',
-                fontSize: 8,
-                fontWeight:'bold',
-                backgroundColor: "white"
-              }
-            }
+            formatter: '{c}%'
           },
           emphasis: {
             label: {
@@ -812,29 +762,9 @@ const ScenarioPage = (props) => {
           radius: ['50%', '80%'],
           avoidLabelOverlap: false,
           label: {
-            show: true,
+            show: false,
             position: 'center',
-            formatter: function () {
-              if(showChartLabel){
-                return '{p|' + screen_avg_rate + '}\n{nm|GOOD}'
-              } else {
-                return ''
-              }
-            },
-            emphasis: '',
-            rich: {
-              p: {
-                color: '#aba9a9',
-                fontSize: 16,
-                backgroundColor: "white"
-              },
-              nm: {
-                color: 'green',
-                fontSize: 8,
-                fontWeight:'bold',
-                backgroundColor: "white"
-              }
-            }
+            formatter: '{c}%'
           },
           emphasis: {
             label: {
@@ -880,29 +810,9 @@ const ScenarioPage = (props) => {
             radius: ['50%', '80%'],
             avoidLabelOverlap: false,
             label: {
-              show: true,
-              position: 'center',
-              formatter: function () {
-                if(showChartLabel){
-                  return '{p|' + excluAmend_avg_rate + '}\n{nm|GOOD}'
-                } else {
-                  return ''
-                }
-              },
-              emphasis: '',
-              rich: {
-                p: {
-                  color: '#aba9a9',
-                  fontSize: 16,
-                  backgroundColor: "white"
-                },
-                nm: {
-                  color: 'green',
-                  fontSize: 8,
-                  fontWeight:'bold',
-                  backgroundColor: "white"
-                }
-              }
+                show: false,
+                position: 'center',
+                formatter: '{c}%'
             },
             emphasis: {
                 label: {
@@ -948,29 +858,9 @@ const ScenarioPage = (props) => {
           radius: ['50%', '80%'],
           avoidLabelOverlap: false,
           label: {
-            show: true,
+            show: false,
             position: 'center',
-            formatter: function () {
-              if(showChartLabel){
-                return '{p|' + excluScreen_avg_rate + '}\n{nm|GOOD}'
-              } else {
-                return ''
-              }
-            },
-            emphasis: '',
-            rich: {
-              p: {
-                color: '#aba9a9',
-                fontSize: 16,
-                backgroundColor: "white"
-              },
-              nm: {
-                color: 'green',
-                fontSize: 8,
-                fontWeight:'bold',
-                backgroundColor: "white"
-              }
-            }
+            formatter: '{c}%'
           },
           emphasis: {
             label: {
@@ -989,9 +879,18 @@ const ScenarioPage = (props) => {
     };
 
     const raceOption = {
+      title : {
+        text: 'Race & Ethnicity',
+        x:'left',
+        y:'top',
+        textStyle: {
+          fontSize: 14,
+          fontWeight: 'bold'
+        }
+      },
       legend: {
         x:'40%',
-        y:'10%',
+        y:'25%',
         orient: 'vertical',
         itemHeight: 7,
         textStyle: {
@@ -1014,13 +913,13 @@ const ScenarioPage = (props) => {
       },
       series: [{
         type: 'pie',
-        center: ['20%', '45%'],
+        center: ['20%', '65%'],
         radius: ['30%', '70%'],
         avoidLabelOverlap: false,
         label: {
           show: false,
         },
-        color:['#d04a02', '#ed7738', '#ed9d72', '#f5b795'],
+        color:['#0001ff', '#2e9df7', '#8ac7fa', '#a3cef1'],
         data: [
           {value: 75, name: 'Caucasian'},
           {value: 12, name: 'Hispanic'},
@@ -1098,7 +997,7 @@ const ScenarioPage = (props) => {
               type: 'bar',
               stack: 'total',
               barWidth:'20px',
-              color: '#fa4203',
+              color: '#d21414',
               label: {
                   show: true,
                   formatter: function(p) {
@@ -1124,7 +1023,7 @@ const ScenarioPage = (props) => {
       setFreqdata([])
     } else if(key === '2'){
       setChartTitle('Female patients eligible - 20%')
-      setFreqColor('#ed7738')
+      setFreqColor('#12129f')
 
       let tempData = [];
       for(let i = 0, l = resultdata.length; i < l; i++){
@@ -1141,7 +1040,7 @@ const ScenarioPage = (props) => {
       setFreqdata(tempData2)
     } else {
       setChartTitle('Race & Ethnicity - Afican American - 5%')
-      setFreqColor('#f5b795')
+      setFreqColor('#a3cef1')
 
       let tempData = [];
       for(let i = 0, l = resultdata.length; i < l; i++){
@@ -1168,14 +1067,14 @@ const ScenarioPage = (props) => {
     }
 
     const searchHistoricalTrials = async () => {
-      setShowHistorical(true)
       if(historicalTrialdata.length == 0){
-        setSpinning(true)
         const resp = await listStudy();
         if (resp.statusCode == 200) {
-          setSpinning(false)
           setHistoricalTrialdata(JSON.parse(resp.body))
+          setShowHistorical(true)
         }
+      } else {
+        setShowHistorical(true)
       }
     }
 
@@ -1292,7 +1191,8 @@ const ScenarioPage = (props) => {
     const saveCriteria = async () => {
       let newScenario = trialRecord.scenarios.find( i=> i['scenario_id'] == scenarioId)
 
-        var newInclusion = {
+      if(!editFlag){
+        var inclusion = {
           "Demographics": {
             "protocol_amendment_rate": '',
             "patient_burden": '',
@@ -1315,7 +1215,7 @@ const ScenarioPage = (props) => {
           }
         }
 
-        var newExclusion = {
+        var exclusion = {
           "Demographics": {
             "protocol_amendment_rate": '',
             "patient_burden": '',
@@ -1337,9 +1237,8 @@ const ScenarioPage = (props) => {
             "Entities": excluLabTestElements
           }
         }
-      if(newScenario["Inclusion Criteria"].Demographics === undefined){
-        newScenario["Inclusion Criteria"] = newInclusion
-        newScenario["Exclusion Criteria"] = newExclusion
+        newScenario["Inclusion Criteria"] = inclusion
+        newScenario["Exclusion Criteria"] = exclusion
       } else {
         newScenario["Inclusion Criteria"].Demographics.Entities = demographicsElements
         newScenario["Inclusion Criteria"]['Medical Condition'].Entities = medConditionElements
@@ -1364,9 +1263,7 @@ const ScenarioPage = (props) => {
       newTrial.scenarios = newScenarioList
 
       setTrialRecord(newTrial)
-
-      setImpactColors(activeChartColors)
-      setExcluImpactColors(activeChartColors)
+  
       //Update record
       const resp = await addScenario(newTrial);
       console.log(newTrial)
@@ -1392,8 +1289,6 @@ const ScenarioPage = (props) => {
         if(resp.body['Therapeutic Area Average']){
           setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
           setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
-          setAmend_avg_rate(resp.body['Therapeutic Area Average'].protocol_amendment_rate)
-          setScreen_avg_rate(resp.body['Therapeutic Area Average'].screen_failure_rate)
         }
 
         //Get exclusion chart info
@@ -1415,11 +1310,8 @@ const ScenarioPage = (props) => {
         if(resp.body['Therapeutic Area Average']){
           setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
           setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
-          setExcluAmend_avg_rate(resp.body['Therapeutic Area Average'].protocol_amendment_rate)
-          setExcluScreen_avg_rate(resp.body['Therapeutic Area Average'].screen_failure_rate)
         }
   
-        setShowChartLabel(true)
         message.success("Save successfully");
       }
     }
@@ -1641,6 +1533,16 @@ const pdfMake = async () =>{
     setActiveTabKey(activeKey)
     console.log(activeKey)
   }
+
+  const updateImpact = (type) =>{
+    if(type === 1){
+      setImpactColors(activeChartColors)
+    } else {
+      setExcluImpactColors(activeChartColors)
+    }
+  }
+  
+  
   
     return (
     <div className="scenario-container">
@@ -1966,6 +1868,9 @@ const pdfMake = async () =>{
                         <Col span={24}>
                           <div className="impact-summary">
                             <span>Inclusion Criteria</span>
+                            <Button className="view-btn" onClick={() => updateImpact(1)}>
+                              UPDATE IMPACT
+                            </Button>
                           </div>
                           </Col>
                       </Row>
@@ -2239,6 +2144,9 @@ const pdfMake = async () =>{
                         <Col span={24}>
                           <div className="impact-summary">
                             <span>Exclusion Criteria</span>
+                            <Button className="view-btn" onClick={() => updateImpact(2)}>
+                              UPDATE IMPACT
+                            </Button>
                           </div>
                           </Col>
                       </Row>
@@ -2436,8 +2344,7 @@ const pdfMake = async () =>{
                       <Row className="enroll-tab">
                         <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => switchTabkey('1')}>
                           <Row><Col className="tab-item">
-                            <Row className="tab-desc">Patients Eligible&nbsp;
-                              {activeEnrollmentTabKey === '1'?(<CaretRightOutlined />):(<></>)}</Row>
+                            <Row className="tab-label">Patients Eligible</Row>
                             <Row className="tab-title">80K</Row>
                             <Row className="tab-desc">16% of Dataset</Row>
                           </Col></Row>
@@ -2445,17 +2352,17 @@ const pdfMake = async () =>{
                         <Col span={1}></Col>
                         <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '2' ? 'active' : ''}`} onClick={() => switchTabkey('2')}>
                           <Row><Col className="tab-item" span={24}>
-                            <Row className="tab-desc">Female patients eligible&nbsp;
-                                {activeEnrollmentTabKey === '2'?(<CaretRightOutlined />):(<></>)}</Row>
+                            <Row className="tab-label">
+                              <Col span={22}>Female patients eligible</Col>
+                              <Col span={1} style={{color:'#12129f'}}>&#9724;</Col>
+                            </Row>
                             <Row className="tab-title">20%</Row>
                           </Col></Row>
                         </Col>
                         <Col span={1}></Col>
                         <Col span={8} className={`chart-tab ${activeEnrollmentTabKey === '3' ? 'active' : ''}`} onClick={() => switchTabkey('3')}>
-                          <Row><Col className="tab-item chart" span={24}>
-                            <Row className="tab-desc">Race & Ethnicity&nbsp;
-                                {activeEnrollmentTabKey === '3'?(<CaretRightOutlined />):(<></>)}</Row>
-                            <Row><Col span={24}><CustomChart option={raceOption} height={100}></CustomChart></Col></Row>
+                          <Row><Col className="tab-item" span={24}>
+                            <CustomChart option={raceOption} height={110}></CustomChart>
                           </Col></Row>
                         </Col>
                       </Row>
@@ -2483,9 +2390,7 @@ const pdfMake = async () =>{
       <Modal visible={showHistorical} title="Historical Trial List" onOk={handleOk} onCancel={handleCancel}
         footer={null} style={{ left: '20%', top:50 }} centered={false} width={200} > 
         <Row>
-          <Spin spinning={spinning}>
             <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
-          </Spin>
         </Row>
       </Modal>
     </div>
