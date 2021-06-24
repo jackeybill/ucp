@@ -12,11 +12,32 @@
 }
 
 .table__section {
+  background-color: #FFFFFF;
+  .table__section_title {
+    color: #666666;
+    line-height: 55px;
+    font-size: 18px;
+    padding-left: 10px;
+  }
   .ant-table-wrapper {
     width: 100%;
     .ant-table-thead > tr > th {
       background-color: #666666;
       color: #ffffff;
+    }
+    .status_circle {
+      display: inline-block;
+      margin-right: 5px;
+      background-color: #999999;
+      width: 8px;
+      height: 8px;
+      border-radius: 4px;
+    }
+    .complete_status {
+      background-color: #00A947;
+    }
+    .inprogress_status {
+      background-color: #FFC107;
     }
   }
 

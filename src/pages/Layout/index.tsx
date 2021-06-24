@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
-import { Layout, Popconfirm, } from "antd";
+import { Layout, Popconfirm } from "antd";
+import Cookies from "js-cookie";
 
 import ProtocolSection from "../ProtocolSection";
 import Footer from '../../components/Footer'
 import Overview from "../Overview";
 import Logo from "../../assets/pwc-logo-dark.svg";
-import Cookies from "js-cookie";
 
 import "./index.scss";
 
@@ -18,6 +18,7 @@ const getUsername = (emailAddress: any) => {
   }
   return name;
 };
+
 const { Header, Content} = Layout;
 
 const GlobalLayout = (props: any) => {
@@ -27,15 +28,12 @@ const GlobalLayout = (props: any) => {
   useEffect(() => {
     if (Cookies.get("username")) {
       setUsername(Cookies.get("username"));
-      
       // setCurrent(ROLE_MENUE_MAPPING[Cookies.get("role")][0]);
-     
     } else {
       // props.history.push("/");
     }
   }, []);
 
-  
   function confirm() {
     Cookies.set("username", "");
     Cookies.set("role", "");

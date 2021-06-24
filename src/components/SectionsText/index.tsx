@@ -1,6 +1,6 @@
 import React from "react";
 import { sectionOptions } from "../../pages/ProtocolSection";
-import { CheckCircleFilled, CheckCircleOutlined, CheckCircleTwoTone} from '@ant-design/icons'
+import { CheckCircleFilled } from '@ant-design/icons'
 import "./index.scss";
 
 interface SectionTextIF {
@@ -27,14 +27,12 @@ const SectionText = (props: SectionTextIF) => {
           className="text"
           dangerouslySetInnerHTML={{ __html: `<pre>${props.fileReader.file[key]['includeAllText'][0].content}</pre>` }}
         ></div>
-        </div>
-        
+        </div> 
       ) : (
         <div>
           {sections.map((s) => {
             // let inclusionTxt;
             // let exclusionTxt;
-            // let tableTxt;
             const displayTitle = sectionOptions.find((e) => e.value == s);
             const sectionTxt =
               props.fileReader.file[key][s].length > 0
@@ -43,13 +41,6 @@ const SectionText = (props: SectionTextIF) => {
             // if (displayTitle && displayTitle.label == exceptionLabel) {
             //   inclusionTxt = props.fileReader.file[key]["inclusionCriteria"][0].content
             //   exclusionTxt = props.fileReader.file[key]["exclusionCriteria"][0].content
-            // }
-            if (displayTitle && displayTitle.label == "SCHEDULE OF ACTIVITIES") {
-              console.log(sectionTxt);
-              // tableTxt = sectionTxt
-            }
-            // function createMarkup() {
-            //   return {__html: tableTxt};
             // }
             return (
               <div className="section-item" key={s}>
@@ -62,7 +53,6 @@ const SectionText = (props: SectionTextIF) => {
                     //   <div className="inclusion-txt">{inclusionTxt}</div>
                     //   <div><pre>{exclusionTxt}</pre> </div>
                     // </>
-                    // <div dangerouslySetInnerHTML={createMarkup()} className="content-table" />
                     <pre>
                       <div className="content-table">
                         <table>

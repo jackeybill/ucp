@@ -14,6 +14,21 @@ export const uploadFile = async (filename: string, path: string, base64: any) =>
   return await response.json();
 };
 
+export const getOverviewList = async () => {
+  const response = await fetch('https://7dx4asj8xj.execute-api.us-east-2.amazonaws.com/dev/dean-dev-protocol-job', {
+    method:'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "method": "list"
+    })
+  })
+
+  return await response.json();
+}
+
 export const extractText = async (filepath: string) => {
   const response = await fetch(BACKEND_HOST, {
     method: 'POST',
@@ -94,9 +109,6 @@ export const getRelationships = async () => {
   return await response.json();
 }
 
-
-
-
 export const pwcLogin = async () => {
   const response = await fetch(PWC_LOGIN_URL, {
     method: 'GET',
@@ -108,7 +120,6 @@ export const pwcLogin = async () => {
 
   return await response.json();
 }
-
 
 export const login = async (params = {}) => {
   const response = await fetch(PA_HOST, {
@@ -229,8 +240,6 @@ export const updateStatus = async (params = {}) => {
   return await response.json();
 };
 
-
-
 export const getTextractResult = async (params = {}) => {
   const response = await fetch(PA_HOST, {
     method: 'POST',
@@ -263,21 +272,6 @@ export const takeAction = async (action = "", params = {}) => {
 
   return await response.json();
 };
-
-export const getOverviewList = async () => {
-  const response = await fetch('https://7dx4asj8xj.execute-api.us-east-2.amazonaws.com/dev/dean-dev-protocol-job', {
-    method:'POST',
-    headers: {
-      'Access-Control-Request-Method': 'POST',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      "method": "list"
-    })
-  })
-
-  return await response.json();
-}
 
 export const saveText = async (result: any, path: any) => {
   const status = "In progress"

@@ -19,15 +19,11 @@ const LoginErr = "Invalidate username or password";
 
 const Login = (props: any) => {
   const [form] = Form.useForm();
-
   const usernameLogin = async (values: any) => {
- 
-
     const resp = await login(values);
     if (resp.statusCode == 200) {
       Cookies.set("role", values.role);
       Cookies.set("username", values.username);
-
       resp.body.AuthenticationResult &&
         verifyTokenFn(resp.body.AuthenticationResult.IdToken);
     } else {

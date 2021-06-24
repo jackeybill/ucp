@@ -7,7 +7,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import UplodZone from "../../components/UploadZone";
 import moment from 'moment';
 
-import { getOverviewList,extractText } from "../../utils/ajax-proxy";
+import { getOverviewList, extractText } from "../../utils/ajax-proxy";
 import "./index.scss";
 
 interface dataProps {
@@ -19,11 +19,11 @@ interface dataProps {
 }
 
 const columns = [
-    // {
-    //   title: "NCT ID",
-    //   dataIndex: "ntcID",
-    //   key: "ntcID",
-    // },
+    {
+      title: "NCT ID",
+      dataIndex: "ntcID",
+      key: "ntcID",
+    },
     {
       title: "Protocol Name",
       dataIndex: "protocolName",
@@ -33,6 +33,14 @@ const columns = [
       title: "Validation Status",
       dataIndex: "status",
       key: "status",
+      render: (text, row, index) => {
+        return (
+          <>
+            {showStatusCircle(text)}
+            <span>{text}</span>
+          </>
+        );   
+      }
     },
     {
       title: "Last Updated",
@@ -44,13 +52,23 @@ const columns = [
     },
   ];
 
+  const showStatusCircle = (text) => {
+    if(text.toLowerCase().includes("complete")) {
+      return <span className="status_circle complete_status"></span>
+    } else if(text.toLowerCase().includes("progress")) {
+      return <span className="status_circle inprogress_status"></span>
+    } else {
+      return <span className="status_circle"></span>
+    }
+  }
+
 const Overview = (props: any) => {
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const fethData = async () => {
+    const fetchData = async () => {
       setLoading(true)
       const resp = await getOverviewList();
       setLoading(false)
@@ -59,16 +77,17 @@ const Overview = (props: any) => {
         const tmpData = respData.length>0 && respData.map((d,idx) => {
           let obj: dataProps = {};
           obj.protocolName = d["file_name"];
-          // obj.ntcID = d.ntc_id||"";
+          obj.ntcID = d.ntc_id||"";
           obj.key = idx; 
           obj.status = d.status||"Not started";
           obj.lastUpdate = d.lastUpdate||"";
           return obj;
         });
+        console.log(tmpData);
         setData(tmpData);
       }
     };
-    fethData();
+    fetchData();
   }, []);
 
   const showDrawer = () => {
@@ -78,6 +97,7 @@ const Overview = (props: any) => {
   const onClose = () => {
     setVisible(false);
   };
+
   const handleRowClick = async (record) => {
     setLoading(true)
     const filepath = `iso-service-dev/RawDocuments/${record.protocolName}`
@@ -107,6 +127,7 @@ const Overview = (props: any) => {
           </Button>
         </div>
         <div className="table__section">
+          <div className="table__section_title">My Protocols</div>
           <Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24,color:'#d04a02' }} spin />} >
           <Table
             columns={columns}
@@ -117,12 +138,10 @@ const Overview = (props: any) => {
                   return {
                     onClick:()=>handleRowClick(record)
                   }
-                
               }
             }
             />
           </Spin>
-          
         </div>
       </div>
 
