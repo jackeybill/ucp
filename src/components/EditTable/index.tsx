@@ -36,6 +36,7 @@ const EditTable = (props) => {
   const [conOrExcpContent, setConOrExcpContent] = useState();
   const [conOrExp, setConOrExp] = useState('');
   const [visible, setVisible] = useState(false);
+  const [activeKey, setActiveKey] = useState('')
   const [editable, setEditable] = useReducer(
         (state, newState) => ({ ...state, ...newState }),
         { ...initialEditable }
@@ -44,6 +45,10 @@ const EditTable = (props) => {
   useEffect(() => {
     setData(props.data)
   }, [props.data])
+
+  useEffect(() => {
+    setActiveKey(props.defaultActiveKey)
+  }, [props.defaultActiveKey])
   
 
   const handleSubCriteraInputChange = (key, e, record?, idx?, header?) => {
@@ -186,6 +191,7 @@ const EditTable = (props) => {
   } 
 
   function callback(key) {
+    setActiveKey(key)
   }
 
 const panelHeaderSection = (header, count) => {
@@ -328,7 +334,7 @@ const panelHeaderSection = (header, count) => {
 
   return (
     <Form form={form} component={false}>
-      <Collapse activeKey={props.defaultActiveKey} onChange={callback} expandIconPosition="left"
+      <Collapse activeKey={activeKey} onChange={callback} expandIconPosition="left"
           expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
           <Panel header={panelHeaderSection(props.panelHeader, props.collapsible ? 0 : data.length)} 
             key={props.tableIndex} forceRender={false}>

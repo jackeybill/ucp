@@ -2,14 +2,14 @@ import React, { useState, useEffect, useReducer} from 'react';
 import jsPDF from "jspdf";
 import html2canvas from 'html2canvas'
 import FileSaver from 'file-saver'
-import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Checkbox, Input, message, Steps} from "antd";
-import {getSummaryDefaultList, addScenario, listStudy, getStudy} from "../../utils/ajax-proxy";
+import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps} from "antd";
+import {getSummaryDefaultList, addScenario, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
-import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined} from "@ant-design/icons";
+import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined} from "@ant-design/icons";
+import ReactECharts from 'echarts-for-react';
 import "./index.scss";
 
 import CriteriaOption from "../../components/CriteriaOption";
-import CustomChart from "../../components/CustomChart";
 import EditTable from "../../components/EditTable";
 import SelectableTable from "../../components/SelectableTable";
 import ScheduleEvents from "../../components/ScheduleEvents";
@@ -269,8 +269,15 @@ const ScenarioPage = (props) => {
     }, []);
 
     useEffect(() => {
+
         const summaryDefaultList = async () => {
-            const resp = await getSummaryDefaultList();
+          const nctIdList = props.location.state.similarHistoricalTrials
+          var resp
+          if(nctIdList != undefined && nctIdList instanceof Array && nctIdList.length > 0){
+            resp = await getSummaryListByNctId(props.location.state.similarHistoricalTrials);
+          } else {
+            resp = await getSummaryDefaultList();
+          }
     
             if (resp.statusCode == 200) {
                 const response = JSON.parse(resp.body)
@@ -465,6 +472,39 @@ const ScenarioPage = (props) => {
       }
     }
 
+<<<<<<< HEAD
+=======
+    function formatValue(item){
+      var tempStr
+      if(item.Value === ''){
+        tempStr = '-'
+      } else {
+        var value = item.Value
+        if(value instanceof Array){
+          tempStr = formatNum(value[0])
+          if(value.length > 1){
+            tempStr += ' - ' + formatNum(value[1])
+          }
+          if(value.length > 2){
+            tempStr += ' ' + value[2]
+          }
+        } else {
+          tempStr = formatNum(value)
+        }
+      }
+      return tempStr
+    }
+
+    function formatNum(value){
+      var str = value.toString()
+      var id = str.lastIndexOf('.')
+      if(id > -1){
+        str = str.substr(0, id)
+      }
+      return str
+    }
+
+>>>>>>> 8697a50fff6e6d79dce79223a5726132fb62bd7b
     const handleExcluOptionSelect = (item, activeType, id, key) =>{
       switch(id){
         case 0:
@@ -1068,7 +1108,12 @@ const ScenarioPage = (props) => {
 
     const searchHistoricalTrials = async () => {
       if(historicalTrialdata.length == 0){
+<<<<<<< HEAD
         const resp = await listStudy();
+=======
+        setSpinning(true)
+        const resp = await getSimilarhistoricalTrialById(similarHistoricalTrials);
+>>>>>>> 8697a50fff6e6d79dce79223a5726132fb62bd7b
         if (resp.statusCode == 200) {
           setHistoricalTrialdata(JSON.parse(resp.body))
           setShowHistorical(true)
@@ -1534,6 +1579,7 @@ const pdfMake = async () =>{
     console.log(activeKey)
   }
 
+<<<<<<< HEAD
   const updateImpact = (type) =>{
     if(type === 1){
       setImpactColors(activeChartColors)
@@ -1543,6 +1589,31 @@ const pdfMake = async () =>{
   }
   
   
+=======
+  const onInclusionChartClick = (e) =>{
+    if(e.name === 'Medical'){
+      setDefaultActiveKey(['3'])
+    } else if(e.name === 'Labs / Tests'){
+      setDefaultActiveKey(['5'])
+    } else if(e.name === 'Intervention'){
+      setDefaultActiveKey(['4'])
+    } else if(e.name === 'Demographics'){
+      setDefaultActiveKey(['2'])
+    }
+  }
+
+  const onExclusionChartClick = (e) =>{
+    if(e.name === 'Medical'){
+      setExcluDefaultActiveKey(['3'])
+    } else if(e.name === 'Labs / Tests'){
+      setExcluDefaultActiveKey(['5'])
+    } else if(e.name === 'Intervention'){
+      setExcluDefaultActiveKey(['4'])
+    } else if(e.name === 'Demographics'){
+      setExcluDefaultActiveKey(['2'])
+    }
+  }
+>>>>>>> 8697a50fff6e6d79dce79223a5726132fb62bd7b
   
     return (
     <div className="scenario-container">
@@ -1709,7 +1780,7 @@ const pdfMake = async () =>{
                         </div>
                         <Slider
                           range={{ draggableTrack: true }}
-                          defaultValue={[frequencyFilter[0], frequencyFilter[1]]}
+                          defaultValue={[minValue, maxValue]}
                           tipFormatter={formatter}
                           onAfterChange={getFrequency}
                         />
@@ -1844,19 +1915,19 @@ const pdfMake = async () =>{
                                   <div className="label">
                                     <span>Click on each metrics to filter</span>
                                   </div>
-                                  <CustomChart
+                                  <ReactECharts
                                     option={amendmentRateoption}
-                                    height={120}
-                                  ></CustomChart>
+                                    style={{ height: 120}}
+                                    onEvents={{'click': onInclusionChartClick}}/>
                                 </div>
                                 <div className="chart-container  box">
                                   <div className="label">
                                     <span>Click on each metrics to filter</span>
                                   </div>
-                                  <CustomChart
+                                  <ReactECharts
                                     option={screenFailureOption}
-                                    height={120}
-                                  ></CustomChart>
+                                    style={{ height: 120}}
+                                    onEvents={{'click': onInclusionChartClick}}/>
                                 </div>
                               </Panel>
                             </Collapse>
@@ -2120,19 +2191,19 @@ const pdfMake = async () =>{
                                   <div className="label">
                                     <span>Click on each metrics to filter</span>
                                   </div>
-                                  <CustomChart
+                                  <ReactECharts
                                     option={excluAmendmentRateoption}
-                                    height={120}
-                                  ></CustomChart>
+                                    style={{ height: 120}}
+                                    onEvents={{'click': onExclusionChartClick}}/>
                                 </div>
                                 <div className="chart-container  box">
                                   <div className="label">
                                     <span>Click on each metrics to filter</span>
                                   </div>
-                                  <CustomChart
+                                  <ReactECharts
                                     option={excluScreenFailureOption}
-                                    height={120}
-                                  ></CustomChart>
+                                    style={{ height: 120}}
+                                    onEvents={{'click': onExclusionChartClick}}/>
                                 </div>
                               </Panel>
                             </Collapse>
@@ -2361,14 +2432,21 @@ const pdfMake = async () =>{
                         </Col>
                         <Col span={1}></Col>
                         <Col span={8} className={`chart-tab ${activeEnrollmentTabKey === '3' ? 'active' : ''}`} onClick={() => switchTabkey('3')}>
+<<<<<<< HEAD
                           <Row><Col className="tab-item" span={24}>
                             <CustomChart option={raceOption} height={110}></CustomChart>
+=======
+                          <Row><Col className="tab-item chart" span={24}>
+                            <Row className="tab-desc">Race & Ethnicity&nbsp;
+                                {activeEnrollmentTabKey === '3'?(<CaretRightOutlined />):(<></>)}</Row>
+                            <Row><Col span={24}><ReactECharts option={raceOption} style={{ height: 100}}></ReactECharts></Col></Row>
+>>>>>>> 8697a50fff6e6d79dce79223a5726132fb62bd7b
                           </Col></Row>
                         </Col>
                       </Row>
                       <Row>
                         <Col span={24} className="result-chart">
-                          <CustomChart option={resultOption} height={350}></CustomChart>
+                          <ReactECharts option={resultOption} style={{ height: 350}}></ReactECharts>
                         </Col>
                       </Row>
                     </Col>

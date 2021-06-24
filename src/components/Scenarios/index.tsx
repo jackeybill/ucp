@@ -100,7 +100,13 @@ const SceneriosDashbaord = (props: any) => {
       if (resp.statusCode == 200) {
           props.history.push({
             pathname: '/scenario',
-            state: { trial_id: props.record['_id'] , scenarioId: scenarioId, editFlag: editFlag, scenarioType: scenarioType}
+            state: { 
+              trial_id: props.record['_id'] , 
+              scenarioId: scenarioId, 
+              editFlag: editFlag, 
+              scenarioType: scenarioType,
+              similarHistoricalTrials: props.record['similarHistoricalTrials']
+            }
           })
       }
   }
