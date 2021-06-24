@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import html2canvas from 'html2canvas'
 import FileSaver from 'file-saver'
 import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps} from "antd";
-import {getSummaryDefaultList, addScenario, getSimilarhistoricalTrialById, getStudy} from "../../utils/ajax-proxy";
+import {getSummaryDefaultList, addScenario, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
@@ -285,8 +285,15 @@ const ScenarioPage = (props) => {
     }, []);
 
     useEffect(() => {
+
         const summaryDefaultList = async () => {
-            const resp = await getSummaryDefaultList();
+          const nctIdList = props.location.state.similarHistoricalTrials
+          var resp
+          if(nctIdList != undefined && nctIdList instanceof Array && nctIdList.length > 0){
+            resp = await getSummaryListByNctId(props.location.state.similarHistoricalTrials);
+          } else {
+            resp = await getSummaryDefaultList();
+          }
     
             if (resp.statusCode == 200) {
                 const response = JSON.parse(resp.body)

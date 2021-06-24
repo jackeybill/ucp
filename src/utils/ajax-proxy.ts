@@ -358,8 +358,25 @@ export const getSummaryDefaultList = async () => {
     "method": "default",
     "body": {
       "nct_ids": []
-    }
-    })
+    }})
+  })
+
+  return await response.json();
+}
+
+export const getSummaryListByNctId = async (nctIdList) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+  headers: {
+    'Access-Control-Request-Method': 'POST',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "summary": "",
+    "method": "summaryNctids",
+    "body": {
+      "nct_ids": nctIdList
+    }})
   })
 
   return await response.json();
