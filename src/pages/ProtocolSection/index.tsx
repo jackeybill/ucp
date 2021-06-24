@@ -127,7 +127,6 @@ const ProtocolSection = (props: any) => {
 
   const changeFormat = (e) => {
     setFormat(e.key);
-
     if (e.key == "PNG" && activeTabKey != "ENTITY RELATIONSHIPS") {
       const source = document.getElementById("pdf-content");
       pdfExport(e, fname, source);
@@ -145,6 +144,7 @@ const ProtocolSection = (props: any) => {
       jsonExport(jsonData, fname);
     }
   };
+
   const exportMenu = () => {
     return (
       <Menu onClick={changeFormat}>
@@ -172,6 +172,7 @@ const ProtocolSection = (props: any) => {
     }
     setSections(checkedValues);
   };
+
   const onHandleActiveSection = (s) => {
     setProtocolSection("sections");
     setActiveSection(s);
@@ -187,6 +188,7 @@ const ProtocolSection = (props: any) => {
     }
     if (e.target.value == "sections") setSections(initSelectedSections);
   };
+
   function handleButtonClick(e) {
     if (format == "PNG") {
       if (activeTabKey == "ENTITY RELATIONSHIPS") {
@@ -269,23 +271,6 @@ const ProtocolSection = (props: any) => {
               </div>
             </>
           )}
-        {props.location.pathname == "/protocol-sections" &&
-          protocolSection != completeDocument && (
-            <div className="extract-btn">
-              <span
-                className="cancel-btn"
-                onClick={() => props.history.push("/overview")}
-              >
-                Cancel
-              </span>
-              <Button
-                type="primary"
-                onClick={() => props.history.push("/extraction")}
-              >
-                Begin Entity Extraction
-              </Button>
-            </div>
-          )}
       </div>
       <div className="section-body">
         <div className="sidebar">
@@ -321,7 +306,7 @@ const ProtocolSection = (props: any) => {
               onChange={onRadioChange}
               checked={protocolSection == "sections"}
             >
-              Selected Sections
+              Key Sections
             </Radio>
             <br />
             {props.location.pathname == "/protocol-sections" && (
@@ -374,6 +359,26 @@ const ProtocolSection = (props: any) => {
             </>
           )}
         </div>
+      </div>
+      <div className="section-footer">
+      {props.location.pathname == "/protocol-sections" &&
+          protocolSection != completeDocument && (
+            <div className="extract-btn">
+              <Button
+                className="cancel-btn"
+                onClick={() => props.history.push("/overview")}
+              >
+                CANCEL
+              </Button>
+              <Button
+                className="beginExtract-btn"
+                type="primary"
+                onClick={() => props.history.push("/extraction")}
+              >
+                BEGIN ENTITY EXTRACTION
+              </Button>
+            </div>
+          )}
       </div>
     </div>
   );
