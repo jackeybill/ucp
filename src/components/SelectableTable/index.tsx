@@ -20,9 +20,8 @@ const columns = [
   },
   {
     title: 'Status',
-    dataIndex: '-',
-    ellipsis: true,
-    render: text => <span>-</span>
+    dataIndex: "study_status",
+    ellipsis: true
   },
   {
     title: 'Phase',
