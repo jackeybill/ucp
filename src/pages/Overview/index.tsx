@@ -111,7 +111,13 @@ const Overview = (props: any) => {
       props.readFile({
         file: JSON.parse(resp.body)
       })
-       props.history.push("/protocol-sections");
+       props.history.push({
+         pathname: "/protocol-sections",
+         state: {
+           status: record.status,
+           title: record.protocolName? record.protocolName: record.fileName
+         }
+       });
     } else {
       message.error(resp.errorType)
     }

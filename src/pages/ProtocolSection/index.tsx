@@ -56,6 +56,9 @@ const ProtocolSection = (props: any) => {
   const key = file.keyName || Object.keys(file)[0] || "";
   let entities;
 
+  const protocolStatus = props.location.state && props.location.state.status;
+  const protocolTitle = props.location.state && props.location.state.title;
+
   const [protocolSection, setProtocolSection] = useState("sections");
   const [sections, setSections] = useState(initSelectedSections);
   const [activeSection, setActiveSection] = useState("");
@@ -228,7 +231,7 @@ const ProtocolSection = (props: any) => {
   return (
     <div className="protocol-section">
       <div className="section-header">
-        <span className="file-name">{fileName}</span>
+        <span className="file-name">{protocolTitle}</span>
         {props.location.pathname != "/protocol-sections" &&
           protocolSection != completeDocument && (
             <>
