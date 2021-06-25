@@ -25,7 +25,7 @@ const TeamMembers = (props) => {
   const handleAdd = () => {
     const tmp = users.slice(0);
     tmp.push({
-      name: "test",
+      name:id,
       role,
       id,
     });
@@ -49,7 +49,7 @@ const TeamMembers = (props) => {
           <label>SEARCH AND ADD USERS</label>
           <Input
             allowClear
-            placeholder="Enter guid"
+            placeholder="Enter user name"
             value={id}
             style={{ width: "100%", height: 30 }}
             onChange={(e) => handleInputChange(e)}

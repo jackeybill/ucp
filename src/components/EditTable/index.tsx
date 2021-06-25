@@ -105,7 +105,8 @@ const EditTable = (props) => {
     }
   };
 
-  const handleAdd = () => {
+  const handleAdd = (e) => {
+    e.stopPropagation();
     const newData = {
       Key: (data.length + 1) + '',
       "Eligibility Criteria": '',
@@ -198,8 +199,8 @@ const panelHeaderSection = (header, count) => {
   return (
       <div className="trial-panelHeader">
           <div>
-              <div className="header-section"><span>{header}({count == 0? 0:count})</span>
-              <PlusCircleOutlined className="right-icon" onClick={handleAdd}/></div>
+            <div className="header-section"><span>{header}({count == 0 ? 0 : count})</span>
+            <PlusCircleOutlined className="right-icon" onClick={(e)=>handleAdd(e)}/></div>
           </div>
       </div>
   );

@@ -71,11 +71,6 @@ const TrialSummary = (props) => {
               </div>
               <div className="trial-item">
                 <label htmlFor="">Indication</label>
-                {/* <Input
-                  style={{ width: 250, height: 30 }}
-                  onChange={(v) => handleNewTrialInputChange("indication", v)}
-                  value={newTrial["indication"]}
-              /> */}
                 <Select
                   defaultValue="All"
                   value={newTrial["indication"]}
