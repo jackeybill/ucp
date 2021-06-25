@@ -58,7 +58,7 @@ const SectionText = (props: SectionTextIF) => {
                         <table>
                           <tbody>
                             {
-                              sectionTxt.map((item, index) => {
+                              sectionTxt && sectionTxt.map((item, index) => {
                                 return (
                                   index < 2? (
                                     <tr>

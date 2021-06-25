@@ -3,8 +3,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import * as fileActions from "../../actions/file";
-import { Progress } from 'antd';
-import { Spin } from "antd";
+import { Form, Input, Progress, Spin } from 'antd';
 import { useDropzone } from "react-dropzone";
 import { LoadingOutlined} from "@ant-design/icons";
 import ImgUpload from "../../assets/img-upload.png";
@@ -12,6 +11,8 @@ import { uploadFile, extractText } from "../../utils/ajax-proxy";
 import "./index.scss";
 
 const PATH = "iso-service-dev/RawDocuments/";
+let nctID = "";
+let protocolName = "";
 
 const toBase64 = (file: File) =>
   new Promise<string>((resolve, reject) => {
@@ -54,6 +55,8 @@ const Dropzone = (props: any) => {
     // props.setLoading(true);
     setLoading(true);
     setFiles(acceptedFiles);
+    // Fetch the value of input boxes
+    form.submit()
     // Do something with the files
     const fileList = [];
     for (let f of acceptedFiles) {
@@ -61,7 +64,9 @@ const Dropzone = (props: any) => {
         continue;
       }
       const base64 = await toBase64(f);
-      const res = await uploadFile(f.name, PATH, base64.split(",")[1]);
+      const res = await uploadFile(nctID, protocolName, f.name, PATH, base64.split(",")[1]);
+      console.log(res);
+      
       if (res.body === "success") {
         // await sleep(5000)
         let extractedRes = null;
@@ -77,8 +82,8 @@ const Dropzone = (props: any) => {
             props.readFile({
               file: result,
             });
-            fileList.push({ filename: f.name, result, availableTabs });
-            props.history.push("/protocol-sections");
+            fileList.push({ 'nctID': nctID, 'protocolName': protocolName, filename: f.name, result, availableTabs });
+            // props.history.push("/protocol-sections");            
           } catch (e) {
             console.error(e);
           }
@@ -91,10 +96,26 @@ const Dropzone = (props: any) => {
     }
     setLoading(false);
   }, []);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     disabled: loading,
   });
+
+  const [form] = Form.useForm();
+
+  const onFinish = (values: any) => {
+    nctID = values.nctID || ""
+    protocolName = values.protocolName || ""
+  };
+  
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+  };
+
+  const fetchInputValue = () => {
+    form.submit()
+  }
 
   return (
     <React.Fragment>
@@ -104,7 +125,30 @@ const Dropzone = (props: any) => {
           <LoadingOutlined style={{ fontSize: 24, color: "#d04a02" }} spin />
         }
       >
-        <div
+        <div>
+          <div className="drawer-input-zone">
+          <Form
+            layout="vertical"
+            form={form}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            onValuesChange={fetchInputValue}
+          >
+            <Form.Item
+              label="NCT ID"
+              name="nctID"
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="PROTOCOL NAME"
+              name="protocolName"
+            >
+              <Input />
+            </Form.Item>
+          </Form>
+          </div>
+          <div
           className={`upload-zone-container ${loading ? "disabled" : ""}`}
           {...getRootProps()}
         >
@@ -113,6 +157,7 @@ const Dropzone = (props: any) => {
             <img src={ImgUpload} />
             Drag your PDF document here, or <span>browse</span> to choose files
           </p>
+        </div>
         </div>
       </Spin>
 

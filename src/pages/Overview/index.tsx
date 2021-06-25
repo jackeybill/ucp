@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { Button, Drawer, Table, Spin, message } from "antd";
 import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
-import { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined, CloseOutlined } from '@ant-design/icons';
 import UplodZone from "../../components/UploadZone";
 import moment from 'moment';
 
@@ -11,7 +11,7 @@ import { getOverviewList, extractText } from "../../utils/ajax-proxy";
 import "./index.scss";
 
 interface dataProps {
-  ntcID?: string;
+  nctID?: string;
   protocolName?: string;
   status?: string;
   lastUpdate?: string;
@@ -21,8 +21,8 @@ interface dataProps {
 const columns = [
     {
       title: "NCT ID",
-      dataIndex: "ntcID",
-      key: "ntcID",
+      dataIndex: "nctID",
+      key: "nctID",
     },
     {
       title: "Protocol Name",
@@ -74,16 +74,16 @@ const Overview = (props: any) => {
       setLoading(false)
       if (resp.statusCode == 200) {
         const respData = JSON.parse(resp.body)
+        console.log(respData);
         const tmpData = respData.length>0 && respData.map((d,idx) => {
           let obj: dataProps = {};
-          obj.protocolName = d["file_name"];
-          obj.ntcID = d.ntc_id||"";
+          obj.protocolName = d.protocolName||d["file_name"];
+          obj.nctID = d.nctID||"";
           obj.key = idx; 
           obj.status = d.status||"Not started";
           obj.lastUpdate = d.lastUpdate||"";
           return obj;
         });
-        console.log(tmpData);
         setData(tmpData);
       }
     };
@@ -151,7 +151,7 @@ const Overview = (props: any) => {
           <div className="upload-drawer-title">
             <span className="title">Protocol Reader - Data Upload</span>
             <span className="close-icon" onClick={onClose}>
-              x
+              <CloseOutlined />
             </span>
           </div>
         }
@@ -166,14 +166,14 @@ const Overview = (props: any) => {
         
         <div className="drawer-actions">
           <span className="discard" onClick={onClose}>
-            {/* Discard Upload */}
+            {/* DISCARD UPLOAD */}
           </span>
-          {/* <Button
+          <Button
             type="primary"
             onClick={() => props.history.push("/protocol-sections")}
           >
-            Start Extraction
-          </Button> */}
+            START EXTRACTION
+          </Button>
         </div>
       </Drawer>
     </>

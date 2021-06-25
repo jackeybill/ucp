@@ -104,25 +104,27 @@
     }
     .close-icon {
       display: inline-block;
-      width: 20px;
-      height: 20px;
-      background-color: #000000;
-      color: #ffffff;
-      line-height: 20px;
+      width: 18px;
+      height: 18px;
+      background-color: #fff;
+      color: #000;
+      line-height: 18px;
       text-align: center;
       cursor: pointer;
+      font-size: 18px;
     }
   }
   .drawer-actions {
     display: flex;
     align-items: center;
-    background: #000000;
-    box-shadow: 0px 0px 6px #00000029;
+    background-color: #fff;
+    box-shadow: 0px -10px 10px -15px #666;
     padding: 10px 40px;
     .discard {
       flex: 1;
       cursor: pointer;
-      color: #ffffff;
+      font-weight: 500;
+      color: #000;
     }
   }
   .upload-zone-section {
