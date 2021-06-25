@@ -28,7 +28,7 @@ const panelHeader = () => {
     return (
         <div className="trial-panelHeader">
             <div>
-                <div className="bar-desc"><span>Predicated Impact</span></div>
+                <div className="bar-desc"><span>Predicted Impact</span></div>
                 <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
                 <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
                 <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
@@ -502,8 +502,10 @@ const ScenarioPage = (props) => {
           if(value.length > 2){
             tempStr += ' ' + value[2]
           }
+        } else if(value === Number(value)){
+          tempStr = value.toFixed(2)+''
         } else {
-          tempStr = formatNum(value)
+          tempStr = value
         }
       }
       return tempStr
@@ -1094,8 +1096,8 @@ const ScenarioPage = (props) => {
               show: false
           },
           data: [
-          'HbA1c - >= 7.0% and <= 9.0%',    
-          'Fasting C-peptide - >= 0.8 ng/mL', 
+          'HbA1c - ≧ 7.0% and ≦ 9.0%',    
+          'Fasting C-peptide - ≧ 0.8 ng/mL', 
           'TSH - Normal or clinically euthyroid', 
           'Meformin - Stable dose', 
           'Type 2 Diabetes', 
@@ -1552,7 +1554,7 @@ const pdfMake = async () =>{
         scale: 2
     }).then(function (canvas) {
       const pdf = new jsPDF("portrait", 'pt', 'a4');
-      const tableColumn = ["Predicated Impact", "Labs / Tests", "Intervention", "Demographics", "Medical"];
+      const tableColumn = ["Predicted Impact", "Labs / Tests", "Intervention", "Demographics", "Medical"];
 
       const tableRows = [];
       const rate1 = ['Protocol Amendenment Rate', '45%', '26%', '4%', '24%']
@@ -1561,7 +1563,7 @@ const pdfMake = async () =>{
       tableRows.push(rate2);
       // pdf.table(5,2,[],[],[           ])
       // pdf.autoTable(tableColumn, tableRows, { startY: 40 });
-      pdf.text("Predicated Impact", 14, 35);
+      pdf.text("Predicted Impact", 14, 35);
       pdf.text("Inclusion Criteria", 14, 140);
 
         var contentWidth = canvas.width;
