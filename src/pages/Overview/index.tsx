@@ -13,6 +13,7 @@ import "./index.scss";
 interface dataProps {
   nctID?: string;
   protocolName?: string;
+  fileName?: string;
   status?: string;
   lastUpdate?: string;
   key?: string;
@@ -78,6 +79,7 @@ const Overview = (props: any) => {
         const tmpData = respData.length>0 && respData.map((d,idx) => {
           let obj: dataProps = {};
           obj.protocolName = d.protocolName||d["file_name"];
+          obj.fileName = d["file_name"] ||""
           obj.nctID = d.nctID||"";
           obj.key = idx; 
           obj.status = d.status||"Not started";
@@ -100,7 +102,9 @@ const Overview = (props: any) => {
 
   const handleRowClick = async (record) => {
     setLoading(true)
-    const filepath = `iso-service-dev/RawDocuments/${record.protocolName}`
+    console.log(record);
+    
+    const filepath = `iso-service-dev/RawDocuments/${record.fileName}`
     const resp = await extractText(filepath)
     setLoading(false)
     if (resp.statusCode == 200) {  
