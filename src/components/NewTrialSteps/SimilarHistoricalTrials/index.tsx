@@ -104,7 +104,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
   };
   componentDidMount() {
     this.props.historyTrial.shouldFetch && this.getHistoryList();
-    !this.props.historyTrial.shouldFetch && this.onFindTrials()
+    !this.props.historyTrial.shouldFetch && this.onFindTrials(this.state.rawData)
   }
 
   getChartData(datasource, key) {
@@ -142,24 +142,14 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         d.sponsor = d.sponsor || '';
         d.study_status = d.study_status || '';
         return d;
-      }).filter(d => {
-         const date = d['start_date'].split('-')[0]
-        return date >= this.state.dateFrom && date <= this.state.dateTo
-      });
-       
-      const statusData = this.getChartData(tmpData, "study_status");
-      const sponsorData = this.getChartData(tmpData, "sponsor");
-
+      })
+      this.onFindTrials(tmpData)
       this.setState({
-        data: tmpData,
         rawData: tmpData,
-        statusChartData: statusData,
-        sponsorChartData: sponsorData,
       });
       this.props.fetchHistory({
         historyData: tmpData,
         shouldFetch:false
-
       })
     }
   };
@@ -206,9 +196,9 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     return legenName + " - " + p + "%";  
   }
 
-  onFindTrials = () => {
+  onFindTrials = (datasource) => {
 
-    const filteredData = this.state.rawData.filter((d) => {
+    const filteredData = datasource.filter((d) => {
       const date = d['start_date'].split('-')[0]
       return (
         (this.state.studyPhase != "" && this.state.studyPhase != "All"
@@ -505,7 +495,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                   />
                 </div>
                 <div>
-                  <Button type="primary" onClick={this.onFindTrials}>
+                  <Button type="primary" onClick={()=>this.onFindTrials(this.state.rawData)}>
                     Find Trials
                   </Button>
                 </div>
