@@ -244,8 +244,8 @@ const ScenarioPage = (props) => {
                     if(tempRecord['Therapeutic Area Average']){
                         setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
                         setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
-                        setAmend_avg_rate(tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
-                        setScreen_avg_rate(tempRecord['Therapeutic Area Average'].screen_failure_rate)
+                        setAmend_avg_rate(tempScenario.protocol_amendment_rate)
+                        setScreen_avg_rate(tempScenario.screen_failure_rate)
                     }
 
                     //Get exclusion chart info
@@ -267,8 +267,8 @@ const ScenarioPage = (props) => {
                     if(tempRecord['Therapeutic Area Average']){
                         setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
                         setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
-                        setExcluAmend_avg_rate(tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
-                        setExcluScreen_avg_rate(tempRecord['Therapeutic Area Average'].screen_failure_rate)
+                        setExcluAmend_avg_rate(tempScenario.protocol_amendment_rate)
+                        setExcluScreen_avg_rate(tempScenario.screen_failure_rate)
                     }
 
                     setShowChartLabel(true)
@@ -1417,8 +1417,8 @@ const ScenarioPage = (props) => {
         if(resp.body['Therapeutic Area Average']){
           setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
           setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
-          setAmend_avg_rate(resp.body['Therapeutic Area Average'].protocol_amendment_rate)
-          setScreen_avg_rate(resp.body['Therapeutic Area Average'].screen_failure_rate)
+          setAmend_avg_rate(currentScenario.protocol_amendment_rate)
+          setScreen_avg_rate(currentScenario.screen_failure_rate)
         }
 
         //Get exclusion chart info
@@ -1440,8 +1440,8 @@ const ScenarioPage = (props) => {
         if(resp.body['Therapeutic Area Average']){
           setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
           setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
-          setExcluAmend_avg_rate(resp.body['Therapeutic Area Average'].protocol_amendment_rate)
-          setExcluScreen_avg_rate(resp.body['Therapeutic Area Average'].screen_failure_rate)
+          setExcluAmend_avg_rate(currentScenario.protocol_amendment_rate)
+          setExcluScreen_avg_rate(currentScenario.screen_failure_rate)
         }
   
         setShowChartLabel(true)
