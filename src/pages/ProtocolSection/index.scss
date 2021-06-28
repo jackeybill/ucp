@@ -52,16 +52,43 @@
       }
     }
     .back-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 60px;
-      height: 60px;
-      font-size: 18px;
+      font-size: 16px;
+      text-align: center;
       color: #7e7e7e;
-      border: 1px solid #ededed;
+      border-right: 1px solid #ededed;
       cursor: pointer;
+      svg {
+        margin-top: -5px;
+      }
+      i {
+        color: #fff;
+        font-style: normal;
+        padding: 0 18px 0 8px;
+      }
     }
+    .title_status_icon {
+      border-left: 1px solid #ededed;
+      padding-left: 18px;
+      font-size: 16px;
+      .status_circle {
+        display: inline-block;
+        margin-right: 5px;
+        background-color: #999999;
+        width: 8px;
+        height: 8px;
+        border-radius: 4px;
+      }
+      .complete_status {
+        background-color: #00A947;
+      }
+      .inprogress_status {
+        background-color: #FFC107;
+      }
+    }
+    .title_protocol_text {
+      padding: 0 18px 0 18px;
+    }
+    
   }
 
   .section-body {

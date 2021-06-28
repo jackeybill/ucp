@@ -6,6 +6,7 @@ import {
   DownOutlined,
   DownloadOutlined,
   CloseOutlined,
+  LeftOutlined
 } from "@ant-design/icons";
 import { saveAs } from "file-saver";
 import domtoimage from "dom-to-image-more";
@@ -41,6 +42,16 @@ export const initSelectedSections = sectionOptions.map((s) => {
 const defaultExportOptions = ["JSON", "PNG", "CSV"];
 const relationshipExportOptions = ["JSON", "PNG"];
 
+const showStatusCircle = (text) => {
+  if(text.toLowerCase().includes("complete")) {
+    return <span className="status_circle complete_status"></span>
+  } else if(text.toLowerCase().includes("progress")) {
+    return <span className="status_circle inprogress_status"></span>
+  } else {
+    return <span className="status_circle"></span>
+  }
+}
+
 const ProtocolSection = (props: any) => {
   if (!props.fileReader.file.txt)
     window.location.href = window.location.origin + "/overview";
@@ -57,7 +68,7 @@ const ProtocolSection = (props: any) => {
   let entities;
 
   const protocolStatus = props.location.state && props.location.state.status;
-  const protocolTitle = props.location.state && props.location.state.title;
+  const protocolTitleText = props.location.state && props.location.state.title;
 
   const [protocolSection, setProtocolSection] = useState("sections");
   const [sections, setSections] = useState(initSelectedSections);
@@ -231,7 +242,26 @@ const ProtocolSection = (props: any) => {
   return (
     <div className="protocol-section">
       <div className="section-header">
-        <span className="file-name">{protocolTitle}</span>
+        <span className="file-name">
+          {props.location.pathname === "/protocol-sections" && protocolTitleText}
+          {props.location.pathname !== "/protocol-sections" &&
+          protocolSection != completeDocument && (
+              <span>
+                <span
+                className="back-btn"
+                onClick={() => props.history.push("/overview")}
+                >
+                  <LeftOutlined /> 
+                  <i>Home</i>
+                </span>
+                <span className="title_protocol_text">{protocolTitleText}</span>
+                <span className="title_status_icon">
+                  {showStatusCircle(protocolStatus)}
+                  {protocolStatus}
+                </span>
+              </span>
+          )}
+        </span>
         {props.location.pathname != "/protocol-sections" &&
           protocolSection != completeDocument && (
             <>
@@ -266,12 +296,6 @@ const ProtocolSection = (props: any) => {
                   </Button>
                 ) : null}
               </div>
-              <div
-                className="back-btn"
-                onClick={() => props.history.push("/overview")}
-              >
-                <CloseOutlined />
-              </div>
             </>
           )}
       </div>
@@ -303,7 +327,7 @@ const ProtocolSection = (props: any) => {
               <br />
             </div>
           )}
-          
+
           <div className="section-selection">
             <Radio
               value="sections"
@@ -377,7 +401,13 @@ const ProtocolSection = (props: any) => {
               <Button
                 className="beginExtract-btn"
                 type="primary"
-                onClick={() => props.history.push("/extraction")}
+                onClick={() => props.history.push({
+                  pathname: "/extraction",
+                  state: {
+                    status: protocolStatus,
+                    title: protocolTitleText
+                  }
+                })}
               >
                 BEGIN ENTITY EXTRACTION
               </Button>
