@@ -237,6 +237,7 @@ const TrialPortfolio = (props) => {
         const resp = await getStudy(props.location.state.trial_id);
         if(resp.statusCode == 200){
           setTrial(resp.body);
+          props.history.replace("/trials")
         }
       };
       getTrialById();

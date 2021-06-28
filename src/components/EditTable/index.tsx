@@ -142,7 +142,7 @@ const EditTable = (props) => {
     if (!targetRecord.Children) {
       targetRecord.Children = [
       {
-        "Key": record.Key + "A",
+        "Key": "A",
         "Eligibility Criteria": "",
         "Timeframe": "",
         "Values": "",
@@ -155,7 +155,7 @@ const EditTable = (props) => {
     else {
       targetRecord.Children.push(
         {
-          "Key": record.Key + chars[targetRecord.Children.length],
+          "Key": chars[targetRecord.Children.length],
           "Eligibility Criteria": "",
           "Timeframe": "",
           "Values": "",
@@ -173,7 +173,7 @@ const EditTable = (props) => {
     const targetRecord = tmpData.find(e=> e.Key==record.Key)
     targetRecord.Children.splice(idx, 1)
     targetRecord.Children = targetRecord.Children.map((item,index) =>{
-      item.Key = record.Key + chars[index]
+      item.Key = chars[index]
       return item
     })
 
@@ -351,7 +351,7 @@ const panelHeaderSection = (header, count) => {
                          return(
                            <div className="sub-criteria-wrapper" key={idx}>
                              <div className="serial-number">
-                              <span>{`${record.Key}.${idx+1}`}</span>
+                              <span>{`${record.Key}${subRecord['Key']}`}</span>
                              </div>
                              {editable[idx] ? (
                                <>
