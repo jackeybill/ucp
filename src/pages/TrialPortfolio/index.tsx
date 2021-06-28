@@ -232,12 +232,10 @@ const TrialPortfolio = (props) => {
 
   useEffect(() => {
     if(props.location.state !== undefined && props.location.state.trial_id !== undefined){
-      console.log(props.location.state.trial_id)
-
+      setShowDetails(true);
       const getTrialById = async () => {
         const resp = await getStudy(props.location.state.trial_id);
         if(resp.statusCode == 200){
-          setShowDetails(true);
           setTrial(resp.body);
         }
       };
