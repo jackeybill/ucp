@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useReducer} from 'react';
 import jsPDF from "jspdf";
-import html2canvas from 'html2canvas'
-import FileSaver from 'file-saver'
+import 'jspdf-autotable';
+import FileSaver from 'file-saver';
 import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps} from "antd";
 import {getSummaryDefaultList, addScenario, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
-import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined} from "@ant-design/icons";
+import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
 
@@ -87,6 +87,7 @@ const ScenarioPage = (props) => {
     const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState([])
     const [spinning, setSpinning] = useState(false)
     const [showChartLabel, setShowChartLabel] = useState(false)
+    const [pageLoading, setPageLoading] = useState(true)
 
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
@@ -294,7 +295,7 @@ const ScenarioPage = (props) => {
           } else {
             resp = await getSummaryDefaultList();
           }
-    
+          setPageLoading(false)
             if (resp.statusCode == 200) {
                 const response = JSON.parse(resp.body)
                 console.log(response)
@@ -1315,6 +1316,7 @@ const ScenarioPage = (props) => {
     }
 
     const saveCriteria = async () => {
+      setPageLoading(true)
       let newScenario = trialRecord.scenarios.find( i=> i['scenario_id'] == scenarioId)
 
         var newInclusion = {
@@ -1395,6 +1397,7 @@ const ScenarioPage = (props) => {
       //Update record
       const resp = await addScenario(newTrial);
       console.log(newTrial)
+      setPageLoading(false)
       if (resp.statusCode == 200) {
         var currentScenario = resp.body.scenarios.find( i=> i['scenario_id'] == scenarioId)
 
@@ -1530,71 +1533,67 @@ const jsonExport = async (jsonData, filename) => {
 };
 
 const pdfMake = async () =>{
-  var element = document.getElementById("inclusion-criteria");
-  var w = element.offsetWidth;
-  var h = element.offsetWidth;
-  var offsetTop = element.offsetTop;
-  var offsetLeft = element.offsetLeft;
-  var canvas = document.createElement("canvas");
-  var abs = 0;
-  var win_i =  document.body.clientWidth;
-  var win_o = window.innerWidth;
-  if (win_o > win_i) {
-      abs = (win_o - win_i) / 2;
-  }
-  canvas.width = w * 2;
-  canvas.height = h * 2;
-  var context = canvas.getContext("2d");
-  context.scale(2, 2);
-  context.translate(-offsetLeft - abs, -offsetTop);
+      const pdf = new jsPDF('p', 'pt');
+      const tableColumn = ['Caregory', 'S/No.', 'Eligibility Criteria', 'Values', 'Timeframe','Condition Or Exception'];
 
+      var serialNum = 0
+      var tableRows = formatColumns('Demographics', demographicsElements, serialNum)
+      serialNum += demographicsElements.length
+      tableRows = tableRows.concat(formatColumns('Medical Condition', medConditionElements, serialNum))
+      serialNum += medConditionElements.length
+      tableRows = tableRows.concat(formatColumns('Intervention', interventionElements, serialNum))
+      serialNum += interventionElements.length
+      tableRows = tableRows.concat(formatColumns('Lab / Test', labTestElements, serialNum))
 
-    html2canvas(element,{
-        allowTaint: true,
-        scale: 2
-    }).then(function (canvas) {
-      const pdf = new jsPDF("portrait", 'pt', 'a4');
-      const tableColumn = ["Predicted Impact", "Labs / Tests", "Intervention", "Demographics", "Medical"];
+      serialNum = 0
+      var serialNum = 0
+      var excluTableRows = formatColumns('Demographics', excluDemographicsElements, serialNum)
+      serialNum += excluDemographicsElements.length
+      excluTableRows = excluTableRows.concat(formatColumns('Medical Condition', excluMedConditionElements, serialNum))
+      serialNum += excluMedConditionElements.length
+      excluTableRows = excluTableRows.concat(formatColumns('Intervention', excluInterventionElements, serialNum))
+      serialNum += excluInterventionElements.length
+      excluTableRows = excluTableRows.concat(formatColumns('Lab / Test', excluLabTestElements, serialNum))
 
-      const tableRows = [];
-      const rate1 = ['Protocol Amendenment Rate', '45%', '26%', '4%', '24%']
-      const rate2 = ['Screen Failure Rate', '45%', '26%', '4%', '24%']
-      tableRows.push(rate1);
-      tableRows.push(rate2);
-      // pdf.table(5,2,[],[],[           ])
-      // pdf.autoTable(tableColumn, tableRows, { startY: 40 });
-      pdf.text("Predicted Impact", 14, 35);
-      pdf.text("Inclusion Criteria", 14, 140);
+      pdf.text("Inclusion Criteria", 14, 20);
+      pdf['autoTable']({
+        columns: tableColumn,
+        body: tableRows
+      });
 
-        var contentWidth = canvas.width;
-        var contentHeight = canvas.height;
-        var pageHeight = contentWidth / 592.28 * 841.89;
-        var leftHeight = contentHeight;
-        var position = 0;
-        var imgWidth = 595.28-70;
-        var imgHeight = 592.28 / contentWidth * contentHeight;
+      pdf.addPage()
+      pdf.text("Exclusion Criteria", 14, 20);
+      pdf['autoTable']({
+        columns: tableColumn,
+        body: excluTableRows
+      });
 
-        var pageData = canvas.toDataURL('image/jpeg', 1.0);
+      const date = Date().split(" ");
+      console.log(date)
+      const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
+      pdf.save(`Inclusion_Criteria_${dateStr}.pdf`);
+    };
 
-        if (leftHeight < pageHeight) {
-            pdf.addImage(pageData, 'JPEG', 35, 150, imgWidth, imgHeight);
-        } else {
-            while (leftHeight > 0) {
-                pdf.addImage(pageData, 'JPEG', 35, position, imgWidth, imgHeight)
-                leftHeight -= pageHeight;
-                position -= 841.89;
-                if (leftHeight > 0) {
-                    pdf.addPage();
-                }
-            }
+    function formatColumns(catogory, list, serialNo){
+      var tempColumn = []
+      for(const a in list) {
+        serialNo ++
+        const item = [catogory, serialNo, list[a]['Eligibility Criteria'], list[a]['Values'], list[a]['Timeframe'], 
+                      list[a]['Condition Or Exception'] == undefined ? '': list[a]['Condition Or Exception']]
+        tempColumn.push(item)
+        if(list[a]['Children'] != undefined && list[a]['Children'].length > 0){
+          const subCriteria = list[a]['Children']
+          var subSerialNum;
+          for(const aa in subCriteria){
+            subSerialNum = serialNo + subCriteria[aa].Key.charAt((subCriteria[aa].Key.length-1))
+            const subItem = [catogory, subSerialNum, subCriteria[aa]['Eligibility Criteria'], 
+                              subCriteria[aa]['Values'], subCriteria[aa]['Timeframe'], '']
+            tempColumn.push(subItem)
+          }
         }
-
-        const date = Date().split(" ");
-        console.log(date)
-        const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
-        pdf.save(`Inclusion_Criteria_${dateStr}.pdf`);
-    });
-};
+      }
+      return tempColumn
+    }
   
   useEffect(() => {
     updateTableData()
@@ -1693,6 +1692,7 @@ const pdfMake = async () =>{
   
     return (
     <div className="scenario-container">
+      <Spin spinning={pageLoading} indicator={<LoadingOutlined style={{ color: "#ca4a04" }} />}>
       <div>
         <Row className="process-container">
             <Col span={2} style={{borderRight: '1.5px solid #c4bfbf'}}>
@@ -2529,6 +2529,7 @@ const pdfMake = async () =>{
       ) : (
         <div className="ie-container"><ScheduleEvents/></div>
       )}
+      </Spin>
       <Modal visible={showHistorical} title="Historical Trial List" onOk={handleOk} onCancel={handleCancel}
         footer={null} style={{ left: '20%', top:50 }} centered={false} width={200} > 
         <Row>
