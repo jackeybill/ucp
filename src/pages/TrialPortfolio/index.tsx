@@ -33,7 +33,7 @@ import TeamMembers from '../../components/NewTrialSteps/TeamMembers';
 import SimilarHistoricalTrials from '../../components/NewTrialSteps/SimilarHistoricalTrials';
 import Scenarios from "../../components/Scenarios";
 import TrialSummary from '../../components/NewTrialSteps/TrialSummary';
-import { getTrialList, addStudy, updateStudy, listStudy, getIndicationList} from "../../utils/ajax-proxy";
+import { getTrialList, addStudy, updateStudy, listStudy, getIndicationList, getStudy} from "../../utils/ajax-proxy";
 import { COUNTRY_MAP } from "../../utils/country-map";
 import { Therapeutic_Area_Map } from "../../utils/area-map";
 import addIcon from "../../assets/add.svg";
@@ -229,6 +229,21 @@ const TrialPortfolio = (props) => {
   useEffect(() => {
     setShowSearch(!showDetails);
   }, [showDetails]);
+
+  useEffect(() => {
+    if(props.location.state !== undefined && props.location.state.trial_id !== undefined){
+      console.log(props.location.state.trial_id)
+
+      const getTrialById = async () => {
+        const resp = await getStudy(props.location.state.trial_id);
+        if(resp.statusCode == 200){
+          setShowDetails(true);
+          setTrial(resp.body);
+        }
+      };
+      getTrialById();
+    }
+  }, [props.location.state]);
 
   useEffect(() => {
     const tmpData = rawData.filter((d) => {

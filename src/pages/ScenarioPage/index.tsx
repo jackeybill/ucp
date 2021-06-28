@@ -1696,7 +1696,7 @@ const pdfMake = async () =>{
       <div>
         <Row className="process-container">
             <Col span={2} style={{borderRight: '1.5px solid #c4bfbf'}}>
-                <div className="action-title" onClick={()=>props.history.push('/trials')}>
+                <div className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
                     <span><LeftOutlined /> Trial Page</span>
                 </div>
             </Col>
