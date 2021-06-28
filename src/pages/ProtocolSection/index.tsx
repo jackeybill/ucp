@@ -303,6 +303,7 @@ const ProtocolSection = (props: any) => {
               <br />
             </div>
           )}
+          
           <div className="section-selection">
             <Radio
               value="sections"

@@ -69,7 +69,7 @@ const Extraction = (props: any, ref) => {
   const entities =
     file[key][activeSection][0].comprehendMedical[entity].Entities;
   const firstMarkId = initLabels && initLabels.length > 0 && initLabels[0].id;
-  const summary = file[key][activeSection][0].comprehendMedical[entity].Summary;
+  const summary = file[key][activeSection][0].comprehendMedical[entity].Summary || {};
 
   useEffect(() => {
     const getAllEntityTypes = (obj, sections, entity) => {
