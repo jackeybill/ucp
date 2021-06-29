@@ -235,7 +235,7 @@ const ProtocolSection = (props: any) => {
     }
   };
 
-  if (entity && activeSection) {
+  if (entity && activeSection && file[key][activeSection][0].comprehendMedical[entity]) {
     entities = file[key][activeSection][0].comprehendMedical[entity].Entities;
   }
 

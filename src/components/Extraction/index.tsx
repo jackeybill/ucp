@@ -63,11 +63,11 @@ const Extraction = (props: any, ref) => {
   const [svgEntity, setSvgEntity] = useState(initSvgEntity);
 
   const initLabels =
-    file[key][activeSection][0].comprehendMedical[entity].label;
+    file[key][activeSection][0].comprehendMedical[entity].label || {};
   const [labels, setLabels] = useState(initLabels); // labels and wordsColelction are same now
   const [wordsCollection, setWordsCollection] = useState(initLabels);
   const entities =
-    file[key][activeSection][0].comprehendMedical[entity].Entities;
+    file[key][activeSection][0].comprehendMedical[entity].Entities || {};
   const firstMarkId = initLabels && initLabels.length > 0 && initLabels[0].id;
   const summary = file[key][activeSection][0].comprehendMedical[entity].Summary || {};
 
@@ -76,7 +76,7 @@ const Extraction = (props: any, ref) => {
       const summaryCollection = [];
       sections.forEach((k) => {
         entity.forEach((en) => {
-          obj[k][0] &&
+          obj[k][0] && obj[k][0].comprehendMedical[en]&&
             summaryCollection.push(obj[k][0].comprehendMedical[en].Summary);
         });
       });
