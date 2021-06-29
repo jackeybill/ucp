@@ -1,6 +1,6 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer,useEffect } from "react";
 import { withRouter } from "react-router";
-import { Tooltip, Modal, Button, Row, Col, Input, Drawer } from "antd";
+import { Tooltip, Modal, Button, Row, Col, Input, Drawer,Checkbox } from "antd";
 import { updateStudy } from "../../utils/ajax-proxy";
 import Scatter from "../Chart";
 import addIcon from "../../assets/add.svg";
@@ -24,6 +24,7 @@ const initialStates = {
 
 const SceneriosDashbaord = (props: any) => {
   const [newScenarioVisiable, setNewScenarioVisiable] = useState(false);
+  const [completeModuleVisible, setCompleteModuleVisible] = useState(false);
   const [scenarioType, setScenarioType] = useState();
   const [scenarioId, setScenarioId] = useState('');
   const [editFlag, setEditFlag] = useState(false);
@@ -31,6 +32,11 @@ const SceneriosDashbaord = (props: any) => {
     (state, newState) => ({ ...state, ...newState }),
     { ...initialStates }
   );
+  const [scenarioList, setScenarioList] = useState([])
+  
+  useEffect(() => {
+    setScenarioList(props.record.scenarios)
+  }, [props.record.scenarios])
 
   const renderTitle = () => {
     return (
@@ -121,27 +127,72 @@ const SceneriosDashbaord = (props: any) => {
     });
   };
 
+  const handleCheck = (e, idx) => {
+    const tmpList = scenarioList.slice(0)
+    if (e.target.checked) {
+      tmpList[idx].rationale = ""
+    } else {
+      delete tmpList[idx].rationale
+    }
+    setScenarioList(tmpList) 
+  }
+  const onRationaleChange = (e, idx) => {  
+    const tmpList = scenarioList.slice(0)
+    tmpList[idx].rationale = e.target.value
+    setScenarioList(tmpList) 
+  }
+  const showCompleteModule = (s) => {
+    setCompleteModuleVisible(true)
+    setScenarioType(s['scenario_type'])
+  }
+
+  const handleCompleteModule = async() => {
+     const tempTrial = props.record
+     tempTrial.scenarios = scenarioList
+    
+     const resp = await updateStudy(tempTrial);
+    if (resp.statusCode == 200) {
+        setCompleteModuleVisible(false)
+      }
+    
+  }
   return (
     <div className="scenarios-container">
       <div className="container-top">What would you like to explore today?</div>
       <div className="module-wrapper">
         <div className="module-item">
           <div className="top">
-            <div className="module-name">Protocol Design</div>
+            <div className="module-name">
+              Protocol Design
+              <span className="scenario-status">
+                <i className={`${props.record.status=="In Progress"?"in-progress-icon":'complete-icon'} my_icon`}></i>
+                {props.record.status}
+              </span>
+            </div>
             {props.record.scenarios && props.record.scenarios.length > 0 ? (
               <div>
-                <span className="scenario-status">IN PROGRESS</span>
                 <Button
-                  type="primary"
-                  onClick={() => addNewScenario('Protocol Design')}
+                  size="small"
+                  className="complete-module-btn"
+                  type="link"
+                  onClick={() => showCompleteModule(props.record.scenarios[0])}
+                >
+                  {" "}
+                  COMPLETE MODULE
+                </Button>
+                <Button
+                  size="small"
+                  danger
+                  onClick={() => addNewScenario("Protocol Design")}
                 >
                   CREATE SCENARIO
                 </Button>
               </div>
             ) : (
               <Button
+                size="small"
                 type="primary"
-                onClick={() => addNewScenario('Protocol Design')}
+                onClick={() => addNewScenario("Protocol Design")}
               >
                 START MODULE
               </Button>
@@ -154,9 +205,19 @@ const SceneriosDashbaord = (props: any) => {
                 <br /> Scenarios
               </div>
               <div className="scenarios-list">
+                <div className="scenario-item  scenario-header">
+                  <div className="title"></div>
+                  <div className="item-values col-names">
+                    <div>Protocal Amendment Rate</div>
+                    <div>Screen Failure Rate</div>
+                    <div>Patient Burden</div>
+                    <div>Cost</div>
+                    <div></div>
+                  </div>
+                </div>
                 {props.record.scenarios.map((s, idx) => {
                   return (
-                    <div className="item-wrapper" key={s['scenario_id'] + idx}>
+                    <div className="item-wrapper" key={s["scenario_id"] + idx}>
                       <div className="scenario-item">
                         <div className="title">
                           <p>Scenario {idx + 1}</p>
@@ -180,170 +241,72 @@ const SceneriosDashbaord = (props: any) => {
                             <span className="status good">POOR</span>
                           </div>
                           <div>
-                            <Button onClick={() => viewScenario(s)}>EDIT SCENARIO</Button>
+                            <Button
+                              size="small"
+                              onClick={() => viewScenario(s)}
+                            >
+                              EDIT SCENARIO
+                            </Button>
                           </div>
                         </div>
                       </div>
+                      {s.hasOwnProperty("rationale") && (
+                        <div className="rationale-content">
+                          <span>Rationale</span>
+                          <p>{s.rationale}</p>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
-                <div className="item-wrapper average-item">
-                  <div className="scenario-item">
-                    <div className="title average-title">
-                      Average from Similar Historical Trials
-                    </div>
-                    <div className="item-values average">
-                      <div>
-                        40%{" "}
-                        <span className="column">Protocal Amendment Rate</span>
-                      </div>
-                      <div>
-                        18% <span className="column">Screen Failure Rate</span>
-                      </div>
-                      <div>
-                        40 <span className="column">Patient Burden</span>
-                      </div>
-                      <div>
-                        $15-20M <span className="column">Cost</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           ) : (
             <div className="bottom">Duis pretium gravida enim,</div>
           )}
+          <div className="item-wrapper average-item">
+            <div className="scenario-item">
+              <div className="title average-title">
+                Average from Similar Historical Trials
+              </div>
+              <div className="item-values average">
+                <div>40%</div>
+                <div>18%</div>
+                <div>40</div>
+                <div>$15-20M</div>
+                <div></div>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="module-item">
           <div className="top">
             <div className="module-name">Country Allocation</div>
-            <Button type="primary">START MODULE</Button>
+            <Button type="primary" size="small">
+              START MODULE
+            </Button>
           </div>
           <div className="bottom">Duis pretium gravida enim,</div>
         </div>
         <div className="module-item">
           <div className="top">
             <div className="module-name">Site Selection</div>
-            <Button type="primary">START MODULE</Button>
+            <Button type="primary" size="small">
+              START MODULE
+            </Button>
           </div>
           <div className="bottom">Duis pretium gravida enim,</div>
         </div>
         <div className="module-item">
           <div className="top">
             <div className="module-name">Trial Budgeting</div>
-            <Button type="primary">START MODULE</Button>
+            <Button type="primary" size="small">
+              START MODULE
+            </Button>
           </div>
           <div className="bottom">Duis pretium gravida enim,</div>
         </div>
       </div>
-
-      {/* <div className="scenario-dashboard">
-        {props.record.scenarios && props.record.scenarios.length > 0 && (
-          <div className="columns">
-            <div className="title"></div>
-            <div className="col-item">Protocol Amendment Rate</div>
-            <div className="col-item">Screen Failure Rate</div>
-            <div className="col-item">Patient Burden</div>
-            <div className="col-item">Patient Burden</div>
-            <div></div>
-          </div>
-        )}
-
-        <div className="scenario-list">
-          {props.record.scenarios &&
-            props.record.scenarios.length > 0 &&
-            props.record.scenarios.map((s) => {
-              return (
-                <div className="scenario">
-                  <div className="title">
-                    <span>{s["scenario_id"]}</span>
-                    <br />
-                    <span>{s["scenario_description"]}</span>
-                  </div>
-                  <div className="col-value  poor">
-                    {
-                      s["protocol_amendment_rate"] ? (
-                        <>
-                          <span className="percent poor">
-                            {s["protocol_amendment_rate"]}
-                          </span>
-                          <br />
-                          <i>POOR</i>
-                        </>
-                      ) : '-'
-                    }
-                  </div>
-                  <div className="col-value fair">
-                    {
-                      s["screen_failure_rate"] ? (
-                        <>
-                          <span className="percent ">{s["screen_failure_rate"]}</span>
-                          <br />
-                          <i>FAIR</i>
-                        </>
-                      ) : '-'
-                    }
-                  </div>
-                  <div className="col-value good">
-                    {
-                      s["patient_burden"] ? (
-                        <>
-                          <span className="percent">{s["patient_burden"]}</span>
-                          <br />
-                          <i>GOOD</i>
-                        </>
-                      ) : '-'
-                    }
-                  </div>
-                  <div className="col-value good">
-                    {
-                      s["cost"] ? (
-                        <>
-                          <span className="percent ">{s["cost"]}</span>
-                          <br />
-                          <i>POOR</i>
-                        </>
-                      ) : '-'
-                    }
-                  </div>
-                  <div className="footer btn-wrapper">
-                    <div className="view-btn" onClick={() => props.history.push({
-                      pathname: '/scenario',
-                      state: { scenario_id: s['scenario_id'] }
-                    })}>View Scenario</div>
-                  </div>
-                </div>
-              );
-            })}
-          {
-            props.record.scenarios &&
-            props.record.scenarios.length > 0 && (
-              <div className="average scenario">
-                <div className="title average-title">
-                  <span>Therapeutic Area Average</span>
-                  <br />
-                  <span>Endocrinology, Type 2 Diabetes Phase 3 trials</span>
-                </div>
-                <Metrics />
-                <Metrics />
-                <Metrics />
-                <Metrics />
-                <div className="footer btn-wrapper">
-                  <div className="view-btn">View Scenario</div>
-                </div>
-              </div>
-            )
-          } 
-          <div className="create-btn-wrapper">
-            <div className="create-btn" onClick={() => addNewScenario('Protocol Design')}>
-              <img src={addIcon} alt="" width="68px" height="68px" />
-              <br />
-              <span> ADD NEW SCENARIO</span>
-            </div>
-          </div>
-        </div>
-      </div> */}
 
       <Drawer
         title={scenarioType + " - Scenario Builder"}
@@ -352,8 +315,17 @@ const SceneriosDashbaord = (props: any) => {
         onClose={handleCancel}
         visible={newScenarioVisiable}
         footer={[
-          <Button key="cancel" type="text" onClick={handleCancel} style={{float:'left'}}>CANCEL</Button>,
-          <Button key="submit" type="primary" onClick={handleOk}>{editFlag? 'UPDATE SCENARIO':'CREATE SCENARIO'}</Button>
+          <Button
+            key="cancel"
+            type="text"
+            onClick={handleCancel}
+            style={{ float: "left" }}
+          >
+            CANCEL
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleOk}>
+            {editFlag ? "UPDATE SCENARIO" : "CREATE SCENARIO"}
+          </Button>,
         ]}
       >
         <Row style={{ minHeight: "300px" }}>
@@ -383,6 +355,100 @@ const SceneriosDashbaord = (props: any) => {
             </Row>
           </Col>
         </Row>
+      </Drawer>
+
+      <Drawer
+        className="complete-module-drawer"
+        title={"Complete Module:" + scenarioType}
+        placement="right"
+        onClose={() => setCompleteModuleVisible(false)}
+        visible={completeModuleVisible}
+        footer={[
+          <Button
+            key="cancel"
+            type="text"
+            onClick={() => setCompleteModuleVisible(false)}
+            style={{ float: "left" }}
+          >
+            CANCEL
+          </Button>,
+          <Button
+            type="primary"
+            className="submit-complete-btn"
+            onClick={handleCompleteModule}
+          >
+            COMPLETE MODULE
+          </Button>,
+        ]}
+      >
+        <div className="module-tip">
+          Note: Once marked as completed, you will not be able to edit this
+          trial further.
+        </div>
+        <div className="select-scenario-wrapper">
+          <div className="scenario-table-header">
+            <div className="scenario-col scenario-name">Select Scenario</div>
+            <div className="scenario-col">ENROLLMENT DURATION</div>
+            <div className="scenario-col">SITE START-UP TIME</div>
+            <div className="scenario-col">COST PER PATIENT</div>
+            <div className="scenario-col">PATIENTS PER SITE PER MONTH</div>
+          </div>
+          <div className="scenario-table-body">
+            {scenarioList.map((scenario, idx) => {
+              return (
+                <div
+                  className={`scenario-table-row-wrapper ${
+                    scenario.hasOwnProperty("rationale") ? "checked" : ""
+                  }`}
+                >
+                  <div className="scenario-table-row">
+                    <div
+                      className={`scenario-col scenario-name ${
+                        scenario.hasOwnProperty("rationale") ? "checked" : ""
+                      }`}
+                    >
+                      <div>
+                        <Checkbox
+                          checked={scenario.hasOwnProperty("rationale")}
+                          onChange={(e) => handleCheck(e, idx)}
+                        >
+                          Scenario {idx + 1}
+                        </Checkbox>
+                      </div>
+                      <span className="scenario-desc">
+                        {scenario["scenario_description"]}
+                      </span>
+                    </div>
+                    <div className="scenario-col">
+                      3<span className="status poor">poor</span>
+                    </div>
+                    <div className="scenario-col">
+                      4<span className="status poor">poor</span>
+                    </div>
+                    <div className="scenario-col">
+                      5<span className="status poor">poor</span>
+                    </div>
+                    <div className="scenario-col">
+                      6<span className="status poor">poor</span>
+                    </div>
+                  </div>
+                  {scenario.hasOwnProperty("rationale") ? (
+                    <div className="rationale-mark">
+                      <span>Provide Rationale</span>
+                      <div>
+                        <TextArea
+                          value={scenario.rationale}
+                          onChange={(e) => onRationaleChange(e, idx)}
+                          autoSize={{ minRows: 3, maxRows: 5 }}
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </Drawer>
     </div>
   );

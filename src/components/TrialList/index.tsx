@@ -54,7 +54,9 @@ const panelHeader = (props, record) => {
       </div>
       <div>
       <span className="view-btn" onClick={(e)=>props.onViewTrial(e,record)}>View Trial</span>
-       </div>
+      </div>
+      
+
     </div>
   );
 };
