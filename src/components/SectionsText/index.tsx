@@ -35,9 +35,8 @@ const SectionText = (props: SectionTextIF) => {
             // let exclusionTxt;
             const displayTitle = sectionOptions.find((e) => e.value == s);
             const sectionTxt =
-              props.fileReader.file[key][s].length > 0
-                ? props.fileReader.file[key][s][0].content
-                : "";
+            props.fileReader.file[key][s] && (props.fileReader.file[key][s].length > 0 && props.fileReader.file[key][s][0].content.toString() !== "[object Object]"? props.fileReader.file[key][s][0].content
+                : "")                
             // if (displayTitle && displayTitle.label == exceptionLabel) {
             //   inclusionTxt = props.fileReader.file[key]["inclusionCriteria"][0].content
             //   exclusionTxt = props.fileReader.file[key]["exclusionCriteria"][0].content
@@ -48,7 +47,7 @@ const SectionText = (props: SectionTextIF) => {
                   {displayTitle && displayTitle.label}
                 </div>
                 <div className="section-content">
-                  {displayTitle && displayTitle.label == "SCHEDULE OF ACTIVITIES" ? (
+                  {displayTitle && displayTitle.label == "SCHEDULE OF ACTIVITIES" &&Array.isArray(sectionTxt)? (
                     // <>
                     //   <div className="inclusion-txt">{inclusionTxt}</div>
                     //   <div><pre>{exclusionTxt}</pre> </div>
@@ -58,42 +57,42 @@ const SectionText = (props: SectionTextIF) => {
                         <table>
                           <tbody>
                             {
-                              sectionTxt && sectionTxt.map((item, index) => {
-                                return (
-                                  index < 2? (
-                                    <tr>
-                                    {
-                                      item.map((iten, indey) => {
-                                        return (
-                                          <td>{iten}</td>
-                                        )
-                                      })
-                                    }
-                                  </tr>
-                                  ):(
-                                    <tr>
-                                    {
-                                      item.map((iten, indey) => {
-                                        return (
-                                          indey < 1? (
+                                sectionTxt.map((item, index) => {
+                                  return (
+                                    index < 2? (
+                                      <tr>
+                                      {
+                                        item.map((iten, indey) => {
+                                          return (
                                             <td>{iten}</td>
-                                          ) :(
-                                            iten.startsWith("X") ? (
-                                              <td>
-                                                <CheckCircleFilled/>
-                                                {/* {iten.substr(1)} */}
-                                              </td>
-                                            ) : (
+                                          )
+                                        })
+                                      }
+                                    </tr>
+                                    ):(
+                                      <tr>
+                                      {
+                                        item.map((iten, indey) => {
+                                          return (
+                                            indey < 1? (
                                               <td>{iten}</td>
+                                            ) :(
+                                              iten.startsWith("X") ? (
+                                                <td>
+                                                  <CheckCircleFilled/>
+                                                  {/* {iten.substr(1)} */}
+                                                </td>
+                                              ) : (
+                                                <td>{iten}</td>
+                                              )
                                             )
                                           )
-                                        )
-                                      })
-                                    }
-                                  </tr>
+                                        })
+                                      }
+                                    </tr>
+                                    )
                                   )
-                                )
-                              })
+                                })
                             }
                           </tbody>
                         </table>

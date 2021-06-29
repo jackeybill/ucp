@@ -1,11 +1,19 @@
 @import "../../styles/variables.scss";
 .extraction-content {
+  padding-top: 46px;
   .ant-tabs-nav {
+    position: fixed;
+    left: 415px;
+    top: 108px;
+    z-index: 9999;
     background-color: #282f34;
     color: #ffffff;
   }
   .ant-tabs-tab-active {
-    background-color: #000000;
+    // background-color: #000000;
+    span {
+      color: $theme-color;
+    }
   }
   .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
     color: #ffffff;

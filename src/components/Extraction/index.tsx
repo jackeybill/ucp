@@ -147,7 +147,8 @@ const Extraction = (props: any, ref) => {
     setWordsCollection(labels);
     props.updateCurrentEntity(entity);
     setSvgEntity(file[key][activeSection][0].comprehendMedical["Entities"]);
-  }, [entity, activeSection, labels, activeTabKey, props.fileReader.file]);
+    setActiveTabKey(props.fileReader.activeTabKey)
+  }, [entity, activeSection, labels, activeTabKey,props.fileReader.activeTabKey, props.fileReader.file]);
 
   const getDisplayTitle = (s) => {
     let displayTitle;
@@ -331,6 +332,7 @@ const Extraction = (props: any, ref) => {
             ) : (
               <div className="raw-content"> {content} </div>
             )}
+            
           </div>
         </TabPane>
         <TabPane

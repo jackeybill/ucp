@@ -101,9 +101,7 @@ const Overview = (props: any) => {
   };
 
   const handleRowClick = async (record) => {
-    setLoading(true)
-    console.log(record);
-    
+    setLoading(true)    
     const filepath = `iso-service-dev/RawDocuments/${record.fileName}`
     const resp = await extractText(filepath)
     setLoading(false)
@@ -180,7 +178,13 @@ const Overview = (props: any) => {
           </span>
           <Button
             type="primary"
-            onClick={() => props.history.push("/protocol-sections")}
+            onClick={() => props.history.push({
+              pathname: "/protocol-sections",
+              state: {
+                status: "Not started",
+                title: props.fileReader.protocolName? props.fileReader.protocolName: props.fileReader.fileName
+              }
+            })}
           >
             START EXTRACTION
           </Button>

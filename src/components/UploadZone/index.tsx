@@ -81,6 +81,8 @@ const Dropzone = (props: any) => {
             const availableTabs: string[] = [];
             props.readFile({
               file: result,
+              protocolName:protocolName,
+              fileName:f.name,
             });
             fileList.push({ 'nctID': nctID, 'protocolName': protocolName, filename: f.name, result, availableTabs });
             // props.history.push("/protocol-sections");            

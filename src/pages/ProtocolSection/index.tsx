@@ -289,19 +289,21 @@ const ProtocolSection = (props: any) => {
                     </>
                   )}
                 </Dropdown.Button>
-                {activeTabKey == "VALIDATION" ? (
-                  <Button type="primary" onClick={handleSubmit}>
-                    <SaveOutlined />
-                    Validate and Submit
-                  </Button>
-                ) : null}
               </div>
             </>
           )}
       </div>
       <div className="section-body">
+        {
+          props.location.pathname == "/extraction" && <div className="section-header-bar"></div>
+        }
         <div className="sidebar">
-          <p>PROTOCOL SECTIONS</p>
+          {
+            props.location.pathname == "/extraction" && <p className="extraction_p">PROTOCOL SECTIONS</p>
+          }
+          {
+            props.location.pathname == "/protocol-sections" && <p className="normal_p">PROTOCOL SECTIONS</p>
+          }
           {
             props.location.pathname == "/protocol-sections" &&props.fileReader.activeTabKey=="ENTITY RECOGNITION" && <span className="section-tip">Choose a section to begin entity extraction.</span>
           }
@@ -411,6 +413,68 @@ const ProtocolSection = (props: any) => {
               >
                 BEGIN ENTITY EXTRACTION
               </Button>
+            </div>
+          )}
+       {props.location.pathname == "/extraction" &&
+          protocolSection != completeDocument && (
+            <div className="extraction_operation_btn">
+              {activeTabKey == "ENTITY RECOGNITION" && (
+                <Button
+                className="previous-btn"
+                >
+                </Button>
+              )}
+              {activeTabKey == "ENTITY RELATIONSHIPS" && (
+                <Button
+                className="previous-btn"
+                onClick={() => props.readFile({ activeTabKey: "ENTITY RECOGNITION" })}  
+                >
+                  PREV: ENTITY RECOGNITION
+                </Button>
+              )}
+              {activeTabKey == "VALIDATION" && (
+                <Button
+                className="previous-btn"
+                onClick={() => props.readFile({ activeTabKey: "ENTITY RELATIONSHIPS" })} 
+                >
+                  PREV: ENTITY RELATIONSHIPS
+                </Button>
+              )}
+             <div className="right_area">
+                {activeTabKey == "ENTITY RECOGNITION" && (
+                   <Button
+                    className="next-btn"
+                    onClick={() => props.readFile({ activeTabKey: "ENTITY RELATIONSHIPS" })} 
+                  >
+                    NEXT: ENTITY RELATIONSHIPS
+                  </Button>
+                )}
+                {activeTabKey == "ENTITY RELATIONSHIPS" && (
+                      <Button
+                      className="next-btn"
+                      onClick={() => props.readFile({ activeTabKey: "VALIDATION" })} 
+                    >
+                      NEXT: VALIDATION
+                    </Button>
+                )}
+                {activeTabKey == "VALIDATION" && (
+                      <Button
+                      className="next-btn"
+                      >
+                      </Button>
+                )}
+                {activeTabKey == "VALIDATION" ? (
+                  <Button type="primary" className="validation-btn" onClick={handleSubmit}>
+                    <SaveOutlined />
+                    Submit
+                  </Button>
+                ) : (
+                  <Button type="primary" className="validation-btn" onClick={handleSubmit}>
+                    <SaveOutlined />
+                    Validate and Submit
+                  </Button>
+                )}
+             </div>
             </div>
           )}
       </div>
