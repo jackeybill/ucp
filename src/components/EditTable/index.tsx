@@ -35,6 +35,7 @@ const EditTable = (props) => {
   const [conOrExcpKey, setConOrExcpKey] = useState();
   const [conOrExcpContent, setConOrExcpContent] = useState();
   const [conOrExp, setConOrExp] = useState('');
+  const [total, setTotal] = useState(0)
   const [visible, setVisible] = useState(false);
   const [activeKey, setActiveKey] = useState('')
   const [editable, setEditable] = useReducer(
@@ -43,7 +44,27 @@ const EditTable = (props) => {
   );
 
   useEffect(() => {
-    setData(props.data)
+    let newList = []
+    props.data.map((item, id) =>{
+      if(item['splitPart'] === undefined){
+        newList.push(item)
+      }
+      
+      if(item['Condition Or Exception'] !== undefined && item['Condition Or Exception'] !== ''){
+        newList.push({
+          'Key': item.Key+'1', 
+          'Eligibility Criteria': item['Eligibility Criteria'] + ' [Condition/Exception]',
+          'Values': item['Condition Or Exception'],
+          'splitPart': true,
+          'MainKey': item.Key
+        })
+      }
+    })
+    if(props.data.length > 0){
+      setTotal(Number(props.data[props.data.length-1].Key))
+    }
+    
+    setData(newList)
   }, [props.data])
 
   useEffect(() => {
@@ -93,12 +114,25 @@ const EditTable = (props) => {
         setData(tempData);
         setEditingKey(''); 
 
-        props.updateCriteria(tempData, props.tableIndex)
+        const temp = []
+        tempData.map((it, id) =>{
+          if(it['splitPart'] === undefined){
+            temp.push(it)
+          }
+        })
+        props.updateCriteria(temp, props.tableIndex)
       } else {
         newData.push(row);
         setData(newData);
         setEditingKey('');
-        props.updateCriteria(newData, props.tableIndex)
+
+        const temp = []
+        newData.map((it, id) =>{
+          if(it['splitPart'] === undefined){
+            temp.push(it)
+          }
+        })
+        props.updateCriteria(temp, props.tableIndex)
       }
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
@@ -108,11 +142,12 @@ const EditTable = (props) => {
   const handleAdd = (e) => {
     e.stopPropagation();
     const newData = {
-      Key: (data.length + 1) + '',
+      Key: (total + 1) + '',
       "Eligibility Criteria": '',
       Values: '',
       Timeframe: '',
     }
+    setTotal(total + 1)
     setData([...data, newData])
     edit(newData)
   };
@@ -131,7 +166,13 @@ const EditTable = (props) => {
         })
         setData(tempData);
 
-        props.updateCriteria(tempData, props.tableIndex)
+        const temp = []
+        tempData.map((it, id) =>{
+          if(it['splitPart'] === undefined){
+            temp.push(it)
+          }
+        })
+        props.updateCriteria(temp, props.tableIndex)
       }
   };
 
@@ -178,7 +219,14 @@ const EditTable = (props) => {
     })
 
     setData(tmpData)
-    props.updateCriteria(tmpData, props.tableIndex)
+
+    const temp = []
+    tmpData.map((it, id) =>{
+      if(it['splitPart'] === undefined){
+        temp.push(it)
+      }
+    })
+    props.updateCriteria(temp, props.tableIndex)
   }
   const saveSubCriteria = (record,subRecord,idx) => {
     setEditable({
@@ -188,7 +236,14 @@ const EditTable = (props) => {
     const targetRecord = tmpData.find(e=> e.Key==record.Key)
     targetRecord.Children[idx]= subRecord
     setData(tmpData)
-    props.updateCriteria(tmpData, props.tableIndex)
+
+    const temp = []
+    tmpData.map((it, id) =>{
+      if(it['splitPart'] === undefined){
+        temp.push(it)
+      }
+    })
+    props.updateCriteria(temp, props.tableIndex)
   } 
 
   function callback(key) {
@@ -212,6 +267,13 @@ const panelHeaderSection = (header, count) => {
       dataIndex: "Key",
       width: '7%',
       editable: false,
+      render: (_, record) => {
+        return record.splitPart ? (
+           <span>{record['MainKey']}</span>
+        ) : (
+          <span>{record['Key']}</span>
+        );
+      }
     },
     {
       title: "Eligibility Criteria",
@@ -220,13 +282,15 @@ const panelHeaderSection = (header, count) => {
       editable: true,
       render: (_, record) => {
         const editable = isEditing(record);
-        return editable ? (
+        return record.splitPart ? (
+          <div><span style={{fontSize: '14px'}}>{record['Eligibility Criteria']}</span></div>
+        ) : (editable ? (
             <Input value={record["Eligibility Criteria"]}/>
         ) : (
           <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
             <div><span style={{fontSize: '14px'}}>{record['Eligibility Criteria']}</span></div>
           </Typography.Link>
-        );
+        ))
       }
     }, {
       title: 'Values',
@@ -235,13 +299,15 @@ const panelHeaderSection = (header, count) => {
       editable: true,
       render: (_, record) => {
         const editable = isEditing(record);
-        return editable ? (
+        return record.splitPart ? (
+          <div><span style={{fontSize: '14px'}}>{record.Values}</span></div>
+        ) : ( editable ? (
             <Input value={record["Values"]}/>
         ) : (
           <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
             <div><span style={{fontSize: '14px'}}>{record.Values}</span></div>
           </Typography.Link>
-        );
+        ))
       }
     }, {
       title: 'Timeframe',
@@ -250,20 +316,24 @@ const panelHeaderSection = (header, count) => {
       editable: true,
       render: (_, record) => {
         const editable = isEditing(record);
-        return editable ? (
+        return record.splitPart ? (
+          <div><span style={{fontSize: '14px'}}>{record.Timeframe}</span></div>
+        ) : ( editable ? (
             <Input value={record["Timeframe"]}/>
         ) : (
           <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
             <div><span style={{fontSize: '14px'}}>{record.Timeframe}</span></div>
           </Typography.Link>
-        );
+        ))
       }
     }, {
       title: 'operation',
       dataIndex: 'operation',
       render: (_, record) => {
         const editable = isEditing(record);
-        return editable ? (
+        return record.splitPart ? (
+          <span></span>
+        ) : (editable ? (
           <span style={{float:'right'}}>
             <CheckOutlined onClick={() => save(record.Key)}/> &nbsp;&nbsp;
             <CloseOutlined onClick={cancel}/>
@@ -277,7 +347,7 @@ const panelHeaderSection = (header, count) => {
                 title={false} placement="bottomRight">
             <MoreOutlined style={{float:'right'}}/>
           </Popover>
-        );
+        ))
       }
     }
   ];
@@ -326,7 +396,14 @@ const panelHeaderSection = (header, count) => {
       setConOrExp(null)
     }
     
-    props.updateCriteria(newData, props.tableIndex)
+    
+    const temp = []
+    newData.map((it, id) =>{
+      if(it['splitPart'] === undefined){
+        temp.push(it)
+      }
+    })
+    props.updateCriteria(temp, props.tableIndex)
   }
   const handleCancel = () =>{
     setVisible(false)
