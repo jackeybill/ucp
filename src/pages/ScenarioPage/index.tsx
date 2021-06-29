@@ -242,11 +242,32 @@ const ScenarioPage = (props) => {
                         {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
                     ])
             
+                    var tempScoreA = ''
+                    var tempScoreB = ''
                     if(tempRecord['Therapeutic Area Average']){
                         setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
                         setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
-                        setAmend_avg_rate(tempScenario.protocol_amendment_rate)
-                        setScreen_avg_rate(tempScenario.screen_failure_rate)
+                        
+                        var score = formatNumber(tempScenario.protocol_amendment_rate)
+                        if(score <= 33){
+                          tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{good|GOOD}'
+                        } else if(score > 33  && score <= 67){
+                          tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{fair|FAIR}'
+                        } else if(score > 67){
+                          tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{poor|POOR}'
+                        }
+
+                        var scoreB = formatNumber(tempScenario.screen_failure_rate)
+                        if(scoreB <= 33){
+                          tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{good|GOOD}'
+                        } else if(scoreB > 33  && scoreB <= 67){
+                          tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{fair|FAIR}'
+                        } else if(scoreB > 67){
+                          tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{poor|POOR}'
+                        }
+
+                        setAmend_avg_rate(tempScoreA)
+                        setScreen_avg_rate(tempScoreB)
                     }
 
                     //Get exclusion chart info
@@ -268,8 +289,8 @@ const ScenarioPage = (props) => {
                     if(tempRecord['Therapeutic Area Average']){
                         setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
                         setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
-                        setExcluAmend_avg_rate(tempScenario.protocol_amendment_rate)
-                        setExcluScreen_avg_rate(tempScenario.screen_failure_rate)
+                        setExcluAmend_avg_rate(tempScoreA)
+                        setExcluScreen_avg_rate(tempScoreB)
                     }
 
                     setShowChartLabel(true)
@@ -496,12 +517,23 @@ const ScenarioPage = (props) => {
       } else {
         var value = item.Value
         if(value instanceof Array){
-          tempStr = formatNum(value[0])
-          if(value.length > 1){
-            tempStr += ' - ' + formatNum(value[1])
-          }
-          if(value.length > 2){
-            tempStr += ' ' + value[2]
+          if(value.length === 3){
+            tempStr = formatNum(value[0]) + ' - ' + formatNum(value[1]) + value[2]
+          } else if(value[0] === Number(value[0])){
+            tempStr = formatNum(value[0])
+            if(value.length > 1){
+              tempStr += ' - ' + formatNum(value[1])
+            }
+          } else {
+            var id = value[0].lastIndexOf('.')
+            var a = value[0]
+            if(id > -1 && id + 2 < a.length){
+              a = a.substr(0, id + 3)
+            }
+            tempStr = a
+            if(value.length > 1){
+              tempStr += formatNum(value[1])
+            }
           }
         } else if(value === Number(value)){
           tempStr = value.toFixed(2)+''
@@ -775,7 +807,7 @@ const ScenarioPage = (props) => {
             position: 'center',
             formatter: function () {
               if(showChartLabel){
-                return '{p|' + amend_avg_rate + '}\n{nm|GOOD}'
+                return amend_avg_rate
               } else {
                 return ''
               }
@@ -787,8 +819,20 @@ const ScenarioPage = (props) => {
                 fontSize: 16,
                 backgroundColor: "white"
               },
-              nm: {
+              good: {
                 color: 'green',
+                fontSize: 8,
+                fontWeight:'bold',
+                backgroundColor: "white"
+              },
+              fair: {
+                color: 'gray',
+                fontSize: 8,
+                fontWeight:'bold',
+                backgroundColor: "white"
+              },
+              poor: {
+                color: '#c33232',
                 fontSize: 8,
                 fontWeight:'bold',
                 backgroundColor: "white"
@@ -842,7 +886,7 @@ const ScenarioPage = (props) => {
             position: 'center',
             formatter: function () {
               if(showChartLabel){
-                return '{p|' + screen_avg_rate + '}\n{nm|GOOD}'
+                return screen_avg_rate
               } else {
                 return ''
               }
@@ -854,8 +898,20 @@ const ScenarioPage = (props) => {
                 fontSize: 16,
                 backgroundColor: "white"
               },
-              nm: {
+              good: {
                 color: 'green',
+                fontSize: 8,
+                fontWeight:'bold',
+                backgroundColor: "white"
+              },
+              fair: {
+                color: 'gray',
+                fontSize: 8,
+                fontWeight:'bold',
+                backgroundColor: "white"
+              },
+              poor: {
+                color: '#c33232',
                 fontSize: 8,
                 fontWeight:'bold',
                 backgroundColor: "white"
@@ -910,7 +966,7 @@ const ScenarioPage = (props) => {
               position: 'center',
               formatter: function () {
                 if(showChartLabel){
-                  return '{p|' + excluAmend_avg_rate + '}\n{nm|GOOD}'
+                  return excluAmend_avg_rate
                 } else {
                   return ''
                 }
@@ -922,8 +978,20 @@ const ScenarioPage = (props) => {
                   fontSize: 16,
                   backgroundColor: "white"
                 },
-                nm: {
+                good: {
                   color: 'green',
+                  fontSize: 8,
+                  fontWeight:'bold',
+                  backgroundColor: "white"
+                },
+                fair: {
+                  color: 'gray',
+                  fontSize: 8,
+                  fontWeight:'bold',
+                  backgroundColor: "white"
+                },
+                poor: {
+                  color: '#c33232',
                   fontSize: 8,
                   fontWeight:'bold',
                   backgroundColor: "white"
@@ -978,7 +1046,7 @@ const ScenarioPage = (props) => {
             position: 'center',
             formatter: function () {
               if(showChartLabel){
-                return '{p|' + excluScreen_avg_rate + '}\n{nm|GOOD}'
+                return excluScreen_avg_rate
               } else {
                 return ''
               }
@@ -990,8 +1058,20 @@ const ScenarioPage = (props) => {
                 fontSize: 16,
                 backgroundColor: "white"
               },
-              nm: {
+              good: {
                 color: 'green',
+                fontSize: 8,
+                fontWeight:'bold',
+                backgroundColor: "white"
+              },
+              fair: {
+                color: 'gray',
+                fontSize: 8,
+                fontWeight:'bold',
+                backgroundColor: "white"
+              },
+              poor: {
+                color: '#c33232',
                 fontSize: 8,
                 fontWeight:'bold',
                 backgroundColor: "white"
@@ -1417,11 +1497,32 @@ const ScenarioPage = (props) => {
           {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
         ])
   
+        var tempScoreA = ''
+        var tempScoreB = ''
         if(resp.body['Therapeutic Area Average']){
           setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
           setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
-          setAmend_avg_rate(currentScenario.protocol_amendment_rate)
-          setScreen_avg_rate(currentScenario.screen_failure_rate)
+          
+          var score = formatNumber(currentScenario.protocol_amendment_rate)
+          if(score <= 33){
+            tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{good|GOOD}'
+          } else if(score > 33  && score <= 67){
+            tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{fair|FAIR}'
+          } else if(score > 67){
+            tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{poor|POOR}'
+          }
+
+          var scoreB = formatNumber(currentScenario.screen_failure_rate)
+          if(scoreB <= 33){
+            tempScoreB = '{p|' + currentScenario.screen_failure_rate + '}\n{good|GOOD}'
+          } else if(scoreB > 33  && scoreB <= 67){
+            tempScoreB = '{p|' + currentScenario.screen_failure_rate + '}\n{fair|FAIR}'
+          } else if(scoreB > 67){
+            tempScoreB = '{p|' + currentScenario.screen_failure_rate + '}\n{poor|POOR}'
+          }
+
+          setAmend_avg_rate(tempScoreA)
+          setScreen_avg_rate(tempScoreB)
         }
 
         //Get exclusion chart info
@@ -1443,8 +1544,8 @@ const ScenarioPage = (props) => {
         if(resp.body['Therapeutic Area Average']){
           setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
           setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
-          setExcluAmend_avg_rate(currentScenario.protocol_amendment_rate)
-          setExcluScreen_avg_rate(currentScenario.screen_failure_rate)
+          setExcluAmend_avg_rate(tempScoreA)
+          setExcluScreen_avg_rate(tempScoreB)
         }
   
         setShowChartLabel(true)
