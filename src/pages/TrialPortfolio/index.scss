@@ -87,20 +87,26 @@
           color: #000000;
         }
       }
-
-      .add-btn {
-        background-color: $theme-color;
-        color: #ffffff;
-        padding: 0 80px;
-        height: 55px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        .anticon.anticon-plus-circle {
-          margin-right: 10px;
-        }
-      }
     }
+  }
+}
+.add-new-trial {
+  display: flex;
+  align-items: flex-end;
+  border-left: 1px solid #d9d9d9;
+  margin-top: 20px;
+  padding-left: 20px;
+}
+.add-btn {
+  background-color: $theme-color;
+  color: #ffffff;
+  padding: 2px 20px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  .anticon.anticon-plus-circle {
+    margin-right: 10px;
   }
 }
 

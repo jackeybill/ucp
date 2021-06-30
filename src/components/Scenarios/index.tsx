@@ -32,11 +32,12 @@ const SceneriosDashbaord = (props: any) => {
     (state, newState) => ({ ...state, ...newState }),
     { ...initialStates }
   );
-  const [scenarioList, setScenarioList] = useState([])
+  const [scenarioList, setScenarioList] = useState(props.record.scenarios)
+  console.log('------props scenario list----',props.record.scenarios)
   
-  useEffect(() => {
-    setScenarioList(props.record.scenarios)
-  }, [props.record.scenarios])
+  // useEffect(() => {
+  //   setScenarioList(props.record.scenarios)
+  // }, [props.record.scenarios])
 
   const renderTitle = () => {
     return (
@@ -45,11 +46,6 @@ const SceneriosDashbaord = (props: any) => {
         <Scatter />
       </div>
     );
-  };
-
-  const path = {
-    pathname: "/scenario",
-    state: props.record,
   };
 
   const Metrics = () => {
@@ -141,20 +137,27 @@ const SceneriosDashbaord = (props: any) => {
     tmpList[idx].rationale = e.target.value
     setScenarioList(tmpList) 
   }
-  const showCompleteModule = (s) => {
+  const showCompleteModule = (type) => {
     setCompleteModuleVisible(true)
-    setScenarioType(s['scenario_type'])
+    setScenarioType(type)
+    console.log('props-----',props.record)
   }
 
   const handleCompleteModule = async() => {
-     const tempTrial = props.record
-     tempTrial.scenarios = scenarioList
+    const tempTrial = props.record
+    // console.log()
+    tempTrial.scenarios = scenarioList
+    console.log('----', tempTrial)
     
      const resp = await updateStudy(tempTrial);
     if (resp.statusCode == 200) {
         setCompleteModuleVisible(false)
       }
     
+  }
+  const cancelCompleteModule = () => {
+    setCompleteModuleVisible(false)
+    setScenario(props.record.scenarios)
   }
   return (
     <div className="scenarios-container">
@@ -175,13 +178,12 @@ const SceneriosDashbaord = (props: any) => {
                   size="small"
                   className="complete-module-btn"
                   type="link"
-                  onClick={() => showCompleteModule(props.record.scenarios[0])}
+                  onClick={() => showCompleteModule("Protocol Design")}
                 >
-                  {" "}
                   COMPLETE MODULE
                 </Button>
                 <Button
-                  size="small"
+                  size="small"                 
                   danger
                   onClick={() => addNewScenario("Protocol Design")}
                 >
@@ -225,7 +227,7 @@ const SceneriosDashbaord = (props: any) => {
                         </div>
                         <div className="item-values">
                           <div>
-                            {s["protocol_amendment_rate"]}{" "}
+                            {s["protocol_amendment_rate"]}
                             <span className="status poor">POOR</span>
                           </div>
                           <div>
@@ -238,15 +240,20 @@ const SceneriosDashbaord = (props: any) => {
                           </div>
                           <div>
                             {s["cost"]}
-                            <span className="status good">POOR</span>
+                            <span className="status good">GOOD</span>
                           </div>
                           <div>
-                            <Button
-                              size="small"
-                              onClick={() => viewScenario(s)}
-                            >
-                              EDIT SCENARIO
-                            </Button>
+                            {
+                              !s.hasOwnProperty("rationale") && (
+                                <Button
+                                  size="small"
+                                  onClick={() => viewScenario(s)}
+                                >
+                                  EDIT SCENARIO
+                                </Button>
+                              )
+                            }
+                            
                           </div>
                         </div>
                       </div>
@@ -323,7 +330,7 @@ const SceneriosDashbaord = (props: any) => {
           >
             CANCEL
           </Button>,
-          <Button key="submit" type="primary" onClick={handleOk}>
+          <Button key="submit" type="primary" onClick={handleOk} className="create-update-btn">
             {editFlag ? "UPDATE SCENARIO" : "CREATE SCENARIO"}
           </Button>,
         ]}
@@ -367,7 +374,7 @@ const SceneriosDashbaord = (props: any) => {
           <Button
             key="cancel"
             type="text"
-            onClick={() => setCompleteModuleVisible(false)}
+            onClick={cancelCompleteModule}
             style={{ float: "left" }}
           >
             CANCEL
@@ -388,10 +395,10 @@ const SceneriosDashbaord = (props: any) => {
         <div className="select-scenario-wrapper">
           <div className="scenario-table-header">
             <div className="scenario-col scenario-name">Select Scenario</div>
-            <div className="scenario-col">ENROLLMENT DURATION</div>
-            <div className="scenario-col">SITE START-UP TIME</div>
-            <div className="scenario-col">COST PER PATIENT</div>
-            <div className="scenario-col">PATIENTS PER SITE PER MONTH</div>
+            <div className="scenario-col">Protocal Amendment Rate</div>
+            <div className="scenario-col">Screen Failure Rate</div>
+            <div className="scenario-col">Patient Burden</div>
+            <div className="scenario-col">Cost</div>
           </div>
           <div className="scenario-table-body">
             {scenarioList.map((scenario, idx) => {

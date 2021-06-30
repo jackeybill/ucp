@@ -69,6 +69,7 @@
         .count {
           padding: 20px 0;
           border-right: 1px solid #eaeaea;
+          border-bottom: 1px solid #eaeaea;
           width: 100px;
           text-align: center;
           font-size: 12px;
@@ -79,24 +80,28 @@
           }
         }
         .scenarios-list {
-          padding: 0px 10px;
+          width: 100%;
           .item-wrapper {
-            // border-bottom: 1px solid #eaeaea;
+            border-bottom: 1px solid #eaeaea;
           }
           .item-wrapper.average-item {
             border-bottom: 1px solid transparent;
           }
           .scenario-item.scenario-header {
             font-size: 12px;
+            border-bottom: 1px solid #eaeaea;
             .title {
               border-right: 1px solid transparent;
             }
           }
           .rationale-content {
-            margin-top: 20px;
+            padding: 5px;
             span {
               color: #999999;
-              font-size: 14px;
+              font-size: 12px;
+            }
+            p {
+              font-size: 12px;
             }
           }
           .scenario-item {
@@ -125,14 +130,17 @@
             .item-values {
               display: flex;
               padding-left: 20px;
+              flex: 1;
               &.col-names {
                 div {
+                  // flex: 1;
                   font-size: 12px;
                   font-weight: normal;
                 }
               }
               div {
-                width: 150px;
+                flex: 1;
+                // width: 150px;
                 font-size: 16px;
                 font-weight: 600;
               }
@@ -170,11 +178,10 @@
 
         .scenario-item {
           display: flex;
-          // padding-left: 110px;
-          padding: 5px 0 5px 110px;
+          padding: 5px 0 5px 100px;
         }
         .average-title {
-          padding-right: 20px;
+          padding-right: 8px;
           width: 150px;
           font-size: 12px;
         }
@@ -184,8 +191,7 @@
           flex: 1;
           padding-left: 20px;
           div {
-            // flex: 1;
-            width: 150px;
+            flex: 1;
           }
         }
       }
@@ -431,4 +437,7 @@
       }
     }
   }
+}
+.create-update-btn {
+  float: right;
 }

@@ -341,10 +341,10 @@ const TrialPortfolio = (props) => {
                   <span className="status">COMPLETED</span>
                 </div>
               </div>
-              <div className="add-btn" onClick={() => setVisible(true)}>
+              {/* <div className="add-btn" onClick={() => setVisible(true)}>
                 <PlusCircleOutlined />
                 New Trial
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -395,6 +395,13 @@ const TrialPortfolio = (props) => {
                   })}
                 </Select>
               </div>
+              <div className="selector-item add-new-trial">
+                <div className="add-btn" onClick={() => setVisible(true)}>
+                <PlusCircleOutlined />
+                New Trial
+              </div>
+                
+            </div>
             </div>
           </div>
           <Spin

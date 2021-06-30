@@ -20,7 +20,7 @@ const panelHeader = (props, record) => {
       <div>{record["molecule_name"] || "-"}</div>
       <div>{record["study_phase"] || "-"}</div>
       <div>{record["therapeutic_area"] || "-"}</div>
-      <div className="module_status_item">{record["module_status"] || "1/4"}
+      {/* <div className="module_status_item">{record["module_status"] || "1/4"}
         <Tooltip placement="bottom"
           overlayClassName="module_status_tooltip"
           color="#ffffff"
@@ -47,10 +47,13 @@ const panelHeader = (props, record) => {
           </div>
         )}>
          <span className="m-icon"><i>M</i></span>
-      </Tooltip>
-       
-      </div>
-      <div> <span className={`status-tag ${record["status"].toLowerCase()=="completed"?'completed':'in-progress'}`}>{record["status"] || "-"}</span>
+      </Tooltip>      
+      </div> */}
+      <div>
+        <span className="status" >
+          <i className={`status-tag ${record["status"].toLowerCase() == "completed" ? 'completed' : 'in-progress'}`}></i> {record["status"] || "-"}
+        </span>
+        
       </div>
       <div>
       <span className="view-btn" onClick={(e)=>props.onViewTrial(e,record)}>View Trial</span>
@@ -118,7 +121,7 @@ const TrailList = (props: any) => {
           <div className="col-item">MOLECULE NAME</div>
           <div className="col-item">STUDY PHASE</div>
           <div className="col-item">THERAPEUTIC AREA</div>
-          <div className="col-item">MODULE STATUS</div>
+          {/* <div className="col-item">MODULE STATUS</div> */}
           <div className="col-item">STATUS</div>
           <div className="col-item"></div>
         </div>
