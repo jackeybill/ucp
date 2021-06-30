@@ -108,7 +108,6 @@ const EditTable = (props) => {
         const item = newData[index];
         newData.splice(index, 1, { ...item, ...row });
         const tempData = newData.map((item, id) => {       
-          item.Key =  (id + 1) + '' 
           return item
         })
         setData(tempData);
@@ -160,8 +159,7 @@ const EditTable = (props) => {
       
       if (index > -1) {
         newData.splice(index, 1);
-        const tempData = newData.map((item, id) => {       
-          item.Key =  (id + 1) + '' 
+        const tempData = newData.map((item, id) => {     
           return item
         })
         setData(tempData);
@@ -190,7 +188,7 @@ const EditTable = (props) => {
       }
     ]
     setEditable({
-    0:true
+      [targetRecord.Key + 0]:true
   })
   } 
     else {
@@ -203,7 +201,7 @@ const EditTable = (props) => {
         }
       )
        setEditable({
-    [targetRecord.Children.length-1]:true
+    [targetRecord.Key + targetRecord.Children.length-1]:true
   })
   }
     setData(tmpData)
@@ -230,7 +228,7 @@ const EditTable = (props) => {
   }
   const saveSubCriteria = (record,subRecord,idx) => {
     setEditable({
-      [idx]:false
+      [record.Key + idx]:false
     })
     const tmpData = data.slice(0)
     const targetRecord = tmpData.find(e=> e.Key==record.Key)
@@ -430,7 +428,7 @@ const panelHeaderSection = (header, count) => {
                              <div className="serial-number">
                               <span>{`${record.Key}${subRecord['Key']}`}</span>
                              </div>
-                             {editable[idx] ? (
+                             {editable[record.Key+idx] ? (
                                <>
                                 <Input value={subRecord['Eligibility Criteria']} onChange={ (e)=>handleSubCriteraInputChange('Eligibility Criteria',e,record,idx,props.header)}/>
                                 <Input value={subRecord['Timeframe']} onChange={(e) => handleSubCriteraInputChange('Timeframe', e, record, idx, props.header)} />
@@ -439,13 +437,13 @@ const panelHeaderSection = (header, count) => {
                              ) 
                               : (
                                 <>
-                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[idx]:true})} >{subRecord['Eligibility Criteria']}</div>
-                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[idx]:true})}>{subRecord['Timeframe']}</div>
-                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[idx]:true})}>{subRecord['Values']}</div>
+                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[record.Key+idx]:true})} >{subRecord['Eligibility Criteria']}</div>
+                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[record.Key+idx]:true})}>{subRecord['Timeframe']}</div>
+                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[record.Key+idx]:true})}>{subRecord['Values']}</div>
                               </>
                               )}                      
                              <div className="actions">
-                              {editable[idx]&& <CheckOutlined style={{ color: 'green' }} onClick={()=>saveSubCriteria(record, subRecord,idx)}/>}
+                              {editable[record.Key+idx]&& <CheckOutlined style={{ color: 'green' }} onClick={()=>saveSubCriteria(record, subRecord,idx)}/>}
                               <CloseOutlined style={{ color: 'red' }} onClick={() =>deleteSubCriteria(record, idx)}/>
                             </div>                 
                         </div>
