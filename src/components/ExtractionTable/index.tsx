@@ -72,6 +72,10 @@ const ExtractionTable = (props: any, ref) => {
   const firstMarkId = initLabels && initLabels.length > 0 && initLabels[0].id;
   const summary = file[key][activeSection][0].comprehendMedical[entity] && file[key][activeSection][0].comprehendMedical[entity].Summary || {};
 
+  const initSoaResult = file[key][activeSection][0].soaResult || [];
+  const [tableCollection, setTableCollection] = useState(initSoaResult);
+
+
   useEffect(() => {
     const getAllEntityTypes = (obj, sections, entity) => {
       const summaryCollection = [];
@@ -105,6 +109,7 @@ const ExtractionTable = (props: any, ref) => {
     setWordsCollection(
       file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label
     );
+    setTableCollection(file[key][activeSection][0].soaResult&&file[key][activeSection][0].soaResult)
     const paramBody = {
       [key]: {
         [activeSection]: [
@@ -125,6 +130,7 @@ const ExtractionTable = (props: any, ref) => {
 
   useEffect(() => {
     props.updateCurrentEntity(entity);
+    console.log(tableCollection);
   }, []);
 
   useEffect(() => {
@@ -277,7 +283,7 @@ const ExtractionTable = (props: any, ref) => {
               </p>
               <div className="entity-types filterable">
                 <div className="type-item-activity">
-                   Schedule of Activities&nbsp;(<span>{10}</span>)
+                  Medical Condition&nbsp;(<span>{tableCollection&&tableCollection.length}</span>)
                 </div>
               </div>
             </div>
@@ -289,7 +295,7 @@ const ExtractionTable = (props: any, ref) => {
                     {
                         content.map((item, index) => {
                           return (
-                            index < 2? (
+                            index < 1? (
                               <tr>
                               {
                                 item.map((iten, indey) => {
@@ -305,7 +311,23 @@ const ExtractionTable = (props: any, ref) => {
                                 item.map((iten, indey) => {
                                   return (
                                     indey < 1? (
-                                      <td>{iten}</td>
+                                      tableCollection.filter(function(currentValue, index, arr){
+                                        return currentValue.key === iten;
+                                    }).length?(
+                                      <td>
+                                        <mark>
+                                          <span className="key-word">
+                                          {tableCollection.filter(function(currentValue, index, arr){
+                                        return currentValue.key === iten})[0].value}
+                                          </span>
+                                          <span className="cate-label">
+                                          {`Medical Condition (${tableCollection.filter(function(currentValue, index, arr){
+                                        return currentValue.key === iten})[0].key})`}
+                                          </span>
+                                        </mark>
+                                    </td>
+                                    ):
+                                      (<td>{iten}</td>)
                                     ) :(
                                       iten.startsWith("X") ? (
                                         <td>
@@ -356,24 +378,26 @@ const ExtractionTable = (props: any, ref) => {
                 value={searchTxt}
               />
             </div>
-            <div className="legend">
-              <span className="legend-item">
-                <img src={SuccessIcon} alt="" />
-                &ge; 80% confidence
-              </span>
-              <span className="legend-item">
-                <img src={WarnIcon} alt="" />
-                &lt; 80% confidence
-              </span>
+            <div className="summary">
+              <p>
+                Entity types identified in the text below. Select on an entity
+                type to filter the document.
+              </p>
+              <div className="entity-types filterable">
+                <div className="type-item-activity">
+                Medical Condition&nbsp;(<span>{tableCollection&&tableCollection.length}</span>)
+                </div>
+              </div>
             </div>
             {Array.isArray(content) ? (
               <div className="content-table-extraction">
+                <div className="content-table-title">Schedule of Activities:</div>
                 <table>
                   <tbody>
                     {
                         content.map((item, index) => {
                           return (
-                            index < 2? (
+                            index < 1? (
                               <tr>
                               {
                                 item.map((iten, indey) => {
@@ -389,7 +413,23 @@ const ExtractionTable = (props: any, ref) => {
                                 item.map((iten, indey) => {
                                   return (
                                     indey < 1? (
-                                      <td>{iten}</td>
+                                      tableCollection.filter(function(currentValue, index, arr){
+                                        return currentValue.key === iten;
+                                    }).length?(
+                                      <td>
+                                        <mark>
+                                          <span className="key-word">
+                                          {tableCollection.filter(function(currentValue, index, arr){
+                                        return currentValue.key === iten})[0].value}
+                                          </span>
+                                          <span className="cate-label">
+                                          {`Medical Condition (${tableCollection.filter(function(currentValue, index, arr){
+                                        return currentValue.key === iten})[0].key})`}
+                                          </span>
+                                        </mark>
+                                    </td>
+                                    ):
+                                      (<td>{iten}</td>)
                                     ) :(
                                       iten.startsWith("X") ? (
                                         <td>

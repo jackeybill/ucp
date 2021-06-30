@@ -158,6 +158,32 @@
         text-align: center;
       }
       }
+      mark {
+        position: relative;
+        display: inline-block;
+        vertical-align: text-top;
+        margin-top: -5px;
+        span {
+          white-space: nowrap;
+        }
+    
+        .key-word {
+          font-size: 12px;
+          font-weight: 600;
+          border-color: #9EDB85;
+        }
+        .score-icon {
+          position: absolute;
+          top: 50%;
+          right: 0;
+          transform: translateY(-50%);
+        }
+        .cate-label {
+          font-size: 10px;
+          display: block;
+          font-weight: normal;
+        }
+      }
     }
   }
 }
