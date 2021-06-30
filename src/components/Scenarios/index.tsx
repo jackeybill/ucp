@@ -1,10 +1,11 @@
 import React, { useState, useReducer,useEffect } from "react";
 import { withRouter } from "react-router";
 import { Tooltip, Modal, Button, Row, Col, Input, Drawer,Checkbox } from "antd";
-import { updateStudy } from "../../utils/ajax-proxy";
+import { updateStudy,getStudy } from "../../utils/ajax-proxy";
 import Scatter from "../Chart";
 import addIcon from "../../assets/add.svg";
 import "./index.scss";
+import { debug } from "console";
 
 const { TextArea } = Input;
 
@@ -32,12 +33,13 @@ const SceneriosDashbaord = (props: any) => {
     (state, newState) => ({ ...state, ...newState }),
     { ...initialStates }
   );
-  const [scenarioList, setScenarioList] = useState(props.record.scenarios)
-  console.log('------props scenario list----',props.record.scenarios)
+  const [scenarioList, setScenarioList] = useState([])
   
-  // useEffect(() => {
-  //   setScenarioList(props.record.scenarios)
-  // }, [props.record.scenarios])
+  useEffect(() => {
+    setScenarioList(JSON.parse(JSON.stringify(props.record.scenarios)))
+  }, [props.record.scenarios])
+
+
 
   const renderTitle = () => {
     return (
@@ -135,25 +137,29 @@ const SceneriosDashbaord = (props: any) => {
   const onRationaleChange = (e, idx) => {  
     const tmpList = scenarioList.slice(0)
     tmpList[idx].rationale = e.target.value
-    setScenarioList(tmpList) 
+    setScenarioList(tmpList)
+
   }
   const showCompleteModule = (type) => {
     setCompleteModuleVisible(true)
     setScenarioType(type)
-    console.log('props-----',props.record)
   }
 
   const handleCompleteModule = async() => {
-    const tempTrial = props.record
-    // console.log()
+    const tempTrial =JSON.parse(JSON.stringify(props.record)) 
     tempTrial.scenarios = scenarioList
-    console.log('----', tempTrial)
+    const trialId=tempTrial["_id"]
     
-     const resp = await updateStudy(tempTrial);
+    const resp = await updateStudy(tempTrial);
     if (resp.statusCode == 200) {
-        setCompleteModuleVisible(false)
+      props.updateRecord(tempTrial)
+      const study = await getStudy(trialId)
+      if (study.statusCode == 200) {
+        const newScenarios = study.body.scenarios
+        setScenarioList(newScenarios)
+        setCompleteModuleVisible(false)  
       }
-    
+    }  
   }
   const cancelCompleteModule = () => {
     setCompleteModuleVisible(false)
@@ -271,20 +277,24 @@ const SceneriosDashbaord = (props: any) => {
           ) : (
             <div className="bottom">Duis pretium gravida enim,</div>
           )}
-          <div className="item-wrapper average-item">
-            <div className="scenario-item">
-              <div className="title average-title">
-                Average from Similar Historical Trials
-              </div>
-              <div className="item-values average">
-                <div>40%</div>
-                <div>18%</div>
-                <div>40</div>
-                <div>$15-20M</div>
-                <div></div>
-              </div>
-            </div>
-          </div>
+          {
+            props.record.scenarios.length > 0 && (
+              <div className="item-wrapper average-item">
+                <div className="scenario-item">
+                  <div className="title average-title">
+                    Average from Similar Historical Trials
+                  </div>
+                  <div className="item-values average">
+                    <div>40%</div>
+                    <div>18%</div>
+                    <div>40</div>
+                    <div>$15-20M</div>
+                    <div></div>
+                  </div>
+                </div>
+              </div>        
+            )
+          }       
         </div>
         <div className="module-item">
           <div className="top">
@@ -427,19 +437,19 @@ const SceneriosDashbaord = (props: any) => {
                       </span>
                     </div>
                     <div className="scenario-col">
-                      3<span className="status poor">poor</span>
+                      { scenario["protocol_amendment_rate"]}<span className="status poor">poor</span>
                     </div>
                     <div className="scenario-col">
-                      4<span className="status poor">poor</span>
+                       { scenario['screen_failure_rate']}<span className="status poor">poor</span>
                     </div>
                     <div className="scenario-col">
-                      5<span className="status poor">poor</span>
+                       { scenario['patient_burden']}<span className="status poor">poor</span>
                     </div>
                     <div className="scenario-col">
-                      6<span className="status poor">poor</span>
+                       { scenario['cost']}<span className="status poor">poor</span>
                     </div>
                   </div>
-                  {scenario.hasOwnProperty("rationale") ? (
+                  {scenario.rationale!==undefined ? (
                     <div className="rationale-mark">
                       <span>Provide Rationale</span>
                       <div>

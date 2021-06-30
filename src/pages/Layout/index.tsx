@@ -4,7 +4,6 @@ import { Layout, Popconfirm, Tabs, Menu, Input, Breadcrumb } from "antd";
 import { SearchOutlined, HomeOutlined } from "@ant-design/icons";
 import TrialPortfolio from "../TrialPortfolio";
 import FooterCompt from '../../components/Footer';
-import TrialDesign from "../TrialDesign";
 import ScenarioPage from '../ScenarioPage';
 import Logo from "../../assets/pwc-logo-white.svg";
 import Cookies from "js-cookie";

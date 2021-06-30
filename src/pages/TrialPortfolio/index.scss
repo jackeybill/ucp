@@ -226,11 +226,9 @@
 }
 
 .new-trial-wrapper {
-  display: flex;
   .navigation-bar {
-    min-width: 200px;
-    padding-right: 10px;
-    border-right: 1px solid #eeeeee;
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 10px;
   }
   .navigation-title {
     color: #333333;
@@ -241,11 +239,37 @@
   .main-content {
     flex: 1;
     padding-left: 20px;
+    padding-top: 15px;
     .title {
       color: #333333;
       font-weight: 600;
       margin-bottom: 30px;
       display: block;
     }
+  }
+}
+.navigation-bar {
+  .ant-steps-label-vertical .ant-steps-item-content {
+    margin-top: 2px;
+  }
+  .ant-steps-item .ant-steps-item-title {
+    font-size: 12px;
+  }
+  .ant-steps-item-finish
+    > .ant-steps-item-container
+    > .ant-steps-item-tail::after {
+    background-color: $theme-color;
+  }
+  .ant-steps-item-finish
+    .ant-steps-item-icon
+    > .ant-steps-icon
+    .ant-steps-icon-dot {
+    background: $theme-color;
+  }
+  .ant-steps-item-process
+    .ant-steps-item-icon
+    > .ant-steps-icon
+    .ant-steps-icon-dot {
+    background: $theme-color;
   }
 }

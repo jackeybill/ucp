@@ -260,7 +260,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       },
       legend: {
         x: "left",
-        y: "50%",
+        y: "60%",
         itemHeight: 7,
         textStyle: {
           fontSize: 8,

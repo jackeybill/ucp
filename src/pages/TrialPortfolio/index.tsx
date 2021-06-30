@@ -9,7 +9,8 @@ import {
   Spin,
   Breadcrumb,
   Drawer,
-  Timeline
+  Timeline,
+  Steps
 } from "antd";
 import Cookies from "js-cookie";
 import {
@@ -43,6 +44,7 @@ import "./index.scss";
 const { Search } = Input;
 const { TextArea } = Input;
 const { Option } = Select;
+const { Step } = Steps;
 export const phase_options = [
   "All",
   "Early Phase 1",
@@ -84,6 +86,8 @@ const initialCount = {
 };
 
 const timeline = ["Trial Summary", "Trial Endpoints", "Similar Historical Trials","Team Members"]
+
+const steps = ["Trial Summary", "Trial Endpoints", "Similar Historical Trials","Team Members"]
 
 const initialStates = {
   trial_title: "",
@@ -341,10 +345,6 @@ const TrialPortfolio = (props) => {
                   <span className="status">COMPLETED</span>
                 </div>
               </div>
-              {/* <div className="add-btn" onClick={() => setVisible(true)}>
-                <PlusCircleOutlined />
-                New Trial
-              </div> */}
             </div>
           </div>
 
@@ -432,7 +432,7 @@ const TrialPortfolio = (props) => {
               onInputChange={handleTrialInputChange}
               onSelectChange={handleTrialSelectChange}
             />
-            <Scenarios record={trial} />
+              <Scenarios record={trial} updateRecord={(t)=>setTrial(t)}/>
           </div>
         </>
       )}
@@ -461,12 +461,15 @@ const TrialPortfolio = (props) => {
       >
         <div className="new-trial-wrapper">
           <div className="navigation-bar">
-            <span className="navigation-title">Steps</span>
-            <Timeline>
-              {
-                timeline.map((t, idx) => <Timeline.Item color={ idx==step?"#ca4a04":"gray"} className={idx==step?"current-step":""} key={t}> {t}</Timeline.Item> )
-              }
-            </Timeline>    
+            <Steps
+              current={step}
+              progressDot={(dot, { status, index }) => (
+               <span>
+                {dot}
+              </span>
+            )}>
+              {timeline.map((t, idx) =><Step title={t} key={t}/>)}
+            </Steps>
           </div>
           <div className="main-content">
             <span className="title">{timeline[step]}</span>         
