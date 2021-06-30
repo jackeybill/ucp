@@ -37,6 +37,9 @@ const SectionText = (props: SectionTextIF) => {
             const sectionTxt =
             props.fileReader.file[key][s] && (props.fileReader.file[key][s].length > 0 && props.fileReader.file[key][s][0].content.toString() !== "[object Object]"? props.fileReader.file[key][s][0].content
                 : "")                
+            const tableTxt =
+            props.fileReader.file[key][s] && (props.fileReader.file[key][s].length > 0 && props.fileReader.file[key][s][0].content.toString() !== "[object Object]" && displayTitle.label == "SCHEDULE OF ACTIVITIES"? props.fileReader.file[key][s][0].table
+                : "")                
             // if (displayTitle && displayTitle.label == exceptionLabel) {
             //   inclusionTxt = props.fileReader.file[key]["inclusionCriteria"][0].content
             //   exclusionTxt = props.fileReader.file[key]["exclusionCriteria"][0].content
@@ -47,7 +50,7 @@ const SectionText = (props: SectionTextIF) => {
                   {displayTitle && displayTitle.label}
                 </div>
                 <div className="section-content">
-                  {displayTitle && displayTitle.label == "SCHEDULE OF ACTIVITIES" &&Array.isArray(sectionTxt)? (
+                  {displayTitle && displayTitle.label == "SCHEDULE OF ACTIVITIES" &&Array.isArray(tableTxt)? (
                     // <>
                     //   <div className="inclusion-txt">{inclusionTxt}</div>
                     //   <div><pre>{exclusionTxt}</pre> </div>
@@ -57,7 +60,7 @@ const SectionText = (props: SectionTextIF) => {
                         <table>
                           <tbody>
                             {
-                                sectionTxt.map((item, index) => {
+                                tableTxt.map((item, index) => {
                                   return (
                                     index < 2? (
                                       <tr>

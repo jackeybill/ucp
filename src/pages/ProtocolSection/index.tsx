@@ -19,6 +19,7 @@ import { saveSvgAsPng } from "save-svg-as-png";
 import { submitText } from "../../utils/ajax-proxy";
 import SectionText from "../../components/SectionsText";
 import Extraction from "../../components/Extraction";
+import ExtractionTable from "../../components/ExtractionTable";
 import * as fileActions from "../../actions/file.js";
 import "./index.scss";
 
@@ -80,8 +81,12 @@ const ProtocolSection = (props: any) => {
   useEffect(() => {
     if (props.fileReader.activeTabKey == "ENTITY RELATIONSHIPS") {
       setFormatOptions(relationshipExportOptions);
+      setSections(initSelectedSections.filter( function(currentValue){
+        return currentValue !== "scheduleActivities"
+      } ))
     } else {
       setFormatOptions(defaultExportOptions);
+      setSections(initSelectedSections)
     }
   }, [props.fileReader.activeTabKey]);
 
@@ -189,7 +194,7 @@ const ProtocolSection = (props: any) => {
 
   const onHandleActiveSection = (s) => {
     setProtocolSection("sections");
-    setActiveSection(s);
+    setActiveSection(s);    
   };
 
   const onRadioChange = (e) => {
@@ -380,9 +385,17 @@ const ProtocolSection = (props: any) => {
               fileReader={props.fileReader}
             />
           )}
-          {props.location.pathname == "/extraction" && (
+          {props.location.pathname === "/extraction" && activeSection !== "scheduleActivities"&& (
             <>
               <Extraction
+                updateCurrentEntity={updateCurrentEntity}
+                activeSection={activeSection ? activeSection : sections[0]}
+              />
+            </>
+          )}
+          {props.location.pathname === "/extraction" && activeSection === "scheduleActivities"&& (
+            <>
+              <ExtractionTable
                 updateCurrentEntity={updateCurrentEntity}
                 activeSection={activeSection ? activeSection : sections[0]}
               />
@@ -432,7 +445,7 @@ const ProtocolSection = (props: any) => {
                   PREV: ENTITY RECOGNITION
                 </Button>
               )}
-              {activeTabKey == "VALIDATION" && (
+              {activeTabKey == "VALIDATION" && activeSection !== "scheduleActivities" &&(
                 <Button
                 className="previous-btn"
                 onClick={() => props.readFile({ activeTabKey: "ENTITY RELATIONSHIPS" })} 
@@ -440,14 +453,30 @@ const ProtocolSection = (props: any) => {
                   PREV: ENTITY RELATIONSHIPS
                 </Button>
               )}
+              {activeTabKey == "VALIDATION" && activeSection === "scheduleActivities" &&(
+               <Button
+               className="previous-btn"
+               onClick={() => props.readFile({ activeTabKey: "ENTITY RECOGNITION" })}  
+               >
+                 PREV: ENTITY RECOGNITION
+               </Button>
+              )}
              <div className="right_area">
-                {activeTabKey == "ENTITY RECOGNITION" && (
+                {activeTabKey == "ENTITY RECOGNITION" && activeSection !== "scheduleActivities" &&(
                    <Button
                     className="next-btn"
                     onClick={() => props.readFile({ activeTabKey: "ENTITY RELATIONSHIPS" })} 
                   >
                     NEXT: ENTITY RELATIONSHIPS
                   </Button>
+                )}
+                {activeTabKey == "ENTITY RECOGNITION" && activeSection === "scheduleActivities" &&(
+                   <Button
+                   className="next-btn"
+                   onClick={() => props.readFile({ activeTabKey: "VALIDATION" })} 
+                 >
+                   NEXT: VALIDATION
+                 </Button>
                 )}
                 {activeTabKey == "ENTITY RELATIONSHIPS" && (
                       <Button
