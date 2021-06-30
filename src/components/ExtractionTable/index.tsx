@@ -283,7 +283,7 @@ const ExtractionTable = (props: any, ref) => {
               </p>
               <div className="entity-types filterable">
                 <div className="type-item-activity">
-                  Medical Condition&nbsp;(<span>{tableCollection&&tableCollection.length}</span>)
+                Schedule of Activities&nbsp;(<span>{tableCollection&&tableCollection.length}</span>)
                 </div>
               </div>
             </div>
@@ -321,7 +321,7 @@ const ExtractionTable = (props: any, ref) => {
                                         return currentValue.key === iten})[0].value}
                                           </span>
                                           <span className="cate-label">
-                                          {`Medical Condition (${tableCollection.filter(function(currentValue, index, arr){
+                                          {`Schedule of Activities (${tableCollection.filter(function(currentValue, index, arr){
                                         return currentValue.key === iten})[0].key})`}
                                           </span>
                                         </mark>
@@ -385,7 +385,7 @@ const ExtractionTable = (props: any, ref) => {
               </p>
               <div className="entity-types filterable">
                 <div className="type-item-activity">
-                Medical Condition&nbsp;(<span>{tableCollection&&tableCollection.length}</span>)
+                Schedule of Activities&nbsp;(<span>{tableCollection&&tableCollection.length}</span>)
                 </div>
               </div>
             </div>
@@ -423,7 +423,7 @@ const ExtractionTable = (props: any, ref) => {
                                         return currentValue.key === iten})[0].value}
                                           </span>
                                           <span className="cate-label">
-                                          {`Medical Condition (${tableCollection.filter(function(currentValue, index, arr){
+                                          {`Schedule of Activities (${tableCollection.filter(function(currentValue, index, arr){
                                         return currentValue.key === iten})[0].key})`}
                                           </span>
                                         </mark>
