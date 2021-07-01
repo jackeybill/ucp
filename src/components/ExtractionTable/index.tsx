@@ -74,6 +74,7 @@ const ExtractionTable = (props: any, ref) => {
 
   const initSoaResult = file[key][activeSection][0].soaResult || [];
   const [tableCollection, setTableCollection] = useState(initSoaResult);
+  const soaSummary = file[key][activeSection][0].soaSummary && file[key][activeSection][0].soaSummary || {};
 
 
   useEffect(() => {
@@ -282,9 +283,36 @@ const ExtractionTable = (props: any, ref) => {
                 type to filter the document.
               </p>
               <div className="entity-types filterable">
-                <div className="type-item-activity">
-                Schedule of Activities&nbsp;(<span>{tableCollection&&tableCollection.length}</span>)
+                {file[key][activeSection][0].soaSummary?(
+                  <>
+                    <div
+                  className={`type-item ALL ${
+                    activeType == "" ? "active" : ""
+                  }`}
+                  key="all"
+                  onClick={() => onChangeActiveType("")}
+                >
+                  All
                 </div>
+                {Object.entries(soaSummary) &&
+                  Object.entries(soaSummary).map((s: any) => {
+                    return (
+                      <div
+                        className={`type-item ${s[0]} ${
+                          s[0] == activeType ? "active" : ""
+                        }`}
+                        key={s[0]}
+                        onClick={() => onChangeActiveType(s[0])}
+                      >
+                        {formatWord(s[0])}&nbsp;(<span>{s[1]}</span>)
+                      </div>
+                    );
+                  })}
+                  </>
+                ):
+                (<div className="type-item-activity">
+                Schedule of Activities&nbsp;<span>({tableCollection&&tableCollection.length})</span>
+                </div>)}
               </div>
             </div>
             {Array.isArray(content) ? (
@@ -300,7 +328,18 @@ const ExtractionTable = (props: any, ref) => {
                               {
                                 item.map((iten, indey) => {
                                   return (
-                                    <td>{iten}</td>
+                                    <td>
+                                      <span className={`key-word ${
+                                        searchTxt &&
+                                        iten
+                                          .toLowerCase()
+                                          .indexOf(searchTxt.toLowerCase()) > -1
+                                          ? "matched-word"
+                                          : ""
+                                      } `}>
+                                        {iten}
+                                      </span>
+                                    </td>
                                   )
                                 })
                               }
@@ -313,21 +352,62 @@ const ExtractionTable = (props: any, ref) => {
                                     indey < 1? (
                                       tableCollection.filter(function(currentValue, index, arr){
                                         return currentValue.key === iten;
-                                    }).length?(
+                                    }).length && tableCollection.filter(function(currentValue, index, arr){
+                                      return currentValue.key === iten;
+                                  })[0].category === activeType ||
+                                  activeType === ""?(
+                                    tableCollection.filter(function(currentValue, index, arr){
+                                      return currentValue.key === iten;
+                                  }).length?(
                                       <td>
-                                        <mark>
-                                          <span className="key-word">
-                                          {tableCollection.filter(function(currentValue, index, arr){
-                                        return currentValue.key === iten})[0].value}
-                                          </span>
-                                          <span className="cate-label">
-                                          {`Schedule of Activities (${tableCollection.filter(function(currentValue, index, arr){
-                                        return currentValue.key === iten})[0].key})`}
-                                          </span>
-                                        </mark>
+                                      <mark>
+                                        <span className={`key-word ${tableCollection.filter(function(currentValue, index, arr){return currentValue.key === iten})[0].category} ${
+                                        searchTxt &&
+                                        tableCollection.filter(function(currentValue, index, arr){
+                                          return currentValue.key === iten})[0].key.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
+                                          ? "matched-word"
+                                          : ""
+                                      }`}>
+                                        {tableCollection.filter(function(currentValue, index, arr){
+                                      return currentValue.key === iten})[0].key}
+                                        </span>
+                                        <span className={`cate-label ${
+                                          searchTxt &&
+                                          tableCollection.filter(function(currentValue, index, arr){ return currentValue.key === iten })[0].value.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
+                                            ? "matched-word"
+                                            : ""
+                                        }`}>
+                                          {`${tableCollection.filter(function(currentValue, index, arr){return currentValue.key === iten})[0].category?formatWord(tableCollection.filter(function(currentValue, index, arr){return currentValue.key === iten})[0].category):"Schedule of activity"} (${tableCollection.filter(function(currentValue, index, arr){ return currentValue.key === iten })[0].value})`}
+                                        </span>
+                                      </mark>
                                     </td>
+                                     ):(
+                                      <td>
+                                        <span className={`key-word ${
+                                          searchTxt &&
+                                          iten
+                                            .toLowerCase()
+                                            .indexOf(searchTxt.toLowerCase()) > -1
+                                            ? "matched-word"
+                                            : ""
+                                        } `}>
+                                          {iten}
+                                        </span>
+                                      </td>
+                                     )
                                     ):
-                                      (<td>{iten}</td>)
+                                      (<td>
+                                        <span className={`key-word ${
+                                          searchTxt &&
+                                          iten
+                                            .toLowerCase()
+                                            .indexOf(searchTxt.toLowerCase()) > -1
+                                            ? "matched-word"
+                                            : ""
+                                        } `}>
+                                          {iten}
+                                        </span>
+                                      </td>)
                                     ) :(
                                       iten.startsWith("X") ? (
                                         <td>
@@ -335,7 +415,18 @@ const ExtractionTable = (props: any, ref) => {
                                           {/* {iten.substr(1)} */}
                                         </td>
                                       ) : (
-                                        <td>{iten}</td>
+                                        <td>
+                                        <span className={`key-word ${
+                                          searchTxt &&
+                                          iten
+                                            .toLowerCase()
+                                            .indexOf(searchTxt.toLowerCase()) > -1
+                                            ? "matched-word"
+                                            : ""
+                                        } `}>
+                                          {iten}
+                                        </span>
+                                      </td>
                                       )
                                     )
                                   )
@@ -384,9 +475,36 @@ const ExtractionTable = (props: any, ref) => {
                 type to filter the document.
               </p>
               <div className="entity-types filterable">
-                <div className="type-item-activity">
-                Schedule of Activities&nbsp;(<span>{tableCollection&&tableCollection.length}</span>)
+                {file[key][activeSection][0].soaSummary?(
+                  <>
+                    <div
+                  className={`type-item ALL ${
+                    activeType == "" ? "active" : ""
+                  }`}
+                  key="all"
+                  onClick={() => onChangeActiveType("")}
+                >
+                  All
                 </div>
+                {Object.entries(soaSummary) &&
+                  Object.entries(soaSummary).map((s: any) => {
+                    return (
+                      <div
+                        className={`type-item ${s[0]} ${
+                          s[0] == activeType ? "active" : ""
+                        }`}
+                        key={s[0]}
+                        onClick={() => onChangeActiveType(s[0])}
+                      >
+                        {formatWord(s[0])}&nbsp;(<span>{s[1]}</span>)
+                      </div>
+                    );
+                  })}
+                  </>
+                ):
+                (<div className="type-item-activity">
+                Schedule of Activities&nbsp;<span>({tableCollection&&tableCollection.length})</span>
+                </div>)}
               </div>
             </div>
             {Array.isArray(content) ? (
@@ -402,7 +520,18 @@ const ExtractionTable = (props: any, ref) => {
                               {
                                 item.map((iten, indey) => {
                                   return (
-                                    <td>{iten}</td>
+                                    <td>
+                                        <span className={`key-word ${
+                                          searchTxt &&
+                                          iten
+                                            .toLowerCase()
+                                            .indexOf(searchTxt.toLowerCase()) > -1
+                                            ? "matched-word"
+                                            : ""
+                                        } `}>
+                                          {iten}
+                                        </span>
+                                      </td>
                                   )
                                 })
                               }
@@ -415,21 +544,60 @@ const ExtractionTable = (props: any, ref) => {
                                     indey < 1? (
                                       tableCollection.filter(function(currentValue, index, arr){
                                         return currentValue.key === iten;
-                                    }).length?(
+                                    }).length && tableCollection.filter(function(currentValue, index, arr){
+                                      return currentValue.key === iten;
+                                  })[0].category === activeType ||
+                                  activeType === ""?(
+                                    tableCollection.filter(function(currentValue, index, arr){
+                                      return currentValue.key === iten;
+                                  }).length?(
                                       <td>
-                                        <mark>
-                                          <span className="key-word">
-                                          {tableCollection.filter(function(currentValue, index, arr){
-                                        return currentValue.key === iten})[0].value}
-                                          </span>
-                                          <span className="cate-label">
-                                          {`Schedule of Activities (${tableCollection.filter(function(currentValue, index, arr){
-                                        return currentValue.key === iten})[0].key})`}
-                                          </span>
-                                        </mark>
+                                      <mark>
+                                        <span className={`key-word ${tableCollection.filter(function(currentValue, index, arr){return currentValue.key === iten})[0].category} ${
+                                        searchTxt &&
+                                        tableCollection.filter(function(currentValue, index, arr){
+                                          return currentValue.key === iten})[0].key.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
+                                          ? "matched-word"
+                                          : ""
+                                      }`}>
+                                        {tableCollection.filter(function(currentValue, index, arr){
+                                      return currentValue.key === iten})[0].key}
+                                        </span>
+                                        <span className="cate-label">
+                                        {`${tableCollection.filter(function(currentValue, index, arr){
+                                      return currentValue.key === iten})[0].category?formatWord(tableCollection.filter(function(currentValue, index, arr){
+                                      return currentValue.key === iten})[0].category):"Schedule of activity"} (${tableCollection.filter(function(currentValue, index, arr){
+                                      return currentValue.key === iten})[0].value})`}
+                                        </span>
+                                      </mark>
                                     </td>
+                                     ):(
+                                      <td>
+                                        <span className={`key-word ${
+                                          searchTxt &&
+                                          iten
+                                            .toLowerCase()
+                                            .indexOf(searchTxt.toLowerCase()) > -1
+                                            ? "matched-word"
+                                            : ""
+                                        } `}>
+                                          {iten}
+                                        </span>
+                                      </td>
+                                     )
                                     ):
-                                      (<td>{iten}</td>)
+                                      (<td>
+                                        <span className={`key-word ${
+                                          searchTxt &&
+                                          iten
+                                            .toLowerCase()
+                                            .indexOf(searchTxt.toLowerCase()) > -1
+                                            ? "matched-word"
+                                            : ""
+                                        } `}>
+                                          {iten}
+                                        </span>
+                                      </td>)
                                     ) :(
                                       iten.startsWith("X") ? (
                                         <td>
@@ -437,7 +605,18 @@ const ExtractionTable = (props: any, ref) => {
                                           {/* {iten.substr(1)} */}
                                         </td>
                                       ) : (
-                                        <td>{iten}</td>
+                                        <td>
+                                        <span className={`key-word ${
+                                          searchTxt &&
+                                          iten
+                                            .toLowerCase()
+                                            .indexOf(searchTxt.toLowerCase()) > -1
+                                            ? "matched-word"
+                                            : ""
+                                        } `}>
+                                          {iten}
+                                        </span>
+                                      </td>
                                       )
                                     )
                                   )
