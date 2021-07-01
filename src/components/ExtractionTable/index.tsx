@@ -75,6 +75,18 @@ const ExtractionTable = (props: any, ref) => {
   const initSoaResult = file[key][activeSection][0].soaResult || [];
   const [tableCollection, setTableCollection] = useState(initSoaResult);
   const soaSummary = file[key][activeSection][0].soaSummary && file[key][activeSection][0].soaSummary || {};
+  const soaEntity = (iten) => {
+    return tableCollection.filter(function(currentValue, index, arr){
+      return currentValue.key === iten;
+    })
+  }
+  const matchWord = (iten) => {
+    return iten
+    .toLowerCase()
+    .indexOf(searchTxt.toLowerCase()) > -1
+    ? "matched-word"
+    : ""
+  }
 
 
   useEffect(() => {
@@ -194,6 +206,7 @@ const ExtractionTable = (props: any, ref) => {
       setEntity("Entities");
     }
     props.readFile({ activeTabKey: key });
+    setActiveType("")
   }
 
   const handleSaveContent = async (
@@ -350,64 +363,36 @@ const ExtractionTable = (props: any, ref) => {
                                 item.map((iten, indey) => {
                                   return (
                                     indey < 1? (
-                                      tableCollection.filter(function(currentValue, index, arr){
-                                        return currentValue.key === iten;
-                                    }).length && tableCollection.filter(function(currentValue, index, arr){
-                                      return currentValue.key === iten;
-                                  })[0].category === activeType ||
-                                  activeType === ""?(
-                                    tableCollection.filter(function(currentValue, index, arr){
-                                      return currentValue.key === iten;
-                                  }).length?(
-                                      <td>
-                                      <mark>
-                                        <span className={`key-word ${tableCollection.filter(function(currentValue, index, arr){return currentValue.key === iten})[0].category} ${
-                                        searchTxt &&
-                                        tableCollection.filter(function(currentValue, index, arr){
-                                          return currentValue.key === iten})[0].key.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
-                                          ? "matched-word"
-                                          : ""
-                                      }`}>
-                                        {tableCollection.filter(function(currentValue, index, arr){
-                                      return currentValue.key === iten})[0].key}
-                                        </span>
-                                        <span className={`cate-label ${
-                                          searchTxt &&
-                                          tableCollection.filter(function(currentValue, index, arr){ return currentValue.key === iten })[0].value.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
-                                            ? "matched-word"
-                                            : ""
-                                        }`}>
-                                          {`${tableCollection.filter(function(currentValue, index, arr){return currentValue.key === iten})[0].category?formatWord(tableCollection.filter(function(currentValue, index, arr){return currentValue.key === iten})[0].category):"Schedule of activity"} (${tableCollection.filter(function(currentValue, index, arr){ return currentValue.key === iten })[0].value})`}
-                                        </span>
-                                      </mark>
-                                    </td>
-                                     ):(
-                                      <td>
-                                        <span className={`key-word ${
-                                          searchTxt &&
-                                          iten
-                                            .toLowerCase()
-                                            .indexOf(searchTxt.toLowerCase()) > -1
-                                            ? "matched-word"
-                                            : ""
-                                        } `}>
-                                          {iten}
-                                        </span>
-                                      </td>
-                                     )
-                                    ):
-                                      (<td>
-                                        <span className={`key-word ${
-                                          searchTxt &&
-                                          iten
-                                            .toLowerCase()
-                                            .indexOf(searchTxt.toLowerCase()) > -1
-                                            ? "matched-word"
-                                            : ""
-                                        } `}>
-                                          {iten}
-                                        </span>
-                                      </td>)
+                                      soaEntity(iten).length && soaEntity(iten)[0].category === activeType || activeType === ""?(
+                                        soaEntity(iten).length?(
+                                        <td>
+                                         <mark>
+                                          <span className={`key-word ${soaEntity(iten)[0].category} ${
+                                          searchTxt && matchWord(soaEntity(iten)[0].key)}`}>
+                                            {soaEntity(iten)[0].key}
+                                          </span>
+                                          <span className={`cate-label ${searchTxt && matchWord(soaEntity(iten)[0].value)}`}>
+                                              {`${soaEntity(iten)[0].category?formatWord(soaEntity(iten)[0].category):"Schedule of activity"} (${soaEntity(iten)[0].value})`}
+                                          </span>
+                                        </mark>
+                                        </td>
+                                        ):(
+                                          <td>
+                                            <span className={`key-word ${
+                                              searchTxt && matchWord(iten) } `}>
+                                              {iten}
+                                            </span>
+                                          </td>
+                                        )
+                                      ):
+                                      (
+                                        <td>
+                                          <span className={`key-word ${
+                                            searchTxt && matchWord(iten)} `}>
+                                            {iten}
+                                          </span>
+                                        </td>
+                                      )
                                     ) :(
                                       iten.startsWith("X") ? (
                                         <td>
@@ -416,17 +401,11 @@ const ExtractionTable = (props: any, ref) => {
                                         </td>
                                       ) : (
                                         <td>
-                                        <span className={`key-word ${
-                                          searchTxt &&
-                                          iten
-                                            .toLowerCase()
-                                            .indexOf(searchTxt.toLowerCase()) > -1
-                                            ? "matched-word"
-                                            : ""
-                                        } `}>
-                                          {iten}
-                                        </span>
-                                      </td>
+                                          <span className={`key-word ${
+                                            searchTxt && matchWord(iten)} `}>
+                                            {iten}
+                                          </span>
+                                        </td>
                                       )
                                     )
                                   )
@@ -522,13 +501,7 @@ const ExtractionTable = (props: any, ref) => {
                                   return (
                                     <td>
                                         <span className={`key-word ${
-                                          searchTxt &&
-                                          iten
-                                            .toLowerCase()
-                                            .indexOf(searchTxt.toLowerCase()) > -1
-                                            ? "matched-word"
-                                            : ""
-                                        } `}>
+                                          searchTxt && matchWord(iten)} `}>
                                           {iten}
                                         </span>
                                       </td>
@@ -542,62 +515,39 @@ const ExtractionTable = (props: any, ref) => {
                                 item.map((iten, indey) => {
                                   return (
                                     indey < 1? (
-                                      tableCollection.filter(function(currentValue, index, arr){
-                                        return currentValue.key === iten;
-                                    }).length && tableCollection.filter(function(currentValue, index, arr){
-                                      return currentValue.key === iten;
-                                  })[0].category === activeType ||
-                                  activeType === ""?(
-                                    tableCollection.filter(function(currentValue, index, arr){
-                                      return currentValue.key === iten;
-                                  }).length?(
-                                      <td>
-                                      <mark>
-                                        <span className={`key-word ${tableCollection.filter(function(currentValue, index, arr){return currentValue.key === iten})[0].category} ${
-                                        searchTxt &&
-                                        tableCollection.filter(function(currentValue, index, arr){
-                                          return currentValue.key === iten})[0].key.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
-                                          ? "matched-word"
-                                          : ""
-                                      }`}>
-                                        {tableCollection.filter(function(currentValue, index, arr){
-                                      return currentValue.key === iten})[0].key}
-                                        </span>
-                                        <span className="cate-label">
-                                        {`${tableCollection.filter(function(currentValue, index, arr){
-                                      return currentValue.key === iten})[0].category?formatWord(tableCollection.filter(function(currentValue, index, arr){
-                                      return currentValue.key === iten})[0].category):"Schedule of activity"} (${tableCollection.filter(function(currentValue, index, arr){
-                                      return currentValue.key === iten})[0].value})`}
-                                        </span>
-                                      </mark>
-                                    </td>
-                                     ):(
-                                      <td>
-                                        <span className={`key-word ${
-                                          searchTxt &&
-                                          iten
-                                            .toLowerCase()
-                                            .indexOf(searchTxt.toLowerCase()) > -1
-                                            ? "matched-word"
-                                            : ""
-                                        } `}>
-                                          {iten}
-                                        </span>
-                                      </td>
-                                     )
-                                    ):
-                                      (<td>
-                                        <span className={`key-word ${
-                                          searchTxt &&
-                                          iten
-                                            .toLowerCase()
-                                            .indexOf(searchTxt.toLowerCase()) > -1
-                                            ? "matched-word"
-                                            : ""
-                                        } `}>
-                                          {iten}
-                                        </span>
-                                      </td>)
+                                      soaEntity(iten).length && soaEntity(iten)[0].category === activeType || activeType === ""?
+                                      (
+                                        soaEntity(iten).length?
+                                        (
+                                          <td>
+                                            <mark>
+                                              <span className={`key-word ${soaEntity(iten)[0].category} ${searchTxt && matchWord(soaEntity(iten)[0].key)}`}>
+                                                {soaEntity(iten)[0].key}
+                                              </span>
+                                              <span className="cate-label">
+                                                {`${soaEntity(iten)[0].category?
+                                                    formatWord(soaEntity(iten)[0].category):
+                                                    "Schedule of activity"} (${soaEntity(iten)[0].value})`}
+                                              </span>
+                                            </mark>
+                                          </td>
+                                        ):(
+                                          <td>
+                                            <span className={`key-word ${
+                                              searchTxt && matchWord(iten)} `}>
+                                              {iten}
+                                            </span>
+                                          </td>
+                                        )
+                                      ):
+                                      (
+                                        <td>
+                                          <span className={`key-word ${
+                                            searchTxt && matchWord(iten)} `}>
+                                            {iten}
+                                          </span>
+                                        </td>
+                                      )
                                     ) :(
                                       iten.startsWith("X") ? (
                                         <td>
@@ -606,17 +556,11 @@ const ExtractionTable = (props: any, ref) => {
                                         </td>
                                       ) : (
                                         <td>
-                                        <span className={`key-word ${
-                                          searchTxt &&
-                                          iten
-                                            .toLowerCase()
-                                            .indexOf(searchTxt.toLowerCase()) > -1
-                                            ? "matched-word"
-                                            : ""
-                                        } `}>
-                                          {iten}
-                                        </span>
-                                      </td>
+                                          <span className={`key-word ${
+                                            searchTxt && matchWord(iten)} `}>
+                                            {iten}
+                                          </span>
+                                        </td>
                                       )
                                     )
                                   )
