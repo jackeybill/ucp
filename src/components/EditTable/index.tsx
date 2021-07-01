@@ -12,10 +12,14 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
   return (
     <td {...restProps}>
       {editing ? (
+        (record['splitPart'] === undefined || (record['splitPart'] === true && title === 'Values'))?(
         <Form.Item name={dataIndex} style={{margin: 0}}
           rules={[ { required: true, message: `Please Input ${title}!` } ]} >
           {inputNode}
         </Form.Item>
+        ):(
+          children
+        )
       ) : (
         children
       )}
@@ -105,8 +109,19 @@ const EditTable = (props) => {
       const index = newData.findIndex((item) => key === item.Key);
 
       if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
+        var domian;
+        var realIndex;
+        var newFileds;
+        if(newData[index]['splitPart']){
+          realIndex = index - 1
+          domian = newData[index - 1]
+          newFileds = {'Condition Or Exception': row.Values}
+        } else {
+          realIndex = index
+          domian = newData[index]
+          newFileds = Object.assign(row)
+        }
+        newData.splice(realIndex, 1, { ...domian, ...newFileds });
         const tempData = newData.map((item, id) => {       
           return item
         })
@@ -297,15 +312,13 @@ const panelHeaderSection = (header, count) => {
       editable: true,
       render: (_, record) => {
         const editable = isEditing(record);
-        return record.splitPart ? (
-          <div><span style={{fontSize: '14px'}}>{record.Values}</span></div>
-        ) : ( editable ? (
+        return editable ? (
             <Input value={record["Values"]}/>
         ) : (
           <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
             <div><span style={{fontSize: '14px'}}>{record.Values}</span></div>
           </Typography.Link>
-        ))
+        )
       }
     }, {
       title: 'Timeframe',
@@ -329,13 +342,13 @@ const panelHeaderSection = (header, count) => {
       dataIndex: 'operation',
       render: (_, record) => {
         const editable = isEditing(record);
-        return record.splitPart ? (
-          <span></span>
-        ) : (editable ? (
+        return editable ? (
           <span style={{float:'right'}}>
             <CheckOutlined onClick={() => save(record.Key)}/> &nbsp;&nbsp;
             <CloseOutlined onClick={cancel}/>
           </span>
+        ) : (record.splitPart ? (
+          <span></span>
         ) : (
           <Popover content={<div style={{display:'grid'}}>
                       <span className="popover-action" onClick={() => handleAddSubCriteria(record)}>Add sub-criteria</span>
