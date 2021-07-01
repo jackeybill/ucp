@@ -88,6 +88,12 @@
       .STUDY_PROCEDURES {
         background-color: $STUDY_PROCEDURES;
       }
+      .QUESTIONNAIRES {
+        background-color:$QUESTIONNAIRES!important;
+      }
+      .ACTIVITY {
+        background-color:$ACTIVITY!important;
+      }
       
       .type-item-activity {
         cursor: pointer;
@@ -210,6 +216,12 @@
         }
         .STUDY_PROCEDURES {
           border-color:$STUDY_PROCEDURES!important;
+        }
+        .QUESTIONNAIRES {
+          border-color:$QUESTIONNAIRES!important;
+        }
+        .ACTIVITY {
+          border-color:$ACTIVITY!important;
         }
         .score-icon {
           position: absolute;
