@@ -339,7 +339,7 @@ const panelHeaderSection = (header, count) => {
         ) : (
           <Popover content={<div style={{display:'grid'}}>
                       <span className="popover-action" onClick={() => handleAddSubCriteria(record)}>Add sub-criteria</span>
-                      <span className="popover-action" onClick={() => editConditionOrException(record)}>Add condition or exception</span>
+                      <span className="popover-action" onClick={() => editConditionOrException(record)}>Add/Edit condition or exception</span>
                       <span className="popover-action" onClick={() => handleDelete(record)}>Delete</span>
                     </div>} 
                 title={false} placement="bottomRight">

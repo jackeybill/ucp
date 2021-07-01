@@ -36,6 +36,7 @@ const SceneriosDashbaord = (props: any) => {
   const [scenarioList, setScenarioList] = useState([])
   
   useEffect(() => {
+    console.log(props.record)
     setScenarioList(JSON.parse(JSON.stringify(props.record.scenarios)))
   }, [props.record.scenarios])
 
@@ -91,7 +92,7 @@ const SceneriosDashbaord = (props: any) => {
       const tempScenarios = props.record.scenarios
       
       if(editFlag){
-        const index = tempScenarios.indexOf((e) => e['scenario_id'] === scenarioId)
+        const index = tempScenarios.findIndex((e) => e['scenario_id'] === scenarioId)
         tempScenarios.splice(index, 1, scenario)
       } else {
         tempScenarios.push(scenario)
