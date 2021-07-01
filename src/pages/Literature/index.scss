@@ -1,0 +1,122 @@
+.literature-search-container {
+  padding: 20px;
+
+  .search-wrapper {
+    background: #ffffff;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0px 0px 6px #00000029;
+    .greeting {
+      margin-bottom: 10px;
+      display: block;
+    }
+    .input-wrapper {
+      display: flex;
+      border: 1px solid #d9d9d9;
+      .ant-input-affix-wrapper {
+        flex: 1;
+        border: none !important;
+      }
+      .ant-input-affix-wrapper:focus,
+      .ant-input-affix-wrapper-focused {
+        box-shadow: 0 0 0 2px transparent;
+      }
+
+      .customize-sufix {
+        display: flex;
+        align-items: center;
+        .total-numbers {
+          font-size: 12px;
+          color: #d5d5d5;
+        }
+
+        .sort-wrapper {
+          padding: 0 10px;
+          .ant-dropdown-trigger.ant-dropdown-link {
+            color: #000000;
+            &:hover {
+              text-decoration: none;
+            }
+          }
+        }
+        .number-wrapper {
+          border-left: 1px solid #d9d9d9;
+          padding-left: 10px;
+        }
+        .ant-input-number {
+          border: none !important;
+        }
+      }
+    }
+  }
+  .main-content {
+    display: flex;
+    background: #ffffff;
+    .sidebar {
+      background: #ffffff;
+      min-width: 260px;
+      .ant-checkbox-group {
+        display: flex;
+        flex-direction: column;
+      }
+      .filter-by {
+        padding: 12px 16px;
+      }
+    }
+    .literature-list {
+      flex: 1;
+      padding: 0 20px;
+      .article-item {
+        border: 1px solid #eeeeee;
+        padding: 10px;
+        margin-bottom: 20px;
+
+        .article-title {
+          font-size: 14px;
+          font-weight: 600;
+
+          a {
+            color: #000000;
+          }
+          .pdf-icon {
+            margin-right: 5px;
+          }
+          .tag {
+            display: inline-block;
+            padding: 0px 4px;
+            background: #000000;
+            color: #ffffff;
+            border-radius: 4px;
+            margin-left: 5px;
+            font-weight: normal;
+            font-size: 10px;
+          }
+        }
+        .article-conent {
+          padding-bottom: 30px;
+        }
+        .user-actions {
+          display: flex;
+          font-size: 12px;
+          .action-btn {
+            flex: 1;
+            display: flex;
+            .anticon {
+              margin-right: 5px;
+            }
+            .share-btn {
+              display: inline-block;
+              margin-right: 20px;
+              display: flex;
+              align-items: center;
+            }
+            .download-btn {
+              display: flex;
+              align-items: center;
+            }
+          }
+        }
+      }
+    }
+  }
+}

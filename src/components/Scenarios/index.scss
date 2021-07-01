@@ -422,8 +422,15 @@
             }
             .status {
               display: block;
+              font-size: 12px;
               &.poor {
                 color: #ca4a04;
+              }
+              &.good {
+                color: #00a947;
+              }
+              &.fair {
+                color: #0084a9;
               }
             }
           }

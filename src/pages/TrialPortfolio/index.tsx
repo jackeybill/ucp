@@ -399,9 +399,8 @@ const TrialPortfolio = (props) => {
                 <div className="add-btn" onClick={() => setVisible(true)}>
                 <PlusCircleOutlined />
                 New Trial
+                </div>              
               </div>
-                
-            </div>
             </div>
           </div>
           <Spin

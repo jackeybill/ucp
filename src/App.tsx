@@ -29,13 +29,13 @@ function App() {
              <Layout />
           </Route>
           <Route exact path="/trials">
-             <Layout />
+            <Layout />
           </Route>
-          {/* <Route exact path="/trials/design">
-             <Layout />
-          </Route> */}
+          <Route exact path="/literature">
+            <Layout/>
+          </Route>
           <Route exact path="/scenario">
-             <Layout />
+            <Layout />
           </Route>
           
           

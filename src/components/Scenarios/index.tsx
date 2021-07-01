@@ -34,10 +34,24 @@ const SceneriosDashbaord = (props: any) => {
     { ...initialStates }
   );
   const [scenarioList, setScenarioList] = useState([])
+  const [options, setOptions] = useState([])
+  const [selectedScenarios, setSelectedScenarios] = useState([])
   
   useEffect(() => {
     setScenarioList(JSON.parse(JSON.stringify(props.record.scenarios)))
+
   }, [props.record.scenarios])
+
+  // useEffect(() => {
+  //   const tmpOptions = scenarioList.map((s,idx) => {
+  //     return { label:`scenario ${idx + 1 }`, value: s }
+  //   })
+  //   console.log('----', tmpOptions)
+  //   setOptions(tmpOptions)
+  // }, [scenarioList])
+
+
+
 
 
 
@@ -126,6 +140,7 @@ const SceneriosDashbaord = (props: any) => {
   };
 
   const handleCheck = (e, idx) => {
+    console.log(e,idx)
     const tmpList = scenarioList.slice(0)
     if (e.target.checked) {
       tmpList[idx].rationale = ""
@@ -134,6 +149,12 @@ const SceneriosDashbaord = (props: any) => {
     }
     setScenarioList(tmpList) 
   }
+  const handleCheckChange = (checkedValues) => {
+    console.log('----', checkedValues)
+    
+  }
+
+
   const onRationaleChange = (e, idx) => {  
     const tmpList = scenarioList.slice(0)
     tmpList[idx].rationale = e.target.value
@@ -216,7 +237,7 @@ const SceneriosDashbaord = (props: any) => {
                 <div className="scenario-item  scenario-header">
                   <div className="title"></div>
                   <div className="item-values col-names">
-                    <div>Protocal Amendment Rate</div>
+                    <div>Protocol Amendment Rate</div>
                     <div>Screen Failure Rate</div>
                     <div>Patient Burden</div>
                     <div>Cost</div>
@@ -234,19 +255,19 @@ const SceneriosDashbaord = (props: any) => {
                         <div className="item-values">
                           <div>
                             {s["protocol_amendment_rate"]}
-                            <span className="status poor">POOR</span>
+                            <span className={`status ${s["protocol_amendment_rate_state"].toLowerCase()}`}>{s["protocol_amendment_rate_state"].toUpperCase() }</span>
                           </div>
                           <div>
                             {s["screen_failure_rate"]}
-                            <span className="status fair">FAIR</span>
+                            <span className={`status ${s["screen_failure_rate_state"].toLowerCase()}`}>{s["screen_failure_rate_state"].toUpperCase()}</span>
                           </div>
                           <div>
                             {s["patient_burden"]}
-                            <span className="status good">GOOD</span>
+                            <span className={`status ${s["patient_burden_state"].toLowerCase()}`}>{s["patient_burden_state"].toUpperCase()}</span>
                           </div>
                           <div>
                             {s["cost"]}
-                            <span className="status good">GOOD</span>
+                            <span className={`status ${s["cost_state"].toLowerCase()}`}>{s["cost_state"].toUpperCase()}</span>
                           </div>
                           <div>
                             {
@@ -258,8 +279,7 @@ const SceneriosDashbaord = (props: any) => {
                                   EDIT SCENARIO
                                 </Button>
                               )
-                            }
-                            
+                            }                           
                           </div>
                         </div>
                       </div>
@@ -278,17 +298,17 @@ const SceneriosDashbaord = (props: any) => {
             <div className="bottom">Duis pretium gravida enim,</div>
           )}
           {
-            props.record.scenarios.length > 0 && (
+            props.record['Therapeutic Area Average'] !==undefined && (
               <div className="item-wrapper average-item">
                 <div className="scenario-item">
                   <div className="title average-title">
                     Average from Similar Historical Trials
                   </div>
                   <div className="item-values average">
-                    <div>40%</div>
-                    <div>18%</div>
-                    <div>40</div>
-                    <div>$15-20M</div>
+                    <div>{props.record['Therapeutic Area Average'].protocol_amendment_rate }</div>
+                    <div>{props.record['Therapeutic Area Average'].screen_failure_rate }</div>
+                    <div>{props.record['Therapeutic Area Average'].patient_burden }</div>
+                    <div>{props.record['Therapeutic Area Average'].cost}</div>
                     <div></div>
                   </div>
                 </div>
@@ -405,13 +425,14 @@ const SceneriosDashbaord = (props: any) => {
         <div className="select-scenario-wrapper">
           <div className="scenario-table-header">
             <div className="scenario-col scenario-name">Select Scenario</div>
-            <div className="scenario-col">Protocal Amendment Rate</div>
+            <div className="scenario-col">Protocol Amendment Rate</div>
             <div className="scenario-col">Screen Failure Rate</div>
             <div className="scenario-col">Patient Burden</div>
             <div className="scenario-col">Cost</div>
           </div>
           <div className="scenario-table-body">
             {scenarioList.map((scenario, idx) => {
+              
               return (
                 <div
                   className={`scenario-table-row-wrapper ${
@@ -425,6 +446,10 @@ const SceneriosDashbaord = (props: any) => {
                       }`}
                     >
                       <div>
+                        {/* <Checkbox.Group
+                          options={options}
+                          onChange={() => handleCheckChange}
+                        ></Checkbox.Group> */}
                         <Checkbox
                           checked={scenario.hasOwnProperty("rationale")}
                           onChange={(e) => handleCheck(e, idx)}
@@ -437,16 +462,16 @@ const SceneriosDashbaord = (props: any) => {
                       </span>
                     </div>
                     <div className="scenario-col">
-                      { scenario["protocol_amendment_rate"]}<span className="status poor">poor</span>
+                      { scenario["protocol_amendment_rate"]}<span className={`status ${scenario["protocol_amendment_rate_state"].toLowerCase()}`}>{ scenario["protocol_amendment_rate_state"].toUpperCase()}</span>
                     </div>
                     <div className="scenario-col">
-                       { scenario['screen_failure_rate']}<span className="status poor">poor</span>
+                       { scenario['screen_failure_rate']}<span className={`status ${scenario["screen_failure_rate_state"].toLowerCase()}`}> { scenario['screen_failure_rate_state'].toUpperCase()}</span>
                     </div>
                     <div className="scenario-col">
-                       { scenario['patient_burden']}<span className="status poor">poor</span>
+                       { scenario['patient_burden']}<span className={`status ${scenario["patient_burden_state"].toLowerCase()}`}> { scenario['patient_burden_state'].toUpperCase()}</span>
                     </div>
                     <div className="scenario-col">
-                       { scenario['cost']}<span className="status poor">poor</span>
+                       { scenario['cost']}<span className={`status ${scenario["cost_state"].toLowerCase()}`}>{ scenario['cost_state'].toUpperCase()}</span>
                     </div>
                   </div>
                   {scenario.rationale!==undefined ? (

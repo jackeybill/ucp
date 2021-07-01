@@ -5,6 +5,7 @@ import { SearchOutlined, HomeOutlined } from "@ant-design/icons";
 import TrialPortfolio from "../TrialPortfolio";
 import FooterCompt from '../../components/Footer';
 import ScenarioPage from '../ScenarioPage';
+import Literature from '../Literature';
 import Logo from "../../assets/pwc-logo-white.svg";
 import Cookies from "js-cookie";
 
@@ -26,12 +27,12 @@ const GlobalLayout = (props: any) => {
   const [username, setUsername] = useState("");
   const [searchTxt, setSearchTxt] = useState("");
   const [showSearch, setShowSearch] = useState(false)
+  const [current, setCurrent] = useState("trial")
   let content: any;
 
   useEffect(() => {
     if (Cookies.get("username")) {
       setUsername(Cookies.get("username"));
-
       // setCurrent(ROLE_MENUE_MAPPING[Cookies.get("role")][0]);
     } else {
       // props.history.push("/");
@@ -59,13 +60,19 @@ const GlobalLayout = (props: any) => {
           <ScenarioPage/>
         );
         break;
+      case "/literature":
+        content = (
+          <Literature/>
+        );
+        break;
       default:
         break;
     }
     return content;
   };
-  function callback(key) {
-    console.log(key);
+  const handleClick = (e) => {
+    setCurrent(e.key)
+    props.history.push('/'+e.key)
   }
 
   return (
@@ -77,9 +84,9 @@ const GlobalLayout = (props: any) => {
             <span>Intelligent Trial Design</span>
           </div>
           <div className="menu-box">
-            <Menu mode="horizontal" defaultSelectedKeys={["1"]}>
-              <Menu.Item key="1">My Trials</Menu.Item>
-              <Menu.Item key="2">Literature Search</Menu.Item>
+            <Menu mode="horizontal" defaultSelectedKeys={['trials']} selectedKeys={[current]} onClick={handleClick}>
+              <Menu.Item key="trials">My Trials</Menu.Item>
+              <Menu.Item key="literature">Literature Search</Menu.Item>
             </Menu>
           </div>
         </div>
@@ -122,6 +129,18 @@ const GlobalLayout = (props: any) => {
         </div>
       </Header>
       <Content>
+        {/* <Breadcrumb>
+            <Breadcrumb.Item
+              className="homepage"
+              // onClick={() => setShowDetails(false)}
+            >
+              <span>
+                <HomeOutlined />
+                My Trials
+              </span>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>Trial Design</Breadcrumb.Item>
+          </Breadcrumb> */}
         {renderContent(searchTxt)}
       </Content>
        <Footer><FooterCompt/></Footer>
