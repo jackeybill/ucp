@@ -28,7 +28,7 @@ const panelHeader = () => {
     return (
         <div className="trial-panelHeader">
             <div>
-                <div className="bar-desc"><span>Predicted Impact</span></div>
+                <div className="bar-desc"><span>Impact</span></div>
                 <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
                 <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
                 <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
@@ -112,8 +112,8 @@ const ScenarioPage = (props) => {
     //For inclusion chart data display
     const [protocolRateData, setProtocolRateData] = useState(defaultChartValue)
     const [screenRateData, setScreenRateData] = useState(defaultChartValue)
-    const [therapeutic_Amend_Avg, setTherapeutic_Amend_Avg] = useState('Therapeutic Area Average - 0%')
-    const [therapeutic_Screen_Avg, setTherapeutic_Screen_Avg] = useState('Therapeutic Area Average - 0%')
+    const [therapeutic_Amend_Avg, setTherapeutic_Amend_Avg] = useState('Therapeutic Area Average - 40%')
+    const [therapeutic_Screen_Avg, setTherapeutic_Screen_Avg] = useState('Therapeutic Area Average - 35%')
     const [impactColors, setImpactColors] = useState(inActiveChartColors)
     const [amend_avg_rate, setAmend_avg_rate] = useState('')
     const [screen_avg_rate, setScreen_avg_rate] = useState('')
@@ -155,8 +155,8 @@ const ScenarioPage = (props) => {
     //For exclusion chart data display
     const [excluProtocolRateData, setExcluProtocolRateData] = useState(defaultChartValue)
     const [excluScreenRateData, setExcluScreenRateData] = useState(defaultChartValue)
-    const [exclu_Therapeutic_Amend_Avg, setExcluTherapeutic_Amend_Avg] = useState('Therapeutic Area Average - 0%')
-    const [exclu_Therapeutic_Screen_Avg, setExcluTherapeutic_Screen_Avg] = useState('Therapeutic Area Average - 0%')
+    const [exclu_Therapeutic_Amend_Avg, setExcluTherapeutic_Amend_Avg] = useState('Therapeutic Area Average - 40%')
+    const [exclu_Therapeutic_Screen_Avg, setExcluTherapeutic_Screen_Avg] = useState('Therapeutic Area Average - 35%')
     const [excluImpactColors, setExcluImpactColors] = useState(inActiveChartColors)
     const [excluAmend_avg_rate, setExcluAmend_avg_rate] = useState('')
     const [excluScreen_avg_rate, setExcluScreen_avg_rate] = useState('')
@@ -245,8 +245,8 @@ const ScenarioPage = (props) => {
                     var tempScoreA = ''
                     var tempScoreB = ''
                     if(tempRecord['Therapeutic Area Average']){
-                        setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
-                        setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
+                        // setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
+                        // setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
                         
                         var score = formatNumber(tempScenario.protocol_amendment_rate)
                         if(score <= 33){
@@ -287,8 +287,8 @@ const ScenarioPage = (props) => {
                     ])
             
                     if(tempRecord['Therapeutic Area Average']){
-                        setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
-                        setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
+                        // setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
+                        // setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
                         setExcluAmend_avg_rate(tempScoreA)
                         setExcluScreen_avg_rate(tempScoreB)
                     }
@@ -1500,9 +1500,9 @@ const ScenarioPage = (props) => {
         var tempScoreA = ''
         var tempScoreB = ''
         if(resp.body['Therapeutic Area Average']){
-          setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
-          setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
-          
+          // setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
+          // setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
+
           var score = formatNumber(currentScenario.protocol_amendment_rate)
           if(score <= 33){
             tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{good|GOOD}'
@@ -1542,8 +1542,8 @@ const ScenarioPage = (props) => {
         ])
   
         if(resp.body['Therapeutic Area Average']){
-          setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
-          setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
+          // setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
+          // setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
           setExcluAmend_avg_rate(tempScoreA)
           setExcluScreen_avg_rate(tempScoreB)
         }
