@@ -1118,7 +1118,7 @@ const ScenarioPage = (props) => {
           let p = (tarValue / total * 100).toFixed(2);
           return name + ' - ' + p + '%';
         },
-        data: ['Caucasian','Hispanic','Asian','Afican American']
+        data: ['Caucasian','Hispanic','Asian','African American']
       },
       series: [{
         type: 'pie',
@@ -1133,7 +1133,7 @@ const ScenarioPage = (props) => {
           {value: 75, name: 'Caucasian'},
           {value: 12, name: 'Hispanic'},
           {value: 8, name: 'Asian'},
-          {value: 5, name: 'Afican American'}
+          {value: 5, name: 'African American'}
         ]
       }]
     };
