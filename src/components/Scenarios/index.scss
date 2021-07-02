@@ -152,13 +152,13 @@
               .status {
                 display: block;
                 font-size: 10px;
-                &.poor {
+                &.POOR {
                   color: #c33232;
                 }
-                &.good {
+                &.GOOD {
                   color: #00a947;
                 }
-                &.fair {
+                &.FAIR {
                   color: #0084a9;
                 }
               }
@@ -318,7 +318,7 @@
             height: 10px;
             border-radius: 5px;
           }
-          &.good {
+          &.GOOD {
             .percent::after {
               background-color: #00a947;
             }
@@ -326,7 +326,7 @@
               color: #00a947;
             }
           }
-          &.poor {
+          &.POOR {
             .percent::after {
               background-color: #c33232;
             }
@@ -334,7 +334,7 @@
               color: #c33232;
             }
           }
-          &.fair {
+          &.FAIR {
             .percent::after {
               background-color: #0084a9;
             }
@@ -423,13 +423,13 @@
             .status {
               display: block;
               font-size: 12px;
-              &.poor {
+              &.POOR {
                 color: #ca4a04;
               }
-              &.good {
+              &.GOOD {
                 color: #00a947;
               }
-              &.fair {
+              &.FAIR {
                 color: #0084a9;
               }
             }

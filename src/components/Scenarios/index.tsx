@@ -256,19 +256,19 @@ const SceneriosDashbaord = (props: any) => {
                         <div className="item-values">
                           <div>
                             {s["protocol_amendment_rate"]}
-                            <span className={`status ${s["protocol_amendment_rate_state"].toLowerCase()}`}>{s["protocol_amendment_rate_state"].toUpperCase() }</span>
+                            <span className={`status ${s["protocol_amendment_rate_state"] ? s["protocol_amendment_rate_state"]:'' }`}>{s["protocol_amendment_rate_state"]?s["protocol_amendment_rate_state"]:'' }</span>
                           </div>
                           <div>
                             {s["screen_failure_rate"]}
-                            <span className={`status ${s["screen_failure_rate_state"].toLowerCase()}`}>{s["screen_failure_rate_state"].toUpperCase()}</span>
+                            <span className={`status ${s["screen_failure_rate_state"]?s["screen_failure_rate_state"]:''}`}>{s["screen_failure_rate_state"]?s["screen_failure_rate_state"]:''}</span>
                           </div>
                           <div>
                             {s["patient_burden"]}
-                            <span className={`status ${s["patient_burden_state"].toLowerCase()}`}>{s["patient_burden_state"].toUpperCase()}</span>
+                            <span className={`status ${s["patient_burden_state"]?s["patient_burden_state"]:''}`}>{s["patient_burden_state"]?s["patient_burden_state"]:''}</span>
                           </div>
                           <div>
                             {s["cost"]}
-                            <span className={`status ${s["cost_state"].toLowerCase()}`}>{s["cost_state"].toUpperCase()}</span>
+                            <span className={`status ${s["cost_state"]?s["cost_state"]:''}`}>{s["cost_state"]?s["cost_state"]:''}</span>
                           </div>
                           <div>
                             {
@@ -463,16 +463,16 @@ const SceneriosDashbaord = (props: any) => {
                       </span>
                     </div>
                     <div className="scenario-col">
-                      { scenario["protocol_amendment_rate"]}<span className={`status ${scenario["protocol_amendment_rate_state"].toLowerCase()}`}>{ scenario["protocol_amendment_rate_state"].toUpperCase()}</span>
+                      { scenario["protocol_amendment_rate"]}<span className={`status ${scenario["protocol_amendment_rate_state"]?scenario["protocol_amendment_rate_state"]:''}`}>{ scenario["protocol_amendment_rate_state"]}</span>
                     </div>
                     <div className="scenario-col">
-                       { scenario['screen_failure_rate']}<span className={`status ${scenario["screen_failure_rate_state"].toLowerCase()}`}> { scenario['screen_failure_rate_state'].toUpperCase()}</span>
+                       { scenario['screen_failure_rate']}<span className={`status ${scenario["screen_failure_rate_state"]?scenario["screen_failure_rate_state"]:''}`}> { scenario['screen_failure_rate_state']}</span>
                     </div>
                     <div className="scenario-col">
-                       { scenario['patient_burden']}<span className={`status ${scenario["patient_burden_state"].toLowerCase()}`}> { scenario['patient_burden_state'].toUpperCase()}</span>
+                       { scenario['patient_burden']}<span className={`status ${scenario["patient_burden_state"]?scenario["patient_burden_state"]:''}`}> { scenario['patient_burden_state']}</span>
                     </div>
                     <div className="scenario-col">
-                       { scenario['cost']}<span className={`status ${scenario["cost_state"].toLowerCase()}`}>{ scenario['cost_state'].toUpperCase()}</span>
+                       { scenario['cost']}<span className={`status ${scenario["cost_state"]?scenario["cost_state"]:''}`}>{ scenario['cost_state']}</span>
                     </div>
                   </div>
                   {scenario.rationale!==undefined ? (
