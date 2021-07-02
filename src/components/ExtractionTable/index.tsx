@@ -33,7 +33,7 @@ interface markIF {
 const { TabPane } = Tabs;
 const { Option } = Select;
 const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA"];
-const headData = ["Screening",	"Treatment Period", "Post Treatment", "Early Termination","Follow-Ups", ""]
+const headData = ["Screening",	"Treatment Period", "Post Treatment", "Early Termination","Follow-Ups"]
  // filter the [object] matched the table cell
  const soaEntity = (iten, soaResult) => {
   return soaResult.filter(function(currentValue, index, arr){
