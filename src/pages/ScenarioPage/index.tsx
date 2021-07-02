@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
 import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps} from "antd";
-import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId} from "../../utils/ajax-proxy";
+import {getSummaryDefaultList, addScenario, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
@@ -1475,7 +1475,7 @@ const ScenarioPage = (props) => {
       setImpactColors(activeChartColors)
       setExcluImpactColors(activeChartColors)
       //Update record
-      const resp = await updateStudy(newTrial);
+      const resp = await addScenario(newTrial);
       console.log(newTrial)
       setPageLoading(false)
       if (resp.statusCode == 200) {

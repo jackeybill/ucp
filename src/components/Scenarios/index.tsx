@@ -1,11 +1,8 @@
 import React, { useState, useReducer,useEffect } from "react";
 import { withRouter } from "react-router";
-import { Tooltip, Modal, Button, Row, Col, Input, Drawer,Checkbox } from "antd";
+import { Tooltip,Button, Row, Col, Input, Drawer, Radio } from "antd";
 import { updateStudy,getStudy } from "../../utils/ajax-proxy";
-import Scatter from "../Chart";
-import addIcon from "../../assets/add.svg";
 import "./index.scss";
-import { debug } from "console";
 
 const { TextArea } = Input;
 
@@ -23,6 +20,7 @@ const initialStates = {
   "Schedule of Events": {},
 };
 
+
 const SceneriosDashbaord = (props: any) => {
   const [newScenarioVisiable, setNewScenarioVisiable] = useState(false);
   const [completeModuleVisible, setCompleteModuleVisible] = useState(false);
@@ -34,52 +32,10 @@ const SceneriosDashbaord = (props: any) => {
     { ...initialStates }
   );
   const [scenarioList, setScenarioList] = useState([])
-  const [options, setOptions] = useState([])
-  const [selectedScenarios, setSelectedScenarios] = useState([])
-  
+ 
   useEffect(() => {
-    console.log(props.record)
     setScenarioList(JSON.parse(JSON.stringify(props.record.scenarios)))
-
   }, [props.record.scenarios])
-
-  // useEffect(() => {
-  //   const tmpOptions = scenarioList.map((s,idx) => {
-  //     return { label:`scenario ${idx + 1 }`, value: s }
-  //   })
-  //   console.log('----', tmpOptions)
-  //   setOptions(tmpOptions)
-  // }, [scenarioList])
-
-
-
-
-
-
-  const renderTitle = () => {
-    return (
-      <div>
-        <span className="scatter-title">PROTOCOL AMENDMENT</span>
-        <Scatter />
-      </div>
-    );
-  };
-
-  const Metrics = () => {
-    return (
-      <Tooltip
-        overlayClassName="metric-scatter"
-        color="#ffffff"
-        // visible={true}
-        placement="right"
-        title={renderTitle()}
-      >
-        <div className="col-value average-value">
-          <span className="percent poor">--%</span>
-        </div>
-      </Tooltip>
-    );
-  };
 
   const viewScenario = (s) =>{
     setScenarioId(s['scenario_id'])
@@ -106,7 +62,7 @@ const SceneriosDashbaord = (props: any) => {
       const tempScenarios = props.record.scenarios
       
       if(editFlag){
-        const index = tempScenarios.findIndex((e) => e['scenario_id'] === scenarioId)
+        const index = tempScenarios.indexOf((e) => e['scenario_id'] === scenarioId)
         tempScenarios.splice(index, 1, scenario)
       } else {
         tempScenarios.push(scenario)
@@ -141,20 +97,18 @@ const SceneriosDashbaord = (props: any) => {
   };
 
   const handleCheck = (e, idx) => {
-    console.log(e,idx)
     const tmpList = scenarioList.slice(0)
     if (e.target.checked) {
+      tmpList.forEach(ele =>
+        delete ele.rationale
+      )
       tmpList[idx].rationale = ""
     } else {
       delete tmpList[idx].rationale
     }
     setScenarioList(tmpList) 
   }
-  const handleCheckChange = (checkedValues) => {
-    console.log('----', checkedValues)
-    
-  }
-
+ 
 
   const onRationaleChange = (e, idx) => {  
     const tmpList = scenarioList.slice(0)
@@ -187,6 +141,8 @@ const SceneriosDashbaord = (props: any) => {
     setCompleteModuleVisible(false)
     setScenario(props.record.scenarios)
   }
+
+   const noEdit = props.record.scenarios.find(sce=>sce.rationale!=undefined)
   return (
     <div className="scenarios-container">
       <div className="container-top">What would you like to explore today?</div>
@@ -228,78 +184,85 @@ const SceneriosDashbaord = (props: any) => {
               </Button>
             )}
           </div>
-          {props.record.scenarios && props.record.scenarios.length > 0 ? (
-            <div className="scenarios-list-container">
-              <div className="count">
-                <span>{props.record.scenarios.length}</span>
-                <br /> Scenarios
+          {props.record.scenarios && props.record.scenarios.length > 0 ?        
+            (
+              <div className="scenarios-list-container">
+                <div className="count">
+                  <span>{props.record.scenarios.length}</span>
+                  <br /> Scenarios
               </div>
-              <div className="scenarios-list">
-                <div className="scenario-item  scenario-header">
-                  <div className="title"></div>
-                  <div className="item-values col-names">
-                    <div>Protocol Amendment Rate</div>
-                    <div>Screen Failure Rate</div>
-                    <div>Patient Burden</div>
-                    <div>Cost</div>
-                    <div></div>
-                  </div>
-                </div>
-                {props.record.scenarios.map((s, idx) => {
-                  return (
-                    <div className="item-wrapper" key={s["scenario_id"] + idx}>
-                      <div className="scenario-item">
-                        <div className="title">
-                          <p>Scenario {idx + 1}</p>
-                          <span>{s["scenario_description"]}</span>
-                        </div>
-                        <div className="item-values">
-                          <div>
-                            {s["protocol_amendment_rate"]}
-                            <span className={`status ${s["protocol_amendment_rate_state"].toLowerCase()}`}>{s["protocol_amendment_rate_state"].toUpperCase() }</span>
-                          </div>
-                          <div>
-                            {s["screen_failure_rate"]}
-                            <span className={`status ${s["screen_failure_rate_state"].toLowerCase()}`}>{s["screen_failure_rate_state"].toUpperCase()}</span>
-                          </div>
-                          <div>
-                            {s["patient_burden"]}
-                            <span className={`status ${s["patient_burden_state"].toLowerCase()}`}>{s["patient_burden_state"].toUpperCase()}</span>
-                          </div>
-                          <div>
-                            {s["cost"]}
-                            <span className={`status ${s["cost_state"].toLowerCase()}`}>{s["cost_state"].toUpperCase()}</span>
-                          </div>
-                          <div>
-                            {
-                              !s.hasOwnProperty("rationale") && (
-                                <Button
-                                  size="small"
-                                  onClick={() => viewScenario(s)}
-                                >
-                                  EDIT SCENARIO
-                                </Button>
-                              )
-                            }                           
-                          </div>
-                        </div>
-                      </div>
-                      {s.hasOwnProperty("rationale") && (
-                        <div className="rationale-content">
-                          <span>Rationale</span>
-                          <p>{s.rationale}</p>
-                        </div>
-                      )}
+                <div className="scenarios-list">
+                  <div className="scenario-item  scenario-header">
+                    <div className="title"></div>
+                    <div className="item-values col-names">
+                      <div>Protocol Amendment Rate</div>
+                      <div>Screen Failure Rate</div>
+                      <div>Patient Burden</div>
+                      <div>Cost</div>
+                      <div></div>
                     </div>
-                  );
-                })}
+                  </div>
+                  {props.record.scenarios.map((s, idx) => {
+                    return (
+                      <div className="item-wrapper" key={s["scenario_id"] + idx}>
+                        <div className="scenario-item">
+                          <div className="title">
+                            <p>Scenario {idx + 1}</p>
+                            <span>{s["scenario_description"]}</span>
+                          </div>
+                          <div className="item-values">
+                            <div>
+                              {s["protocol_amendment_rate"]}
+                              <span className={`status ${s["protocol_amendment_rate_state"].toLowerCase()}`}>{s["protocol_amendment_rate_state"].toUpperCase()}</span>
+                              {/* <span className={`status ${s["protocol_amendment_rate_state"]}`}>{s["protocol_amendment_rate_state"]}</span> */}
+                            
+                            </div>
+                            <div>
+                              {s["screen_failure_rate"]}
+                              <span className={`status ${s["screen_failure_rate_state"].toLowerCase()}`}>{s["screen_failure_rate_state"].toUpperCase()}</span>
+                               {/* <span className={`status ${s["screen_failure_rate_state"]}`}>{s["screen_failure_rate_state"]}</span> */}
+                            </div>
+                            <div>
+                              {s["patient_burden"]}
+                              <span className={`status ${s["patient_burden_state"].toLowerCase()}`}>{s["patient_burden_state"].toUpperCase()}</span>
+                               {/* <span className={`status ${s["patient_burden_state"]}`}>{s["patient_burden_state"]}</span> */}
+                            </div>
+                            <div>
+                              {s["cost"]}
+                              <span className={`status ${s["cost_state"].toLowerCase()}`}>{s["cost_state"].toUpperCase()}</span>
+                               {/* <span className={`status ${s["cost_state"]}`}>{s["cost_state"]}</span> */}
+                            </div>
+                            <div>
+                              {
+                                noEdit==undefined && (
+                                  <Button
+                                    size="small"
+                                    onClick={() => viewScenario(s)}
+                                  >
+                                    EDIT SCENARIO
+                                  </Button>
+                                )
+                              }
+                            </div>
+                          </div>
+                        </div>
+                        {s.hasOwnProperty("rationale") && s['rationale'] != "" && (
+                          <div className="rationale-content">
+                            <span>Rationale</span>
+                            <p>{s.rationale}</p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ) : (
+            )
+           : (
             <div className="bottom">Duis pretium gravida enim,</div>
           )}
           {
-            props.record['Therapeutic Area Average'] !==undefined && (
+             props.record.scenarios.length>0 && props.record['Therapeutic Area Average'] !==undefined && (
               <div className="item-wrapper average-item">
                 <div className="scenario-item">
                   <div className="title average-title">
@@ -433,7 +396,6 @@ const SceneriosDashbaord = (props: any) => {
           </div>
           <div className="scenario-table-body">
             {scenarioList.map((scenario, idx) => {
-              
               return (
                 <div
                   className={`scenario-table-row-wrapper ${
@@ -447,32 +409,37 @@ const SceneriosDashbaord = (props: any) => {
                       }`}
                     >
                       <div>
-                        {/* <Checkbox.Group
-                          options={options}
-                          onChange={() => handleCheckChange}
-                        ></Checkbox.Group> */}
-                        <Checkbox
+                        <Radio
                           checked={scenario.hasOwnProperty("rationale")}
                           onChange={(e) => handleCheck(e, idx)}
-                        >
-                          Scenario {idx + 1}
-                        </Checkbox>
+                        >Scenario {idx + 1}</Radio>
                       </div>
                       <span className="scenario-desc">
                         {scenario["scenario_description"]}
                       </span>
                     </div>
                     <div className="scenario-col">
-                      { scenario["protocol_amendment_rate"]}<span className={`status ${scenario["protocol_amendment_rate_state"].toLowerCase()}`}>{ scenario["protocol_amendment_rate_state"].toUpperCase()}</span>
+                      {scenario["protocol_amendment_rate"]}
+                      <span className={`status ${scenario["protocol_amendment_rate_state"].toLowerCase()}`}>{scenario["protocol_amendment_rate_state"].toUpperCase()}</span>
+                       {/* <span className={`status ${scenario["protocol_amendment_rate_state"]}`}>{scenario["protocol_amendment_rate_state"]}</span> */}
+                    
                     </div>
                     <div className="scenario-col">
-                       { scenario['screen_failure_rate']}<span className={`status ${scenario["screen_failure_rate_state"].toLowerCase()}`}> { scenario['screen_failure_rate_state'].toUpperCase()}</span>
+                      {scenario['screen_failure_rate']}
+                      <span className={`status ${scenario["screen_failure_rate_state"].toLowerCase()}`}> {scenario['screen_failure_rate_state'].toUpperCase()}</span>
+                      {/* <span className={`status ${scenario["screen_failure_rate_state"]}`}> {scenario['screen_failure_rate_state']}</span> */}
                     </div>
                     <div className="scenario-col">
-                       { scenario['patient_burden']}<span className={`status ${scenario["patient_burden_state"].toLowerCase()}`}> { scenario['patient_burden_state'].toUpperCase()}</span>
+                      {scenario['patient_burden']}
+                      <span className={`status ${scenario["patient_burden_state"].toLowerCase()}`}> {scenario['patient_burden_state'].toUpperCase()}</span>
+                     {/* <span className={`status ${scenario["patient_burden_state"]}`}> {scenario['patient_burden_state']}</span> */}
                     </div>
                     <div className="scenario-col">
-                       { scenario['cost']}<span className={`status ${scenario["cost_state"].toLowerCase()}`}>{ scenario['cost_state'].toUpperCase()}</span>
+                      {scenario['cost']}
+                      
+                      <span className={`status ${scenario["cost_state"].toLowerCase()}`}>{scenario['cost_state'].toUpperCase()}</span>
+                       {/* <span className={`status ${scenario["cost_state"]}`}>{scenario['cost_state']}</span> */}
+
                     </div>
                   </div>
                   {scenario.rationale!==undefined ? (

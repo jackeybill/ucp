@@ -52,7 +52,6 @@ export const phase_options = [
   "Phase 2",
   "Phase 3",
   "Phase 4",
-  "Not Applicable",
 ];
 export const study_types = [
   "All",
@@ -87,7 +86,6 @@ const initialCount = {
 
 const timeline = ["Trial Summary", "Trial Endpoints", "Similar Historical Trials","Team Members"]
 
-const steps = ["Trial Summary", "Trial Endpoints", "Similar Historical Trials","Team Members"]
 
 const initialStates = {
   trial_title: "",

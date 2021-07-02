@@ -12,14 +12,10 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
   return (
     <td {...restProps}>
       {editing ? (
-        (record['splitPart'] === undefined || (record['splitPart'] === true && title === 'Values'))?(
         <Form.Item name={dataIndex} style={{margin: 0}}
           rules={[ { required: true, message: `Please Input ${title}!` } ]} >
           {inputNode}
         </Form.Item>
-        ):(
-          children
-        )
       ) : (
         children
       )}
@@ -109,20 +105,10 @@ const EditTable = (props) => {
       const index = newData.findIndex((item) => key === item.Key);
 
       if (index > -1) {
-        var domian;
-        var realIndex;
-        var newFileds;
-        if(newData[index]['splitPart']){
-          realIndex = index - 1
-          domian = newData[index - 1]
-          newFileds = {'Condition Or Exception': row.Values}
-        } else {
-          realIndex = index
-          domian = newData[index]
-          newFileds = Object.assign(row)
-        }
-        newData.splice(realIndex, 1, { ...domian, ...newFileds });
+        const item = newData[index];
+        newData.splice(index, 1, { ...item, ...row });
         const tempData = newData.map((item, id) => {       
+          item.Key =  (id + 1) + '' 
           return item
         })
         setData(tempData);
@@ -174,7 +160,8 @@ const EditTable = (props) => {
       
       if (index > -1) {
         newData.splice(index, 1);
-        const tempData = newData.map((item, id) => {     
+        const tempData = newData.map((item, id) => {       
+          item.Key =  (id + 1) + '' 
           return item
         })
         setData(tempData);
@@ -203,7 +190,7 @@ const EditTable = (props) => {
       }
     ]
     setEditable({
-      [targetRecord.Key + 0]:true
+    0:true
   })
   } 
     else {
@@ -216,7 +203,7 @@ const EditTable = (props) => {
         }
       )
        setEditable({
-    [targetRecord.Key + targetRecord.Children.length-1]:true
+    [targetRecord.Children.length-1]:true
   })
   }
     setData(tmpData)
@@ -243,7 +230,7 @@ const EditTable = (props) => {
   }
   const saveSubCriteria = (record,subRecord,idx) => {
     setEditable({
-      [record.Key + idx]:false
+      [idx]:false
     })
     const tmpData = data.slice(0)
     const targetRecord = tmpData.find(e=> e.Key==record.Key)
@@ -312,13 +299,15 @@ const panelHeaderSection = (header, count) => {
       editable: true,
       render: (_, record) => {
         const editable = isEditing(record);
-        return editable ? (
+        return record.splitPart ? (
+          <div><span style={{fontSize: '14px'}}>{record.Values}</span></div>
+        ) : ( editable ? (
             <Input value={record["Values"]}/>
         ) : (
           <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
             <div><span style={{fontSize: '14px'}}>{record.Values}</span></div>
           </Typography.Link>
-        )
+        ))
       }
     }, {
       title: 'Timeframe',
@@ -342,17 +331,17 @@ const panelHeaderSection = (header, count) => {
       dataIndex: 'operation',
       render: (_, record) => {
         const editable = isEditing(record);
-        return editable ? (
+        return record.splitPart ? (
+          <span></span>
+        ) : (editable ? (
           <span style={{float:'right'}}>
             <CheckOutlined onClick={() => save(record.Key)}/> &nbsp;&nbsp;
             <CloseOutlined onClick={cancel}/>
           </span>
-        ) : (record.splitPart ? (
-          <span></span>
         ) : (
           <Popover content={<div style={{display:'grid'}}>
                       <span className="popover-action" onClick={() => handleAddSubCriteria(record)}>Add sub-criteria</span>
-                      <span className="popover-action" onClick={() => editConditionOrException(record)}>Add/Edit condition or exception</span>
+                      <span className="popover-action" onClick={() => editConditionOrException(record)}>Add condition or exception</span>
                       <span className="popover-action" onClick={() => handleDelete(record)}>Delete</span>
                     </div>} 
                 title={false} placement="bottomRight">
@@ -441,7 +430,7 @@ const panelHeaderSection = (header, count) => {
                              <div className="serial-number">
                               <span>{`${record.Key}${subRecord['Key']}`}</span>
                              </div>
-                             {editable[record.Key+idx] ? (
+                             {editable[idx] ? (
                                <>
                                 <Input value={subRecord['Eligibility Criteria']} onChange={ (e)=>handleSubCriteraInputChange('Eligibility Criteria',e,record,idx,props.header)}/>
                                 <Input value={subRecord['Timeframe']} onChange={(e) => handleSubCriteraInputChange('Timeframe', e, record, idx, props.header)} />
@@ -450,13 +439,13 @@ const panelHeaderSection = (header, count) => {
                              ) 
                               : (
                                 <>
-                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[record.Key+idx]:true})} >{subRecord['Eligibility Criteria']}</div>
-                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[record.Key+idx]:true})}>{subRecord['Timeframe']}</div>
-                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[record.Key+idx]:true})}>{subRecord['Values']}</div>
+                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[idx]:true})} >{subRecord['Eligibility Criteria']}</div>
+                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[idx]:true})}>{subRecord['Timeframe']}</div>
+                                  <div className="sub-row-non-editable" onClick={()=>setEditable({[idx]:true})}>{subRecord['Values']}</div>
                               </>
                               )}                      
                              <div className="actions">
-                              {editable[record.Key+idx]&& <CheckOutlined style={{ color: 'green' }} onClick={()=>saveSubCriteria(record, subRecord,idx)}/>}
+                              {editable[idx]&& <CheckOutlined style={{ color: 'green' }} onClick={()=>saveSubCriteria(record, subRecord,idx)}/>}
                               <CloseOutlined style={{ color: 'red' }} onClick={() =>deleteSubCriteria(record, idx)}/>
                             </div>                 
                         </div>
