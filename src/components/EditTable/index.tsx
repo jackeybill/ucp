@@ -52,7 +52,7 @@ const EditTable = (props) => {
       
       if(item['Condition Or Exception'] !== undefined && item['Condition Or Exception'] !== ''){
         newList.push({
-          'Key': item.Key+'1', 
+          'Key': item.Key+'C', 
           'Eligibility Criteria': item['Eligibility Criteria'] + ' [Condition/Exception]',
           'Values': item['Condition Or Exception'],
           'splitPart': true,
@@ -175,6 +175,30 @@ const EditTable = (props) => {
         props.updateCriteria(temp, props.tableIndex)
       }
   };
+
+  const deleteConditionOrException = async (record) => {
+    const newData = [...data];
+    const index = newData.findIndex((item) => record.Key === item.Key);
+    var realIndex = index - 1
+    var domian = newData[realIndex]
+    var row = {'Condition Or Exception': ''}
+
+    newData.splice(realIndex, 1, { ...domian, ...row });
+    newData.splice(index, 1);
+    const tempData = newData.map((item, id) => {       
+      return item
+    })
+    setData(tempData);
+    setEditingKey(''); 
+
+    const temp = []
+    tempData.map((it, id) =>{
+      if(it['splitPart'] === undefined){
+        temp.push(it)
+      }
+    })
+    props.updateCriteria(temp, props.tableIndex)
+  }
 
   const handleAddSubCriteria = (record) => {
     const tmpData = data.slice(0)
@@ -338,16 +362,18 @@ const panelHeaderSection = (header, count) => {
             <CheckOutlined onClick={() => save(record.Key)}/> &nbsp;&nbsp;
             <CloseOutlined onClick={cancel}/>
           </span>
+        ) : (record.splitPart ? (
+          <CloseOutlined style={{ color: 'red', float:'right'}} onClick={() =>deleteConditionOrException(record)}/>
         ) : (
           <Popover content={<div style={{display:'grid'}}>
                       <span className="popover-action" onClick={() => handleAddSubCriteria(record)}>Add sub-criteria</span>
-                      <span className="popover-action" onClick={() => editConditionOrException(record)}>Add condition or exception</span>
+                      <span className="popover-action" onClick={() => editConditionOrException(record)}>Add / Edit condition or exception</span>
                       <span className="popover-action" onClick={() => handleDelete(record)}>Delete</span>
                     </div>} 
                 title={false} placement="bottomRight">
             <MoreOutlined style={{float:'right'}}/>
           </Popover>
-        ))
+        )))
       }
     }
   ];
@@ -460,9 +486,9 @@ const panelHeaderSection = (header, count) => {
           />
       </Panel>
       </Collapse>
-        <Modal visible={visible} title="Add Condition or Exception" onOk={handleOk} onCancel={handleCancel}
+        <Modal visible={visible} title="Add / Edit Condition or Exception" onOk={handleOk} onCancel={handleCancel}
           footer={[<Button key="submit" type="primary" onClick={handleOk}>Submit</Button>]}>
-          <p>Add condition or exception for <b>{conOrExcpContent}</b></p>
+          <p>Add / Edit condition or exception for <b>{conOrExcpContent}</b></p>
           <p>Condition or Exception</p>
           <TextArea value={conOrExp} onChange={(e) => handleInputChange(e)} autoSize={{ minRows: 3, maxRows: 5 }}/>
         </Modal>

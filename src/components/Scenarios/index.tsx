@@ -9,11 +9,6 @@ const { TextArea } = Input;
 const initialStates = {
   scenario_id: "",
   scenario_name: "",
-  scenario_description: "",
-  protocol_amendment_rate: "",
-  screen_failure_rate: "",
-  patient_burden: "",
-  cost: "",
   "Inclusion Criteria": {},
   "Exclusion Criteria": {},
   "Enrollment Feasibility": {},
