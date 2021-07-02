@@ -35,7 +35,6 @@ const SceneriosDashbaord = (props: any) => {
   const viewScenario = (s) =>{
     setScenarioId(s['scenario_id'])
     setScenario(s);
-    //TODO to be updated for the actual scenario
     setScenarioType(s['scenario_type'])
     setNewScenarioVisiable(true)
     setEditFlag(true)
@@ -53,11 +52,11 @@ const SceneriosDashbaord = (props: any) => {
   }
 
   const handleOk = async () => {
-    
+      setNewScenarioVisiable(false)
       const tempScenarios = props.record.scenarios
       
       if(editFlag){
-        const index = tempScenarios.indexOf((e) => e['scenario_id'] === scenarioId)
+        const index = tempScenarios.findIndex((e) => e['scenario_id'] === scenarioId)
         tempScenarios.splice(index, 1, scenario)
       } else {
         tempScenarios.push(scenario)
@@ -66,11 +65,8 @@ const SceneriosDashbaord = (props: any) => {
       const tempTrial = props.record
       tempTrial.scenarios = tempScenarios
 
-    const resp = await updateStudy(tempTrial);
-   
-    if (resp.statusCode == 200) {
-       setNewScenarioVisiable(false)
-          
+      const resp = await updateStudy(tempTrial);
+      if (resp.statusCode == 200) {
           props.history.push({
             pathname: '/scenario',
             state: { 
