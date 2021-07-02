@@ -130,6 +130,15 @@
     }
   }
 
+  .table_head {
+    span {
+      font-size: 12px!important;
+    }
+  }
+  .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+    padding: 0px 6px!important;
+  }
+
   .entity-recognition {
     .content {
       padding: 15px;
@@ -174,7 +183,9 @@
       font-weight: 600;
       margin-bottom: 10px;
     }
-    table {
+    .content-table-content {
+      overflow: scroll;
+      table {
       border: 1px solid #CCCCCC;
       border-collapse: collapse;
       th, td {
@@ -236,6 +247,8 @@
         }
       }
     }
+    }
+    
   }
 }
 .raw-content {

@@ -7,6 +7,7 @@ import {
   UserAddOutlined,
   SearchOutlined,
   CheckCircleFilled,
+  CheckCircleTwoTone
 } from "@ant-design/icons";
 import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
@@ -32,6 +33,40 @@ interface markIF {
 const { TabPane } = Tabs;
 const { Option } = Select;
 const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA"];
+const headData = ["Protocol Activity",	"Screen/Baseline", "Treatment Period", "Post	Treatment",""]
+
+ // filter the [object] matched the table cell
+ const soaEntity = (iten, soaResult) => {
+  return soaResult.filter(function(currentValue, index, arr){
+    return currentValue.key === iten;
+  })
+}
+
+// className for searching result
+const matchWord = (iten, searchTxt) => {
+  return iten
+  .toLowerCase()
+  .indexOf(searchTxt.toLowerCase()) > -1
+  ? "matched-word"
+  : ""
+}
+
+ // The table cell with select options
+ const HeadSelect = (props:any) => {
+  const iten = props.iten
+  const searchTxt = props.searchTxt
+  const [head, setHead] = React.useState(iten);  
+  const handleHeadChange = value => {
+    setHead(value);
+  };
+  return (
+      <Select className={`table_head key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{ width: 140 }} value={head} bordered={false} onChange={handleHeadChange}>
+        {headData.map(head => (
+          <Option key={head} value={head}>{head}</Option>
+        ))}
+      </Select>
+  )
+}
 
 const ExtractionTable = (props: any, ref) => {
   if (!props.fileReader.file.txt) {
@@ -49,6 +84,7 @@ const ExtractionTable = (props: any, ref) => {
   const [entity, setEntity] = useState(initEntity);
   const [currentLabel, setCurrentLabel] = useState("");
   const [activeType, setActiveType] = useState("");
+  // const [iconType, setIconType] = useState("X");
   const [searchTxt, setSearchTxt] = useState("");
   const [activeTabKey, setActiveTabKey] = useState(
     props.fileReader.activeTabKey
@@ -126,7 +162,7 @@ const ExtractionTable = (props: any, ref) => {
     props.readFile({
       updatedSection: paramBody,
     });
-  }, [activeSection, entity, labels]);
+  }, [activeSection, entity, labels ,content]);
 
   useEffect(() => {
     props.updateCurrentEntity(entity);
@@ -156,38 +192,24 @@ const ExtractionTable = (props: any, ref) => {
     setActiveTabKey(props.fileReader.activeTabKey)
   }, [entity, activeSection, labels, activeTabKey,props.fileReader.activeTabKey, props.fileReader.file]);
 
-  // filter the [object] matched the table cell
-  const soaEntity = (iten) => {
-    return soaResult.filter(function(currentValue, index, arr){
-      return currentValue.key === iten;
-    })
-  }
-
-  const matchWord = (iten) => {
-    return iten
-    .toLowerCase()
-    .indexOf(searchTxt.toLowerCase()) > -1
-    ? "matched-word"
-    : ""
-  }
-
+  // The table cell without underlining
   const renderPlainText = (iten) => {
     return (
-      <span className={`key-word ${
-        searchTxt && matchWord(iten)} `}>
+      <span className={`key-word ${searchTxt && matchWord(iten, searchTxt)}`}>
         {iten}
       </span>
     )
   }
 
+  // The table cell underlined
   const renderMarkText = (iten) => {
     return (
       <mark>
-        <span className={`key-word ${soaEntity(iten)[0].category} ${searchTxt && matchWord(soaEntity(iten)[0].key)}`}>
-          {soaEntity(iten)[0].key}
+        <span className={`key-word ${soaEntity(iten, soaResult)[0].category} ${searchTxt && matchWord(soaEntity(iten, soaResult)[0].key, searchTxt)}`}>
+          {soaEntity(iten, soaResult)[0].key}
         </span>
-        <span className={`cate-label ${searchTxt && matchWord(soaEntity(iten)[0].value)}`}>
-            {`${soaEntity(iten)[0].category?formatWord(soaEntity(iten)[0].category):"Schedule of activity"} (${soaEntity(iten)[0].value})`}
+        <span className={`cate-label ${searchTxt && matchWord(soaEntity(iten, soaResult)[0].value, searchTxt)}`}>
+            {`${soaEntity(iten, soaResult)[0].category?formatWord(soaEntity(iten, soaResult)[0].category):"Schedule of activity"} (${soaEntity(iten, soaResult)[0].value})`}
         </span>
       </mark>
     )
@@ -207,6 +229,18 @@ const ExtractionTable = (props: any, ref) => {
 
   const onChangeActiveType = (value) => {
     setActiveType(value);
+  };
+  const onChangeIconType = (value, index, indey) => {
+    // setIconType(value.startWith("X")?"":"X");
+    if(value==="X"){
+      const newContent = content
+      newContent[index][indey]="" 
+      setContent(newContent)
+    } else {
+      const newContent = content
+      newContent[index][indey]="X" 
+      setContent(newContent)
+    }
   };
   const handleEntityChange = (value) => {
     setEntity(value);
@@ -354,6 +388,7 @@ const ExtractionTable = (props: any, ref) => {
             {Array.isArray(content) ? (
               <div className="content-table-extraction">
                 <div className="content-table-title">Schedule of Activities:</div>
+                <div className="content-table-content">
                 <table>
                   <tbody>
                     {
@@ -377,8 +412,8 @@ const ExtractionTable = (props: any, ref) => {
                                 item.map((iten, indey) => {
                                   return (
                                     indey < 1? (
-                                      soaEntity(iten).length && soaEntity(iten)[0].category === activeType || activeType === ""?(
-                                        soaEntity(iten).length?(
+                                      soaEntity(iten, soaResult).length && soaEntity(iten, soaResult)[0].category === activeType || activeType === ""?(
+                                        soaEntity(iten, soaResult).length?(
                                         <td>
                                          {renderMarkText(iten)}
                                         </td>
@@ -415,6 +450,7 @@ const ExtractionTable = (props: any, ref) => {
                     }
                   </tbody>
                 </table>
+                </div>
               </div>
             ) : (
               <div className="raw-content"> {content} </div>
@@ -486,10 +522,11 @@ const ExtractionTable = (props: any, ref) => {
             {Array.isArray(content) ? (
               <div className="content-table-extraction">
                 <div className="content-table-title">Schedule of Activities:</div>
+                <div className="content-table-content">
                 <table>
                   <tbody>
                     {
-                        content.map((item, index) => {
+                        content.map((item, index, arr) => {
                           return (
                             index < 1? (
                               <tr>
@@ -497,21 +534,22 @@ const ExtractionTable = (props: any, ref) => {
                                 item.map((iten, indey) => {
                                   return (
                                     <td>
-                                      {renderPlainText(iten)}
+                                      <HeadSelect iten={iten} searchTxt={searchTxt}/>
                                     </td>
                                   )
                                 })
                               }
                             </tr>
                             ):(
+                             !item.includes("X")? (
                               <tr>
                               {
                                 item.map((iten, indey) => {
                                   return (
                                     indey < 1? (
-                                      soaEntity(iten).length && soaEntity(iten)[0].category === activeType || activeType === ""?
+                                      soaEntity(iten, soaResult).length && soaEntity(iten, soaResult)[0].category === activeType || activeType === ""?
                                       (
-                                        soaEntity(iten).length?
+                                        soaEntity(iten, soaResult).length?
                                         (
                                           <td>
                                             {renderMarkText(iten)}
@@ -527,7 +565,7 @@ const ExtractionTable = (props: any, ref) => {
                                           {renderPlainText(iten)}
                                         </td>
                                       )
-                                    ) :(
+                                    ):(
                                       iten.startsWith("X") ? (
                                         <td>
                                           <CheckCircleFilled/>
@@ -543,12 +581,60 @@ const ExtractionTable = (props: any, ref) => {
                                 })
                               }
                             </tr>
+                             ):(
+                              <tr>
+                              {
+                                item.map((iten, indey) => {
+                                  return (
+                                    indey < 1? (
+                                      soaEntity(iten, soaResult).length && soaEntity(iten, soaResult)[0].category === activeType || activeType === ""?
+                                      (
+                                        soaEntity(iten, soaResult).length?
+                                        (
+                                          <td>
+                                            {renderMarkText(iten)}
+                                          </td>
+                                        ):(
+                                          <td>
+                                            {renderPlainText(iten)}
+                                          </td>
+                                        )
+                                      ):
+                                      (
+                                        <td>
+                                          {renderPlainText(iten)}
+                                        </td>
+                                      )
+                                    ):(
+                                      iten.startsWith("X") ? (
+                                        <td onClick={()=>{onChangeIconType("X", index, indey)}}>
+                                          <CheckCircleFilled/>
+                                          {/* {iten.substr(1)} */}
+                                        </td>
+                                      ) : (
+                                        iten === ""? (
+                                          <td onClick={()=>{onChangeIconType("", index, indey)}}>
+                                            <CheckCircleTwoTone twoToneColor="#ddd" />
+                                          </td>
+                                        ):(
+                                          <td>
+                                            {renderPlainText(iten)}
+                                          </td>
+                                        )
+                                      )
+                                    )
+                                  )
+                                })
+                              }
+                            </tr>
+                             )
                             )
                           )
                         })
                     }
                   </tbody>
                 </table>
+                </div>
               </div>
             ) : (
               <div className="raw-content"> {content} </div>
