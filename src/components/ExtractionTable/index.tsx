@@ -33,8 +33,7 @@ interface markIF {
 const { TabPane } = Tabs;
 const { Option } = Select;
 const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA"];
-const headData = ["Protocol Activity",	"Screen/Baseline", "Treatment Period", "Post	Treatment",""]
-
+const headData = ["Screening",	"Treatment Period", "Post Treatment", "Early Termination","Follow-Ups", ""]
  // filter the [object] matched the table cell
  const soaEntity = (iten, soaResult) => {
   return soaResult.filter(function(currentValue, index, arr){
@@ -140,7 +139,7 @@ const ExtractionTable = (props: any, ref) => {
 
   useEffect(() => {
     setActiveType("");
-    setContent(file[key][activeSection][0].table);
+    // setContent(file[key][activeSection][0].table);
     setLabels(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label);
     setWordsCollection(
       file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label
@@ -233,11 +232,11 @@ const ExtractionTable = (props: any, ref) => {
   const onChangeIconType = (value, index, indey) => {
     // setIconType(value.startWith("X")?"":"X");
     if(value==="X"){
-      const newContent = content
+      const newContent = [...content]
       newContent[index][indey]="" 
       setContent(newContent)
     } else {
-      const newContent = content
+      const newContent = [...content]
       newContent[index][indey]="X" 
       setContent(newContent)
     }
@@ -607,13 +606,13 @@ const ExtractionTable = (props: any, ref) => {
                                       )
                                     ):(
                                       iten.startsWith("X") ? (
-                                        <td onClick={()=>{onChangeIconType("X", index, indey)}}>
+                                        <td onClick={()=>{onChangeIconType("X", index, indey)}} style={{cursor:"pointer"}}>
                                           <CheckCircleFilled/>
                                           {/* {iten.substr(1)} */}
                                         </td>
                                       ) : (
                                         iten === ""? (
-                                          <td onClick={()=>{onChangeIconType("", index, indey)}}>
+                                          <td onClick={()=>{onChangeIconType("", index, indey)}} style={{cursor:"pointer"}}>
                                             <CheckCircleTwoTone twoToneColor="#ddd" />
                                           </td>
                                         ):(
