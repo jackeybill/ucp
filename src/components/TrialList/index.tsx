@@ -138,7 +138,7 @@ const TrailList = (props: any) => {
               );
             })}
             {
-              data.length==0&& <div>No data found</div>
+              data.length==0&& <div className="no-data">No data found</div>
             }
           </Collapse>
         </div>

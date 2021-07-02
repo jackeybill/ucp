@@ -484,6 +484,25 @@ export const getIndicationList = async () => {
   return await response.json();
 }
 
+//for test only
+// export const deleteAllStudy = async () => {
+//   const response = await fetch(criteria_url, {
+//     method: 'POST',
+//     headers: {
+//       'Access-Control-Request-Method': 'POST',
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({
+//         "module": "criteria",
+//         "method": "delAll"
+//       })
+//   })
+
+//   return await response.json();
+// }
+
+
+
 
 
 
