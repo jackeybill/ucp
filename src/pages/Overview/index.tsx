@@ -106,6 +106,7 @@ const Overview = (props: any) => {
     const resp = await extractText(filepath)
     setLoading(false)
     if (resp.statusCode == 200) {  
+      // console.log("--click row--", JSON.parse(resp.body));
       props.readFile({
         file: JSON.parse(resp.body)
       })

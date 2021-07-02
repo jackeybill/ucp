@@ -78,6 +78,7 @@ const Dropzone = (props: any) => {
           extractedRes = await extractText(PATH + f.name);
           try {
             const result = JSON.parse(extractedRes.body);
+            // console.log("--upload new file--", result);
             const availableTabs: string[] = [];
             props.readFile({
               file: result,

@@ -73,21 +73,8 @@ const ExtractionTable = (props: any, ref) => {
   const summary = file[key][activeSection][0].comprehendMedical[entity] && file[key][activeSection][0].comprehendMedical[entity].Summary || {};
 
   const initSoaResult = file[key][activeSection][0].soaResult || [];
-  const [tableCollection, setTableCollection] = useState(initSoaResult);
+  const [soaResult, setSoaResult] = useState(initSoaResult);
   const soaSummary = file[key][activeSection][0].soaSummary && file[key][activeSection][0].soaSummary || {};
-  const soaEntity = (iten) => {
-    return tableCollection.filter(function(currentValue, index, arr){
-      return currentValue.key === iten;
-    })
-  }
-  const matchWord = (iten) => {
-    return iten
-    .toLowerCase()
-    .indexOf(searchTxt.toLowerCase()) > -1
-    ? "matched-word"
-    : ""
-  }
-
 
   useEffect(() => {
     const getAllEntityTypes = (obj, sections, entity) => {
@@ -122,7 +109,7 @@ const ExtractionTable = (props: any, ref) => {
     setWordsCollection(
       file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label
     );
-    setTableCollection(file[key][activeSection][0].soaResult&&file[key][activeSection][0].soaResult)
+    setSoaResult(file[key][activeSection][0].soaResult&&file[key][activeSection][0].soaResult)
     const paramBody = {
       [key]: {
         [activeSection]: [
@@ -143,7 +130,6 @@ const ExtractionTable = (props: any, ref) => {
 
   useEffect(() => {
     props.updateCurrentEntity(entity);
-    console.log(tableCollection);
   }, []);
 
   useEffect(() => {
@@ -169,6 +155,43 @@ const ExtractionTable = (props: any, ref) => {
     setSvgEntity(file[key][activeSection][0].comprehendMedical["Entities"]);
     setActiveTabKey(props.fileReader.activeTabKey)
   }, [entity, activeSection, labels, activeTabKey,props.fileReader.activeTabKey, props.fileReader.file]);
+
+  // filter the [object] matched the table cell
+  const soaEntity = (iten) => {
+    return soaResult.filter(function(currentValue, index, arr){
+      return currentValue.key === iten;
+    })
+  }
+
+  const matchWord = (iten) => {
+    return iten
+    .toLowerCase()
+    .indexOf(searchTxt.toLowerCase()) > -1
+    ? "matched-word"
+    : ""
+  }
+
+  const renderPlainText = (iten) => {
+    return (
+      <span className={`key-word ${
+        searchTxt && matchWord(iten)} `}>
+        {iten}
+      </span>
+    )
+  }
+
+  const renderMarkText = (iten) => {
+    return (
+      <mark>
+        <span className={`key-word ${soaEntity(iten)[0].category} ${searchTxt && matchWord(soaEntity(iten)[0].key)}`}>
+          {soaEntity(iten)[0].key}
+        </span>
+        <span className={`cate-label ${searchTxt && matchWord(soaEntity(iten)[0].value)}`}>
+            {`${soaEntity(iten)[0].category?formatWord(soaEntity(iten)[0].category):"Schedule of activity"} (${soaEntity(iten)[0].value})`}
+        </span>
+      </mark>
+    )
+  }
 
   const getDisplayTitle = (s) => {
     let displayTitle;
@@ -324,7 +347,7 @@ const ExtractionTable = (props: any, ref) => {
                   </>
                 ):
                 (<div className="type-item-activity">
-                Schedule of Activities&nbsp;<span>({tableCollection&&tableCollection.length})</span>
+                Schedule of Activities&nbsp;<span>({soaResult&&soaResult.length})</span>
                 </div>)}
               </div>
             </div>
@@ -342,16 +365,7 @@ const ExtractionTable = (props: any, ref) => {
                                 item.map((iten, indey) => {
                                   return (
                                     <td>
-                                      <span className={`key-word ${
-                                        searchTxt &&
-                                        iten
-                                          .toLowerCase()
-                                          .indexOf(searchTxt.toLowerCase()) > -1
-                                          ? "matched-word"
-                                          : ""
-                                      } `}>
-                                        {iten}
-                                      </span>
+                                      {renderPlainText(iten)}
                                     </td>
                                   )
                                 })
@@ -366,31 +380,17 @@ const ExtractionTable = (props: any, ref) => {
                                       soaEntity(iten).length && soaEntity(iten)[0].category === activeType || activeType === ""?(
                                         soaEntity(iten).length?(
                                         <td>
-                                         <mark>
-                                          <span className={`key-word ${soaEntity(iten)[0].category} ${
-                                          searchTxt && matchWord(soaEntity(iten)[0].key)}`}>
-                                            {soaEntity(iten)[0].key}
-                                          </span>
-                                          <span className={`cate-label ${searchTxt && matchWord(soaEntity(iten)[0].value)}`}>
-                                              {`${soaEntity(iten)[0].category?formatWord(soaEntity(iten)[0].category):"Schedule of activity"} (${soaEntity(iten)[0].value})`}
-                                          </span>
-                                        </mark>
+                                         {renderMarkText(iten)}
                                         </td>
                                         ):(
                                           <td>
-                                            <span className={`key-word ${
-                                              searchTxt && matchWord(iten) } `}>
-                                              {iten}
-                                            </span>
+                                            {renderPlainText(iten)}
                                           </td>
                                         )
                                       ):
                                       (
                                         <td>
-                                          <span className={`key-word ${
-                                            searchTxt && matchWord(iten)} `}>
-                                            {iten}
-                                          </span>
+                                          {renderPlainText(iten)}
                                         </td>
                                       )
                                     ) :(
@@ -401,10 +401,7 @@ const ExtractionTable = (props: any, ref) => {
                                         </td>
                                       ) : (
                                         <td>
-                                          <span className={`key-word ${
-                                            searchTxt && matchWord(iten)} `}>
-                                            {iten}
-                                          </span>
+                                          {renderPlainText(iten)}
                                         </td>
                                       )
                                     )
@@ -482,7 +479,7 @@ const ExtractionTable = (props: any, ref) => {
                   </>
                 ):
                 (<div className="type-item-activity">
-                Schedule of Activities&nbsp;<span>({tableCollection&&tableCollection.length})</span>
+                Schedule of Activities&nbsp;<span>({soaResult&&soaResult.length})</span>
                 </div>)}
               </div>
             </div>
@@ -500,11 +497,8 @@ const ExtractionTable = (props: any, ref) => {
                                 item.map((iten, indey) => {
                                   return (
                                     <td>
-                                        <span className={`key-word ${
-                                          searchTxt && matchWord(iten)} `}>
-                                          {iten}
-                                        </span>
-                                      </td>
+                                      {renderPlainText(iten)}
+                                    </td>
                                   )
                                 })
                               }
@@ -520,32 +514,17 @@ const ExtractionTable = (props: any, ref) => {
                                         soaEntity(iten).length?
                                         (
                                           <td>
-                                            <mark>
-                                              <span className={`key-word ${soaEntity(iten)[0].category} ${searchTxt && matchWord(soaEntity(iten)[0].key)}`}>
-                                                {soaEntity(iten)[0].key}
-                                              </span>
-                                              <span className="cate-label">
-                                                {`${soaEntity(iten)[0].category?
-                                                    formatWord(soaEntity(iten)[0].category):
-                                                    "Schedule of activity"} (${soaEntity(iten)[0].value})`}
-                                              </span>
-                                            </mark>
+                                            {renderMarkText(iten)}
                                           </td>
                                         ):(
                                           <td>
-                                            <span className={`key-word ${
-                                              searchTxt && matchWord(iten)} `}>
-                                              {iten}
-                                            </span>
+                                            {renderPlainText(iten)}
                                           </td>
                                         )
                                       ):
                                       (
                                         <td>
-                                          <span className={`key-word ${
-                                            searchTxt && matchWord(iten)} `}>
-                                            {iten}
-                                          </span>
+                                          {renderPlainText(iten)}
                                         </td>
                                       )
                                     ) :(
@@ -556,10 +535,7 @@ const ExtractionTable = (props: any, ref) => {
                                         </td>
                                       ) : (
                                         <td>
-                                          <span className={`key-word ${
-                                            searchTxt && matchWord(iten)} `}>
-                                            {iten}
-                                          </span>
+                                          {renderPlainText(iten)}
                                         </td>
                                       )
                                     )
