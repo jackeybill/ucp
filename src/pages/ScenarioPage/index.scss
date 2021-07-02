@@ -123,6 +123,40 @@
         .tab-container{
             width: 100%;
 
+            .side-toolbar{
+                position: fixed;
+                z-index: 1999;
+                top: 225px;
+                color:white;
+                background-color: black;
+                height: 30px;
+                align-items: center;
+                cursor: pointer;
+                
+                .panel-label{
+                    display:none;
+                }
+                .icon{
+                    display:inline-block;
+                }
+
+                .anticon-arrow-right{
+                    font-weight: 900;
+                    font-size: 16px;
+                    transform: translateY(-1px);
+                }
+            }
+
+            .side-toolbar.hidden{
+                display : none;
+            }
+
+            .side-toolbar:hover, .side-toolbar:focus{
+                .panel-label{
+                    display:inline-block;
+                }
+            }
+
             .tip1-desc{
                 color:#aba9a9;
                 font-size: 14px;

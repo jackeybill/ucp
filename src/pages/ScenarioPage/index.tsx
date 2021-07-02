@@ -5,7 +5,7 @@ import FileSaver from 'file-saver';
 import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps} from "antd";
 import {getSummaryDefaultList, addScenario, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
-import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined} from "@ant-design/icons";
+import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
 
@@ -125,6 +125,7 @@ const ScenarioPage = (props) => {
     const [defaultActiveKey, setDefaultActiveKey] = useState([])  //default expanded collapse for edittable
     const [activeKey, setActiveKey] = useState([])                //To control chart collapse expanding
     const [collapsible, setCollapsible] = useState(true)// Set collapse can be click to collapse/expand or not
+    const [criteriaLib, setCriteriaLib] = useState(6)
   
     //To store the selected inclusion criteria libs
    let [demographicsElements, setDemographicsElements] = useState([])
@@ -168,7 +169,8 @@ const ScenarioPage = (props) => {
     const [excluDefaultActiveKey, setExcluDefaultActiveKey] = useState([])  //default expanded collapse for edittable
     const [excluActiveKey, setExcluActiveKey] = useState([])                //To control chart collapse expanding
     const [excluCollapsible, setExcluCollapsible] = useState(true)          // Set collapse can be click to collapse/expand or not
-    
+    const [excluCriteriaLib, setExcluCriteriaLib] = useState(6)
+
     //To store the selected exclusion criteria libs
     let [excluDemographicsElements, setExcluDemographicsElements] = useState([])
     let [excluMedConditionElements , setExcluMedConditionElements ] = useState([])
@@ -1897,15 +1899,25 @@ const pdfMake = async () =>{
           </Row>
         </div>
         <div className="tab-container">
+          <div className={`side-toolbar ${criteriaLib > 0 || activeTabKey != "1" ? 'hidden' : ''}`} onClick={()=> setCriteriaLib(6)}>
+            <div className="panel-label">Inclusion Criteria Library</div>
+            <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
+          </div>
+          <div className={`side-toolbar ${excluCriteriaLib > 0 || activeTabKey != "2" ? 'hidden' : ''}`} onClick={()=> setExcluCriteriaLib(6)}>
+            <div className="panel-label">Exclusion Criteria Library</div>
+            <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
+          </div>
           <Tabs onChange={changeActiveTabKey} activeKey={activeTabKey} centered>
             <TabPane tab="Inclusion Criteria" key="1">
               <Row>
-                <Col span={6} style={{backgroundColor: '#f3f3f3'}}>
+                <Col span={criteriaLib} style={{backgroundColor: '#f3f3f3'}}>
                   <Row style={{backgroundColor: '#f3f3f3'}}>
                     <Col span={24}>
                       <div className="item-header">
                         <span>Inclusion Criteria Library</span>
-                        <CloseOutlined className="right-icon"></CloseOutlined>
+                        <Tooltip title={'Collapse Inclusion Criteria Library'}>
+                          <CloseOutlined className="right-icon" onClick={() => setCriteriaLib(0)}></CloseOutlined>
+                          </Tooltip>
                         <Tooltip title={'View Historical Trial List'}>
                           <HistoryOutlined className="right-icon" onClick={searchHistoricalTrials}></HistoryOutlined>
                         </Tooltip>
@@ -2065,7 +2077,7 @@ const pdfMake = async () =>{
                     </Col>
                   </Row>
                 </Col>
-                <Col span={18} className={`${ collapsible ? "none-click" : "" }`}>
+                <Col span={24 - criteriaLib} className={`${ collapsible ? "none-click" : "" }`}>
                   <Row style={{ paddingTop: '10px' }}>
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>
@@ -2171,12 +2183,14 @@ const pdfMake = async () =>{
             </TabPane>
             <TabPane tab="Exclusion Criteria" key="2" disabled={collapsible}>
               <Row>
-                <Col span={6} style={{backgroundColor: '#f3f3f3'}}>
+                <Col span={excluCriteriaLib} style={{backgroundColor: '#f3f3f3'}}>
                   <Row style={{backgroundColor: '#f3f3f3'}}>
                     <Col span={24}>
                       <div className="item-header">
                         <span>Exclusion Criteria Library</span>
-                        <CloseOutlined className="right-icon"></CloseOutlined>
+                        <Tooltip title={'Collapse Exclusion Criteria Library'}>
+                          <CloseOutlined className="right-icon" onClick={() => setExcluCriteriaLib(0)}></CloseOutlined>
+                        </Tooltip>
                         <Tooltip title={'View Historical Trial List'}>
                           <HistoryOutlined className="right-icon" onClick={searchHistoricalTrials}></HistoryOutlined>
                         </Tooltip>
@@ -2338,7 +2352,7 @@ const pdfMake = async () =>{
                     </Col>
                   </Row>
                 </Col>
-                <Col span={18} className={`${ excluCollapsible ? "none-click" : "" }`}>
+                <Col span={24 - excluCriteriaLib} className={`${ excluCollapsible ? "none-click" : "" }`}>
                   <Row style={{ paddingTop: '10px' }}>
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>
