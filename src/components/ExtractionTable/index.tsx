@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { withRouter } from "react-router";
-import { Tabs, Input, Select, message } from "antd";
+import { Tabs, Input, Select, message, Button } from "antd";
 import {
   EyeOutlined,
   ApartmentOutlined,
@@ -12,7 +12,7 @@ import {
 import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
 import { saveText } from "../../utils/ajax-proxy";
-import { formatWord } from "../TextWithEntity";
+import { formatWord, renderTooltipTitle, hanldeRemoveCategory } from "../TextWithEntity";
 import {
   sectionOptions,
   initSelectedSections,
@@ -110,6 +110,7 @@ const ExtractionTable = (props: any, ref) => {
   const initSoaResult = file[key][activeSection][0].soaResult || [];
   const [soaResult, setSoaResult] = useState(initSoaResult);
   const soaSummary = file[key][activeSection][0].soaSummary && file[key][activeSection][0].soaSummary || {};
+  const xPos = file[key][activeSection][0].xPos && file[key][activeSection][0].xPos - 1 || 2;
 
   useEffect(() => {
     const getAllEntityTypes = (obj, sections, entity) => {
@@ -540,7 +541,7 @@ const ExtractionTable = (props: any, ref) => {
                               }
                             </tr>
                             ):(
-                             !item.includes("X")? (
+                              index < xPos? (
                               <tr>
                               {
                                 item.map((iten, indey) => {

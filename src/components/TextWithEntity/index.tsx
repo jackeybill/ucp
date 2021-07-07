@@ -195,7 +195,7 @@ const renderMark = (markParams, entity) => {
   );
 };
 
-const renderTooltipTitle = (
+export const renderTooltipTitle = (
   word,
   currentId,
   currentScore,
@@ -286,7 +286,7 @@ const renderTooltipTitle = (
 };
 
 
-const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,saveParamsObj,readFile,fileReader) => {
+export const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,saveParamsObj,readFile,fileReader) => {
  
   const tempWordsCollection = wordsCollection.slice(0);
   const startWordIdx = tempWordsCollection.findIndex((wObj) => {
