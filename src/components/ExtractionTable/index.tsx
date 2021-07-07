@@ -93,7 +93,8 @@ const ExtractionTable = (props: any, ref) => {
 
   const initSoaResult = file[key][activeSection][0].soaResult || [];
   const [soaResult, setSoaResult] = useState(initSoaResult);
-  const soaSummary = file[key][activeSection][0].soaSummary && file[key][activeSection][0].soaSummary || {};
+  const initSoaSummary = file[key][activeSection][0].soaSummary && file[key][activeSection][0].soaSummary || {};
+  const [soaSummary, setSoaSummary] = useState(initSoaSummary);
   const xPos = file[key][activeSection][0].xPos && file[key][activeSection][0].xPos - 1 || 2;
   const [currentScore, setCurrentScore] = useState(1)
   const [currentId, setCurrentId] = useState(null)
@@ -139,6 +140,7 @@ const ExtractionTable = (props: any, ref) => {
       file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label
     );
     setSoaResult(file[key][activeSection][0].soaResult&&file[key][activeSection][0].soaResult)
+    setSoaSummary(file[key][activeSection][0].soaSummary && file[key][activeSection][0].soaSummary)
     const paramBody = {
       [key]: {
         [activeSection]: [
@@ -152,7 +154,7 @@ const ExtractionTable = (props: any, ref) => {
     props.readFile({
       updatedSection: paramBody,
     });
-  }, [activeSection, entity, labels ,content]);
+  }, [activeSection, entity, labels ,content, file[key][activeSection][0].soaSummary]);
 
   useEffect(() => {
     props.updateCurrentEntity(entity);
@@ -199,7 +201,7 @@ const ExtractionTable = (props: any, ref) => {
           {soaEntity(iten, soaResult)[0].key}
         </span>
         <span className={`cate-label ${searchTxt && matchWord(soaEntity(iten, soaResult)[0].value, searchTxt)}`}>
-            {`${soaEntity(iten, soaResult)[0].category?formatWord(soaEntity(iten, soaResult)[0].category):"Schedule of activity"} (${soaEntity(iten, soaResult)[0].value})`}
+            {`${soaEntity(iten, soaResult)[0].category?formatWord(soaEntity(iten, soaResult)[0].category):""} ${soaEntity(iten, soaResult)[0].value?("("+soaEntity(iten, soaResult)[0].value+")"):""}`}
         </span>
       </mark>
     )
@@ -297,7 +299,7 @@ const ExtractionTable = (props: any, ref) => {
       return item.key !== mid 
     })
     setSoaResult(newArr)
-    
+
     const paramBody = {
       [key]: {
         [activeSection]: [
@@ -376,6 +378,12 @@ const ExtractionTable = (props: any, ref) => {
       });
     }
   };
+
+  const handleAddUnderline = (iten) => {
+    const newRes = [...soaResult, {key: iten, value: "", category: ""}]
+    console.log(newRes);
+    setSoaResult(newRes)
+  }
 
   const getDisplayTitle = (s) => {
     let displayTitle;
@@ -679,22 +687,14 @@ const ExtractionTable = (props: any, ref) => {
                               <tr>
                               {
                                 item.map((iten, indey) => {
-                                  const score = 1;
-                                  const markParams = {
-                                    concepts: [],
-                                    word:soaEntity(iten, soaResult)[0],
-                                    searchTxt,
-                                    showConfidence: props.showConfidence,
-                                    entity
-                                  };
-
                                   return (
                                     indey < 1? (
                                       soaEntity(iten, soaResult).length && soaEntity(iten, soaResult)[0].category === activeType || activeType === ""?
                                       (
                                         soaEntity(iten, soaResult).length?
                                         (
-                                          <Tooltip     
+                                          <td>
+                                            <Tooltip     
                                             key={iten}
                                             className="entity-concept"
                                             placement="right"
@@ -712,20 +712,19 @@ const ExtractionTable = (props: any, ref) => {
                                               props.readFile,
                                               props.fileReader,
                                               entity
-                                            )}
-                                          >
-                                            <td>
-                                              {renderMarkText(iten)}
-                                            </td>
-                                          </Tooltip>
+                                              )}
+                                            >
+                                                {renderMarkText(iten)}
+                                            </Tooltip>
+                                          </td>
                                         ):(
-                                          <td>
+                                          <td onClick={()=>{handleAddUnderline(iten)}}>
                                             {renderPlainText(iten)}
                                           </td>
                                         )
                                       ):
                                       (
-                                        <td>
+                                        <td onClick={()=>{handleAddUnderline(iten)}}>
                                           {renderPlainText(iten)}
                                         </td>
                                       )
@@ -755,38 +754,38 @@ const ExtractionTable = (props: any, ref) => {
                                       (
                                         soaEntity(iten, soaResult).length?
                                         (
-                                          <Tooltip     
-                                            key={iten}
-                                            className="entity-concept"
-                                            placement="right"
-                                            title={renderTooltipTitle(
-                                              soaEntity(iten, soaResult)[0],
-                                              currentId,
-                                              currentScore,
-                                              currentLabel,
-                                              onCategoryChange,
-                                              categoryType,
-                                              wordsCollection,
-                                              updateWordsCollection,
-                                              saveParamsObj,
-                                              handleSaveContent,
-                                              props.readFile,
-                                              props.fileReader,
-                                              entity
-                                            )}
-                                          >
                                             <td>
-                                              {renderMarkText(iten)}
+                                              <Tooltip     
+                                                key={iten}
+                                                className="entity-concept"
+                                                placement="right"
+                                                title={renderTooltipTitle(
+                                                  soaEntity(iten, soaResult)[0],
+                                                  currentId,
+                                                  currentScore,
+                                                  currentLabel,
+                                                  onCategoryChange,
+                                                  categoryType,
+                                                  wordsCollection,
+                                                  updateWordsCollection,
+                                                  saveParamsObj,
+                                                  handleSaveContent,
+                                                  props.readFile,
+                                                  props.fileReader,
+                                                  entity
+                                                )}
+                                              >
+                                                  {renderMarkText(iten)}
+                                              </Tooltip>
                                             </td>
-                                          </Tooltip>
                                         ):(
-                                          <td>
+                                          <td onClick={()=>{handleAddUnderline(iten)}}>
                                             {renderPlainText(iten)}
                                           </td>
                                         )
                                       ):
                                       (
-                                        <td>
+                                        <td onClick={()=>{handleAddUnderline(iten)}}>
                                           {renderPlainText(iten)}
                                         </td>
                                       )
