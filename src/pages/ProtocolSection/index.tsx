@@ -232,6 +232,9 @@ const ProtocolSection = (props: any) => {
     const path = props.fileReader.file["result_url"];
     const parambody = props.fileReader.updatedSection;
     const saveRes = await submitText(parambody, path);
+    console.log("parambody:",parambody);
+    console.log("path:",path);
+    
     if (saveRes.statusCode == "200") {
       message.success("Submit successfully");
       setTimeout(() => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { withRouter } from "react-router";
-import { Tabs, Input, Select, message, Button } from "antd";
+import { Tabs, Input, Select, message, Button, Tooltip } from "antd";
 import {
   EyeOutlined,
   ApartmentOutlined,
@@ -12,7 +12,7 @@ import {
 import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
 import { saveText } from "../../utils/ajax-proxy";
-import { formatWord, renderTooltipTitle, hanldeRemoveCategory } from "../TextWithEntity";
+import { formatWord } from "../TextWithEntity";
 import {
   sectionOptions,
   initSelectedSections,
@@ -34,6 +34,7 @@ const { TabPane } = Tabs;
 const { Option } = Select;
 const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA"];
 const headData = ["Screening",	"Treatment Period", "Post Treatment", "Early Termination","Follow-Ups"]
+const categoryType = ["LABS", "PHYSICAL_EXAMINATION", "PROCEDURES", "STUDY_PROCEDURES", "QUESTIONNAIRES", "ACTIVITY"]
  // filter the [object] matched the table cell
  const soaEntity = (iten, soaResult) => {
   return soaResult.filter(function(currentValue, index, arr){
@@ -48,23 +49,6 @@ const matchWord = (iten, searchTxt) => {
   .indexOf(searchTxt.toLowerCase()) > -1
   ? "matched-word"
   : ""
-}
-
- // The table cell with select options
- const HeadSelect = (props:any) => {
-  const iten = props.iten
-  const searchTxt = props.searchTxt
-  const [head, setHead] = React.useState(iten);  
-  const handleHeadChange = value => {
-    setHead(value);
-  };
-  return (
-      <Select className={`table_head key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{ width: 140 }} value={head} bordered={false} onChange={handleHeadChange}>
-        {headData.map(head => (
-          <Option key={head} value={head}>{head}</Option>
-        ))}
-      </Select>
-  )
 }
 
 const ExtractionTable = (props: any, ref) => {
@@ -111,6 +95,15 @@ const ExtractionTable = (props: any, ref) => {
   const [soaResult, setSoaResult] = useState(initSoaResult);
   const soaSummary = file[key][activeSection][0].soaSummary && file[key][activeSection][0].soaSummary || {};
   const xPos = file[key][activeSection][0].xPos && file[key][activeSection][0].xPos - 1 || 2;
+  const [currentScore, setCurrentScore] = useState(1)
+  const [currentId, setCurrentId] = useState(null)
+  const saveParamsObj = {
+    key,
+    entity,
+    activeSection,
+    path,
+  };
+
 
   useEffect(() => {
     const getAllEntityTypes = (obj, sections, entity) => {
@@ -150,11 +143,8 @@ const ExtractionTable = (props: any, ref) => {
       [key]: {
         [activeSection]: [
           {
-            comprehendMedical: {
-              [entity]: {
-                label: labels,
-              },
-            },
+            soaResult: soaResult,
+            table:content,
           },
         ],
       },
@@ -215,6 +205,178 @@ const ExtractionTable = (props: any, ref) => {
     )
   }
 
+  const renderTooltipTitle = (
+    word,
+    currentId,
+    currentScore,
+    currentLabel,
+    onCategoryChange,
+    categoryType,
+    wordsCollection,
+    updateWordsCollection,
+    saveParamsObj,
+    handleSaveContent,
+    readFile,
+    fileReader,
+    entity
+  ) => {
+    const id = word.key;
+    let text = word.key
+    
+    return (
+      <div className="mark-tooltip-container">
+        <div className="highlighted-text">
+          {text}
+        </div>
+        <div className="score">
+          Confidence Score:
+          {
+            <span className="suc">100%</span>
+          }
+        </div>
+        <div className="type-selector">
+          Change Entity Type
+          <Select
+            value={word.category}
+            style={{ width: 200 }}
+            onChange={(v)=>onCategoryChange(id,v)}
+          >
+            {categoryType.map((i,idx) => {
+              return (
+                <Option value={i} key={i}>
+                  {formatWord(i)}
+                </Option>
+              );
+            })}
+          </Select>
+          <br />
+          <span
+            className="remove-btn"
+            onClick={(e) =>
+              hanldeRemoveCategory(id, wordsCollection, updateWordsCollection, saveParamsObj,readFile,fileReader)
+            }
+          >
+            Remove Entity
+          </span>
+        </div>
+        <div className="bottom">
+          <Button
+            type="primary"
+            onClick={() =>
+              handleSaveContent(
+                id,
+                currentScore,
+                currentLabel,
+                wordsCollection,
+                updateWordsCollection,
+                saveParamsObj
+              )
+            }
+          >
+            Save
+          </Button>
+        </div>
+      </div>
+    );
+  };
+  
+  const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,saveParamsObj,readFile,fileReader) => {
+   
+    // const tempWordsCollection = wordsCollection.slice(0);
+    // const startWordIdx = tempWordsCollection.findIndex((wObj) => {
+    //   return wObj.type == "mark" && wObj.id == mid;
+    // });
+    // const targetWordObj = tempWordsCollection[startWordIdx];
+    // const childrenItem = targetWordObj.children;
+    // tempWordsCollection.splice(startWordIdx, 1, ...childrenItem);
+    // updateWordsCollection(tempWordsCollection);
+    // const markCollection = tempWordsCollection.filter((w) => w.type == "mark");
+    // const { hashKey, entity, activeSection, path } = saveParamsObj;
+       
+    const newArr = soaResult.filter((item, index, arr)=> {
+      return item.key !== mid 
+    })
+    setSoaResult(newArr)
+    
+    const paramBody = {
+      [key]: {
+        [activeSection]: [
+          {
+          soaResult: newArr,
+          table:content,
+          },
+        ],
+      },
+    };
+    console.log("paramBody:",paramBody);
+    console.log("path:",path);
+    const saveRes = await saveText(paramBody, path);
+     readFile({
+        updatedSection: paramBody,
+      });
+    if (saveRes.statusCode == "200") {
+      let temFile = fileReader.file
+      temFile[key][activeSection][0].soaResult = newArr
+      temFile[key][activeSection][0].table = content
+
+        message.success("Remove successfully");
+        readFile({
+          updatedSection: paramBody,
+          file:temFile
+        });
+      }
+  };
+
+  const handleSaveContent = async (
+    id,
+    currentScore,
+    currentLabel,
+    wordsCollection,
+    updateWordsCollection,
+    saveParamsObj
+  ) => {
+    // console.log(soaResult);
+    
+    // const targetIdx = wordsCollection.findIndex((w) => w.id == id);
+    // if (targetIdx == -1) return;
+    // if (!currentLabel) return;
+    // const tempWordsCollection = wordsCollection.slice(0);
+    // tempWordsCollection[targetIdx].category = currentLabel;
+    // tempWordsCollection[targetIdx].score = currentScore;
+    // updateWordsCollection(tempWordsCollection);
+
+    // const markCollection = tempWordsCollection.filter((w) => w.type == "mark");
+    // const { hashKey, entity, activeSection, path } = saveParamsObj;
+
+    const paramBody = {
+      [key]: {
+        [activeSection]: [
+          {
+          soaResult: soaResult,
+          table:content,
+          },
+        ],
+      },
+    };
+
+    console.log("paramBody:",paramBody);
+    console.log("path:",path);
+    const saveRes = await saveText(paramBody, path);
+    // const prevFile = props.fileReader.file[key];
+
+    let temFile = props.fileReader.file;
+    temFile[key][activeSection][0].soaResult = soaResult
+    temFile[key][activeSection][0].table = content
+
+    if (saveRes.statusCode == "200") {
+      message.success("Save successfully");
+      props.readFile({
+        updatedSection: paramBody,
+        file: temFile,
+      });
+    }
+  };
+
   const getDisplayTitle = (s) => {
     let displayTitle;
     const target = sectionOptions.find((e) => e.value == s);
@@ -231,7 +393,6 @@ const ExtractionTable = (props: any, ref) => {
     setActiveType(value);
   };
   const onChangeIconType = (value, index, indey) => {
-    // setIconType(value.startWith("X")?"":"X");
     if(value==="X"){
       const newContent = [...content]
       newContent[index][indey]="" 
@@ -242,14 +403,33 @@ const ExtractionTable = (props: any, ref) => {
       setContent(newContent)
     }
   };
+  // change the category
+  const onCategoryChange = (id,v) => {
+    setCurrentId(id)
+    setCurrentScore(1)
+    setCurrentLabel(v);
+    const newArr = soaResult.map((item, index, arr)=> {
+        if(item.key === id) {
+           return {...item, category:v}
+        } else {
+          return item
+        }
+    })
+    setSoaResult(newArr)
+  };
+
+  // The table cell with select options
+  const handleHeadChange = (value, index, indey) => {
+    console.log(value, index, indey);
+    const newContent = [...content]
+      newContent[index][indey]=value
+      setContent(newContent)
+  };
+
   const handleEntityChange = (value) => {
     setEntity(value);
 
     props.updateCurrentEntity(value);
-  };
-
-  const handleChange = (value) => {
-    setCurrentLabel(value);
   };
 
   const onTextChange = (e) => {
@@ -266,58 +446,8 @@ const ExtractionTable = (props: any, ref) => {
     setActiveType("")
   }
 
-  const handleSaveContent = async (
-    id,
-    currentScore,
-    currentLabel,
-    wordsCollection,
-    updateWordsCollection,
-    saveParamsObj
-  ) => {
-    const targetIdx = wordsCollection.findIndex((w) => w.id == id);
-    if (targetIdx == -1) return;
-    if (!currentLabel) return;
-    const tempWordsCollection = wordsCollection.slice(0);
-    tempWordsCollection[targetIdx].category = currentLabel;
-    tempWordsCollection[targetIdx].score = currentScore;
-    updateWordsCollection(tempWordsCollection);
-
-    const markCollection = tempWordsCollection.filter((w) => w.type == "mark");
-    const { hashKey, entity, activeSection, path } = saveParamsObj;
-
-    const paramBody = {
-      [hashKey]: {
-        [activeSection]: [
-          {
-            comprehendMedical: {
-              [entity]: {
-                // label: markCollection,
-                label: tempWordsCollection,
-              },
-            },
-          },
-        ],
-      },
-    };
-
-    const saveRes = await saveText(paramBody, path);
-    const prevFile = props.fileReader.file[hashKey];
-
-    let temFile = props.fileReader.file;
-    temFile[hashKey][activeSection][0].comprehendMedical[entity].label =
-      tempWordsCollection;
-
-    if (saveRes.statusCode == "200") {
-      message.success("Save successfully");
-      props.readFile({
-        updatedSection: paramBody,
-        file: temFile,
-      });
-    }
-  };
-
   return (
-    <div className="extraction-content">
+    <div className="extraction-content-table">
       <Tabs
         defaultActiveKey="ENTITY RECOGNITION"
         onChange={callback}
@@ -534,7 +664,11 @@ const ExtractionTable = (props: any, ref) => {
                                 item.map((iten, indey) => {
                                   return (
                                     <td>
-                                      <HeadSelect iten={iten} searchTxt={searchTxt}/>
+                                      <Select className={`table_head key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{ width: 140 }} value={iten} bordered={false} onChange={(val)=>{handleHeadChange(val, index, indey)}}>
+                                        {headData.map(head => (
+                                          <Option key={head} value={head}>{head}</Option>
+                                        ))}
+                                      </Select>
                                     </td>
                                   )
                                 })
@@ -545,15 +679,45 @@ const ExtractionTable = (props: any, ref) => {
                               <tr>
                               {
                                 item.map((iten, indey) => {
+                                  const score = 1;
+                                  const markParams = {
+                                    concepts: [],
+                                    word:soaEntity(iten, soaResult)[0],
+                                    searchTxt,
+                                    showConfidence: props.showConfidence,
+                                    entity
+                                  };
+
                                   return (
                                     indey < 1? (
                                       soaEntity(iten, soaResult).length && soaEntity(iten, soaResult)[0].category === activeType || activeType === ""?
                                       (
                                         soaEntity(iten, soaResult).length?
                                         (
-                                          <td>
-                                            {renderMarkText(iten)}
-                                          </td>
+                                          <Tooltip     
+                                            key={iten}
+                                            className="entity-concept"
+                                            placement="right"
+                                            title={renderTooltipTitle(
+                                              soaEntity(iten, soaResult)[0],
+                                              currentId,
+                                              currentScore,
+                                              currentLabel,
+                                              onCategoryChange,
+                                              categoryType,
+                                              wordsCollection,
+                                              updateWordsCollection,
+                                              saveParamsObj,
+                                              handleSaveContent,
+                                              props.readFile,
+                                              props.fileReader,
+                                              entity
+                                            )}
+                                          >
+                                            <td>
+                                              {renderMarkText(iten)}
+                                            </td>
+                                          </Tooltip>
                                         ):(
                                           <td>
                                             {renderPlainText(iten)}
@@ -591,9 +755,30 @@ const ExtractionTable = (props: any, ref) => {
                                       (
                                         soaEntity(iten, soaResult).length?
                                         (
-                                          <td>
-                                            {renderMarkText(iten)}
-                                          </td>
+                                          <Tooltip     
+                                            key={iten}
+                                            className="entity-concept"
+                                            placement="right"
+                                            title={renderTooltipTitle(
+                                              soaEntity(iten, soaResult)[0],
+                                              currentId,
+                                              currentScore,
+                                              currentLabel,
+                                              onCategoryChange,
+                                              categoryType,
+                                              wordsCollection,
+                                              updateWordsCollection,
+                                              saveParamsObj,
+                                              handleSaveContent,
+                                              props.readFile,
+                                              props.fileReader,
+                                              entity
+                                            )}
+                                          >
+                                            <td>
+                                              {renderMarkText(iten)}
+                                            </td>
+                                          </Tooltip>
                                         ):(
                                           <td>
                                             {renderPlainText(iten)}
