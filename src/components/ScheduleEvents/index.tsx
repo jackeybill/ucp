@@ -1,93 +1,154 @@
 import React, { useState, useReducer, useEffect } from "react";
-import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, InputNumber, Tabs, Tooltip, Checkbox, Input, message, Steps} from "antd";
-import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, MinusOutlined, PlusOutlined, DownOutlined,DownloadOutlined} from "@ant-design/icons";
-
+import {Table, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, InputNumber, Tabs, Tooltip, Checkbox, Input, message, Steps, Button} from "antd";
+import {ArrowRightOutlined, CloseOutlined, EditFilled, MinusOutlined, PlusOutlined, DownOutlined, DownloadOutlined} from "@ant-design/icons";
+import {getStandardEvents} from "../../utils/ajax-proxy";
+import ReactECharts from 'echarts-for-react';
 import "./index.scss";
-
-import CustomChart from "../CustomChart";
 import EvetnList from '../EventList';
 
 const { Panel } = Collapse;
 
-const defaultMatrixsList = [
-  {name: 'Height', selected: false},
-  {name: 'Weight', selected: false},
-  {name: 'Blood Pressure', selected: false},
-  {name: 'Waist Circumference', selected: false}
+const iChartColors = ['#514c4a', '#65615f', '#86817f', '#a59e9b']
+const aChartColors = ['#d04a02', '#ed7738', '#ed9d72', '#f5b795']
+
+const defaultCostValue = [
+  {value: 0, name: 'Physical Metrics'},
+  {value: 0, name: 'Materials Distribution'},
+  {value: 0, name: 'Lab Test / Samples'},
+  {value: 0, name: 'Dosing / Intervention'}
 ]
+
+const defaultBurdenValue = [
+  {value: 0, name: 'Physical Metrics'},
+  {value: 0, name: 'Materials Distribution'},
+  {value: 0, name: 'Lab Test / Samples'},
+  {value: 0, name: 'Dosing / Intervention'}
+]
+
+const initialNumber = {
+  visitNumber: 9,
+  weekNumber: 26
+}
 
 const ScheduleEvents = (props) => {
 
-  const [activeTab, setActiveTab] = useState([1,0,0,0,0,0])
-  const [matrixsList, setMatrixsList] = useState(defaultMatrixsList)
+  const [showConfigure, setShowConfigure] = useState(true)
+  const [eventLib, setEventLib] = useState(6)
+  const [activeCollapse, setActiveCollapse] = useState(['1'])
+  const [numbers, setNumbers] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    { ...initialNumber }
+  );
 
-  const onStep = (value: number, info: { offset: number, type: 'up' | 'down' }) => {}
+  //Cost Per Patient Chart
+  const [patientChartColor, setPatientChartColor] = useState(iChartColors)
+  const [costData, setCostData] = useState(defaultCostValue)
+  const [costSubTitle, setCostSubTitle] = useState("Average from Similar Historical \nTrials - $10.1K / Patient")
+  const [showPatientLabel, setShowPatientLabel] = useState(false)
+  const [patientRate, setPatientRate] = useState('{p|$9.4K}\n{good|GOOD}')
+
+  //Patirnt Burden Chart
+  const [burdenData, setBurdenData] = useState(defaultBurdenValue)
+  const [burdenSubTitle, setBurdenSubTitle] = useState("Average from similar Historical \nTrials - 60")
+  const [burdenXAxis, setBurdenXAxis] = useState(['1', '2', '3', '4', '5', '6', '7', '8', '9'])
+  const [showTooltip, setShowTooltip] = useState(false)
+
+  //Event Libs
+  //Original data from backend
+  const [orgMetrics, setOrgMetrics] = useState([])
+  const [orgDistribution, setOrgDistribution] = useState([])
+  const [orgLabSample, setOrgLabSample] = useState([])
+  const [orgDiagnostics, setOrgDiagnostics] = useState([])
+  const [orgDosing, setOrgDosing] = useState([])
+  const [orgSurveys, setOrgSurveys] = useState([])
+
+  //Filtered data based on the frequency and original data
+  let [filteredMetrics, setFilteredMetrics] = useState([])
+  let [filteredDistribution, setFilteredDistribution] = useState([])
+  let [filteredLabSample, setFilteredLabSample] = useState([])
+  let [filteredDiagnostics, setFilteredDiagnostics] = useState([])
+  let [filteredDosing, setFilteredDosing] = useState([])
+  let [filteredSurveys, setFilteredSurveys] = useState([])
+
+  //Addedd data 
+  let [addedMetrics, setAddedMetrics] = useState([])
+  let [addedDistribution, setAddedDistribution] = useState([])
+  let [addedLabSample, setAddedLabSample] = useState([])
+  let [addedDiagnostics, setAddedDiagnostics] = useState([])
+  let [addedDosing, setAddedDosing] = useState([])
+  let [addedSurveys, setAddedSurveys] = useState([])
+
+  const onStepVisit = (value: number, info: { offset: number, type: 'up' | 'down' }) => {
+    setNumbers({
+      ['visitNumber']: value
+    });
+  }
+
+  const onStepWeek = (value: number, info: { offset: number, type: 'up' | 'down' }) => {
+    setNumbers({
+      ['weekNumber']: value
+    });
+  }
 
   function excluCallback(key) {
   }
 
-  const selectMatrix = (idx) => {
-    let tempList = [...matrixsList]
-    let tempItem = matrixsList[idx]
-    if(matrixsList[idx].selected){
-      tempItem.selected = false
-    } else {
-      tempItem.selected = true
-    }
-    tempList.splice(idx, 1, tempItem)
-    setMatrixsList(tempList)
-  }
+  useEffect(() => {
 
-  const collapseSectionBar = (index) => {
-    let tempActievTab = [...activeTab]
-    var tempvalue
-    if(activeTab[index] === 0){
-      tempvalue = 1
-    } else {
-      tempvalue = 0
-    }
-    tempActievTab.splice(index, 1, tempvalue)
-    setActiveTab(tempActievTab)
-  }
+    const getStandardEventsLib = async () => {
+      var resp = await getStandardEvents();
+
+      if (resp.statusCode == 200) {
+          const response = JSON.parse(resp.body)
+          console.log(response)
+          setOrgMetrics(response['Physical Examination'])
+          // setOrgDistribution(response.)
+          setOrgLabSample(response.Labs)
+          // setOrgDiagnostics(response.)
+          // setOrgDosing(response.)
+          setOrgSurveys(response.Questionnaires)
+
+
+          setFilteredMetrics(response['Physical Examination'].filter((d) => {
+            return Object.assign(d, {selected: false})
+          }))
+          // setOrgDistribution(response.)
+          setFilteredLabSample(response.Labs.filter((d) => {
+            return Object.assign(d, {selected: false})
+          }))
+          // setOrgDiagnostics(response.)
+          // setOrgDosing(response.)
+          setFilteredSurveys(response.Questionnaires.filter((d) => {
+            return Object.assign(d, {selected: false})
+          }))
+      }
+    };
+    getStandardEventsLib();
+  }, []);
 
   const panelHeader = () => {
     return (
         <div className="event-panelHeader">
             <div>
-                <div className="bar-desc"><span>Impact</span></div>
-                <div className="item-desc"><div className="bar-item item1"></div><span>Pre-Screening / Screening</span></div>
-                <div className="item-desc"><span className="bar-item item2"></span><span>Physical Metrics</span></div>
-                <div className="item-desc"><span className="bar-item item3"></span><span>Materials Distribution</span></div>
-                <div className="item-desc"><span className="bar-item item4"></span><span>Lab Test / Samples</span></div>
-                <div className="item-desc"><span className="bar-item item5"></span><span>Dosing / Intervention</span></div>
+                <div style={{fontWeight: 'bold', fontSize: '16px'}}><span>Impact</span></div>
             </div>
         </div>
     );
   };
 
-const iChartColors = ['#514c4a', '#65615f', '#86817f', '#a59e9b', '#c2c1c1']
-const aChartColors = ['#d04a02', '#ed7738', '#ed9d72', '#f5b795']
-
-const defaultCostValue = [
-  {value: 620, name: 'Pre-Screening / Screening'},
-  {value: 1560, name: 'Physical Metrics'},
-  {value: 1875, name: 'Materials Distribution'},
-  {value: 2200, name: 'Lab Test / Samples'},
-  {value: 3125, name: 'Dosing / Intervention'}
-]
-
-const defaultBurdenValue = [
-  {value: 620, name: 'Pre-Screening / Screening'},
-  {value: 1560, name: 'Physical Metrics'},
-  {value: 1875, name: 'Materials Distribution'},
-  {value: 2200, name: 'Lab Test / Samples'},
-  {value: 3125, name: 'Dosing / Intervention'}
-]
+  const eventLibHeader = (name, count, key) => {
+    return (
+      <Row className="section-header">
+        <Col span={23}><span>{name}</span><span className="count-span">{count}</span></Col>
+        <Col span={1}>{activeCollapse.indexOf(key) >= 0 ?(<MinusOutlined />):(<PlusOutlined />)}</Col>
+      </Row>
+    );
+  };
 
   const burdenOption = {
     title : {
       text: 'Patient Burden',
-      subtext: "Average from similar Historical \nTrials - 60",
+      subtext: burdenSubTitle,
       x:'left',
       y:'center',
       textStyle: {
@@ -100,10 +161,11 @@ const defaultBurdenValue = [
       }
     },
     tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-            type: 'shadow'
-        }
+      show: showTooltip,
+      trigger: 'axis',
+      axisPointer: {
+          type: 'shadow'
+      }
     },
     grid: {
         left: '50%',
@@ -119,7 +181,7 @@ const defaultBurdenValue = [
         {
           type: 'category',
           name: 'Visit Number',
-          data: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+          data: burdenXAxis,
           nameLocation: "middle", 
           nameRotate: 0, nameGap: 20,
           axisTick: {
@@ -139,17 +201,17 @@ const defaultBurdenValue = [
             type: 'bar',
             barWidth: '60%',
             color:'#ed7738',
-            data: [60, 72, 78, 75, 83, 78, 68, 84, 90]
+            data: burdenData
         }
     ]
-};
+  };
 
   const costOption = {
     title : {
       text: 'Cost Per Patient',
-      subtext: "Average from Similar Historical \nTrials - $10.1K / Patient",
+      subtext: costSubTitle,
       x:'left',
-      y:'center',
+      y:'top',
       textStyle: {
         fontSize: 14,
         fontWeight: 'bold'
@@ -159,6 +221,16 @@ const defaultBurdenValue = [
         fontWeight: 'normal'
       }
     },
+    legend: {
+      x:'left',
+      y:'40/%',
+      orient: 'vertical',
+      itemHeight: 7,
+      textStyle: {
+        fontSize: 10
+      },
+      data: ['Physical Metrics', 'Materials Distribution', 'Lab Test / Samples', 'Dosing / Intervention']
+    },
     tooltip: {
       trigger: 'item',
       formatter: '{b} - ${c}',
@@ -167,29 +239,40 @@ const defaultBurdenValue = [
     series: [
       {
         type: 'pie',
-        center: ['60%', '50%'],
+        center: ['70%', '50%'],
         radius: ['50%', '80%'],
         avoidLabelOverlap: false,
         label: {
           show: true,
           position: 'center',
-          formatter: function (params) {
-            return '{p|$9.4K}' + '\n{nm|GOOD}'
+          formatter: function () {
+            if(showPatientLabel){
+              return patientRate
+            } else {
+              return ''
+            }
           },
-          emphasis: {
-            formatter: function (params) {
-              if (params.dataIndex != 0) {
-                return '{p|$9.4K}' + '\n{nm|GOOD}'
-              }
-            },
-          },
+          emphasis: '',
           rich: {
             p: {
+              color: '#aba9a9',
               fontSize: 16,
               backgroundColor: "white"
             },
-            nm: {
+            good: {
               color: 'green',
+              fontSize: 8,
+              fontWeight:'bold',
+              backgroundColor: "white"
+            },
+            fair: {
+              color: 'gray',
+              fontSize: 8,
+              fontWeight:'bold',
+              backgroundColor: "white"
+            },
+            poor: {
+              color: '#c33232',
               fontSize: 8,
               fontWeight:'bold',
               backgroundColor: "white"
@@ -206,22 +289,125 @@ const defaultBurdenValue = [
         labelLine: {
           show: true
         },
-        color: iChartColors,
-        data: defaultBurdenValue
+        color: patientChartColor,
+        data: costData
       }
     ]
   };
 
- 
+  const callback = (key) => {
+    setActiveCollapse(key)
+  }
+
+  const columns = [{
+    title: 'Standard Event',
+    dataIndex: 'Standard Event',
+    key: 'Standard Event',
+    width: '70%'
+  }, {
+    title: 'selected',
+    dataIndex: 'selected',
+    key: 'selected',
+    width: '30%',
+    render: (_, item) => {
+      return item.selected ? (
+        <div className="remove"><span onClick={(e)=> handleEvent(item)}>Remove</span></div>
+      ) : (
+        <div className="add"><span onClick={(e)=> handleEvent(item)}>Add</span></div>
+      );
+    }
+  }]
+
+  const handleEvent = (item) => {
+    // console.log(item.Categories)
+    switch(item.Categories){
+      case "Physical Examination": 
+        let index = filteredMetrics.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData = [...filteredMetrics]
+        const newSelectedData = [...addedMetrics]
+
+        if(item.selected){
+          newData.splice(index, 1, { ...item, ...{selected: false}});
+          let selectedIndex = addedMetrics.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData.splice(selectedIndex, 1)
+        } else {
+          newData.splice(index, 1, { ...item, ...{selected: true}});
+          newSelectedData.push(Object.assign(item, {selected: true}))
+        }
+        setFilteredMetrics(newData)
+        setAddedMetrics(newSelectedData)
+        break;
+
+      case "Labs": 
+        let index2 = filteredLabSample.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData2 = [...filteredLabSample]
+        const newSelectedData2 = [...addedLabSample]
+
+        if(item.selected){
+          newData2.splice(index2, 1, { ...item, ...{selected: false}});
+          let selectedIndex = addedLabSample.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData2.splice(selectedIndex, 1)
+        } else {
+          newData2.splice(index2, 1, { ...item, ...{selected: true}});
+          newSelectedData2.push(Object.assign(item, {selected: true}))
+        }
+        setFilteredLabSample(newData2)
+        setAddedLabSample(newSelectedData2)
+        break;
+
+      case "Questionnaires": 
+        let index3 = filteredSurveys.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData3 = [...filteredSurveys]
+        const newSelectedData3 = [...addedSurveys]
+
+        if(item.selected){
+          newData3.splice(index3, 1, { ...item, ...{selected: false}});
+          let selectedIndex = addedSurveys.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData3.splice(selectedIndex, 1)
+        } else {
+          newData3.splice(index3, 1, { ...item, ...{selected: true}});
+          newSelectedData3.push(Object.assign(item, {selected: true}))
+        }
+        setFilteredSurveys(newData3)
+        setAddedSurveys(newSelectedData3)
+        break;
+
+      case "Procedures": break;
+      case "Study Procedures": break;
+      default: break;
+    }
+  }
+
+  const showConfigureModal = () =>{
+    setShowConfigure(true)
+  }
+
+  const handleOk = () => {
+    setShowConfigure(false)
+  }
 
   return (
     <div className="tab-container">
+      <div className={`side-toolbar ${eventLib > 0 ? 'hidden' : ''}`} onClick={()=> setEventLib(6)}>
+        <div className="panel-label">Event Library</div>
+        <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
+      </div>
       <Row>
-        <Col span={6} className="event-left-container">
+        <Col span={eventLib} className="event-left-container">
           <Row style={{backgroundColor: '#f3f3f3'}}>
             <Col span={24}>
               <div className="item-header">
-                <span>Event Library</span>
+                <Row>
+                  <Col span={21}>
+                    <span>Event Library</span>
+                  </Col>
+                  <Col span={3}>
+                  <Tooltip title={'Collapse Event Library'}>
+                    <CloseOutlined className="right-icon" onClick={() => setEventLib(0)}></CloseOutlined>
+                  </Tooltip>
+                  </Col>
+                </Row>
+                
               </div>
             </Col>
           </Row>
@@ -254,59 +440,62 @@ const defaultBurdenValue = [
               </Row>
               <Row className="event-section">
                 <Col span={24}>
-                  <Row className="section-header">
-                    <Col span={23}><span>Physical Metrics</span><span className="count-span">4</span></Col>
-                    <Col span={1} onClick={()=> collapseSectionBar(0)}>{activeTab[0] === 1 ?(<MinusOutlined />):(<PlusOutlined />)}</Col>
-                  </Row>
-                  {matrixsList.map((medCon, idx) => {
-                    return (
-                      <Row className={`section-item ${activeTab[0] === 1? '':'hidde'}`} key={`matrix_${idx}`}>
-                        <Col span={20}><span>{medCon.name}</span></Col>
-                        <Col span={4} className="add" onClick={()=> selectMatrix(idx)}>
-                          {medCon.selected ? (<span className="remove">Remove</span>):(<span>Add</span>)}</Col>
-                      </Row>
-                    );
-                  })}
+                <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
+                  <Panel showArrow={false} header={eventLibHeader('Physical Metrics', filteredMetrics.length, "1")} key="1">
+                    <Table dataSource={filteredMetrics} columns={columns} pagination={false} showHeader={false} 
+                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                  </Panel>
+                </Collapse>
                 </Col>
               </Row>
               <Row className="event-section">
                 <Col span={24}>
-                  <Row className="section-header">
-                    <Col span={23}><span>Materials Distribution</span><span className="count-span">8</span></Col>
-                    <Col span={1} onClick={()=> collapseSectionBar(1)}>{activeTab[1] === 1 ?(<MinusOutlined />):(<PlusOutlined />)}</Col>
-                  </Row>
+                <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
+                  <Panel showArrow={false} header={eventLibHeader('Materials Distribution', filteredDistribution.length, "2")} key="2">
+                    <Table dataSource={filteredDistribution} columns={columns} pagination={false} showHeader={false} 
+                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                  </Panel>
+                </Collapse>
                 </Col>
               </Row>
               <Row className="event-section">
                 <Col span={24}>
-                  <Row className="section-header">
-                    <Col span={23}><span>Lab Test / Samples</span><span className="count-span">13</span></Col>
-                    <Col span={1} onClick={()=> collapseSectionBar(2)}>{activeTab[2] === 1 ?(<MinusOutlined />):(<PlusOutlined />)}</Col>
-                  </Row>
+                <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
+                  <Panel showArrow={false} header={eventLibHeader('Lab Test / Samples', filteredLabSample.length, "3")} key="3">
+                    <Table dataSource={filteredLabSample} columns={columns} pagination={false} showHeader={false} 
+                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                  </Panel>
+                </Collapse>
                 </Col>
               </Row>
               <Row className="event-section">
                 <Col span={24}>
-                  <Row className="section-header">
-                    <Col span={23}><span>Diagnostics / Procedures</span><span className="count-span">3</span></Col>
-                    <Col span={1} onClick={()=> collapseSectionBar(3)}>{activeTab[3] === 1 ?(<MinusOutlined />):(<PlusOutlined />)}</Col>
-                  </Row>
+                <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
+                  <Panel showArrow={false} header={eventLibHeader('Diagnostics / Procedures', filteredDiagnostics.length, "4")} key="4">
+                    <Table dataSource={filteredDiagnostics} columns={columns} pagination={false} showHeader={false} 
+                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                  </Panel>
+                </Collapse>
                 </Col>
               </Row>
               <Row className="event-section">
                 <Col span={24}>
-                  <Row className="section-header">
-                    <Col span={23}><span>Dosing / Intervention</span><span className="count-span">6</span></Col>
-                    <Col span={1} onClick={()=> collapseSectionBar(4)}>{activeTab[4] === 1 ?(<MinusOutlined />):(<PlusOutlined />)}</Col>
-                  </Row>
+                <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
+                  <Panel showArrow={false} header={eventLibHeader('Dosing / Intervention', filteredDosing.length, "5")} key="5">
+                    <Table dataSource={filteredDosing} columns={columns} pagination={false} showHeader={false} 
+                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                  </Panel>
+                </Collapse>
                 </Col>
               </Row>
               <Row className="event-section">
                 <Col span={24}>
-                  <Row className="section-header">
-                    <Col span={23}><span>Questionaries / Surveys</span><span className="count-span">4</span></Col>
-                    <Col span={1} onClick={()=> collapseSectionBar(5)}>{activeTab[5] === 1 ?(<MinusOutlined />):(<PlusOutlined />)}</Col>
-                  </Row>
+                <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
+                  <Panel showArrow={false} header={eventLibHeader('Questionaries / Surveys', filteredSurveys.length, "6")} key="6">
+                    <Table dataSource={filteredSurveys} columns={columns} pagination={false} showHeader={false} 
+                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                  </Panel>
+                </Collapse>
                 </Col>
               </Row>
             </Col>
@@ -315,7 +504,7 @@ const defaultBurdenValue = [
             </Col>
           </Row>
         </Col>
-        <Col span={18} className="event-right-container">
+        <Col span={24 - eventLib} className="event-right-container">
           <div style={{ padding: '10px 20px 0px 20px' }}>
             <Row>
               <Col span={24}><h4>Schedule of Events</h4></Col>
@@ -326,15 +515,16 @@ const defaultBurdenValue = [
                   Use the historical event library on the left to build the Schedule of Events.
                 </span>
               </Col>
-              <Col span={5}>
-                <span className="tip1-desc right">
-                Number of Visits <InputNumber size="small" min={1} max={10} step={1} onStep={onStep} defaultValue={3} />
+              <Col span={4}>
+                <span className="tip1-desc none-click">
+                Number of Visits <InputNumber size="small" value={numbers.visitNumber} />
                 </span>
               </Col>
-              <Col span={5}>
-                <span className="tip1-desc center">
-                Number of Weeks <InputNumber size="small" min={1} max={10} step={1} onStep={onStep} defaultValue={3} />
+              <Col span={6} className="center">
+                <span className="tip1-desc center none-click">
+                  Number of Weeks <InputNumber size="small" value={numbers.weekNumber} />&nbsp;
                 </span>
+                <EditFilled className="edit-icon" onClick={showConfigureModal}/>
               </Col>
               <Col span={3}>
                 <Dropdown.Button style={{zIndex: 1}} size="small"
@@ -354,37 +544,55 @@ const defaultBurdenValue = [
             <Row>
               <Col span={24}>
               <Collapse defaultActiveKey={['1']} onChange={excluCallback} expandIconPosition="right" className="event-chart">
-                  <Panel header={panelHeader()} key="1">
-                    <div>
-                      <div className="chart-container">
-                        <CustomChart
-                          option={costOption}
-                          height={120}
-                        ></CustomChart>
-                        <div className="filter-label">
-                          <span>Click on each metrics to filter</span>
-                        </div>
+                <Panel header={panelHeader()} key="1">
+                  <Row>
+                    <Col span={12}>
+                      <ReactECharts option={costOption} style={{ height: 140}}/>
+                      <div style={{paddingLeft: '50%'}}>
+                        <span>Click on each metrics to filter</span>
                       </div>
-                      <div className="chart-container">
-                        <CustomChart
-                          option={burdenOption}
-                          height={150}
-                        ></CustomChart>
-                      </div>
-                    </div>
-                    <div className="event-dashboard-container">
-                      <EvetnList/>
-                    </div>
-                  
+                    </Col>
+                    <Col span={12}>
+                      <ReactECharts option={burdenOption} style={{ height: 150}}/>
+                    </Col>
+                  </Row>
                 </Panel>
               </Collapse>
               </Col>
             </Row>
             <Row>
+              <Col span={24}>
+                <div className="event-dashboard-container">
+                  <EvetnList/>
+                </div>
+              </Col>
             </Row>
         </div>
         </Col>
       </Row>
+
+      <Modal visible={showConfigure} title="" closable={false}
+        footer={null} style={{ left: '20%', top:50 }} centered={false} width={200} > 
+        <Row style={{justifyContent: 'center'}}>
+         <span style={{fontSize: 16, fontWeight: 'bold'}}>Configure Schedule Of Events Table</span>
+        </Row>
+        <br/>
+        <Row style={{justifyContent: 'center'}}>
+         <span >Aliquam faucibus, odio nec commodo aliquam, neque felis placerat dui, a porta ante lectus dapibus</span>
+        </Row>
+        <br/>
+        <Row className="modal-filed">
+          <Col span={12} className="label"><span>Number of Visits</span></Col>
+          <Col span={12} className="input-number"><InputNumber min={1} max={10} step={1} onStep={onStepVisit} value={numbers.visitNumber} /></Col>
+        </Row>
+        <Row className="modal-filed">
+          <Col span={12} className="label"><span>Number of Weeks</span></Col>
+          <Col span={12} className="input-number"><InputNumber min={1} max={26} step={1} onStep={onStepWeek} value={numbers.weekNumber} /></Col>
+        </Row>
+        <Row style={{justifyContent: 'center', paddingTop: '20px'}}>
+          <Button type="primary" className="step-btn" onClick={handleOk}>CREATE</Button>
+        </Row>
+      </Modal>
     </div>
   );
 };

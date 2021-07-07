@@ -1,3 +1,4 @@
+@import "../../styles/variables.scss";
 .event-left-container{
     background-color: #f3f3f3;
     min-height: calc(100vh - 141px);
@@ -8,8 +9,6 @@
         margin-top: 10px;
 
         .section-header{
-            height: 40px;
-            padding: 0px 20px;
             font-weight: bold;
             align-items: center;
 
@@ -22,11 +21,17 @@
                 font-size: 6px;
             }
         }
-        .section-item{
-            border-top: 1px solid #f3f3f3;
-            height: 40px;
-            padding: 0px 20px;
-            align-items: center;
+
+        .eventLib.ant-collapse-icon-position-left > .ant-collapse-item > .ant-collapse-header{
+            padding: 6px 16px;
+        }
+
+        .eventLib.ant-collapse-icon-position-left > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box{
+            padding: 0px;
+        }
+
+        .ant-table-tbody > tr > td{
+            padding: 6px 10px 6px 16px;
 
             .add{
                 color: #d04a02;
@@ -36,11 +41,9 @@
 
             .remove{
                 color:#ddd;
+                cursor: pointer;
+                text-align: right;
             }
-        }
-
-        .section-item.hidde{
-            display:none;
         }
     }
 }
@@ -70,6 +73,11 @@
 
     .ant-input-number .ant-input-number-handler-wrap {
         opacity: 1;
+        border-left: unset;
+    }
+
+    .ant-input-number .ant-input-number-handler-down{
+        border-top: unset;
     }
 
     .ant-input-number.ant-input-number-sm {
@@ -78,16 +86,23 @@
 
     .tip1-desc{
         font-size:13px;
-        text-align: right;
-        align-items:right;
     }
 
-    .tip1-desc.right{
-        float:right;
+    .center{
+        justify-content:center;
+        text-align: center;
+        align-items:center;
     }
     .tip1-desc.center{
-        display:flex;
-        justify-content:center;
+        display:inline-block;
+    }
+
+    .none-click{
+        pointer-events: none;
+    }
+
+    .edit-icon{
+        display:inline-block;
     }
 
     .event-chart{
@@ -145,10 +160,33 @@
             font-weight: 500;
         }
     }
+}
 
-    .chart-container{
-        .filter-label{
-            padding-left: 40%;
-        }
+.modal-filed{
+    .label{
+        text-align: right;
+        padding: 5px 10px;
+        transform: translateY(5px);
+    }
+
+    .input-number{
+        padding: 5px 10px;
+    }
+
+    .anticon.anticon-down.ant-input-number-handler-down-inner{
+        color:#00000073;
+    }
+
+    .ant-input-number .ant-input-number-handler-wrap {
+        opacity: 1;
+        border-left: unset;
+    }
+
+    .ant-input-number .ant-input-number-handler-down{
+        border-top: unset;
+    }
+
+    .ant-input-number.ant-input-number {
+        width: 60px;
     }
 }
