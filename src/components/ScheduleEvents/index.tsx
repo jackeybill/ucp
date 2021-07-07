@@ -8,27 +8,33 @@ import EvetnList from '../EventList';
 
 const { Panel } = Collapse;
 
-const iChartColors = ['#514c4a', '#65615f', '#86817f', '#a59e9b']
-const aChartColors = ['#d04a02', '#ed7738', '#ed9d72', '#f5b795']
+const iChartColors = ['#514c4a', '#65615f', '#86817f', '#a59e9b', '#d2cbc8']
+const aChartColors = ['#d04a02', '#ed7738', '#ed9d72', '#f5b795', '#f5ddcf']
 
 const defaultCostValue = [
-  {value: 0, name: 'Physical Metrics'},
-  {value: 0, name: 'Materials Distribution'},
-  {value: 0, name: 'Lab Test / Samples'},
-  {value: 0, name: 'Dosing / Intervention'}
+  {value: 0, name: 'Labs'},
+  {value: 0, name: 'Physical Examination'},
+  {value: 0, name: 'Procedures'},
+  {value: 0, name: 'Questionnaires'},
+  {value: 0, name: 'Study Procedures'}
 ]
 
-const defaultBurdenValue = [
-  {value: 0, name: 'Physical Metrics'},
-  {value: 0, name: 'Materials Distribution'},
-  {value: 0, name: 'Lab Test / Samples'},
-  {value: 0, name: 'Dosing / Intervention'}
-]
+const defaultBurdenValue = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 const initialNumber = {
   visitNumber: 9,
   weekNumber: 26
 }
+
+const tempCostValue = [
+  {value: 1560, name: 'Labs'},
+  {value: 1875, name: 'Physical Examination'},
+  {value: 2200, name: 'Procedures'},
+  {value: 3125, name: 'Questionnaires'},
+  {value: 2167, name: 'Study Procedures'}
+]
+
+const tempBurdenValue = [60, 72, 78, 75, 83, 78, 68, 84, 90]
 
 const ScheduleEvents = (props) => {
 
@@ -56,28 +62,25 @@ const ScheduleEvents = (props) => {
 
   //Event Libs
   //Original data from backend
-  const [orgMetrics, setOrgMetrics] = useState([])
-  const [orgDistribution, setOrgDistribution] = useState([])
-  const [orgLabSample, setOrgLabSample] = useState([])
-  const [orgDiagnostics, setOrgDiagnostics] = useState([])
-  const [orgDosing, setOrgDosing] = useState([])
-  const [orgSurveys, setOrgSurveys] = useState([])
+  const [orgLabs, setOrgLabs] = useState([])
+  const [orgExamination, setOrgExamination] = useState([])
+  const [orgProcedures, setOrgProcedures] = useState([])
+  const [orgQuestionnaires, setOrgQuestionnaires] = useState([])
+  const [orgStudyProcedures, setOrgStudyProcedures] = useState([])
 
   //Filtered data based on the frequency and original data
-  let [filteredMetrics, setFilteredMetrics] = useState([])
-  let [filteredDistribution, setFilteredDistribution] = useState([])
-  let [filteredLabSample, setFilteredLabSample] = useState([])
-  let [filteredDiagnostics, setFilteredDiagnostics] = useState([])
-  let [filteredDosing, setFilteredDosing] = useState([])
-  let [filteredSurveys, setFilteredSurveys] = useState([])
+  let [filteredLabs, setFilteredLabs] = useState([])
+  let [filteredExamination, setFilteredExamination] = useState([])
+  let [filteredQuestionnaires, setFilteredQuestionnaires] = useState([])
+  let [filteredProcedures, setFilteredProcedures] = useState([])
+  let [filteredStudyProcedures, setFilteredStudyProcedures] = useState([])
 
   //Addedd data 
-  let [addedMetrics, setAddedMetrics] = useState([])
-  let [addedDistribution, setAddedDistribution] = useState([])
-  let [addedLabSample, setAddedLabSample] = useState([])
-  let [addedDiagnostics, setAddedDiagnostics] = useState([])
-  let [addedDosing, setAddedDosing] = useState([])
-  let [addedSurveys, setAddedSurveys] = useState([])
+  let [addedLabs, setAddedLabs] = useState([])
+  let [addedExamination, setAddedExamination] = useState([])
+  let [addedQuestionnaires, setAddedQuestionnaires] = useState([])
+  let [addedProcedures, setAddedProcedures] = useState([])
+  let [addedStudyProcedures, setAddedStudyProcedures] = useState([])
 
   const onStepVisit = (value: number, info: { offset: number, type: 'up' | 'down' }) => {
     setNumbers({
@@ -102,24 +105,26 @@ const ScheduleEvents = (props) => {
       if (resp.statusCode == 200) {
           const response = JSON.parse(resp.body)
           console.log(response)
-          setOrgMetrics(response['Physical Examination'])
-          // setOrgDistribution(response.)
-          setOrgLabSample(response.Labs)
-          // setOrgDiagnostics(response.)
-          // setOrgDosing(response.)
-          setOrgSurveys(response.Questionnaires)
 
+          setOrgLabs(response['Labs'])
+          setOrgExamination(response['Physical Examination'])
+          setOrgProcedures(response['Procedures'])
+          setOrgQuestionnaires(response['Questionnaires'])
+          setOrgStudyProcedures(response['Study Procedures'])
 
-          setFilteredMetrics(response['Physical Examination'].filter((d) => {
+          setFilteredLabs(response['Labs'].filter((d) => {
             return Object.assign(d, {selected: false})
           }))
-          // setOrgDistribution(response.)
-          setFilteredLabSample(response.Labs.filter((d) => {
+          setFilteredExamination(response['Physical Examination'].filter((d) => {
             return Object.assign(d, {selected: false})
           }))
-          // setOrgDiagnostics(response.)
-          // setOrgDosing(response.)
-          setFilteredSurveys(response.Questionnaires.filter((d) => {
+          setFilteredProcedures(response['Procedures'].filter((d) => {
+            return Object.assign(d, {selected: false})
+          }))
+          setFilteredQuestionnaires(response['Questionnaires'].filter((d) => {
+            return Object.assign(d, {selected: false})
+          }))
+          setFilteredStudyProcedures(response['Study Procedures'].filter((d) => {
             return Object.assign(d, {selected: false})
           }))
       }
@@ -224,13 +229,13 @@ const ScheduleEvents = (props) => {
     },
     legend: {
       x:'left',
-      y:'40/%',
+      y:'50/%',
       orient: 'vertical',
       itemHeight: 7,
       textStyle: {
         fontSize: 10
       },
-      data: ['Physical Metrics', 'Materials Distribution', 'Lab Test / Samples', 'Dosing / Intervention']
+      data: ['Labs', 'Physical Examination', 'Procedures', 'Questionnaires', 'Study Procedures']
     },
     tooltip: {
       trigger: 'item',
@@ -296,6 +301,14 @@ const ScheduleEvents = (props) => {
     ]
   };
 
+  const saveEvents = () =>{
+    console.log("save action")
+    setPatientChartColor(aChartColors)
+    setShowPatientLabel(true)
+    setCostData(tempCostValue)
+    setBurdenData(tempBurdenValue)
+  }
+
   const callback = (key) => {
     setActiveCollapse(key)
   }
@@ -322,59 +335,89 @@ const ScheduleEvents = (props) => {
   const handleEvent = (item) => {
     // console.log(item.Categories)
     switch(item.Categories){
-      case "Physical Examination": 
-        let index = filteredMetrics.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData = [...filteredMetrics]
-        const newSelectedData = [...addedMetrics]
+      case "Labs": 
+        let index = filteredLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData = [...filteredLabs]
+        const newSelectedData = [...addedLabs]
 
         if(item.selected){
           newData.splice(index, 1, { ...item, ...{selected: false}});
-          let selectedIndex = addedMetrics.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          let selectedIndex = addedLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
           newSelectedData.splice(selectedIndex, 1)
         } else {
           newData.splice(index, 1, { ...item, ...{selected: true}});
           newSelectedData.push(Object.assign(item, {selected: true}))
         }
-        setFilteredMetrics(newData)
-        setAddedMetrics(newSelectedData)
+        setFilteredLabs(newData)
+        setAddedLabs(newSelectedData)
         break;
 
-      case "Labs": 
-        let index2 = filteredLabSample.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData2 = [...filteredLabSample]
-        const newSelectedData2 = [...addedLabSample]
+      case "Physical Examination": 
+        let index2 = filteredExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData2 = [...filteredExamination]
+        const newSelectedData2 = [...addedExamination]
 
         if(item.selected){
           newData2.splice(index2, 1, { ...item, ...{selected: false}});
-          let selectedIndex = addedLabSample.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          let selectedIndex = addedExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
           newSelectedData2.splice(selectedIndex, 1)
         } else {
           newData2.splice(index2, 1, { ...item, ...{selected: true}});
           newSelectedData2.push(Object.assign(item, {selected: true}))
         }
-        setFilteredLabSample(newData2)
-        setAddedLabSample(newSelectedData2)
+        setFilteredExamination(newData2)
+        setAddedExamination(newSelectedData2)
         break;
 
-      case "Questionnaires": 
-        let index3 = filteredSurveys.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData3 = [...filteredSurveys]
-        const newSelectedData3 = [...addedSurveys]
+      case "Procedures": 
+        let index3 = filteredProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData3 = [...filteredProcedures]
+        const newSelectedData3 = [...addedProcedures]
 
         if(item.selected){
           newData3.splice(index3, 1, { ...item, ...{selected: false}});
-          let selectedIndex = addedSurveys.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          let selectedIndex = addedProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
           newSelectedData3.splice(selectedIndex, 1)
         } else {
           newData3.splice(index3, 1, { ...item, ...{selected: true}});
           newSelectedData3.push(Object.assign(item, {selected: true}))
         }
-        setFilteredSurveys(newData3)
-        setAddedSurveys(newSelectedData3)
+        setFilteredProcedures(newData3)
+        setAddedProcedures(newSelectedData3)
         break;
 
-      case "Procedures": break;
-      case "Study Procedures": break;
+      case "Questionnaires": 
+        let index4 = filteredQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData4 = [...filteredQuestionnaires]
+        const newSelectedData4 = [...addedQuestionnaires]
+
+        if(item.selected){
+          newData4.splice(index4, 1, { ...item, ...{selected: false}});
+          let selectedIndex = addedQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData4.splice(selectedIndex, 1)
+        } else {
+          newData4.splice(index4, 1, { ...item, ...{selected: true}});
+          newSelectedData4.push(Object.assign(item, {selected: true}))
+        }
+        setFilteredQuestionnaires(newData4)
+        setAddedQuestionnaires(newSelectedData4)
+        break;
+      case "Study Procedures": 
+        let index5 = filteredStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData5 = [...filteredStudyProcedures]
+        const newSelectedData5 = [...addedStudyProcedures]
+
+        if(item.selected){
+          newData5.splice(index5, 1, { ...item, ...{selected: false}});
+          let selectedIndex = addedStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData5.splice(selectedIndex, 1)
+        } else {
+          newData5.splice(index5, 1, { ...item, ...{selected: true}});
+          newSelectedData5.push(Object.assign(item, {selected: true}))
+        }
+        setFilteredStudyProcedures(newData5)
+        setAddedStudyProcedures(newSelectedData5)
+        break;
       default: break;
     }
   }
@@ -443,9 +486,9 @@ const ScheduleEvents = (props) => {
               <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
-                  <Panel showArrow={false} header={eventLibHeader('Physical Metrics', filteredMetrics.length, "1")} key="1">
-                    <Table dataSource={filteredMetrics} columns={columns} pagination={false} showHeader={false} 
-                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                  <Panel showArrow={false} header={eventLibHeader('Labs', orgLabs.length, "1")} key="1">
+                    <Table dataSource={filteredLabs} columns={columns} pagination={false} showHeader={false} 
+                      locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
                   </Panel>
                 </Collapse>
                 </Col>
@@ -453,9 +496,9 @@ const ScheduleEvents = (props) => {
               <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
-                  <Panel showArrow={false} header={eventLibHeader('Materials Distribution', filteredDistribution.length, "2")} key="2">
-                    <Table dataSource={filteredDistribution} columns={columns} pagination={false} showHeader={false} 
-                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                  <Panel showArrow={false} header={eventLibHeader('Physical Examination', filteredExamination.length, "2")} key="2">
+                    <Table dataSource={filteredExamination} columns={columns} pagination={false} showHeader={false} 
+                      locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
                   </Panel>
                 </Collapse>
                 </Col>
@@ -463,9 +506,9 @@ const ScheduleEvents = (props) => {
               <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
-                  <Panel showArrow={false} header={eventLibHeader('Lab Test / Samples', filteredLabSample.length, "3")} key="3">
-                    <Table dataSource={filteredLabSample} columns={columns} pagination={false} showHeader={false} 
-                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                  <Panel showArrow={false} header={eventLibHeader('Procedures', filteredProcedures.length, "3")} key="3">
+                    <Table dataSource={filteredProcedures} columns={columns} pagination={false} showHeader={false} 
+                      locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
                   </Panel>
                 </Collapse>
                 </Col>
@@ -473,9 +516,9 @@ const ScheduleEvents = (props) => {
               <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
-                  <Panel showArrow={false} header={eventLibHeader('Diagnostics / Procedures', filteredDiagnostics.length, "4")} key="4">
-                    <Table dataSource={filteredDiagnostics} columns={columns} pagination={false} showHeader={false} 
-                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                  <Panel showArrow={false} header={eventLibHeader('Questionnaires', filteredQuestionnaires.length, "4")} key="4">
+                    <Table dataSource={filteredQuestionnaires} columns={columns} pagination={false} showHeader={false} 
+                      locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
                   </Panel>
                 </Collapse>
                 </Col>
@@ -483,19 +526,9 @@ const ScheduleEvents = (props) => {
               <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
-                  <Panel showArrow={false} header={eventLibHeader('Dosing / Intervention', filteredDosing.length, "5")} key="5">
-                    <Table dataSource={filteredDosing} columns={columns} pagination={false} showHeader={false} 
-                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
-                  </Panel>
-                </Collapse>
-                </Col>
-              </Row>
-              <Row className="event-section">
-                <Col span={24}>
-                <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
-                  <Panel showArrow={false} header={eventLibHeader('Questionaries / Surveys', filteredSurveys.length, "6")} key="6">
-                    <Table dataSource={filteredSurveys} columns={columns} pagination={false} showHeader={false} 
-                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                  <Panel showArrow={false} header={eventLibHeader('Study Procedures', filteredStudyProcedures.length, "5")} key="5">
+                    <Table dataSource={filteredStudyProcedures} columns={columns} pagination={false} showHeader={false} 
+                      locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
                   </Panel>
                 </Collapse>
                 </Col>
@@ -566,7 +599,7 @@ const ScheduleEvents = (props) => {
 
               <Col span={24}>
                 <div className="event-dashboard-container">
-                  <EvetnList/>
+                  <EvetnList saveEvents={saveEvents}/>
                 </div>
               </Col>
             </Row>
@@ -587,11 +620,11 @@ const ScheduleEvents = (props) => {
         <br/>
         <Row className="modal-filed">
           <Col span={12} className="label"><span>Number of Visits</span></Col>
-          <Col span={12} className="input-number"><InputNumber min={1} max={10} step={1} onStep={onStepVisit} value={numbers.visitNumber} /></Col>
+          <Col span={12} className="input-number"><InputNumber min={1} step={1} onStep={onStepVisit} value={numbers.visitNumber} /></Col>
         </Row>
         <Row className="modal-filed">
           <Col span={12} className="label"><span>Number of Weeks</span></Col>
-          <Col span={12} className="input-number"><InputNumber min={1} max={26} step={1} onStep={onStepWeek} value={numbers.weekNumber} /></Col>
+          <Col span={12} className="input-number"><InputNumber min={1} step={1} onStep={onStepWeek} value={numbers.weekNumber} /></Col>
         </Row>
         <Row style={{justifyContent: 'center', paddingTop: '20px'}}>
           <Button type="primary" className="step-btn" onClick={handleOk}>CREATE</Button>
