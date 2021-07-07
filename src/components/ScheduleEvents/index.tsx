@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useEffect } from "react";
-import {Table, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, InputNumber, Tabs, Tooltip, Checkbox, Input, message, Steps, Button} from "antd";
+import {Table, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, InputNumber, Tooltip, Button, Spin} from "antd";
 import {ArrowRightOutlined, CloseOutlined, EditFilled, MinusOutlined, PlusOutlined, DownOutlined, DownloadOutlined} from "@ant-design/icons";
 import {getStandardEvents} from "../../utils/ajax-proxy";
 import ReactECharts from 'echarts-for-react';
@@ -32,6 +32,7 @@ const initialNumber = {
 
 const ScheduleEvents = (props) => {
 
+  const [hiddeTags, setHiddeTags] = useState(true)
   const [showConfigure, setShowConfigure] = useState(true)
   const [eventLib, setEventLib] = useState(6)
   const [activeCollapse, setActiveCollapse] = useState(['1'])
@@ -384,6 +385,7 @@ const ScheduleEvents = (props) => {
 
   const handleOk = () => {
     setShowConfigure(false)
+    setHiddeTags(false)
   }
 
   return (
@@ -509,24 +511,25 @@ const ScheduleEvents = (props) => {
             <Row>
               <Col span={24}><h4>Schedule of Events</h4></Col>
             </Row>
+            <Spin spinning={showConfigure}>
             <Row>
               <Col span={11}>
                 <span className="tip1-desc">
                   Use the historical event library on the left to build the Schedule of Events.
                 </span>
               </Col>
-              <Col span={4}>
+              <Col span={4} className={`${hiddeTags ? 'hidde' : ''}`}>
                 <span className="tip1-desc none-click">
                 Number of Visits <InputNumber size="small" value={numbers.visitNumber} />
                 </span>
               </Col>
-              <Col span={6} className="center">
+              <Col span={6} className={`center ${hiddeTags ? 'hidde' : ''}`}>
                 <span className="tip1-desc center none-click">
                   Number of Weeks <InputNumber size="small" value={numbers.weekNumber} />&nbsp;
                 </span>
                 <EditFilled className="edit-icon" onClick={showConfigureModal}/>
               </Col>
-              <Col span={3}>
+              <Col span={3} className={`${hiddeTags ? 'hidde' : ''}`}>
                 <Dropdown.Button style={{zIndex: 1}} size="small"
                   overlay={
                     <Menu>
@@ -540,9 +543,8 @@ const ScheduleEvents = (props) => {
                   EXPORT AS
                 </Dropdown.Button>
               </Col>
-            </Row>
-            <Row>
-              <Col span={24}>
+
+              <Col span={24} className={`${hiddeTags ? 'hidde' : ''}`}>
               <Collapse defaultActiveKey={['1']} onChange={excluCallback} expandIconPosition="right" className="event-chart">
                 <Panel header={panelHeader()} key="1">
                   <Row>
@@ -559,20 +561,22 @@ const ScheduleEvents = (props) => {
                 </Panel>
               </Collapse>
               </Col>
-            </Row>
-            <Row>
+
+              <Col span={24} style={{height: '25px'}}></Col>
+
               <Col span={24}>
                 <div className="event-dashboard-container">
                   <EvetnList/>
                 </div>
               </Col>
             </Row>
+            </Spin>
         </div>
         </Col>
       </Row>
 
-      <Modal visible={showConfigure} title="" closable={false}
-        footer={null} style={{ left: '20%', top:50 }} centered={false} width={200} > 
+      <Modal visible={showConfigure} title="" closable={false} mask={false}
+        footer={null} style={{ left: '12%', top:200 }} centered={false} > 
         <Row style={{justifyContent: 'center'}}>
          <span style={{fontSize: 16, fontWeight: 'bold'}}>Configure Schedule Of Events Table</span>
         </Row>
