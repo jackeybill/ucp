@@ -91,7 +91,7 @@ const initialStates = {
   trial_title: "",
   description: "",
   therapeutic_area: "",
-  indication: "",
+  indication: [],
   trial_alias: "",
   study_type: "",
   study_phase: "",
@@ -267,13 +267,19 @@ const TrialPortfolio = (props) => {
         d["prediatric_study"],
       ];
       searchedFields = searchedFields.filter(Boolean);
-      searchedFields = searchedFields.map((i) =>
+      searchedFields = searchedFields.map((i) =>  
         typeof i == "string" ? i.toLowerCase() : String(i)
       );
 
+      if (typeof d["indication"] == 'string') {
+        searchedFields.push(d["indication"])
+      } else if (typeof d["indication"] == 'object') {
+        searchedFields.concat(d["indication"])
+      };
+      
       const isIncluded = searchedFields.map((f) => {
-        return f.search(keyWords.toLowerCase()) != -1;
-      });
+        return f.search(keyWords.toLowerCase()) != -1
+      })
 
       return (
         d.status.toLowerCase() == status.toLowerCase() &&
@@ -423,7 +429,8 @@ const TrialPortfolio = (props) => {
             <Breadcrumb.Item>Trial Design</Breadcrumb.Item>
           </Breadcrumb>
           <div className="trial-details-wrapper">
-            <TrialDetails
+              <TrialDetails
+              indicationList={ indicationList}
               record={trial}
               onSave={handleUpdate}
               onInputChange={handleTrialInputChange}

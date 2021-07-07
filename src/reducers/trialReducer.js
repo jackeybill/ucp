@@ -21,7 +21,7 @@ export const initialTrial = {
     trial_title: "",
     description: "",
     therapeutic_area: "",
-    indication: "",
+    indication: [],
     trial_alias: "",
     study_type: "",
     study_phase: "",

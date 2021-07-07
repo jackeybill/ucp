@@ -5,6 +5,7 @@ import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, MinusOutlined,
 import "./index.scss";
 
 import CustomChart from "../CustomChart";
+import EvetnList from '../EventList';
 
 const { Panel } = Collapse;
 
@@ -211,6 +212,8 @@ const defaultBurdenValue = [
     ]
   };
 
+ 
+
   return (
     <div className="tab-container">
       <Row>
@@ -351,22 +354,28 @@ const defaultBurdenValue = [
             <Row>
               <Col span={24}>
               <Collapse defaultActiveKey={['1']} onChange={excluCallback} expandIconPosition="right" className="event-chart">
-                <Panel header={panelHeader()} key="1">
-                  <div className="chart-container">
-                    <CustomChart
-                      option={costOption}
-                      height={120}
-                    ></CustomChart>
-                    <div className="filter-label">
-                      <span>Click on each metrics to filter</span>
+                  <Panel header={panelHeader()} key="1">
+                    <div>
+                      <div className="chart-container">
+                        <CustomChart
+                          option={costOption}
+                          height={120}
+                        ></CustomChart>
+                        <div className="filter-label">
+                          <span>Click on each metrics to filter</span>
+                        </div>
+                      </div>
+                      <div className="chart-container">
+                        <CustomChart
+                          option={burdenOption}
+                          height={150}
+                        ></CustomChart>
+                      </div>
                     </div>
-                  </div>
-                  <div className="chart-container">
-                    <CustomChart
-                      option={burdenOption}
-                      height={150}
-                    ></CustomChart>
-                  </div>
+                    <div className="event-dashboard-container">
+                      <EvetnList/>
+                    </div>
+                  
                 </Panel>
               </Collapse>
               </Col>

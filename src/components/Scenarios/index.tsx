@@ -136,7 +136,7 @@ const SceneriosDashbaord = (props: any) => {
     setScenario(props.record.scenarios)
   }
 
-   const noEdit = props.record.scenarios.find(sce=>sce.rationale!=undefined)
+  const noEdit = props.record.scenarios.find(sce=>sce.rationale!=undefined)
   return (
     <div className="scenarios-container">
       <div className="container-top">What would you like to explore today?</div>

@@ -88,7 +88,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     studyType: this.props.newTrial.study_type||"",
     studyPhase: this.props.newTrial.study_phase||"",
     studyStatus: "",
-    indication: this.props.newTrial.indication||"",
+    indication: this.props.newTrial.indication||[],
     pediatric: this.props.newTrial.pediatric_study||"",
     dateFrom: 1990,
     dateTo: 2020,
@@ -210,7 +210,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         (this.state.studyStatus != "" && this.state.studyStatus != "All"
           ? d['study_status'] == this.state.studyStatus
           : true) &&
-        (this.state.indication != "" && this.state.indication != "All"
+        (this.state.indication.length != "" && this.state.indication != "All"
           ? d.indication == this.state.indication
           : true) &&
         (this.state.pediatric != "" && this.state.pediatric != "All"
@@ -449,6 +449,8 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 <div className="filter-item">
                   <label>INDICATION</label>
                   <Select
+                    mode="multiple"
+                    allowClear
                     value={this.state.indication}
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("indication", e)}

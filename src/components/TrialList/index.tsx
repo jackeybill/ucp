@@ -73,7 +73,20 @@ const panelContent = (record, onClick) => {
       </div>
       <div>
         <span className="key">Indication</span><br/>
-        <span className="value"> {record["indication"] || "-"}</span>
+        <span className="value">
+          {
+            typeof record["indication"] =='string' && record["indication"]
+          }
+          {
+            typeof record["indication"] == 'object' ? (
+              <>
+                {record["indication"] && record["indication"].length > 0 && record["indication"].map((i, idx) => {
+                  return idx < record["indication"].length - 1 ? i + ',' : i
+                })}
+              </>
+            ):''
+          }           
+      </span>
       </div>
       <div>
         <span className="key">Study Type</span><br/>

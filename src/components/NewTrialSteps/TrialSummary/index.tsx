@@ -21,7 +21,8 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 const TrialSummary = (props) => {
-    const {newTrial, handleNewTrialInputChange, handleNewTrialSelectChange} = props
+  const { newTrial, handleNewTrialInputChange, handleNewTrialSelectChange } = props
+  console.log( newTrial)
 
     return (
         <div className="trial-summary-container">
@@ -72,12 +73,13 @@ const TrialSummary = (props) => {
               <div className="trial-item">
                 <label htmlFor="">Indication</label>
                 <Select
-                  defaultValue="All"
+                  defaultValue=""
+                mode="multiple"
+                allowClear
                   value={newTrial["indication"]}
                   style={{ width: 250 }}
                   onChange={(v) => handleNewTrialSelectChange("indication", v)}
               >
-                 <Option value='All' key="All">All</Option>
                   {props.indicationList.map((t) => {
                     return (
                       <Option value={t} key={t}>

@@ -60,7 +60,7 @@ const TrialDetails = (props) => {
                 style={{ width: 200, height: 30 }}
               />
             ) : (
-              <span>{record["trial_title"] || "-"}</span>
+              <span className="readonly-value">{record["trial_title"] || "-"}</span>
             )}
           </div>
           <div className="trial-item">
@@ -80,7 +80,7 @@ const TrialDetails = (props) => {
                 })}
               </Select>
             ) : (
-              <span>{record["study_phase"] || "-"}</span>
+              <span className="readonly-value">{record["study_phase"] || "-"}</span>
             )}
           </div>
           <div className="trial-item">
@@ -100,7 +100,7 @@ const TrialDetails = (props) => {
                 })}
               </Select>
             ) : (
-              <span>{record["study_type"] || "-"}</span>
+              <span className="readonly-value">{record["study_type"] || "-"}</span>
             )}
           </div>
           <div className="trial-item">
@@ -120,7 +120,7 @@ const TrialDetails = (props) => {
                 })}
               </Select>
             ) : (
-              <span>{record["study_country"] || "-"}</span>
+              <span className="readonly-value">{record["study_country"] || "-"}</span>
             )}
           </div>
         </div>
@@ -137,20 +137,43 @@ const TrialDetails = (props) => {
                 <Option value="NO">NO</Option>
               </Select>
             ) : (
-              <span>{record["pediatric_study"] || "-"}</span>
+              <span className="readonly-value">{record["pediatric_study"] || "-"}</span>
             )}
           </div>
           <div className="trial-item">
             <label>Indication</label>
 
             {editable ? (
-              <Input
-                style={{ width: 200, height: 30 }}
-                onChange={(e) => onInputChange("indication", e)}
+              <Select
                 defaultValue={record["indication"]}
-              />
+                mode="multiple"
+                allowClear
+                style={{ width: 200 }}
+                onChange={(v) => onSelectChange("indication", v)}
+              >
+                {props.indicationList.map((t) => {
+                  return (
+                    <Option value={t} key={t}>
+                      {t}
+                    </Option>
+                  );
+                })}
+              </Select>
             ) : (
-              <span>{record["indication"] || "-"}</span>
+                <span className="readonly-value">
+                  {
+                    typeof record["indication"] =='string' && record["indication"]
+                  }
+                  {
+                    typeof record["indication"] == 'object' ? (
+                      <>
+                        {record["indication"] && record["indication"].length > 0 && record["indication"].map((i, idx) => {
+                          return idx < record["indication"].length - 1 ? i + ',' : i
+                        })}
+                      </>
+                    ):''
+                  }           
+              </span>
             )}
           </div>
           <div className="trial-item">
@@ -175,7 +198,7 @@ const TrialDetails = (props) => {
                 })}
               </Select>
             ) : (
-              <span>{record["therapeutic_area"] || "-"}</span>
+              <span className="readonly-value">{record["therapeutic_area"] || "-"}</span>
             )}
           </div>
           <div className="trial-item">
