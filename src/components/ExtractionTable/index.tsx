@@ -300,6 +300,9 @@ const ExtractionTable = (props: any, ref) => {
     })
     setSoaResult(newArr)
 
+    // soaSummary: {LABS: 4, PHYSICAL_EXAMINATION: 3, PROCEDURES: 2}
+    // setSoaSummary()
+
     const paramBody = {
       [key]: {
         [activeSection]: [
