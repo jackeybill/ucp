@@ -239,7 +239,7 @@ const ExtractionTable = (props: any, ref) => {
         <div className="type-selector">
           Change Entity Type
           <Select
-            value={word.category}
+            value={currentLabel?currentLabel:word.category}
             style={{ width: 200 }}
             onChange={(v)=>onCategoryChange(id,v)}
           >
@@ -350,11 +350,20 @@ const ExtractionTable = (props: any, ref) => {
     // const markCollection = tempWordsCollection.filter((w) => w.type == "mark");
     // const { hashKey, entity, activeSection, path } = saveParamsObj;
 
+    const newArr = soaResult.map((item, index, arr)=> {
+      if(item.key === id) {
+        return {...item, category:currentLabel}
+      } else {
+        return item
+      }
+    })
+    setSoaResult(newArr)
+
     const paramBody = {
       [key]: {
         [activeSection]: [
           {
-          soaResult: soaResult,
+          soaResult: newArr,
           table:content,
           },
         ],
@@ -416,14 +425,14 @@ const ExtractionTable = (props: any, ref) => {
     setCurrentId(id)
     setCurrentScore(1)
     setCurrentLabel(v);
-    const newArr = soaResult.map((item, index, arr)=> {
-        if(item.key === id) {
-           return {...item, category:v}
-        } else {
-          return item
-        }
-    })
-    setSoaResult(newArr)
+    // const newArr = soaResult.map((item, index, arr)=> {
+    //     if(item.key === id) {
+    //        return {...item, category:v}
+    //     } else {
+    //       return item
+    //     }
+    // })
+    // setSoaResult(newArr)
   };
 
   // The table cell with select options

@@ -63,13 +63,13 @@ const Extraction = (props: any, ref) => {
   const [svgEntity, setSvgEntity] = useState(initSvgEntity);
 
   const initLabels =
-    file[key][activeSection][0].comprehendMedical[entity].label || {};
+  file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label || {};
   const [labels, setLabels] = useState(initLabels); // labels and wordsColelction are same now
   const [wordsCollection, setWordsCollection] = useState(initLabels);
-  const entities =
-    file[key][activeSection][0].comprehendMedical[entity].Entities || {};
+  // const entities =
+  //   file[key][activeSection][0].comprehendMedical[entity].Entities || {};
   const firstMarkId = initLabels && initLabels.length > 0 && initLabels[0].id;
-  const summary = file[key][activeSection][0].comprehendMedical[entity].Summary || {};
+  const summary = file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary || {};
 
   useEffect(() => {
     const getAllEntityTypes = (obj, sections, entity) => {
@@ -100,9 +100,9 @@ const Extraction = (props: any, ref) => {
   useEffect(() => {
     setActiveType("");
     setContent(file[key][activeSection][0].content);
-    setLabels(file[key][activeSection][0].comprehendMedical[entity].label);
+    setLabels(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label);
     setWordsCollection(
-      file[key][activeSection][0].comprehendMedical[entity].label
+      file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label
     );
     const paramBody = {
       [key]: {

@@ -77,16 +77,17 @@ const ProtocolSection = (props: any) => {
   const [format, setFormat] = useState("Export as");
   const [entity, setEntity] = useState("");
   const [formatOptions, setFormatOptions] = useState(defaultExportOptions);
+  const [checkedSections, setCheckSections] = useState(initSelectedSections);
 
   useEffect(() => {
     if (props.fileReader.activeTabKey == "ENTITY RELATIONSHIPS") {
       setFormatOptions(relationshipExportOptions);
-      setSections(initSelectedSections.filter( function(currentValue){
+      setSections(checkedSections.filter( function(currentValue){
         return currentValue !== "scheduleActivities"
       } ))
     } else {
       setFormatOptions(defaultExportOptions);
-      setSections(initSelectedSections)
+      setSections(checkedSections)
     }
   }, [props.fileReader.activeTabKey]);
 
@@ -189,7 +190,8 @@ const ProtocolSection = (props: any) => {
     if (checkedValues) {
       setProtocolSection("sections");
     }
-    setSections(checkedValues);
+    setSections(checkedValues);  
+    setCheckSections(checkedValues)  
   };
 
   const onHandleActiveSection = (s) => {
@@ -228,6 +230,17 @@ const ProtocolSection = (props: any) => {
     }
   }
 
+  const handleBeginExtraction = () => {
+    props.history.push({
+      pathname: "/extraction",
+      state: {
+        status: protocolStatus,
+        title: protocolTitleText
+      }
+    })
+    props.readFile({ activeTabKey: "ENTITY RECOGNITION" })
+  }
+
   const handleSubmit = async () => {
     const path = props.fileReader.file["result_url"];
     const parambody = props.fileReader.updatedSection;
@@ -257,7 +270,8 @@ const ProtocolSection = (props: any) => {
               <span>
                 <span
                 className="back-btn"
-                onClick={() => props.history.push("/overview")}
+                onClick={() => {props.history.push("/overview");props.readFile({ activeTabKey: "ENTITY RECOGNITION" })
+              }}
                 >
                   <LeftOutlined /> 
                   <i>Home</i>
@@ -388,7 +402,7 @@ const ProtocolSection = (props: any) => {
               fileReader={props.fileReader}
             />
           )}
-          {props.location.pathname === "/extraction" && activeSection !== "scheduleActivities"&& (
+          {props.location.pathname === "/extraction" && activeSection !== "scheduleActivities"&& checkedSections[0]!== "scheduleActivities" &&(
             <>
               <Extraction
                 updateCurrentEntity={updateCurrentEntity}
@@ -396,7 +410,7 @@ const ProtocolSection = (props: any) => {
               />
             </>
           )}
-          {props.location.pathname === "/extraction" && activeSection === "scheduleActivities"&& (
+          {props.location.pathname === "/extraction" && (activeSection === "scheduleActivities"|| checkedSections[0]=== "scheduleActivities")&& (
             <>
               <ExtractionTable
                 updateCurrentEntity={updateCurrentEntity}
@@ -419,13 +433,7 @@ const ProtocolSection = (props: any) => {
               <Button
                 className="beginExtract-btn"
                 type="primary"
-                onClick={() => props.history.push({
-                  pathname: "/extraction",
-                  state: {
-                    status: protocolStatus,
-                    title: protocolTitleText
-                  }
-                })}
+                onClick={handleBeginExtraction}
               >
                 BEGIN ENTITY EXTRACTION
               </Button>
