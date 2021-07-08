@@ -231,10 +231,10 @@ const ExtractionTable = (props: any, ref) => {
           {text}
         </div>
         <div className="score">
-          Confidence Score:
+          {/* Confidence Score:
           {
             <span className="suc">100%</span>
-          }
+          } */}
         </div>
         <div className="type-selector">
           Change Entity Type
