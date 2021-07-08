@@ -201,7 +201,7 @@ const ExtractionTable = (props: any, ref) => {
           {soaEntity(iten, soaResult)[0].key}
         </span>
         <span className={`cate-label ${searchTxt && matchWord(soaEntity(iten, soaResult)[0].value, searchTxt)}`}>
-            {`${soaEntity(iten, soaResult)[0].category?formatWord(soaEntity(iten, soaResult)[0].category):""} ${soaEntity(iten, soaResult)[0].value?("("+soaEntity(iten, soaResult)[0].value+")"):""}`}
+            {`${soaEntity(iten, soaResult)[0].category?formatWord(soaEntity(iten, soaResult)[0].category):""} ${soaEntity(iten, soaResult)[0].value?(soaEntity(iten, soaResult)[0].value.toUpperCase().includes("NOT CONSIDERED AS")?(soaEntity(iten, soaResult)[0].value):"("+soaEntity(iten, soaResult)[0].value+")"):""}`}
         </span>
       </mark>
     )
