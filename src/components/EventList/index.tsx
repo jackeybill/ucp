@@ -387,9 +387,14 @@ const EventList = (props) => {
   }
 
   const onSave = async () => {
+    const scenarioId = props.location.state.scenarioId
     
-    const currentTrial = await getStudy(props.location.state.trial_id);
-    currentTrial['Schedule of Events'] = {
+    const result = await getStudy(props.location.state.trial_id);
+    if (result.statusCode == 200) {
+      const currentTrial = result.body
+      const currentScenario = result.body.scenarios.find(s=>s.scenario_id==scenarioId)
+
+      currentScenario['Schedule of Events'] = {
       "Labs": labs,
       "Physical Examination": examination,
       "Procedures": procedures,
@@ -402,6 +407,7 @@ const EventList = (props) => {
     const resp = await updateStudy(currentTrial)
     if (resp.statusCode == 200) {
       message.success('Save successfully')
+    }
     }
   }
 
