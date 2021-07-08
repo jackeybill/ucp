@@ -1296,8 +1296,7 @@ const ScenarioPage = (props) => {
         case 'pdf':
           pdfMake()
           break;
-        default:
-          jsonExport(trialRecord, "Scenario");
+        default: break;
       }
     }
 
@@ -1397,6 +1396,84 @@ const ScenarioPage = (props) => {
       }
     }
 
+    function keepUpdatedTrialInfo () {
+      //Keep criteria before goes to schedule of Events
+      let newScenario = trialRecord.scenarios.find( i=> i['scenario_id'] == scenarioId)
+
+        var newInclusion = {
+          "Demographics": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": demographicsElements
+          },
+          "Medical Condition": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": medConditionElements
+          },
+          "Intervention": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": interventionElements
+          },
+          "Lab / Test": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": labTestElements
+          }
+        }
+
+        var newExclusion = {
+          "Demographics": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": excluDemographicsElements
+          },
+          "Medical Condition": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": excluMedConditionElements
+          },
+          "Intervention": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": excluInterventionElements
+          },
+          "Lab / Test": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": excluLabTestElements
+          }
+        }
+
+      if(newScenario["Inclusion Criteria"].Demographics === undefined){
+        newScenario["Inclusion Criteria"] = newInclusion
+        newScenario["Exclusion Criteria"] = newExclusion
+      } else {
+        newScenario["Inclusion Criteria"].Demographics.Entities = demographicsElements
+        newScenario["Inclusion Criteria"]['Medical Condition'].Entities = medConditionElements
+        newScenario["Inclusion Criteria"].Intervention.Entities = interventionElements
+        newScenario["Inclusion Criteria"]['Lab / Test'].Entities = labTestElements
+
+        newScenario["Exclusion Criteria"].Demographics.Entities = excluDemographicsElements
+        newScenario["Exclusion Criteria"]['Medical Condition'].Entities = excluMedConditionElements
+        newScenario["Exclusion Criteria"].Intervention.Entities = excluInterventionElements
+        newScenario["Exclusion Criteria"]['Lab / Test'].Entities = excluLabTestElements
+      }
+
+      const newScenarioList = trialRecord.scenarios.map((item, id) =>{
+        if(item['scenario_id'] == scenarioId){
+            return newScenario
+        } else {
+            return item
+        }
+      })
+
+      let newTrial = trialRecord
+      newTrial.scenarios = newScenarioList
+
+      setTrialRecord(newTrial)
+    }
     const saveCriteria = async () => {
       setPageLoading(true)
       let newScenario = trialRecord.scenarios.find( i=> i['scenario_id'] == scenarioId)
@@ -1563,79 +1640,7 @@ const ScenarioPage = (props) => {
       }
     }
 
-    // const option = [{
-    //   Name:'Age',
-    //   Count: '500',
-    //   Desc:'85%',
-    //   SubDesc: '(52% Female / 48% Male)',
-    //   span: 24
-    // },{
-    //   Name:'Gender',
-    //   Count: '450',
-    //   Desc:'75%',
-    //   SubDesc: '',
-    //   span: 22
-    // },{
-    //   Name:'Stable body weight',
-    //   Count: '370',
-    //   Desc:'55%',
-    //   SubDesc: '',
-    //   span: 20
-    // },{
-    //   Name:'Type 2 Diabetes',
-    //   Count: '260',
-    //   Desc:'45%',
-    //   SubDesc: '',
-    //   span: 18
-    // },{
-    //   Name:'Metformin',
-    //   Count: '120',
-    //   Desc:'25%',
-    //   SubDesc: '29%',
-    //   span: 16
-    // },{
-    //   Name:'Insulin',
-    //   Count: '120',
-    //   Desc:'25%',
-    //   SubDesc: '',
-    //   span: 16
-    // },{
-    //   Name:'TSH',
-    //   Count: '100',
-    //   Desc:'22%',
-    //   SubDesc: '',
-    //   span: 15
-    // },{
-    //   Name:'Fasting C peptide',
-    //   Count: '90',
-    //   Desc:'20%',
-    //   SubDesc: '',
-    //   span: 14
-    // },{
-    //   Name:'HbA1c',
-    //   Count: '70',
-    //   Desc:'15%',
-    //   SubDesc: '',
-    //   span: 12
-    // }]
-
-
-  //--------------------------------------------
-
-const jsonExport = async (jsonData, filename) => {
-    const json = JSON.stringify(jsonData);
-    const blob = new Blob([json], { type: "application/json" });
-    const href = await URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = href;
-    link.download = filename + ".json";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    console.log("export josn file:" +filename)
-};
-
-const pdfMake = async () =>{
+    const pdfMake = async () =>{
       const pdf = new jsPDF('p', 'pt');
       const tableColumn = ['Caregory', 'S/No.', 'Eligibility Criteria', 'Values', 'Timeframe','Condition Or Exception'];
 
@@ -1766,6 +1771,9 @@ const pdfMake = async () =>{
 
   const changeActiveTabKey = (activeKey) => {
     setActiveTabKey(activeKey)
+    if(activeKey === '3'){
+      keepUpdatedTrialInfo()
+    }
     console.log(activeKey)
   }
 
@@ -1834,7 +1842,7 @@ const pdfMake = async () =>{
                     </>
                 ):(activeTabKey === '2'?(
                     <>
-                        <Button type="primary" className="step-btn" onClick={() => setActiveTabKey('3')}>
+                        <Button type="primary" className="step-btn" onClick={() => changeActiveTabKey('3')}>
                             NEXT:ENROLLMENT FEASIBILITY
                         </Button>
                         <Button className="view-btn step-btn" onClick={() => setActiveTabKey('1')}>
@@ -1879,7 +1887,6 @@ const pdfMake = async () =>{
               <Dropdown.Button style={{zIndex: 1}}
                 overlay={
                   <Menu>
-                    <Menu.Item key="json" onClick={() => handleExport('json')}>JSON</Menu.Item>
                     <Menu.Item key="pdf" onClick={() => handleExport('pdf')}>PDF</Menu.Item>
                     <Menu.Item key="csv" onClick={() => handleExport('csv')}>CSV</Menu.Item>
                   </Menu>
@@ -2642,7 +2649,7 @@ const pdfMake = async () =>{
       </div>
 
       ) : (
-              <div className="ie-container"><ScheduleEvents/></div>
+              <div className="ie-container"><ScheduleEvents record={trialRecord} editFlag={editFlag} scenarioId={scenarioId}/></div>
       )}
       </Spin>
       <Modal visible={showHistorical} title="Historical Trial List" onOk={handleOk} onCancel={handleCancel}

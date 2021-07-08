@@ -10,8 +10,7 @@ const columns = [
   {
     title: 'Sponsor',
     dataIndex: 'sponsor',
-    ellipsis: true,
-    render: text => <span>-</span>
+    ellipsis: true
   },
   {
     title: 'Drug',

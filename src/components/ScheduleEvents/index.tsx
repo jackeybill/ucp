@@ -1,10 +1,11 @@
 import React, { useState, useReducer, useEffect } from "react";
-import {Table, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, InputNumber, Tooltip, Button, Spin} from "antd";
+import {Table, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, InputNumber, Tooltip, Button, Spin, message} from "antd";
 import {ArrowRightOutlined, CloseOutlined, EditFilled, MinusOutlined, PlusOutlined, DownOutlined, DownloadOutlined} from "@ant-design/icons";
-import {getStandardEvents} from "../../utils/ajax-proxy";
+import {getStandardEvents, updateStudy} from "../../utils/ajax-proxy";
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
 import EventList from '../EventList';
+import FileSaver from 'file-saver';
 
 const { Panel } = Collapse;
 
@@ -26,16 +27,6 @@ const initialNumber = {
   weekNumber: 26
 }
 
-const tempCostValue = [
-  {value: 1560, name: 'Labs'},
-  {value: 1875, name: 'Physical Examination'},
-  {value: 2200, name: 'Procedures'},
-  {value: 3125, name: 'Questionnaires'},
-  {value: 2167, name: 'Study Procedures'}
-]
-
-const tempBurdenValue = [60, 72, 78, 75, 83, 78, 68, 84, 90]
-
 const ScheduleEvents = (props) => {
 
   const [hiddeTags, setHiddeTags] = useState(true)
@@ -46,6 +37,7 @@ const ScheduleEvents = (props) => {
     (state, newState) => ({ ...state, ...newState }),
     { ...initialNumber }
   );
+  const [weeks, setWeeks] = useState([])
 
   //Cost Per Patient Chart
   const [patientChartColor, setPatientChartColor] = useState(iChartColors)
@@ -98,7 +90,9 @@ const ScheduleEvents = (props) => {
   }
 
   useEffect(() => {
-
+    console.log(props.record)
+    console.log(props.editFlag)
+    console.log(props.scenarioId)
     const getStandardEventsLib = async () => {
       var resp = await getStandardEvents();
 
@@ -238,6 +232,7 @@ const ScheduleEvents = (props) => {
       data: ['Labs', 'Physical Examination', 'Procedures', 'Questionnaires', 'Study Procedures']
     },
     tooltip: {
+      show: showTooltip,
       trigger: 'item',
       formatter: '{b} - ${c}',
       extraCssText:'background:#757373;color:white;font-size:8px'
@@ -301,12 +296,116 @@ const ScheduleEvents = (props) => {
     ]
   };
 
-  const saveEvents = () =>{
+  const saveEvents = async (labs, examination, procedures, questionnaire, studyProcedures, weeks) =>{
     console.log("save action")
     setPatientChartColor(aChartColors)
     setShowPatientLabel(true)
-    setCostData(tempCostValue)
-    setBurdenData(tempBurdenValue)
+    setWeeks(weeks)
+
+    let tempBurdenData = []
+    let tempBurdenXAxis = []
+    for(var i =0; i< numbers.visitNumber; i ++){
+      tempBurdenData.push(0)
+      tempBurdenXAxis.push((i+1)+'')
+    }
+    let labCost = 0
+    for(const a in labs) {
+      labCost += Number(labs[a]['Dummy Cost'])
+      if(labs[a].condition.length > 0){
+        for(let b = 0; b < labs[a].condition.length; b ++){
+          if(labs[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(labs[a]['Dummy Cost'])
+          }
+        }
+      }
+    }
+    let examCost = 0
+    for(const a in examination) {
+      examCost += Number(examination[a]['Dummy Cost'])
+      if(examination[a].condition.length > 0){
+        for(let b = 0; b < examination[a].condition.length; b ++){
+          if(examination[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(examination[a]['Dummy Cost'])
+          }
+        }
+      }
+    }
+    let procedureCost = 0
+    for(const a in procedures) {
+      procedureCost += Number(procedures[a]['Dummy Cost'])
+      if(procedures[a].condition.length > 0){
+        for(let b = 0; b < procedures[a].condition.length; b ++){
+          if(procedures[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(procedures[a]['Dummy Cost'])
+          }
+        }
+      }
+    }
+    let questionnaireCost = 0
+    for(const a in questionnaire) {
+      questionnaireCost += Number(questionnaire[a]['Dummy Cost'])
+      if(questionnaire[a].condition.length > 0){
+        for(let b = 0; b < questionnaire[a].condition.length; b ++){
+          if(questionnaire[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(questionnaire[a]['Dummy Cost'])
+          }
+        }
+      }
+    }
+    let studyCost = 0
+    for(const a in studyProcedures) {
+      studyCost += Number(studyProcedures[a]['Dummy Cost'])
+      if(studyProcedures[a].condition.length > 0){
+        for(let b = 0; b < studyProcedures[a].condition.length; b ++){
+          if(studyProcedures[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(studyProcedures[a]['Dummy Cost'])
+          }
+        }
+      }
+    }
+
+    let tempCostData = [
+      {value: labCost, name: 'Labs'},
+      {value: examCost, name: 'Physical Examination'},
+      {value: procedureCost, name: 'Procedures'},
+      {value: questionnaireCost, name: 'Questionnaires'},
+      {value: studyCost, name: 'Study Procedures'}
+    ]
+
+    let totalCost = '$' + (labCost + examCost + procedureCost + questionnaireCost + studyCost)/1000 + 'K'
+    setPatientRate('{p|'+ totalCost +'}\n{good|GOOD}')
+
+    setCostData(tempCostData)
+    setBurdenData(tempBurdenData)
+    setBurdenXAxis(tempBurdenXAxis)
+    setShowTooltip(true)
+
+    let newScenario = props.record.scenarios.find( i=> i['scenario_id'] == props.scenarioId)
+    newScenario['Schedule of Events'] = {
+      "Labs": labs,
+      "Physical Examination": examination,
+      "Procedures": procedures,
+      "Questionnaires": questionnaire,
+      "Study Procedures": studyProcedures,
+      "Weeks":weeks,
+      "Visits": numbers.visitNumber
+    }
+
+    const newScenarioList = props.record.scenarios.map((item, id) =>{
+      if(item['scenario_id'] == props.scenarioId){
+          return newScenario
+      } else {
+          return item
+      }
+    })
+
+    let newTrial = props.record
+    newTrial.scenarios = newScenarioList
+
+    const resp = await updateStudy(newTrial)
+    if (resp.statusCode == 200) {
+      message.success('Save successfully')
+    }
   }
 
   const callback = (key) => {
@@ -429,6 +528,39 @@ const ScheduleEvents = (props) => {
   const handleOk = () => {
     setShowConfigure(false)
     setHiddeTags(false)
+
+    let tempBurdenXAxis = []
+    for(var i =0; i< numbers.visitNumber; i ++){
+      tempBurdenXAxis.push((i+1)+'')
+    }
+    setBurdenXAxis(tempBurdenXAxis)
+  }
+
+  const exportEvent = () =>{
+    let str=',' + ',' + 'Visit'
+    for(let i = 1; i <= numbers.visitNumber; i ++){
+      str += ',' + i
+    }
+
+    str += '\n' + ',' + ',' + 'Week'
+    for(let w = 0; w < weeks.length; w ++){
+      str += ',' + weeks[w]
+    }
+
+    str += '\n' + ',' + ',' + 'Burden'
+    for(let b = 0; b < burdenData.length; b ++){
+      str += ',' + burdenData[b]
+    }
+
+    str += '\n' + 'Category,' + ',Activity' + ',Cost'
+    let exportContent = "\uFEFF";
+      let blob = new Blob([exportContent + str], {
+        type: "text/plain;charset=utf-8"
+      });
+  
+      const date = Date().split(" ");
+      const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
+      FileSaver.saveAs(blob, `SoA_${dateStr}.csv`);
   }
 
   return (
@@ -566,7 +698,7 @@ const ScheduleEvents = (props) => {
                 <Dropdown.Button style={{zIndex: 1}} size="small"
                   overlay={
                     <Menu>
-                      <Menu.Item key="csv" onClick={null}>CSV</Menu.Item>
+                      <Menu.Item key="csv" onClick={exportEvent}>CSV</Menu.Item>
                     </Menu>
                   }
                   icon={<DownOutlined />}>
