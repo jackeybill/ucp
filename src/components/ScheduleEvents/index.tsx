@@ -4,7 +4,7 @@ import {ArrowRightOutlined, CloseOutlined, EditFilled, MinusOutlined, PlusOutlin
 import {getStandardEvents} from "../../utils/ajax-proxy";
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
-import EvetnList from '../EventList';
+import EventList from '../EventList';
 
 const { Panel } = Collapse;
 
@@ -597,7 +597,15 @@ const ScheduleEvents = (props) => {
 
               <Col span={24}>
                 <div className="event-dashboard-container">
-                    <EvetnList saveEvents={saveEvents} numbers={numbers}/>
+                    <EventList
+                      saveEvents={saveEvents}
+                      numbers={numbers}
+                      labs={addedLabs}
+                      examination={addedExamination}
+                      procedures={addedProcedures}
+                      questionnaire={addedQuestionnaires}
+                      studyProcedures={addedStudyProcedures}
+                    />
                 </div>
               </Col>
             </Row>

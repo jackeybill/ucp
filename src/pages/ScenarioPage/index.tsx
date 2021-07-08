@@ -82,10 +82,8 @@ const ScenarioPage = (props) => {
     const [editFlag, setEditFlag] = useState(false)
     const [scenarioType, setScenarioType] = useState('')
     const [activeEnrollmentTabKey, setActiveEnrollmentTabKey] = useState('1')
-  //   const [activeTabKey, setActiveTabKey] = useState('1')
-  // const [processStep, setProcessStep] = useState(0)
-  const [activeTabKey, setActiveTabKey] = useState('3')
-    const [processStep, setProcessStep] = useState(1)
+    const [activeTabKey, setActiveTabKey] = useState('1')
+    const [processStep, setProcessStep] = useState(0)
     const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState([])
     const [spinning, setSpinning] = useState(false)
     const [showChartLabel, setShowChartLabel] = useState(false)
@@ -1290,6 +1288,7 @@ const ScenarioPage = (props) => {
     }
 
     const handleExport = (fileType) => {
+      console.log("export josn file:")
       switch(fileType){
         case 'csv':
           csvExport();
@@ -1297,7 +1296,8 @@ const ScenarioPage = (props) => {
         case 'pdf':
           pdfMake()
           break;
-        default: break;
+        default:
+          jsonExport(trialRecord, "Scenario");
       }
     }
 
@@ -1563,7 +1563,79 @@ const ScenarioPage = (props) => {
       }
     }
 
-    const pdfMake = async () =>{
+    // const option = [{
+    //   Name:'Age',
+    //   Count: '500',
+    //   Desc:'85%',
+    //   SubDesc: '(52% Female / 48% Male)',
+    //   span: 24
+    // },{
+    //   Name:'Gender',
+    //   Count: '450',
+    //   Desc:'75%',
+    //   SubDesc: '',
+    //   span: 22
+    // },{
+    //   Name:'Stable body weight',
+    //   Count: '370',
+    //   Desc:'55%',
+    //   SubDesc: '',
+    //   span: 20
+    // },{
+    //   Name:'Type 2 Diabetes',
+    //   Count: '260',
+    //   Desc:'45%',
+    //   SubDesc: '',
+    //   span: 18
+    // },{
+    //   Name:'Metformin',
+    //   Count: '120',
+    //   Desc:'25%',
+    //   SubDesc: '29%',
+    //   span: 16
+    // },{
+    //   Name:'Insulin',
+    //   Count: '120',
+    //   Desc:'25%',
+    //   SubDesc: '',
+    //   span: 16
+    // },{
+    //   Name:'TSH',
+    //   Count: '100',
+    //   Desc:'22%',
+    //   SubDesc: '',
+    //   span: 15
+    // },{
+    //   Name:'Fasting C peptide',
+    //   Count: '90',
+    //   Desc:'20%',
+    //   SubDesc: '',
+    //   span: 14
+    // },{
+    //   Name:'HbA1c',
+    //   Count: '70',
+    //   Desc:'15%',
+    //   SubDesc: '',
+    //   span: 12
+    // }]
+
+
+  //--------------------------------------------
+
+const jsonExport = async (jsonData, filename) => {
+    const json = JSON.stringify(jsonData);
+    const blob = new Blob([json], { type: "application/json" });
+    const href = await URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = filename + ".json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    console.log("export josn file:" +filename)
+};
+
+const pdfMake = async () =>{
       const pdf = new jsPDF('p', 'pt');
       const tableColumn = ['Caregory', 'S/No.', 'Eligibility Criteria', 'Values', 'Timeframe','Condition Or Exception'];
 
@@ -1807,6 +1879,7 @@ const ScenarioPage = (props) => {
               <Dropdown.Button style={{zIndex: 1}}
                 overlay={
                   <Menu>
+                    <Menu.Item key="json" onClick={() => handleExport('json')}>JSON</Menu.Item>
                     <Menu.Item key="pdf" onClick={() => handleExport('pdf')}>PDF</Menu.Item>
                     <Menu.Item key="csv" onClick={() => handleExport('csv')}>CSV</Menu.Item>
                   </Menu>
@@ -2569,7 +2642,7 @@ const ScenarioPage = (props) => {
       </div>
 
       ) : (
-        <div className="ie-container"><ScheduleEvents/></div>
+              <div className="ie-container"><ScheduleEvents/></div>
       )}
       </Spin>
       <Modal visible={showHistorical} title="Historical Trial List" onOk={handleOk} onCancel={handleCancel}

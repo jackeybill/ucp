@@ -107,8 +107,12 @@
           flex: 1;
           text-align: center;
         }
+        .colunm.td {
+          min-width: 50px;
+        }
         .incon-wrapper {
           display: inline-block;
+          cursor: pointer;
         }
       }
     }
