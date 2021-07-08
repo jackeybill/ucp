@@ -536,7 +536,7 @@ const ExtractionTable = (props: any, ref) => {
               </div>
             </div>
             {Array.isArray(content) ? (
-              <div className="content-table-extraction">
+              <div className="content-table-extraction" id="pdf-content">
                 <div className="content-table-title">Schedule of Activities:</div>
                 <div className="content-table-content">
                 <table>
@@ -670,7 +670,7 @@ const ExtractionTable = (props: any, ref) => {
               </div>
             </div>
             {Array.isArray(content) ? (
-              <div className="content-table-extraction">
+              <div className="content-table-extraction" id="pdf-content">
                 <div className="content-table-title">Schedule of Activities:</div>
                 <div className="content-table-content">
                 <table>

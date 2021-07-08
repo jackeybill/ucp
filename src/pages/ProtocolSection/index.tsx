@@ -66,11 +66,11 @@ const ProtocolSection = (props: any) => {
 
   const file = props.fileReader.file;
   const key = file.keyName || Object.keys(file)[0] || "";
-  let entities;
 
   const protocolStatus = props.location.state && props.location.state.status;
   const protocolTitleText = props.location.state && props.location.state.title;
 
+  const [entities, setEntities] = useState([]);
   const [protocolSection, setProtocolSection] = useState("sections");
   const [sections, setSections] = useState(initSelectedSections);
   const [activeSection, setActiveSection] = useState("");
@@ -98,6 +98,16 @@ const ProtocolSection = (props: any) => {
     }
   }, [props.location.pathname]);
 
+  useEffect(() => {
+    if (props.location.pathname == "/extraction") {
+      if (entity && activeSection && file[key][activeSection][0].comprehendMedical[entity]) {
+        setEntities(file[key][activeSection][0].comprehendMedical[entity].Entities)
+      } else if (entity && activeSection && file[key][activeSection][0].table) {
+        setEntities(file[key][activeSection][0].table)
+      }
+    }
+  }, [activeSection]);
+
   const updateCurrentEntity = (e) => {
     setEntity(e);
   };
@@ -124,6 +134,8 @@ const ProtocolSection = (props: any) => {
 
     domtoimage.toBlob(sourceElement).then(function (blob) {
       saveAs(blob, fileName);
+    }).catch(function (error) {
+      console.error("oops, something went wrong!", error);
     });
   };
 
@@ -159,7 +171,7 @@ const ProtocolSection = (props: any) => {
       const file = props.fileReader.file;
       const key = file.keyName || Object.keys(file)[0] || [];
       const jsonData = activeSection
-        ? file[key][activeSection][0].comprehendMedical[entity].Entities
+        ? (activeSection === "scheduleActivities"? file[key][activeSection][0].table : file[key][activeSection][0].comprehendMedical[entity].Entities)
         : file[key]["includeAllText"][0].comprehendMedical[entity].Entities;
       jsonExport(jsonData, fname);
     }
@@ -224,8 +236,8 @@ const ProtocolSection = (props: any) => {
       const file = props.fileReader.file;
       const key = file.keyName || Object.keys(file)[0] || [];
       const jsonData = activeSection
-        ? file[key][activeSection][0].comprehendMedical[entity].Entities
-        : file[key]["includeAllText"][0].comprehendMedical[entity].Entities;
+      ? (activeSection === "scheduleActivities"? file[key][activeSection][0].table : file[key][activeSection][0].comprehendMedical[entity].Entities)
+      : file[key]["includeAllText"][0].comprehendMedical[entity].Entities;
       jsonExport(jsonData, fileName);
     }
   }
@@ -255,10 +267,6 @@ const ProtocolSection = (props: any) => {
       }, 2000);
     }
   };
-
-  if (entity && activeSection && file[key][activeSection][0].comprehendMedical[entity]) {
-    entities = file[key][activeSection][0].comprehendMedical[entity].Entities;
-  }
 
   return (
     <div className="protocol-section">
