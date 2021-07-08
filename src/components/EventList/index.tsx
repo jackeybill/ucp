@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { Button, Collapse,Select } from "antd";
+import { Button, Collapse,Select,Input } from "antd";
 import { CheckCircleFilled,CheckCircleTwoTone } from "@ant-design/icons";
 import "./index.scss";
 
@@ -69,31 +69,35 @@ const addedMetrics = [
   
 
 
-const EventList = () => {
+const EventList = (props) => {
+  console.log(props)
   const [metrics, setMetrics] = useState(addedMetrics)
+  const { visitNumber, weekNumber } = props.numbers
+  
+  
 
-  const onAddEvent = (e) => {
-    e.stopPropagation();
-    const tmpMetrics = metrics.slice(0)
-    addedMetrics.push({
-      "Standard Event": " ",
-      "Categories": "Procedures",
-      "Dummy Cost": "100",
-      "Anxiety Inducing": "1",
-      "Hospital dependent": "0",
-      "Physically Invasiveness": "1",
-      "Blood Draw": "0",
-      "Sedation": "0",
-      "Injection": "0",
-      "Urine": "0",
-      "Requires Fasting": "0",
-      "Longer than 2 hours": "0",
-      "Questionnaire": "0",
-      "selected": "false"
-    })
-    setMetrics(tmpMetrics)
-    
+  const renderVisit = () => {
+    let visits = [];
+     for (var i = 1; i <= visitNumber; i++) {
+        visits.push(<div className="td">{i}</div>);
+      }
+    return (<>{visits}</>)
   }
+  const renderWeek = () => {
+    let weeks = [];
+    let week = Math.floor(weekNumber / visitNumber)
+    let remainder = weekNumber % visitNumber
+    if (remainder > 0) week = week + 1
+    console.log(week)
+    let sum = 0;
+    for (var i = 1; i <= visitNumber; i++) {
+      sum = sum + week
+      if(sum>weekNumber)sum=weekNumber
+      weeks.push(<Input className="td" value={sum}/>)
+      }
+    return (<>{weeks}</>)
+  }
+
 
   const endpointsSelector = () => {
     return (
@@ -132,15 +136,7 @@ const EventList = () => {
               <div className="colunm-row e-row"></div>
               <div className="visit-row e-row number">
                 <div className="colunm td">Visits</div>
-                <div className="td">1</div>
-                <div className="td">2</div>
-                <div className="td">3</div>
-                <div className="td">4</div>
-                <div className="td">5</div>
-                <div className="td">6</div>
-                <div className="td">7</div>
-                <div className="td">8</div>
-                <div className="td">9</div>
+                {renderVisit()}
               </div>
             </div>
 
@@ -153,15 +149,7 @@ const EventList = () => {
               </div>
               <div className="week-row e-row number">
                 <div className="colunm td ">Weeks</div>
-                <div className="td">1</div>
-                <div className="td">2</div>
-                <div className="td">3</div>
-                <div className="td">4</div>
-                <div className="td">5</div>
-                <div className="td">6</div>
-                <div className="td">7</div>
-                <div className="td">8</div>
-                <div className="td">9</div>
+                {renderWeek()}
               </div>
             </div>
           </div>
@@ -171,7 +159,9 @@ const EventList = () => {
             header={
               <div className="event-panel-head">
                 <div className="event-title e-row">
-                  <div className="name">Physical Metrics {`(${addedMetrics.length})`} <span className="add-event" onClick={onAddEvent}>Add Event</span> </div>
+                  <div className="name">Physical Metrics {`(${addedMetrics.length})`}
+                    {/* <span className="add-event" onClick={onAddEvent}>Add Event</span> */}
+                  </div>
                   <div className="cost">$200</div>
                   <div></div>
                 </div>
@@ -195,7 +185,7 @@ const EventList = () => {
                 </div>
                 <div className="status-row e-row">
                   <div className="colunm td"></div>
-                  <div className="td">{evt['selected']?<CheckCircleFilled/> :<CheckCircleTwoTone twoToneColor="#ddd" />}</div>
+                  <div className="td"><span className="incon-wrapper">{evt['selected']?<CheckCircleFilled/> :<CheckCircleTwoTone twoToneColor="#ddd" />}</span></div>
                   <div className="td"><CheckCircleTwoTone twoToneColor="#ddd" /></div>
                   <div className="td"><CheckCircleTwoTone twoToneColor="#ddd" /></div>
                   <div className="td"><CheckCircleTwoTone twoToneColor="#ddd" /></div>

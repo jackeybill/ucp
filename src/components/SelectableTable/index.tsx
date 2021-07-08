@@ -8,8 +8,8 @@ const columns = [
     ellipsis: true
   },
   {
-    title: 'Company',
-    dataIndex: '-',
+    title: 'Sponsor',
+    dataIndex: 'sponsor',
     ellipsis: true,
     render: text => <span>-</span>
   },
@@ -25,7 +25,7 @@ const columns = [
   },
   {
     title: 'Phase',
-    dataIndex: 'phase',
+    dataIndex: 'study_phase',
     ellipsis: true
   }
 ];

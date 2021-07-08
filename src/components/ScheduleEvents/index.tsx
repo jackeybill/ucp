@@ -599,7 +599,7 @@ const ScheduleEvents = (props) => {
 
               <Col span={24}>
                 <div className="event-dashboard-container">
-                  <EvetnList saveEvents={saveEvents}/>
+                    <EvetnList saveEvents={saveEvents} numbers={numbers}/>
                 </div>
               </Col>
             </Row>

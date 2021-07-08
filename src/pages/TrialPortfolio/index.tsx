@@ -456,7 +456,7 @@ const TrialPortfolio = (props) => {
             {
               <Button  size="small" type="primary" onClick={step>=(timeline.length-1)?handleOk:handleNextStep}>
                 {
-                  step>=(timeline.length-1)? "Create Trial":`Next Step:${timeline[step+1]}`
+                  step>=(timeline.length-1)? "Create Trial":`Next Step: ${timeline[step+1]}`
                 }            
               </Button>
             }

@@ -47,7 +47,7 @@ const columns = [
   },
   {
     title: "Phase",
-    dataIndex: "phase",
+    dataIndex: "study_phase",
     ellipsis: true,
   },
 ];
@@ -202,7 +202,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       const date = d['start_date'].split('-')[0]
       return (
         (this.state.studyPhase != "" && this.state.studyPhase != "All"
-          ? d.phase == this.state.studyPhase
+          ? d.study_phase == this.state.studyPhase
           : true) &&
         (this.state.studyType != "" && this.state.studyType != "All"
           ? d.study_type == this.state.studyType
