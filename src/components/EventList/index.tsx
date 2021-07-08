@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Button, Collapse, Select, Input} from "antd";
+import { Button, Collapse, Select, Input, message, } from "antd";
 import { withRouter } from 'react-router';
 import { CheckCircleFilled, CheckCircleTwoTone } from "@ant-design/icons";
+import { updateStudy,getStudy } from '../../utils/ajax-proxy';
 import "./index.scss";
 
 const { Panel } = Collapse;
@@ -385,8 +386,29 @@ const EventList = (props) => {
     setWeeks(tmpWeeks)
   }
 
-  const onSave = () => {
-    props.saveEvents(labs, examination, procedures, questionnaire, studyProcedures, weeks)
+  const onSave = async () => {
+    const scenarioId = props.location.state.scenarioId
+    
+    const result = await getStudy(props.location.state.trial_id);
+    if (result.statusCode == 200) {
+      const currentTrial = result.body
+      const currentScenario = result.body.scenarios.find(s=>s.scenario_id==scenarioId)
+
+      currentScenario['Schedule of Events'] = {
+      "Labs": labs,
+      "Physical Examination": examination,
+      "Procedures": procedures,
+      "Questionnaires": questionnaire,
+      "Study Procedures": studyProcedures,
+      "Weeks":weeks,
+      "Visits": visitNumber
+    }
+
+    const resp = await updateStudy(currentTrial)
+    if (resp.statusCode == 200) {
+      message.success('Save successfully')
+    }
+    }
   }
 
   return (
