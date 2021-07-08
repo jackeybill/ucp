@@ -113,19 +113,19 @@ const ScheduleEvents = (props) => {
           setOrgStudyProcedures(response['Study Procedures'])
 
           setFilteredLabs(response['Labs'].filter((d) => {
-            return Object.assign(d, {selected: false})
+            return Object.assign(d, {selected: false, condition: []})
           }))
           setFilteredExamination(response['Physical Examination'].filter((d) => {
-            return Object.assign(d, {selected: false})
+            return Object.assign(d, {selected: false, condition: []})
           }))
           setFilteredProcedures(response['Procedures'].filter((d) => {
-            return Object.assign(d, {selected: false})
+            return Object.assign(d, {selected: false, condition: []})
           }))
           setFilteredQuestionnaires(response['Questionnaires'].filter((d) => {
-            return Object.assign(d, {selected: false})
+            return Object.assign(d, {selected: false, condition: []})
           }))
           setFilteredStudyProcedures(response['Study Procedures'].filter((d) => {
-            return Object.assign(d, {selected: false})
+            return Object.assign(d, {selected: false, condition: []})
           }))
       }
     };
@@ -566,8 +566,6 @@ const ScheduleEvents = (props) => {
                 <Dropdown.Button style={{zIndex: 1}} size="small"
                   overlay={
                     <Menu>
-                      <Menu.Item key="json" onClick={null}>JSON</Menu.Item>
-                      <Menu.Item key="pdf" onClick={null}>PDF</Menu.Item>
                       <Menu.Item key="csv" onClick={null}>CSV</Menu.Item>
                     </Menu>
                   }
