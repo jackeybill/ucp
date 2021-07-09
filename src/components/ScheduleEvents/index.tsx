@@ -131,8 +131,8 @@ const ScheduleEvents = (props) => {
 
             setAddedLabs(eventsConfigure[CATEGORY_LABS].entities)
             setAddedExamination(eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities)
-            setAddedQuestionnaires(eventsConfigure[CATEGORY_PROCEDURES].entities)
-            setAddedProcedures(eventsConfigure[CATEGORY_QUESTIONNAIRES].entities)
+            setAddedQuestionnaires(eventsConfigure[CATEGORY_QUESTIONNAIRES].entities)
+            setAddedProcedures(eventsConfigure[CATEGORY_PROCEDURES].entities)
             setAddedStudyProcedures(eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities)
             
             setPatientRate('{p|$'+ eventsConfigure.TotalCost +'K}\n{'+eventsConfigure.CostRate + '|' + eventsConfigure.CostRate + '}')
@@ -391,7 +391,7 @@ const ScheduleEvents = (props) => {
   };
 
   const handleEventChange = (event, newFlag) =>{
-    switch (event.Categories) {
+    switch (event.Categories.trim()) {
       case CATEGORY_LABS:     
         const tmpLabs = addedLabs.slice(0);
         if(newFlag){
@@ -428,7 +428,7 @@ const ScheduleEvents = (props) => {
             tmpProcedures.splice(index, 1, event)
           }
         }
-        setAddedQuestionnaires(tmpProcedures)
+        setAddedProcedures(tmpProcedures)
         break;
       
        case CATEGORY_QUESTIONNAIRES:       
@@ -613,8 +613,7 @@ const ScheduleEvents = (props) => {
   }]
 
   const handleEvent = (item) => {
-    // console.log(item.Categories)
-    switch(item.Categories){
+    switch(item.Categories.trim()){
       case "Labs": 
         let index = filteredLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
         const newData = [...filteredLabs]
