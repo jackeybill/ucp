@@ -632,3 +632,27 @@ button.ant-btn.ant-btn-text, button.ant-btn.ant-btn-text:focus, button.ant-btn.a
     background-color: #fff;
     border: unset;
 }
+
+.action-title {
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+}
+
+.ant-steps-item-title {
+font-size: 12px;
+}
+.item-option span {
+font-size: 12px;
+}
+
+.left-section .head-row {
+.frequency {
+  color: #333333;
+  font-size: 12px;
+}
+.label {
+  font-size: 12px;
+  font-weight: 600;
+}
+}

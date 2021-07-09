@@ -275,6 +275,7 @@ const EventList = (props) => {
             .toLowerCase()
             .localeCompare(optionB.children.toLowerCase())
         }
+        value={evt.endpoint}
         onChange={(value)=> onEndpointChange(value,evt,idx)}
       >
         {endpoints_map.map((e, idx) => (

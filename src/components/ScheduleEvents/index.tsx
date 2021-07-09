@@ -664,7 +664,7 @@ const ScheduleEvents = (props) => {
         <Col span={24 - eventLib} className="event-right-container">
           <div style={{ padding: '10px 20px 0px 20px' }}>
             <Row>
-              <Col span={24}><h4>Schedule of Events</h4></Col>
+              <Col span={24}><span className="title">Schedule of Events</span></Col>
             </Row>
             <Spin spinning={showConfigure}>
             <Row>

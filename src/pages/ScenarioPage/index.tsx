@@ -1810,10 +1810,10 @@ const ScenarioPage = (props) => {
         <Row className="process-container">
             <Col span={2} style={{borderRight: '1.5px solid #c4bfbf'}}>
                 <div className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
-                    <span><LeftOutlined /> Trial Page</span>
+                    <LeftOutlined /> Trial Page
                 </div>
             </Col>
-            <Col span={4} style={{maxHeight: '32px'}}>
+            <Col span={4} style={{maxHeight: '32px',borderRight: '1.5px solid #c4bfbf'}}>
               <Row>
               <Col span={24}>
                 <Row className="item-translate">
@@ -1828,14 +1828,14 @@ const ScenarioPage = (props) => {
                 </Col>
                 </Row>
             </Col>
-            <Col span={1} style={{borderLeft: '1.5px solid #c4bfbf'}}/>
-            <Col span={8}>
+            {/* <Col span={1} style={{borderLeft: '1.5px solid #c4bfbf'}}/> */}
+            <Col span={8} style={{paddingLeft: '10px'}}>
                 <Steps progressDot current={processStep} size="small" >
                     <Step title="Add Inclusion / Exclusion Criteria"/>
                     <Step title="Add Schedule of Events"/>
                 </Steps>
             </Col>
-            <Col span={9} className={`${ collapsible ? "none-click" : "" }`}>
+            <Col span={10} className={`${ collapsible ? "none-click" : "" }`} >
                 {activeTabKey === '1'?(
                     <>
                         <Button type="primary" className="step-btn" onClick={() => setActiveTabKey('2')}>
@@ -1938,7 +1938,7 @@ const ScenarioPage = (props) => {
                       <div style={{ padding: '0 10px' }}></div>
                     </Col>
                     <Col className="left-section">
-                      <Row style={{alignItems: 'center', marginBottom: '10px'}}>
+                      <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
                         <Col span={16}>
                           <div className="item-option">
                             <span>Select / Unselect criteria to add to Trial</span>
@@ -1946,7 +1946,7 @@ const ScenarioPage = (props) => {
                         </Col>
                         <Col span={8} style={{textAlign:'right'}}>
                           <Row>
-                          <Col span={24}><span>CRITERIA FREQUENCY</span></Col>
+                          <Col span={24}><span className="frequency">CRITERIA FREQUENCY</span></Col>
                           </Row>
                           <Row style={{width:'100%'}}>
                           <Col span={24}>
@@ -2214,7 +2214,7 @@ const ScenarioPage = (props) => {
                       <Row style={{alignItems: 'center', marginBottom: '10px'}}>
                         <Col span={16}>
                           <div className="item-option">
-                            <span>Select / Unselect criteria to add to Trial</span>
+                            <span className="tip">Select / Unselect criteria to add to Trial</span>
                           </div>
                         </Col>
                         <Col span={8} style={{textAlign:'right'}}>
