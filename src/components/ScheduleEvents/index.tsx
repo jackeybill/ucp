@@ -107,19 +107,19 @@ const ScheduleEvents = (props) => {
           setOrgStudyProcedures(response['Study Procedures'])
 
           setFilteredLabs(response['Labs'].filter((d) => {
-            return Object.assign(d, {selected: false, condition: []})
+            return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
           }))
           setFilteredExamination(response['Physical Examination'].filter((d) => {
-            return Object.assign(d, {selected: false, condition: []})
+            return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
           }))
           setFilteredProcedures(response['Procedures'].filter((d) => {
-            return Object.assign(d, {selected: false, condition: []})
+            return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
           }))
           setFilteredQuestionnaires(response['Questionnaires'].filter((d) => {
-            return Object.assign(d, {selected: false, condition: []})
+            return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
           }))
           setFilteredStudyProcedures(response['Study Procedures'].filter((d) => {
-            return Object.assign(d, {selected: false, condition: []})
+            return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
           }))
       }
     };
