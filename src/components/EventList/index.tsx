@@ -49,17 +49,6 @@ const EventList = (props) => {
     }
     if (weeks.length == 0) {
       getWeeks()
-      // weeksArr = [];
-
-      // let week = Math.floor(weekNumber / visitNumber);
-      // let remainder = weekNumber % visitNumber;
-      // if (remainder > 0) week = week + 1;
-      // let sum = 0;
-      // for (var i = 1; i <= visitNumber; i++) {
-      //   sum = sum + week;
-      //   if (sum > weekNumber) sum = weekNumber;
-      //   weeksArr.push(sum);
-      // }
     } else {
       weeksArr=weeks
      }
@@ -70,22 +59,21 @@ const EventList = (props) => {
         condition.push({
           visits: e,
           weeks: weeksArr[idx],
-          checked: false,
+          checked: ele.condition.length>0?ele.condition[idx].checked:false,
         });
       });
       const totalVisit = condition.filter(e=>e.checked).length
       ele.condition = condition;
       ele.totalVisit = totalVisit;
-
     });
 
-     tmpExamination.forEach((ele) => {
+     tmpExamination.forEach((ele,index) => {
       let condition = [];
       visitsArr.forEach((e, idx) => {
         condition.push({
           visits: e,
           weeks: weeksArr[idx],
-          checked: false,
+          checked: ele.condition.length>0?ele.condition[idx].checked:false,
         });
       });
       ele.condition = condition;
@@ -97,7 +85,7 @@ const EventList = (props) => {
         condition.push({
           visits: e,
           weeks: weeksArr[idx],
-          checked: false,
+          checked: ele.condition.length>0?ele.condition[idx].checked:false,
         });
       });
       ele.condition = condition;
@@ -109,7 +97,7 @@ const EventList = (props) => {
         condition.push({
           visits: e,
           weeks: weeksArr[idx],
-          checked: false,
+          checked: ele.condition.length>0?ele.condition[idx].checked:false,
         });
       });
       ele.condition = condition;
@@ -121,7 +109,7 @@ const EventList = (props) => {
         condition.push({
           visits: e,
           weeks: weeksArr[idx],
-          checked: false,
+          checked: ele.condition.length>0?ele.condition[idx].checked:false,
         });
       });
       ele.condition = condition;
@@ -185,6 +173,7 @@ const EventList = (props) => {
         tmpCategories[idx].endpoint = value;
         setLabs(tmpCategories)
     }
+    props.handleEventChange(evt,false)
   }
 
   const toggleChecked = (evt, idx) => {
@@ -235,6 +224,7 @@ const EventList = (props) => {
       
       default:
     }
+    props.handleEventChange(evt,false)
   };
 
   const renderVisit = () => {
