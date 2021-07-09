@@ -296,11 +296,14 @@ const ScheduleEvents = (props) => {
     ]
   };
 
-  const saveEvents = async (labs, examination, procedures, questionnaire, studyProcedures, weeks) =>{
+  const saveEvents = async (scheduleOfEvents) =>{
+
+    // labs, examination, procedures, questionnaire, studyProcedures, weeks
+
     console.log("save action")
     setPatientChartColor(aChartColors)
     setShowPatientLabel(true)
-    setWeeks(weeks)
+    setWeeks(scheduleOfEvents.Weeks)
 
     let tempBurdenData = []
     let tempBurdenXAxis = []
@@ -308,57 +311,52 @@ const ScheduleEvents = (props) => {
       tempBurdenData.push(0)
       tempBurdenXAxis.push((i+1)+'')
     }
-    let labCost = 0
-    for(const a in labs) {
-      labCost += Number(labs[a]['Dummy Cost'])
-      if(labs[a].condition.length > 0){
-        for(let b = 0; b < labs[a].condition.length; b ++){
-          if(labs[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(labs[a]['Dummy Cost'])
+    let labCost = scheduleOfEvents['Labs'].totalCost
+    for(const a in scheduleOfEvents['Labs'].entities) {
+      if(scheduleOfEvents['Labs'].entities[a].condition.length > 0){
+        for(let b = 0; b < scheduleOfEvents['Labs'].entities[a].condition.length; b ++){
+          if(scheduleOfEvents['Labs'].entities[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents['Labs'].entities[a]['Dummy Cost'])
           }
         }
       }
     }
-    let examCost = 0
-    for(const a in examination) {
-      examCost += Number(examination[a]['Dummy Cost'])
-      if(examination[a].condition.length > 0){
-        for(let b = 0; b < examination[a].condition.length; b ++){
-          if(examination[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(examination[a]['Dummy Cost'])
+    let examCost = scheduleOfEvents['Physical Examination'].totalCost
+    for(const a in scheduleOfEvents['Physical Examination'].entities) {
+      if(scheduleOfEvents['Physical Examination'].entities[a].condition.length > 0){
+        for(let b = 0; b < scheduleOfEvents['Physical Examination'].entities[a].condition.length; b ++){
+          if(scheduleOfEvents['Physical Examination'].entities[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents['Physical Examination'].entities[a]['Dummy Cost'])
           }
         }
       }
     }
-    let procedureCost = 0
-    for(const a in procedures) {
-      procedureCost += Number(procedures[a]['Dummy Cost'])
-      if(procedures[a].condition.length > 0){
-        for(let b = 0; b < procedures[a].condition.length; b ++){
-          if(procedures[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(procedures[a]['Dummy Cost'])
+    let procedureCost = scheduleOfEvents['Procedures'].totalCost
+    for(const a in scheduleOfEvents['Procedures'].entities) {
+      if(scheduleOfEvents['Procedures'].entities[a].condition.length > 0){
+        for(let b = 0; b < scheduleOfEvents['Procedures'].entities[a].condition.length; b ++){
+          if(scheduleOfEvents['Procedures'].entities[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents['Procedures'].entities[a]['Dummy Cost'])
           }
         }
       }
     }
-    let questionnaireCost = 0
-    for(const a in questionnaire) {
-      questionnaireCost += Number(questionnaire[a]['Dummy Cost'])
-      if(questionnaire[a].condition.length > 0){
-        for(let b = 0; b < questionnaire[a].condition.length; b ++){
-          if(questionnaire[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(questionnaire[a]['Dummy Cost'])
+    let questionnaireCost = scheduleOfEvents['Questionnaires'].totalCost
+    for(const a in scheduleOfEvents['Questionnaires'].entities) {
+      if(scheduleOfEvents['Questionnaires'].entities[a].condition.length > 0){
+        for(let b = 0; b < scheduleOfEvents['Questionnaires'].entities[a].condition.length; b ++){
+          if(scheduleOfEvents['Questionnaires'].entities[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents['Questionnaires'].entities[a]['Dummy Cost'])
           }
         }
       }
     }
-    let studyCost = 0
-    for(const a in studyProcedures) {
-      studyCost += Number(studyProcedures[a]['Dummy Cost'])
-      if(studyProcedures[a].condition.length > 0){
-        for(let b = 0; b < studyProcedures[a].condition.length; b ++){
-          if(studyProcedures[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(studyProcedures[a]['Dummy Cost'])
+    let studyCost = scheduleOfEvents['Study Procedures'].totalCost
+    for(const a in scheduleOfEvents['Study Procedures'].entities) {
+      if(scheduleOfEvents['Study Procedures'].entities[a].condition.length > 0){
+        for(let b = 0; b < scheduleOfEvents['Study Procedures'].entities[a].condition.length; b ++){
+          if(scheduleOfEvents['Study Procedures'].entities[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents['Study Procedures'].entities[a]['Dummy Cost'])
           }
         }
       }
@@ -381,15 +379,7 @@ const ScheduleEvents = (props) => {
     setShowTooltip(true)
 
     let newScenario = props.record.scenarios.find( i=> i['scenario_id'] == props.scenarioId)
-    newScenario['Schedule of Events'] = {
-      "Labs": labs,
-      "Physical Examination": examination,
-      "Procedures": procedures,
-      "Questionnaires": questionnaire,
-      "Study Procedures": studyProcedures,
-      "Weeks":weeks,
-      "Visits": numbers.visitNumber
-    }
+    newScenario['Schedule of Events'] = scheduleOfEvents
 
     const newScenarioList = props.record.scenarios.map((item, id) =>{
       if(item['scenario_id'] == props.scenarioId){

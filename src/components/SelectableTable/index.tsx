@@ -18,12 +18,6 @@ const columns = [
     ellipsis: true,
     render: (text) => <span>{text || "-"}</span>,
   },
- {
-    title: "Status",
-    dataIndex: "study_status",
-    ellipsis: true,
-    render: (text) => <span>{text || "-"}</span>,
-  },
   {
     title: 'Status',
     dataIndex: "study_status",
