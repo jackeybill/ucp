@@ -84,6 +84,8 @@ const ScenarioPage = (props) => {
     const [activeEnrollmentTabKey, setActiveEnrollmentTabKey] = useState('1')
     const [activeTabKey, setActiveTabKey] = useState('1')
     const [processStep, setProcessStep] = useState(0)
+    // const [activeTabKey, setActiveTabKey] = useState('3')
+    // const [processStep, setProcessStep] = useState(1)
     const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState([])
     const [spinning, setSpinning] = useState(false)
     const [showChartLabel, setShowChartLabel] = useState(false)

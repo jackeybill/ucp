@@ -3,19 +3,26 @@ import { Table } from 'antd';
 
 const columns = [
   {
+    title: "NCT ID",
+    dataIndex: "nct_id",
+    ellipsis: true,
+  },
+  {
     title: 'Study Title',
     dataIndex: 'brief_title',
     ellipsis: true
   },
-  {
-    title: 'Sponsor',
-    dataIndex: 'sponsor',
-    ellipsis: true
+ {
+    title: "Sponsor",
+    dataIndex: "sponsor",
+    ellipsis: true,
+    render: (text) => <span>{text || "-"}</span>,
   },
-  {
-    title: 'Drug',
-    dataIndex: 'indication',
-    ellipsis: true
+ {
+    title: "Status",
+    dataIndex: "study_status",
+    ellipsis: true,
+    render: (text) => <span>{text || "-"}</span>,
   },
   {
     title: 'Status',
@@ -23,10 +30,10 @@ const columns = [
     ellipsis: true
   },
   {
-    title: 'Phase',
-    dataIndex: 'study_phase',
-    ellipsis: true
-  }
+    title: "Phase",
+    dataIndex: "study_phase",
+    ellipsis: true,
+  },
 ];
 
 export interface SelectableTableProps {

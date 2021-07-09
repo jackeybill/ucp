@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Collapse, Select, Input, message, } from "antd";
 import { withRouter } from 'react-router';
-import { CheckCircleFilled, CheckCircleTwoTone } from "@ant-design/icons";
+import { CheckCircleFilled, CheckCircleTwoTone,CaretUpOutlined,CaretDownOutlined } from "@ant-design/icons";
 import { updateStudy,getStudy } from '../../utils/ajax-proxy';
 import "./index.scss";
 
@@ -23,115 +23,16 @@ const endpoints_map = [
   "Total number of weekly insulin injections to achieve glycemic",
 ];
 
-const addedMetrics = [
-  {
-    "Standard Event": "12-lead ECG (central or local)",
-    Categories: "Procedures",
-    "Dummy Cost": "140",
-    "Anxiety Inducing": "1",
-    "Hospital dependent": "0",
-    "Physically Invasiveness": "1",
-    "Blood Draw": "0",
-    Sedation: "0",
-    Injection: "0",
-    Urine: "0",
-    "Requires Fasting": "0",
-    "Longer than 2 hours": "0",
-    Questionnaire: "0",
-    selected: "false",
-    condition: [],
-  },
-  {
-    "Standard Event":
-      "Chest x-ray (posterior-anterior and lateral view) (local)",
-    Categories: "Procedures",
-    "Dummy Cost": "60",
-    "Anxiety Inducing": "1",
-    "Hospital dependent": "0",
-    "Physically Invasiveness": "1",
-    "Blood Draw": "0",
-    Sedation: "0",
-    Injection: "1",
-    Urine: "0",
-    "Requires Fasting": "0",
-    "Longer than 2 hours": "0",
-    Questionnaire: "0",
-    selected: "false",
-    condition: [
-      {
-        visits: 1,
-        weeks: 3,
-        checked: true,
-      },
-      {
-        visits: 2,
-        weeks: 6,
-        checked: true,
-      },
-      {
-        visits: 3,
-        weeks: 9,
-        checked: true,
-      },
-      {
-        visits: 4,
-        weeks: 12,
-        checked: true,
-      },
-      {
-        visits: 5,
-        weeks: 15,
-        checked: true,
-      },
-      {
-        visits: 6,
-        weeks: 18,
-        checked: true,
-      },
-      {
-        visits: 7,
-        weeks: 21,
-        checked: true,
-      },
-      {
-        visits: 8,
-        weeks: 24,
-        checked: true,
-      },
-      {
-        visits: 9,
-        weeks: 26,
-        checked: true,
-      },
-    ],
-  },
-  {
-    "Standard Event": "Dilated fundoscopic examination",
-    Categories: "Procedures",
-    "Dummy Cost": "100",
-    "Anxiety Inducing": "1",
-    "Hospital dependent": "0",
-    "Physically Invasiveness": "1",
-    "Blood Draw": "0",
-    Sedation: "0",
-    Injection: "0",
-    Urine: "0",
-    "Requires Fasting": "0",
-    "Longer than 2 hours": "0",
-    Questionnaire: "0",
-    selected: "false",
-    condition: [],
-  },
-];
 
 const EventList = (props) => {
-  const [weeks, setWeeks] = useState([])
   const { visitNumber, weekNumber } = props.numbers;
-  const [labs, setLabs] = useState(props.labs||[]);
-  const [examination, setExamination] = useState(props.examination||[])
-  const [procedures, setProcedures] = useState(props.procedures||[])
-  const [questionnaire, setQuestionnaire] = useState(props.questionnaire||[])
-  const [studyProcedures, setStudyProcedures] = useState(props.studyProcedures||[])
+  const [sort,setSort] = useState("")
+  const [weeks, setWeeks] = useState([])
+  let [labs, setLabs] = useState(props.labs||[]);
+  let [examination, setExamination] = useState(props.examination||[])
+  let [procedures, setProcedures] = useState(props.procedures||[])
+  let [questionnaire, setQuestionnaire] = useState(props.questionnaire||[])
+  let [studyProcedures, setStudyProcedures] = useState(props.studyProcedures||[])
 
   useEffect(() => {
     let tmpLabs = props.labs.slice(0);
@@ -147,17 +48,18 @@ const EventList = (props) => {
       visitsArr.push(i);
     }
     if (weeks.length == 0) {
-      weeksArr = [];
+      getWeeks()
+      // weeksArr = [];
 
-      let week = Math.floor(weekNumber / visitNumber);
-      let remainder = weekNumber % visitNumber;
-      if (remainder > 0) week = week + 1;
-      let sum = 0;
-      for (var i = 1; i <= visitNumber; i++) {
-        sum = sum + week;
-        if (sum > weekNumber) sum = weekNumber;
-        weeksArr.push(sum);
-      }
+      // let week = Math.floor(weekNumber / visitNumber);
+      // let remainder = weekNumber % visitNumber;
+      // if (remainder > 0) week = week + 1;
+      // let sum = 0;
+      // for (var i = 1; i <= visitNumber; i++) {
+      //   sum = sum + week;
+      //   if (sum > weekNumber) sum = weekNumber;
+      //   weeksArr.push(sum);
+      // }
     } else {
       weeksArr=weeks
      }
@@ -171,7 +73,10 @@ const EventList = (props) => {
           checked: false,
         });
       });
+      const totalVisit = condition.filter(e=>e.checked).length
       ele.condition = condition;
+      ele.totalVisit = totalVisit;
+
     });
 
      tmpExamination.forEach((ele) => {
@@ -237,7 +142,7 @@ const EventList = (props) => {
     props.examination,
     visitNumber,
     weekNumber,
-    weeks
+    weeks,
   ]);
 
   useEffect(() => {
@@ -339,20 +244,21 @@ const EventList = (props) => {
     }
     return <>{visits}</>;
   };
+
   const getWeeks = () => {
-    let weeksArr = [];
-    let week = Math.floor(weekNumber / visitNumber);
-    let remainder = weekNumber % visitNumber;
-    if (remainder > 0) week = week + 1;
-    let sum = 0;
-    for (var i = 1; i <= visitNumber; i++) {
+    let weeksArr = [1];
+    let week = Math.floor((weekNumber-1) / (visitNumber-1));
+    let sum = 1;
+    for (var i = 1; i <= visitNumber-1; i++) {
       sum = sum + week;
       if (sum > weekNumber) sum = weekNumber;
+      if (i == visitNumber - 1) {
+        sum=weekNumber
+      }
       weeksArr.push(sum)
     }
     setWeeks(weeksArr)
   };
-
 
   const endpointsSelector = (evt,idx) => {
     return (
@@ -386,29 +292,45 @@ const EventList = (props) => {
     setWeeks(tmpWeeks)
   }
 
-  const onSave = async () => {
-    const scenarioId = props.location.state.scenarioId
-    
-    const result = await getStudy(props.location.state.trial_id);
-    if (result.statusCode == 200) {
-      const currentTrial = result.body
-      const currentScenario = result.body.scenarios.find(s=>s.scenario_id==scenarioId)
+  const getTotalCost = (array) => {
+    return array.reduce(function (accumulator, currentValue) {
+      return accumulator + Number(currentValue['Dummy Cost'])*Number(currentValue['totalVisit'])
+    }, 0)
+  }
+  
+  const onSort = (a,b) => {
+    if (sort == "ascend") return (a['Dummy Cost'] - b['Dummy Cost'])
+    if (sort == "descend") return (b['Dummy Cost'] - a['Dummy Cost'])
+    return 0
+  }
 
-      currentScenario['Schedule of Events'] = {
-      "Labs": labs,
-      "Physical Examination": examination,
-      "Procedures": procedures,
-      "Questionnaires": questionnaire,
-      "Study Procedures": studyProcedures,
+  const onSave = async () => {
+    const scheduleOfEvents = {
+      "Labs": {
+        entities: labs,
+        totalCost: getTotalCost(labs)
+        },
+      "Physical Examination": {
+        entities: examination,
+        totalCost: getTotalCost(examination)
+        },
+      "Procedures": {
+        entities: procedures,
+        totalCost:  getTotalCost(procedures)
+        },
+      "Questionnaires": {
+        entities: questionnaire,
+        totalCost: getTotalCost(questionnaire)
+        },
+      "Study Procedures": {
+        entities: studyProcedures,
+        totalCost: getTotalCost(studyProcedures)
+      },
       "Weeks":weeks,
       "Visits": visitNumber
     }
-
-    const resp = await updateStudy(currentTrial)
-    if (resp.statusCode == 200) {
-      message.success('Save successfully')
-    }
-    }
+    // console.log('----save--',scheduleOfEvents )
+    props.onSave(scheduleOfEvents)
   }
 
   return (
@@ -435,16 +357,19 @@ const EventList = (props) => {
               <div className="colunm-row week-row e-row">
                 <div className="f-2">My Events</div>
                 <div className="f-2">Trial Endpoint</div>
-                <div className="f-1-small">Cost per patient</div>
+                <div className="f-1-small sortable-item">Cost per patient
+                <span className="sort-icon-wrapper">
+                    <CaretUpOutlined onClick={() => setSort("ascend")}  style={{color:sort=="ascend"?"#ca4a04":"rgb(85,85,85)"}}/>
+                    <CaretDownOutlined onClick={ ()=>setSort("descend")} style={{color:sort=="descend"?"#ca4a04":"rgb(85,85,85)"}}/>
+                </span>
+                </div>
                 <div className="f-1-small">Total Visits</div>
               </div>
               <div className="week-row e-row number">
                 <div className="colunm td ">Weeks</div>
-                {/* {getWeeks()} */}
                 {
                   weeks.map((week, idx) => {
-                    return <Input className="td" value={week} onChange={(e)=>onWeekChange(e,idx)} />
-                    
+                    return <Input className="td" value={week} onChange={(e)=>onWeekChange(e,idx)} />                  
                   })
                 }
               </div>
@@ -460,11 +385,7 @@ const EventList = (props) => {
                     {`${LABS} (${labs.length})`}
                   </div>
                   <div className="cost">
-                    $ {
-                      labs.reduce(function (accumulator, currentValue) {
-                        return accumulator + Number(currentValue['Dummy Cost'])
-                      },0)
-                    }
+                    $ {getTotalCost(labs)}
                     </div>
                   <div></div>
                 </div>
@@ -474,10 +395,12 @@ const EventList = (props) => {
             key="1"
           >
             <div className="shedule-of-event-panel-body">
-              {labs.map((evt, idx) => {
-                const totalVisits = evt.condition.filter(c => c.checked).reduce(function (accumulator, currentValue) {
-                  return accumulator + Number(currentValue.visits)
-                },0)
+              {labs.sort((a, b) => {
+                return onSort(a,b)
+                })
+                .map((evt, idx) => {
+                const totalVisit = evt.condition.filter(c => c.checked).length
+                evt.totalVisit = totalVisit
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
@@ -490,7 +413,7 @@ const EventList = (props) => {
                       <div className="cost-td td f-1-small">
                         ${evt["Dummy Cost"]}
                       </div>
-                      <div className="visits-td td f-1-small">{totalVisits}</div>
+                      <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td"></div>
@@ -525,11 +448,7 @@ const EventList = (props) => {
                     {`${PHYSICAL_EXAMINATION} (${examination.length})`}
                   </div>
                   <div className="cost">
-                    $ {
-                      examination.reduce(function (accumulator, currentValue) {
-                        return accumulator + Number(currentValue['Dummy Cost'])
-                      },0)
-                    }
+                    $ {getTotalCost(examination)}
                     </div>
                   <div></div>
                 </div>
@@ -539,10 +458,12 @@ const EventList = (props) => {
             key="2"
           >
             <div className="shedule-of-event-panel-body">
-              {examination.map((evt, idx) => {
-                const totalVisits = evt.condition.filter(c => c.checked).reduce(function (accumulator, currentValue) {
-                  return accumulator + Number(currentValue.visits)
-                },0)
+              {examination.sort((a, b) => {
+                return onSort(a,b)
+                })
+                .map((evt, idx) => {
+                const totalVisit = evt.condition.filter(c => c.checked).length
+                evt.totalVisit = totalVisit
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
@@ -555,7 +476,7 @@ const EventList = (props) => {
                       <div className="cost-td td f-1-small">
                         ${evt["Dummy Cost"]}
                       </div>
-                      <div className="visits-td td f-1-small">{totalVisits}</div>
+                      <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td"></div>
@@ -590,11 +511,7 @@ const EventList = (props) => {
                     {`${PROCEDURES} (${procedures.length})`}
                   </div>
                   <div className="cost">
-                    $ {
-                      procedures.reduce(function (accumulator, currentValue) {
-                        return accumulator + Number(currentValue['Dummy Cost'])
-                      },0)
-                    }
+                     $ {getTotalCost(procedures)}
                     </div>
                   <div></div>
                 </div>
@@ -604,10 +521,12 @@ const EventList = (props) => {
             key="3"
           >
             <div className="shedule-of-event-panel-body">
-              {procedures.map((evt, idx) => {
-                const totalVisits = evt.condition.filter(c => c.checked).reduce(function (accumulator, currentValue) {
-                  return accumulator + Number(currentValue.visits)
-                },0)
+              {procedures.sort((a, b) => {
+                return onSort(a,b)
+              })
+                .map((evt, idx) => {
+                const totalVisit = evt.condition.filter(c => c.checked).length
+                evt.totalVisit = totalVisit
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
@@ -620,7 +539,7 @@ const EventList = (props) => {
                       <div className="cost-td td f-1-small">
                         ${evt["Dummy Cost"]}
                       </div>
-                      <div className="visits-td td f-1-small">{totalVisits}</div>
+                      <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td"></div>
@@ -655,11 +574,7 @@ const EventList = (props) => {
                     {`${QUESTIONNAIRES} (${questionnaire.length})`}
                   </div>
                   <div className="cost">
-                    $ {
-                      questionnaire.reduce(function (accumulator, currentValue) {
-                        return accumulator + Number(currentValue['Dummy Cost'])
-                      },0)
-                    }
+                     $ {getTotalCost(questionnaire)}                 
                     </div>
                   <div></div>
                 </div>
@@ -669,10 +584,12 @@ const EventList = (props) => {
             key="4"
           >
             <div className="shedule-of-event-panel-body">
-              {questionnaire.map((evt, idx) => {
-                const totalVisits = evt.condition.filter(c => c.checked).reduce(function (accumulator, currentValue) {
-                  return accumulator + Number(currentValue.visits)
-                },0)
+              {questionnaire.sort((a, b) => {
+                return onSort(a,b)
+                })
+                .map((evt, idx) => {
+                const totalVisit = evt.condition.filter(c => c.checked).length
+                evt.totalVisit = totalVisit
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
@@ -685,7 +602,7 @@ const EventList = (props) => {
                       <div className="cost-td td f-1-small">
                         ${evt["Dummy Cost"]}
                       </div>
-                      <div className="visits-td td f-1-small">{totalVisits}</div>
+                      <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td"></div>
@@ -720,11 +637,7 @@ const EventList = (props) => {
                     {`${STUDY_PROCEDURES} (${studyProcedures.length})`}
                   </div>
                   <div className="cost">
-                    $ {
-                      studyProcedures.reduce(function (accumulator, currentValue) {
-                        return accumulator + Number(currentValue['Dummy Cost'])
-                      },0)
-                    }
+                   $ {getTotalCost(studyProcedures)}   
                     </div>
                   <div></div>
                 </div>
@@ -734,10 +647,12 @@ const EventList = (props) => {
             key="5"
           >
             <div className="shedule-of-event-panel-body">
-              {studyProcedures.map((evt, idx) => {
-                const totalVisits = evt.condition.filter(c => c.checked).reduce(function (accumulator, currentValue) {
-                  return accumulator + Number(currentValue.visits)
-                },0)
+              {studyProcedures.sort((a, b) => {
+                return onSort(a,b)
+                })
+                .map((evt, idx) => {
+                const totalVisit = evt.condition.filter(c => c.checked).length
+                evt.totalVisit = totalVisit
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
@@ -750,7 +665,7 @@ const EventList = (props) => {
                       <div className="cost-td td f-1-small">
                         ${evt["Dummy Cost"]}
                       </div>
-                      <div className="visits-td td f-1-small">{totalVisits}</div>
+                      <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td"></div>
@@ -777,8 +692,6 @@ const EventList = (props) => {
               })}
             </div>
           </Panel>
-
-
         </Collapse>
       </div>
     </div>

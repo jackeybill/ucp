@@ -17,21 +17,11 @@ const columns = [
     title: "NCT ID",
     dataIndex: "nct_id",
     ellipsis: true,
-    // render: (text) => (
-    //   <Tooltip placement="topLeft" title={text}>
-    //     <span>{text || "-"}</span>
-    //   </Tooltip>
-    // ),
   },
   {
     title: "Study Title",
     dataIndex: "brief_title",
     ellipsis: true,
-    // render: (text) => (
-    //   <Tooltip placement="topLeft" title={text}>
-    //     <span>{text || "-"}</span>
-    //   </Tooltip>
-    // ),
   },
   {
     title: "Sponsor",
@@ -202,7 +192,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       const date = d['start_date'].split('-')[0]
       return (
         (this.state.studyPhase != "" && this.state.studyPhase != "All"
-          ? d.study_phase == this.state.studyPhase
+          ? d.study_phase.indexof(this.state.studyPhase)>-1
           : true) &&
         (this.state.studyType != "" && this.state.studyType != "All"
           ? d.study_type == this.state.studyType

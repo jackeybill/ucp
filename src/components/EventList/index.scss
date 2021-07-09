@@ -9,6 +9,8 @@
     border-bottom: 1px solid #eeeeee;
     span {
       flex: 1;
+      font-size: 18px;
+      color: #000000;
     }
   }
   .e-row {
@@ -27,6 +29,20 @@
       flex: 1;
       .head-row {
         display: flex;
+        &:last-child {
+          border-bottom: 1px solid #eeeeee;
+        }
+        .e-row {
+          border-right: 1px solid #eeeeee;
+        }
+        .sortable-item {
+          display: flex;
+          align-items: center;
+          .sort-icon-wrapper {
+            display: flex;
+            flex-direction: column;
+          }
+        }
       }
       .colunm-row {
         font-weight: 600;
@@ -69,6 +85,9 @@
       display: flex;
       flex: 1;
       padding: 0;
+      .colunm.td {
+        background: #f5f5f5;
+      }
     }
     .e-row.number .td {
       text-align: center;
@@ -86,7 +105,11 @@
           flex: 1;
           padding-left: 10px;
           &.endpoint-td {
-            padding-left: 0;
+            overflow: hidden;
+            padding: 0 2px;
+            .ant-select {
+              padding-left: 0;
+            }
           }
         }
         .f-1-small {
@@ -103,6 +126,7 @@
       .status-row {
         flex: 1;
         display: flex;
+
         .td {
           flex: 1;
           text-align: center;
