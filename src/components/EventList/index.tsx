@@ -240,7 +240,7 @@ const EventList = (props) => {
   const renderVisit = () => {
     let visits = [];
     for (var i = 1; i <= visitNumber; i++) {
-      visits.push(<div className="td">{i}</div>);
+      visits.push(<div className="td" key={i}>{i}</div>);
     }
     return <>{visits}</>;
   };
@@ -329,8 +329,7 @@ const EventList = (props) => {
       "Weeks":weeks,
       "Visits": visitNumber
     }
-    // console.log('----save--',scheduleOfEvents )
-    props.onSave(scheduleOfEvents)
+    props.saveEvents(scheduleOfEvents)
   }
 
   return (
