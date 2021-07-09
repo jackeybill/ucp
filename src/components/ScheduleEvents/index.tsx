@@ -30,7 +30,7 @@ const initialNumber = {
 const ScheduleEvents = (props) => {
 
   const [hiddeTags, setHiddeTags] = useState(true)
-  const [showConfigure, setShowConfigure] = useState(true)
+  const [showConfigure, setShowConfigure] = useState(false)
   const [eventLib, setEventLib] = useState(6)
   const [activeCollapse, setActiveCollapse] = useState(['1'])
   const [numbers, setNumbers] = useReducer(
@@ -42,13 +42,13 @@ const ScheduleEvents = (props) => {
   //Cost Per Patient Chart
   const [patientChartColor, setPatientChartColor] = useState(iChartColors)
   const [costData, setCostData] = useState(defaultCostValue)
-  const [costSubTitle, setCostSubTitle] = useState("Average from Similar Historical \nTrials - $10.1K / Patient")
+  const [costSubTitle, setCostSubTitle] = useState('')
   const [showPatientLabel, setShowPatientLabel] = useState(false)
   const [patientRate, setPatientRate] = useState('{p|$9.4K}\n{good|GOOD}')
 
   //Patirnt Burden Chart
   const [burdenData, setBurdenData] = useState(defaultBurdenValue)
-  const [burdenSubTitle, setBurdenSubTitle] = useState("Average from similar Historical \nTrials - 60")
+  const [burdenSubTitle, setBurdenSubTitle] = useState('')
   const [burdenXAxis, setBurdenXAxis] = useState(['1', '2', '3', '4', '5', '6', '7', '8', '9'])
   const [showTooltip, setShowTooltip] = useState(false)
 
@@ -91,8 +91,15 @@ const ScheduleEvents = (props) => {
 
   useEffect(() => {
     console.log(props.record)
-    console.log(props.editFlag)
-    console.log(props.scenarioId)
+
+    //Verify if this is the first time to set Events
+    const scenario = props.record.scenarios.find(s=> s['scenario_id'] === props.scenarioId)
+    const eventsConfigure = scenario['Schedule of Events']
+    if(eventsConfigure != undefined && eventsConfigure.Labs != undefined){
+      setHiddeTags(false)
+    } else {
+      setShowConfigure(true)
+    }
     const getStandardEventsLib = async () => {
       var resp = await getStandardEvents();
 
@@ -106,21 +113,102 @@ const ScheduleEvents = (props) => {
           setOrgQuestionnaires(response['Questionnaires'])
           setOrgStudyProcedures(response['Study Procedures'])
 
-          setFilteredLabs(response['Labs'].filter((d) => {
-            return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-          }))
-          setFilteredExamination(response['Physical Examination'].filter((d) => {
-            return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-          }))
-          setFilteredProcedures(response['Procedures'].filter((d) => {
-            return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-          }))
-          setFilteredQuestionnaires(response['Questionnaires'].filter((d) => {
-            return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-          }))
-          setFilteredStudyProcedures(response['Study Procedures'].filter((d) => {
-            return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-          }))
+          //Init previous configure
+          if(eventsConfigure != undefined && eventsConfigure.Labs != undefined){
+            setNumbers({
+              ['visitNumber']: eventsConfigure.Visits,
+              ['weekNumber']: eventsConfigure.Weeks[eventsConfigure.Weeks.length -1]
+            });
+            setWeeks(eventsConfigure.Weeks)
+            setPatientChartColor(aChartColors)
+            setShowPatientLabel(true)
+
+            setAddedLabs(eventsConfigure['Labs'].entities)
+            setAddedExamination(eventsConfigure['Physical Examination'].entities)
+            setAddedQuestionnaires(eventsConfigure['Procedures'].entities)
+            setAddedProcedures(eventsConfigure['Questionnaires'].entities)
+            setAddedStudyProcedures(eventsConfigure['Study Procedures'].entities)
+            
+            setPatientRate('{p|$'+ eventsConfigure.TotalCost +'K}\n{'+eventsConfigure.CostRate + '|' + eventsConfigure.CostRate + '}')
+            setCostData(eventsConfigure.CostData)
+            setCostSubTitle('Average from Similar Historical \nTrials - $' + eventsConfigure.CostAvg + 'K / Patient')
+            setBurdenData(eventsConfigure.BurdenData)
+            setBurdenXAxis(eventsConfigure.BurdenXAxis)
+            setBurdenSubTitle('Average from similar Historical \nTrials - ' + eventsConfigure.BurdenAvg)
+            setShowTooltip(true)
+
+            setFilteredLabs(response['Labs'].filter((d) => {
+              var index = eventsConfigure['Labs'].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
+              if(index > -1){
+                return Object.assign(d, {
+                  selected: true, 
+                  condition: eventsConfigure['Labs'].entities[index].condition, 
+                  totalVisit: eventsConfigure['Labs'].entities[index].totalVisit})
+              } else {
+                return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+              }
+            }))
+            setFilteredExamination(response['Physical Examination'].filter((d) => {
+              var index = eventsConfigure['Physical Examination'].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
+              if(index > -1){
+                return Object.assign(d, {
+                  selected: true, 
+                  condition: eventsConfigure['Physical Examination'].entities[index].condition, 
+                  totalVisit: eventsConfigure['Physical Examination'].entities[index].totalVisit})
+              } else {
+                return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+              }
+            }))
+            setFilteredProcedures(response['Procedures'].filter((d) => {
+              var index = eventsConfigure['Procedures'].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
+              if(index > -1){
+                return Object.assign(d, {
+                  selected: true, 
+                  condition: eventsConfigure['Procedures'].entities[index].condition, 
+                  totalVisit: eventsConfigure['Procedures'].entities[index].totalVisit})
+              } else {
+                return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+              }
+            }))
+            setFilteredQuestionnaires(response['Questionnaires'].filter((d) => {
+              var index = eventsConfigure['Questionnaires'].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
+              if(index > -1){
+                return Object.assign(d, {
+                  selected: true, 
+                  condition: eventsConfigure['Questionnaires'].entities[index].condition, 
+                  totalVisit: eventsConfigure['Questionnaires'].entities[index].totalVisit})
+              } else {
+                return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+              }
+            }))
+            setFilteredStudyProcedures(response['Study Procedures'].filter((d) => {
+              var index = eventsConfigure['Study Procedures'].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
+              if(index > -1){
+                return Object.assign(d, {
+                  selected: true, 
+                  condition: eventsConfigure['Study Procedures'].entities[index].condition, 
+                  totalVisit: eventsConfigure['Study Procedures'].entities[index].totalVisit})
+              } else {
+                return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+              }
+            }))
+          } else {
+            setFilteredLabs(response['Labs'].filter((d) => {
+              return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+            }))
+            setFilteredExamination(response['Physical Examination'].filter((d) => {
+              return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+            }))
+            setFilteredProcedures(response['Procedures'].filter((d) => {
+              return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+            }))
+            setFilteredQuestionnaires(response['Questionnaires'].filter((d) => {
+              return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+            }))
+            setFilteredStudyProcedures(response['Study Procedures'].filter((d) => {
+              return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+            }))
+          }
       }
     };
     getStandardEventsLib();
@@ -260,19 +348,19 @@ const ScheduleEvents = (props) => {
               fontSize: 16,
               backgroundColor: "white"
             },
-            good: {
+            GOOD: {
               color: 'green',
               fontSize: 8,
               fontWeight:'bold',
               backgroundColor: "white"
             },
-            fair: {
+            FAIR: {
               color: 'gray',
               fontSize: 8,
               fontWeight:'bold',
               backgroundColor: "white"
             },
-            poor: {
+            POOR: {
               color: '#c33232',
               fontSize: 8,
               fontWeight:'bold',
@@ -297,9 +385,6 @@ const ScheduleEvents = (props) => {
   };
 
   const saveEvents = async (scheduleOfEvents) =>{
-
-    // labs, examination, procedures, questionnaire, studyProcedures, weeks
-
     console.log("save action")
     setPatientChartColor(aChartColors)
     setShowPatientLabel(true)
@@ -311,7 +396,7 @@ const ScheduleEvents = (props) => {
       tempBurdenData.push(0)
       tempBurdenXAxis.push((i+1)+'')
     }
-    let labCost = scheduleOfEvents['Labs'].totalCost
+
     for(const a in scheduleOfEvents['Labs'].entities) {
       if(scheduleOfEvents['Labs'].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents['Labs'].entities[a].condition.length; b ++){
@@ -321,7 +406,7 @@ const ScheduleEvents = (props) => {
         }
       }
     }
-    let examCost = scheduleOfEvents['Physical Examination'].totalCost
+
     for(const a in scheduleOfEvents['Physical Examination'].entities) {
       if(scheduleOfEvents['Physical Examination'].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents['Physical Examination'].entities[a].condition.length; b ++){
@@ -331,7 +416,7 @@ const ScheduleEvents = (props) => {
         }
       }
     }
-    let procedureCost = scheduleOfEvents['Procedures'].totalCost
+
     for(const a in scheduleOfEvents['Procedures'].entities) {
       if(scheduleOfEvents['Procedures'].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents['Procedures'].entities[a].condition.length; b ++){
@@ -341,7 +426,7 @@ const ScheduleEvents = (props) => {
         }
       }
     }
-    let questionnaireCost = scheduleOfEvents['Questionnaires'].totalCost
+
     for(const a in scheduleOfEvents['Questionnaires'].entities) {
       if(scheduleOfEvents['Questionnaires'].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents['Questionnaires'].entities[a].condition.length; b ++){
@@ -351,7 +436,7 @@ const ScheduleEvents = (props) => {
         }
       }
     }
-    let studyCost = scheduleOfEvents['Study Procedures'].totalCost
+
     for(const a in scheduleOfEvents['Study Procedures'].entities) {
       if(scheduleOfEvents['Study Procedures'].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents['Study Procedures'].entities[a].condition.length; b ++){
@@ -363,23 +448,35 @@ const ScheduleEvents = (props) => {
     }
 
     let tempCostData = [
-      {value: labCost, name: 'Labs'},
-      {value: examCost, name: 'Physical Examination'},
-      {value: procedureCost, name: 'Procedures'},
-      {value: questionnaireCost, name: 'Questionnaires'},
-      {value: studyCost, name: 'Study Procedures'}
+      {value: scheduleOfEvents['Labs'].totalCost, name: 'Labs'},
+      {value: scheduleOfEvents['Physical Examination'].totalCost, name: 'Physical Examination'},
+      {value: scheduleOfEvents['Procedures'].totalCost, name: 'Procedures'},
+      {value: scheduleOfEvents['Questionnaires'].totalCost, name: 'Questionnaires'},
+      {value: scheduleOfEvents['Study Procedures'].totalCost, name: 'Study Procedures'}
     ]
 
-    let totalCost = '$' + (labCost + examCost + procedureCost + questionnaireCost + studyCost)/1000 + 'K'
-    setPatientRate('{p|'+ totalCost +'}\n{good|GOOD}')
+    let totalCost = scheduleOfEvents['Labs'].totalCost + scheduleOfEvents['Physical Examination'].totalCost
+       + scheduleOfEvents['Procedures'].totalCost + scheduleOfEvents['Questionnaires'].totalCost
+       + scheduleOfEvents['Study Procedures'].totalCost
 
+    setPatientRate('{p|$'+ formatCostAvg(totalCost, 1000) +'K}\n{good|GOOD}')
     setCostData(tempCostData)
+    setCostSubTitle('Average from Similar Historical \nTrials - $' + formatCostAvg(totalCost, 5000) + 'K / Patient')
     setBurdenData(tempBurdenData)
     setBurdenXAxis(tempBurdenXAxis)
+    setBurdenSubTitle('Average from similar Historical \nTrials - ' + formatBurdenAvg(totalCost, numbers.visitNumber))
     setShowTooltip(true)
 
     let newScenario = props.record.scenarios.find( i=> i['scenario_id'] == props.scenarioId)
-    newScenario['Schedule of Events'] = scheduleOfEvents
+    newScenario['Schedule of Events'] = Object.assign(scheduleOfEvents,{
+      'TotalCost': formatCostAvg(totalCost, 1000),
+      'CostRate': 'GOOD',
+      'CostData': tempCostData,
+      'CostAvg': formatCostAvg(totalCost, 5000),
+      'BurdenData': tempBurdenData,
+      'BurdenXAxis': tempBurdenXAxis,
+      'BurdenAvg': formatBurdenAvg(totalCost, numbers.visitNumber)
+    })
 
     const newScenarioList = props.record.scenarios.map((item, id) =>{
       if(item['scenario_id'] == props.scenarioId){
@@ -395,6 +492,23 @@ const ScheduleEvents = (props) => {
     const resp = await updateStudy(newTrial)
     if (resp.statusCode == 200) {
       message.success('Save successfully')
+    }
+  }
+
+  function formatCostAvg(totalCost, divisor){
+    if(totalCost === 0){
+      return 0
+    } else {
+      let avg = Math.ceil(totalCost/divisor*1000)
+      return avg/1000
+    }
+  }
+  function formatBurdenAvg(totalCost, divisor){
+    if(totalCost === 0){
+      return 0
+    } else {
+      let avg = Math.ceil(totalCost/divisor*100)
+      return avg/100
     }
   }
 
@@ -608,7 +722,7 @@ const ScheduleEvents = (props) => {
               <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
-                  <Panel showArrow={false} header={eventLibHeader('Labs', orgLabs.length, "1")} key="1">
+                  <Panel showArrow={false} header={eventLibHeader('Labs', filteredLabs.length, "1")} key="1">
                     <Table dataSource={filteredLabs} columns={columns} pagination={false} showHeader={false} 
                       locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
                   </Panel>
