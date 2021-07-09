@@ -12,12 +12,18 @@ const { Panel } = Collapse;
 const iChartColors = ['#514c4a', '#65615f', '#86817f', '#a59e9b', '#d2cbc8']
 const aChartColors = ['#d04a02', '#ed7738', '#ed9d72', '#f5b795', '#f5ddcf']
 
+const CATEGORY_LABS = 'Labs';
+const CATEGORY_PHYSICAL_EXAMINATION = 'Physical Examination';
+const CATEGORY_PROCEDURES = 'Procedures';
+const CATEGORY_QUESTIONNAIRES = 'Questionnaires';
+const CATEGORY_STUDY_PROCEDURES = 'Study Procedures';
+
 const defaultCostValue = [
-  {value: 0, name: 'Labs'},
-  {value: 0, name: 'Physical Examination'},
-  {value: 0, name: 'Procedures'},
-  {value: 0, name: 'Questionnaires'},
-  {value: 0, name: 'Study Procedures'}
+  {value: 0, name: CATEGORY_LABS},
+  {value: 0, name: CATEGORY_PHYSICAL_EXAMINATION},
+  {value: 0, name: CATEGORY_PROCEDURES},
+  {value: 0, name: CATEGORY_QUESTIONNAIRES},
+  {value: 0, name: CATEGORY_STUDY_PROCEDURES}
 ]
 
 const defaultBurdenValue = [0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -107,11 +113,11 @@ const ScheduleEvents = (props) => {
           const response = JSON.parse(resp.body)
           console.log(response)
 
-          setOrgLabs(response['Labs'])
-          setOrgExamination(response['Physical Examination'])
-          setOrgProcedures(response['Procedures'])
-          setOrgQuestionnaires(response['Questionnaires'])
-          setOrgStudyProcedures(response['Study Procedures'])
+          setOrgLabs(response[CATEGORY_LABS])
+          setOrgExamination(response[CATEGORY_PHYSICAL_EXAMINATION])
+          setOrgProcedures(response[CATEGORY_PROCEDURES])
+          setOrgQuestionnaires(response[CATEGORY_QUESTIONNAIRES])
+          setOrgStudyProcedures(response[CATEGORY_STUDY_PROCEDURES])
 
           //Init previous configure
           if(eventsConfigure != undefined && eventsConfigure.Labs != undefined){
@@ -123,11 +129,11 @@ const ScheduleEvents = (props) => {
             setPatientChartColor(aChartColors)
             setShowPatientLabel(true)
 
-            setAddedLabs(eventsConfigure['Labs'].entities)
-            setAddedExamination(eventsConfigure['Physical Examination'].entities)
-            setAddedQuestionnaires(eventsConfigure['Procedures'].entities)
-            setAddedProcedures(eventsConfigure['Questionnaires'].entities)
-            setAddedStudyProcedures(eventsConfigure['Study Procedures'].entities)
+            setAddedLabs(eventsConfigure[CATEGORY_LABS].entities)
+            setAddedExamination(eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities)
+            setAddedQuestionnaires(eventsConfigure[CATEGORY_PROCEDURES].entities)
+            setAddedProcedures(eventsConfigure[CATEGORY_QUESTIONNAIRES].entities)
+            setAddedStudyProcedures(eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities)
             
             setPatientRate('{p|$'+ eventsConfigure.TotalCost +'K}\n{'+eventsConfigure.CostRate + '|' + eventsConfigure.CostRate + '}')
             setCostData(eventsConfigure.CostData)
@@ -137,75 +143,75 @@ const ScheduleEvents = (props) => {
             setBurdenSubTitle('Average from similar Historical \nTrials - ' + eventsConfigure.BurdenAvg)
             setShowTooltip(true)
 
-            setFilteredLabs(response['Labs'].filter((d) => {
-              var index = eventsConfigure['Labs'].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
+            setFilteredLabs(response[CATEGORY_LABS].filter((d) => {
+              var index = eventsConfigure[CATEGORY_LABS].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
               if(index > -1){
                 return Object.assign(d, {
                   selected: true, 
-                  condition: eventsConfigure['Labs'].entities[index].condition, 
-                  totalVisit: eventsConfigure['Labs'].entities[index].totalVisit})
+                  condition: eventsConfigure[CATEGORY_LABS].entities[index].condition, 
+                  totalVisit: eventsConfigure[CATEGORY_LABS].entities[index].totalVisit})
               } else {
                 return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
               }
             }))
-            setFilteredExamination(response['Physical Examination'].filter((d) => {
-              var index = eventsConfigure['Physical Examination'].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
+            setFilteredExamination(response[CATEGORY_PHYSICAL_EXAMINATION].filter((d) => {
+              var index = eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
               if(index > -1){
                 return Object.assign(d, {
                   selected: true, 
-                  condition: eventsConfigure['Physical Examination'].entities[index].condition, 
-                  totalVisit: eventsConfigure['Physical Examination'].entities[index].totalVisit})
+                  condition: eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities[index].condition, 
+                  totalVisit: eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities[index].totalVisit})
               } else {
                 return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
               }
             }))
-            setFilteredProcedures(response['Procedures'].filter((d) => {
-              var index = eventsConfigure['Procedures'].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
+            setFilteredProcedures(response[CATEGORY_PROCEDURES].filter((d) => {
+              var index = eventsConfigure[CATEGORY_PROCEDURES].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
               if(index > -1){
                 return Object.assign(d, {
                   selected: true, 
-                  condition: eventsConfigure['Procedures'].entities[index].condition, 
-                  totalVisit: eventsConfigure['Procedures'].entities[index].totalVisit})
+                  condition: eventsConfigure[CATEGORY_PROCEDURES].entities[index].condition, 
+                  totalVisit: eventsConfigure[CATEGORY_PROCEDURES].entities[index].totalVisit})
               } else {
                 return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
               }
             }))
-            setFilteredQuestionnaires(response['Questionnaires'].filter((d) => {
-              var index = eventsConfigure['Questionnaires'].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
+            setFilteredQuestionnaires(response[CATEGORY_QUESTIONNAIRES].filter((d) => {
+              var index = eventsConfigure[CATEGORY_QUESTIONNAIRES].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
               if(index > -1){
                 return Object.assign(d, {
                   selected: true, 
-                  condition: eventsConfigure['Questionnaires'].entities[index].condition, 
-                  totalVisit: eventsConfigure['Questionnaires'].entities[index].totalVisit})
+                  condition: eventsConfigure[CATEGORY_QUESTIONNAIRES].entities[index].condition, 
+                  totalVisit: eventsConfigure[CATEGORY_QUESTIONNAIRES].entities[index].totalVisit})
               } else {
                 return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
               }
             }))
-            setFilteredStudyProcedures(response['Study Procedures'].filter((d) => {
-              var index = eventsConfigure['Study Procedures'].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
+            setFilteredStudyProcedures(response[CATEGORY_STUDY_PROCEDURES].filter((d) => {
+              var index = eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
               if(index > -1){
                 return Object.assign(d, {
                   selected: true, 
-                  condition: eventsConfigure['Study Procedures'].entities[index].condition, 
-                  totalVisit: eventsConfigure['Study Procedures'].entities[index].totalVisit})
+                  condition: eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities[index].condition, 
+                  totalVisit: eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities[index].totalVisit})
               } else {
                 return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
               }
             }))
           } else {
-            setFilteredLabs(response['Labs'].filter((d) => {
+            setFilteredLabs(response[CATEGORY_LABS].filter((d) => {
               return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
             }))
-            setFilteredExamination(response['Physical Examination'].filter((d) => {
+            setFilteredExamination(response[CATEGORY_PHYSICAL_EXAMINATION].filter((d) => {
               return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
             }))
-            setFilteredProcedures(response['Procedures'].filter((d) => {
+            setFilteredProcedures(response[CATEGORY_PROCEDURES].filter((d) => {
               return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
             }))
-            setFilteredQuestionnaires(response['Questionnaires'].filter((d) => {
+            setFilteredQuestionnaires(response[CATEGORY_QUESTIONNAIRES].filter((d) => {
               return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
             }))
-            setFilteredStudyProcedures(response['Study Procedures'].filter((d) => {
+            setFilteredStudyProcedures(response[CATEGORY_STUDY_PROCEDURES].filter((d) => {
               return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
             }))
           }
@@ -317,7 +323,7 @@ const ScheduleEvents = (props) => {
       textStyle: {
         fontSize: 10
       },
-      data: ['Labs', 'Physical Examination', 'Procedures', 'Questionnaires', 'Study Procedures']
+      data: [CATEGORY_LABS, CATEGORY_PHYSICAL_EXAMINATION, CATEGORY_PROCEDURES, CATEGORY_QUESTIONNAIRES, CATEGORY_STUDY_PROCEDURES]
     },
     tooltip: {
       show: showTooltip,
@@ -384,6 +390,77 @@ const ScheduleEvents = (props) => {
     ]
   };
 
+  const handleEventChange = (event, newFlag) =>{
+    switch (event.Categories) {
+      case CATEGORY_LABS:     
+        const tmpLabs = addedLabs.slice(0);
+        if(newFlag){
+          tmpLabs.push(event)
+        } else {
+          let index = addedLabs.findIndex((d) => d['Standard Event'] == event['Standard Event'])
+          if(index > -1){
+            tmpLabs.splice(index, 1, event)
+          }
+        }
+        setAddedLabs(tmpLabs)
+        break;
+      
+      case CATEGORY_PHYSICAL_EXAMINATION:    
+        const tmpExamination = addedExamination.slice(0);
+        if(newFlag){
+          tmpExamination.push(event)
+        } else {
+          let index = addedExamination.findIndex((d) => d['Standard Event'] == event['Standard Event'])
+          if(index > -1){
+            tmpExamination.splice(index, 1, event)
+          }
+        }
+        setAddedExamination(tmpExamination)
+        break;
+      
+      case CATEGORY_PROCEDURES:       
+        const tmpProcedures = addedProcedures.slice(0);
+        if(newFlag){
+          tmpProcedures.push(event)
+        } else {
+          let index = addedProcedures.findIndex((d) => d['Standard Event'] == event['Standard Event'])
+          if(index > -1){
+            tmpProcedures.splice(index, 1, event)
+          }
+        }
+        setAddedQuestionnaires(tmpProcedures)
+        break;
+      
+       case CATEGORY_QUESTIONNAIRES:       
+        const tmpQuestionnaires = addedQuestionnaires.slice(0);
+        if(newFlag){
+          tmpQuestionnaires.push(event)
+        } else {
+          let index = addedQuestionnaires.findIndex((d) => d['Standard Event'] == event['Standard Event'])
+          if(index > -1){
+            tmpQuestionnaires.splice(index, 1, event)
+          }
+        }
+        setAddedQuestionnaires(tmpQuestionnaires)
+        break;
+      
+       case CATEGORY_STUDY_PROCEDURES: 
+       const tmpStudyProcedures = addedStudyProcedures.slice(0);
+        if(newFlag){
+          tmpStudyProcedures.push(event)
+        } else {
+          let index = addedStudyProcedures.findIndex((d) => d['Standard Event'] == event['Standard Event'])
+          if(index > -1){
+            tmpStudyProcedures.splice(index, 1, event)
+          }
+        }
+        setAddedStudyProcedures(tmpStudyProcedures)
+        break;
+      
+      default: break;
+    }
+  }
+
   const saveEvents = async (scheduleOfEvents) =>{
     console.log("save action")
     setPatientChartColor(aChartColors)
@@ -397,67 +474,67 @@ const ScheduleEvents = (props) => {
       tempBurdenXAxis.push((i+1)+'')
     }
 
-    for(const a in scheduleOfEvents['Labs'].entities) {
-      if(scheduleOfEvents['Labs'].entities[a].condition.length > 0){
-        for(let b = 0; b < scheduleOfEvents['Labs'].entities[a].condition.length; b ++){
-          if(scheduleOfEvents['Labs'].entities[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents['Labs'].entities[a]['Dummy Cost'])
+    for(const a in scheduleOfEvents[CATEGORY_LABS].entities) {
+      if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length > 0){
+        for(let b = 0; b < scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length; b ++){
+          if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents[CATEGORY_LABS].entities[a]['Dummy Cost'])
           }
         }
       }
     }
 
-    for(const a in scheduleOfEvents['Physical Examination'].entities) {
-      if(scheduleOfEvents['Physical Examination'].entities[a].condition.length > 0){
-        for(let b = 0; b < scheduleOfEvents['Physical Examination'].entities[a].condition.length; b ++){
-          if(scheduleOfEvents['Physical Examination'].entities[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents['Physical Examination'].entities[a]['Dummy Cost'])
+    for(const a in scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities) {
+      if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length > 0){
+        for(let b = 0; b < scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length; b ++){
+          if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a]['Dummy Cost'])
           }
         }
       }
     }
 
-    for(const a in scheduleOfEvents['Procedures'].entities) {
-      if(scheduleOfEvents['Procedures'].entities[a].condition.length > 0){
-        for(let b = 0; b < scheduleOfEvents['Procedures'].entities[a].condition.length; b ++){
-          if(scheduleOfEvents['Procedures'].entities[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents['Procedures'].entities[a]['Dummy Cost'])
+    for(const a in scheduleOfEvents[CATEGORY_PROCEDURES].entities) {
+      if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length > 0){
+        for(let b = 0; b < scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length; b ++){
+          if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a]['Dummy Cost'])
           }
         }
       }
     }
 
-    for(const a in scheduleOfEvents['Questionnaires'].entities) {
-      if(scheduleOfEvents['Questionnaires'].entities[a].condition.length > 0){
-        for(let b = 0; b < scheduleOfEvents['Questionnaires'].entities[a].condition.length; b ++){
-          if(scheduleOfEvents['Questionnaires'].entities[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents['Questionnaires'].entities[a]['Dummy Cost'])
+    for(const a in scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities) {
+      if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length > 0){
+        for(let b = 0; b < scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length; b ++){
+          if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a]['Dummy Cost'])
           }
         }
       }
     }
 
-    for(const a in scheduleOfEvents['Study Procedures'].entities) {
-      if(scheduleOfEvents['Study Procedures'].entities[a].condition.length > 0){
-        for(let b = 0; b < scheduleOfEvents['Study Procedures'].entities[a].condition.length; b ++){
-          if(scheduleOfEvents['Study Procedures'].entities[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents['Study Procedures'].entities[a]['Dummy Cost'])
+    for(const a in scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities) {
+      if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length > 0){
+        for(let b = 0; b < scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length; b ++){
+          if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition[b].checked){
+            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a]['Dummy Cost'])
           }
         }
       }
     }
 
     let tempCostData = [
-      {value: scheduleOfEvents['Labs'].totalCost, name: 'Labs'},
-      {value: scheduleOfEvents['Physical Examination'].totalCost, name: 'Physical Examination'},
-      {value: scheduleOfEvents['Procedures'].totalCost, name: 'Procedures'},
-      {value: scheduleOfEvents['Questionnaires'].totalCost, name: 'Questionnaires'},
-      {value: scheduleOfEvents['Study Procedures'].totalCost, name: 'Study Procedures'}
+      {value: scheduleOfEvents[CATEGORY_LABS].totalCost, name: CATEGORY_LABS},
+      {value: scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].totalCost, name: CATEGORY_PHYSICAL_EXAMINATION},
+      {value: scheduleOfEvents[CATEGORY_PROCEDURES].totalCost, name: CATEGORY_PROCEDURES},
+      {value: scheduleOfEvents[CATEGORY_QUESTIONNAIRES].totalCost, name: CATEGORY_QUESTIONNAIRES},
+      {value: scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].totalCost, name: CATEGORY_STUDY_PROCEDURES}
     ]
 
-    let totalCost = scheduleOfEvents['Labs'].totalCost + scheduleOfEvents['Physical Examination'].totalCost
-       + scheduleOfEvents['Procedures'].totalCost + scheduleOfEvents['Questionnaires'].totalCost
-       + scheduleOfEvents['Study Procedures'].totalCost
+    let totalCost = scheduleOfEvents[CATEGORY_LABS].totalCost + scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].totalCost
+       + scheduleOfEvents[CATEGORY_PROCEDURES].totalCost + scheduleOfEvents[CATEGORY_QUESTIONNAIRES].totalCost
+       + scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].totalCost
 
     setPatientRate('{p|$'+ formatCostAvg(totalCost, 1000) +'K}\n{good|GOOD}')
     setCostData(tempCostData)
@@ -722,7 +799,7 @@ const ScheduleEvents = (props) => {
               <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
-                  <Panel showArrow={false} header={eventLibHeader('Labs', filteredLabs.length, "1")} key="1">
+                  <Panel showArrow={false} header={eventLibHeader(CATEGORY_LABS, filteredLabs.length, "1")} key="1">
                     <Table dataSource={filteredLabs} columns={columns} pagination={false} showHeader={false} 
                       locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
                   </Panel>
@@ -732,7 +809,7 @@ const ScheduleEvents = (props) => {
               <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
-                  <Panel showArrow={false} header={eventLibHeader('Physical Examination', filteredExamination.length, "2")} key="2">
+                  <Panel showArrow={false} header={eventLibHeader(CATEGORY_PHYSICAL_EXAMINATION, filteredExamination.length, "2")} key="2">
                     <Table dataSource={filteredExamination} columns={columns} pagination={false} showHeader={false} 
                       locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
                   </Panel>
@@ -742,7 +819,7 @@ const ScheduleEvents = (props) => {
               <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
-                  <Panel showArrow={false} header={eventLibHeader('Procedures', filteredProcedures.length, "3")} key="3">
+                  <Panel showArrow={false} header={eventLibHeader(CATEGORY_PROCEDURES, filteredProcedures.length, "3")} key="3">
                     <Table dataSource={filteredProcedures} columns={columns} pagination={false} showHeader={false} 
                       locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
                   </Panel>
@@ -752,7 +829,7 @@ const ScheduleEvents = (props) => {
               <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
-                  <Panel showArrow={false} header={eventLibHeader('Questionnaires', filteredQuestionnaires.length, "4")} key="4">
+                  <Panel showArrow={false} header={eventLibHeader(CATEGORY_QUESTIONNAIRES, filteredQuestionnaires.length, "4")} key="4">
                     <Table dataSource={filteredQuestionnaires} columns={columns} pagination={false} showHeader={false} 
                       locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
                   </Panel>
@@ -762,7 +839,7 @@ const ScheduleEvents = (props) => {
               <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
-                  <Panel showArrow={false} header={eventLibHeader('Study Procedures', filteredStudyProcedures.length, "5")} key="5">
+                  <Panel showArrow={false} header={eventLibHeader(CATEGORY_STUDY_PROCEDURES, filteredStudyProcedures.length, "5")} key="5">
                     <Table dataSource={filteredStudyProcedures} columns={columns} pagination={false} showHeader={false} 
                       locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
                   </Panel>
@@ -835,6 +912,7 @@ const ScheduleEvents = (props) => {
                 <div className="event-dashboard-container">
                     <EventList
                       saveEvents={saveEvents}
+                      handleEventChange={handleEventChange}
                       numbers={numbers}
                       labs={addedLabs}
                       examination={addedExamination}
