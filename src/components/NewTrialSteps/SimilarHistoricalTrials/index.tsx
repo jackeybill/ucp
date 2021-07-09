@@ -192,7 +192,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       const date = d['start_date'].split('-')[0]
       return (
         (this.state.studyPhase != "" && this.state.studyPhase != "All"
-          ? d.study_phase.indexof(this.state.studyPhase)>-1
+          ? d.study_phase.indexOf(this.state.studyPhase)>-1
           : true) &&
         (this.state.studyType != "" && this.state.studyType != "All"
           ? d.study_type == this.state.studyType
