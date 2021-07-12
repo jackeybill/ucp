@@ -299,6 +299,8 @@ const ScenarioPage = (props) => {
                     }
 
                     setShowChartLabel(true)
+                    setImpactColors(activeChartColors)
+                    setExcluImpactColors(activeChartColors)
                 }
                 
                 if(tempEditFlag){

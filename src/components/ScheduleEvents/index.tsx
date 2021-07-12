@@ -587,8 +587,9 @@ const ScheduleEvents = (props) => {
     dataIndex: 'Standard Event',
     key: 'Standard Event',
     width: '70%',
-    render: () => {
-      return <span className="event-text">Remove</span>
+    render: (_, item) => {
+      return <span className="event-text">{item['Standard Event']}</span>
+
     }
   }, {
     title: 'selected',
