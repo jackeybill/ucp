@@ -152,21 +152,11 @@ const ScheduleEvents = (props) => {
             setFilteredQuestionnaires(filterLibs(response[CATEGORY_QUESTIONNAIRES], eventsConfigure[CATEGORY_QUESTIONNAIRES].entities, minV, maxV))
             setFilteredStudyProcedures(filterLibs(response[CATEGORY_STUDY_PROCEDURES], eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities, minV, maxV))
           } else {
-            setFilteredLabs(response[CATEGORY_LABS].filter((d) => {
-              return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-            }))
-            setFilteredExamination(response[CATEGORY_PHYSICAL_EXAMINATION].filter((d) => {
-              return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-            }))
-            setFilteredProcedures(response[CATEGORY_PROCEDURES].filter((d) => {
-              return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-            }))
-            setFilteredQuestionnaires(response[CATEGORY_QUESTIONNAIRES].filter((d) => {
-              return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-            }))
-            setFilteredStudyProcedures(response[CATEGORY_STUDY_PROCEDURES].filter((d) => {
-              return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-            }))
+            setFilteredLabs(filterLibs(response[CATEGORY_LABS], [], minV, maxV))
+            setFilteredExamination(filterLibs(response[CATEGORY_PHYSICAL_EXAMINATION], [], minV, maxV))
+            setFilteredProcedures(filterLibs(response[CATEGORY_PROCEDURES], [], minV, maxV))
+            setFilteredQuestionnaires(filterLibs(response[CATEGORY_QUESTIONNAIRES], [], minV, maxV))
+            setFilteredStudyProcedures(filterLibs(response[CATEGORY_STUDY_PROCEDURES], [], minV, maxV))
           }
       }
     };
