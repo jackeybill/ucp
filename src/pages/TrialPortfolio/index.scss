@@ -19,9 +19,11 @@
     display: flex;
     margin-bottom: 30px;
     padding: 0 120px;
+    align-items: flex-end;
     .count {
       //   display: flex;
       flex: 1;
+      font-size: 28px;
     }
     .filter-selector {
       display: flex;
@@ -31,6 +33,7 @@
         label {
           color: #787878;
           font-size: 12px;
+          font-weight: 600;
         }
       }
     }
@@ -39,18 +42,19 @@
     padding: 26px 120px 0px 120px;
     background-color: #dedede;
     .title {
-      font-size: 20px;
+      font-size: 32px;
       color: #000000;
       margin-bottom: 0;
     }
     .sub-title {
-      font-size: 14px;
+      font-size: 26px;
       color: #000000;
     }
 
     .small-trial {
       color: $theme-color;
       font-size: 12px;
+      font-weight: 600;
     }
 
     .action-part {
@@ -79,7 +83,7 @@
           color: #000000;
         }
         .number {
-          font-size: 20px;
+          font-size: 42px;
           font-weight: 600;
         }
         .status {

@@ -11,7 +11,7 @@
   display: flex;
   justify-content: center;
   min-width: 608px;
-  background-color: $theme-color;
+  background-color: #333333;
 
   .login__form-wrapper {
     display: flex;
@@ -50,7 +50,7 @@
       color: #ffffff;
     }
     .ant-form-item-explain-error {
-      color: yellow;
+      color: $theme-color;
     }
 
     .ant-input.ant-input-sm {
@@ -136,11 +136,10 @@
   border-color: $theme-color;
 }
 
-.login__button {
+.login__form .login-button {
   background-color: $theme-color;
   width: 100px;
   height: 40px;
-  background-color: rgba(45, 45, 45, 0.9);
 }
 
 .check__remember {
@@ -173,5 +172,5 @@
   width: 100%;
 }
 .ant-form-item-explain.ant-form-item-explain-error {
-  color: yellow;
+  color: $theme-color;
 }

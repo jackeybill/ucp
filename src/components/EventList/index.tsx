@@ -135,7 +135,7 @@ const EventList = (props) => {
 
   useEffect(() => {
     getWeeks()
-  }, [visitNumber])
+  }, [visitNumber,weekNumber])
 
 
 

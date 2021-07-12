@@ -110,7 +110,7 @@ const Login = (props: any) => {
                 <Button
                   type="primary"
                   htmlType="submit"
-                  className="login__button"
+                  className="login-button"
                 >
                   LOGIN
                 </Button>

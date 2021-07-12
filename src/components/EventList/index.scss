@@ -33,6 +33,9 @@
       flex: 1;
       .head-row {
         display: flex;
+        div{
+          font-size: 14px;
+        }
         &:last-child {
           border-bottom: 1px solid #eeeeee;
         }
@@ -103,7 +106,7 @@
       .events-wrapper {
         display: flex;
         flex: 1.5;
-        font-size: 12px;
+        font-size: 14px;
 
         div {
           flex: 1;
@@ -158,10 +161,12 @@
         flex: 1.5;
         display: flex;
         border-bottom: none;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 600;
         .name {
           flex: 7;
+          font-size: 16px;
+          color:#333333;
           .add-event {
             cursor: pointer;
             font-weight: 400;

@@ -81,7 +81,7 @@ const GlobalLayout = (props: any) => {
         <div className="header-left">
           <div className="system__info">
             <img src={Logo} alt="" width="50px" height="50px" />
-            <span>Intelligent Trial Design</span>
+            <span onClick={()=>props.history.push('/trials')}>Intelligent Trial Design</span>
           </div>
           <div className="menu-box">
             <Menu mode="horizontal" defaultSelectedKeys={['trials']} selectedKeys={[current]} onClick={handleClick}>

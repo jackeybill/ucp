@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer} from 'react';
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
-import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps} from "antd";
+import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer} from "antd";
 import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
@@ -2654,14 +2654,20 @@ const ScenarioPage = (props) => {
               <div className="ie-container"><ScheduleEvents record={trialRecord} editFlag={editFlag} scenarioId={scenarioId}/></div>
       )}
       </Spin>
-      <Modal visible={showHistorical} title="Historical Trial List" onOk={handleOk} onCancel={handleCancel}
-        footer={null} style={{ left: '20%', top:50 }} centered={false} width={200} > 
-        <Row>
+      <Drawer
+          title="Historical Trial List"
+          placement="right"
+          onClose={handleCancel}
+          visible={showHistorical}
+          getContainer={false}
+          style={{ position: 'absolute' }}
+        >
+          <Row>
           <Spin spinning={spinning}>
             <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
           </Spin>
         </Row>
-      </Modal>
+        </Drawer>
     </div>
       
     );
