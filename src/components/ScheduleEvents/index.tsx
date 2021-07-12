@@ -889,12 +889,13 @@ const ScheduleEvents = (props) => {
             </Row>
             <Spin spinning={showConfigure}>
             <Row>
-              <Col span={11}>
+              <Col span={9}>
                 <span className="tip1-desc">
                   Use the historical event library on the left to build the Schedule of Events.
                 </span>
               </Col>
-              <Col span={4} className={`${hiddeTags ? 'hidde' : ''}`}>
+              <Col span={1}></Col>
+              <Col span={5} className={`${hiddeTags ? 'hidde' : ''}`}>
                 <span className="tip1-desc none-click">
                 Number of Visits <InputNumber size="small" value={numbers.visitNumber} />
                 </span>
@@ -977,7 +978,7 @@ const ScheduleEvents = (props) => {
           <Col span={12} className="input-number"><InputNumber min={1} step={1} onStep={onStepWeek} value={numbers.weekNumber} /></Col>
         </Row>
         <Row style={{justifyContent: 'center', paddingTop: '20px'}}>
-          <Button type="primary" className="step-btn" onClick={handleOk}>CREATE</Button>
+          <Button type="primary" className="step-btn create-btn" onClick={handleOk}>CREATE</Button>
         </Row>
       </Modal>
     </div>
