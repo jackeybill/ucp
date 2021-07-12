@@ -418,7 +418,7 @@ const ProtocolSection = (props: any) => {
               />
             </>
           )}
-          {props.location.pathname === "/extraction" && (activeSection === "scheduleActivities"|| checkedSections[0]=== "scheduleActivities")&& (file[key]["scheduleActivities"][0]&&file[key]["scheduleActivities"][0].table&&file[key]["scheduleActivities"][0].table!=={}&&file[key]["scheduleActivities"][0].table[0])&&(
+          {props.location.pathname === "/extraction" && (activeSection === "scheduleActivities"|| checkedSections[0]=== "scheduleActivities")&& (file[key]["scheduleActivities"]&&file[key]["scheduleActivities"][0]&&file[key]["scheduleActivities"][0].table&&file[key]["scheduleActivities"][0].table!=={}&&file[key]["scheduleActivities"][0].table[0])&&(
             <>
               <ExtractionTable
                 updateCurrentEntity={updateCurrentEntity}
