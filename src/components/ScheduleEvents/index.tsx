@@ -536,7 +536,15 @@ const ScheduleEvents = (props) => {
        + scheduleOfEvents[CATEGORY_PROCEDURES].totalCost + scheduleOfEvents[CATEGORY_QUESTIONNAIRES].totalCost
        + scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].totalCost
 
-    setPatientRate('{p|$'+ formatCostAvg(totalCost, 1000) +'K}\n{good|GOOD}')
+    let costBreakdown = ''
+    if(totalCost < 12826){
+      costBreakdown = 'GOOD'
+    } else if(totalCost < 15650){
+      costBreakdown = 'FAIR'
+    } else {
+      costBreakdown = 'POOR'
+    }
+    setPatientRate('{p|$'+ formatCostAvg(totalCost, 1000) +'K}\n{' +costBreakdown+ '|' + costBreakdown + '}')
     setCostData(tempCostData)
     setCostSubTitle('Average from Similar Historical \nTrials - $' + formatCostAvg(totalCost, 5000) + 'K / Patient')
     setBurdenData(tempBurdenData)
@@ -547,7 +555,7 @@ const ScheduleEvents = (props) => {
     let newScenario = props.record.scenarios.find( i=> i['scenario_id'] == props.scenarioId)
     newScenario['Schedule of Events'] = Object.assign(scheduleOfEvents,{
       'TotalCost': formatCostAvg(totalCost, 1000),
-      'CostRate': 'GOOD',
+      'CostRate': costBreakdown,
       'CostData': tempCostData,
       'CostAvg': formatCostAvg(totalCost, 5000),
       'BurdenData': tempBurdenData,
@@ -717,7 +725,7 @@ const ScheduleEvents = (props) => {
   }
 
   const exportEvent = () =>{
-    let str=',' + ',' + 'Visit'
+    let str='Schedule of Events\n' + ',' + ',' + 'Visit'
     for(let i = 1; i <= numbers.visitNumber; i ++){
       str += ',' + i
     }
@@ -732,7 +740,14 @@ const ScheduleEvents = (props) => {
       str += ',' + burdenData[b]
     }
 
-    str += '\n' + 'Category,' + ',Activity' + ',Cost'
+    str += '\n' + 'Category' + ',Activity' + ',Cost'
+    
+    str += getEventContent(CATEGORY_LABS, addedLabs)
+    str += getEventContent(CATEGORY_PHYSICAL_EXAMINATION, addedExamination)
+    str += getEventContent(CATEGORY_PROCEDURES, addedProcedures)
+    str += getEventContent(CATEGORY_QUESTIONNAIRES, addedQuestionnaires)
+    str += getEventContent(CATEGORY_STUDY_PROCEDURES, addedStudyProcedures)
+
     let exportContent = "\uFEFF";
       let blob = new Blob([exportContent + str], {
         type: "text/plain;charset=utf-8"
@@ -741,6 +756,22 @@ const ScheduleEvents = (props) => {
       const date = Date().split(" ");
       const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
       FileSaver.saveAs(blob, `SoA_${dateStr}.csv`);
+  }
+
+  function getEventContent(catrgory, events) {
+    console.log(catrgory)
+    let subStr = ''
+    for(const event in events){
+      console.log(event)
+      subStr += '\n' + catrgory + ',"' + events[event]['Standard Event'] + '",' + events[event]['Dummy Cost']
+      if(events[event]['condition'].length > 0){
+        for(const idx in events[event]['condition']){
+          console.log(idx)
+          subStr += ',' + (events[event]['condition'][idx].checked ? 'x' : '')
+        }
+      }
+    }
+    return subStr
   }
 
   return (
