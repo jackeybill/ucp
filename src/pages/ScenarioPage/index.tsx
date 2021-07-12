@@ -1967,7 +1967,7 @@ const ScenarioPage = (props) => {
                               <span className="label">
                                 {minValue}%-{maxValue}%
                               </span>
-                              <EditFilled />
+                              <EditFilled className={`${visible ? 'active' : ''}`}/>
                             </div>
                             </Col>
                           </Row>
@@ -2107,7 +2107,7 @@ const ScenarioPage = (props) => {
                     </Col>
                     <Col flex="auto">
                       <Row>
-                        <Col span={24}><span className="tab-tiltle">Add Inclusion Criteria</span></Col>
+                        <Col span={24}><span className="tab-title">Add Inclusion Criteria</span></Col>
                       </Row>
                       <Row>
                         <Col span={24}>
@@ -2225,7 +2225,7 @@ const ScenarioPage = (props) => {
                       <div style={{ padding: '0 10px' }}></div>
                     </Col>
                     <Col className="left-section">
-                      <Row style={{alignItems: 'center', marginBottom: '10px'}}>
+                      <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
                         <Col span={16}>
                           <div className="item-option">
                             <span className="tip">Select / Unselect criteria to add to Trial</span>
@@ -2233,7 +2233,7 @@ const ScenarioPage = (props) => {
                         </Col>
                         <Col span={8} style={{textAlign:'right'}}>
                           <Row>
-                          <Col span={24}><span>CRITERIA FREQUENCY</span></Col>
+                          <Col span={24}><span className="frequency">CRITERIA FREQUENCY</span></Col>
                           </Row>
                           <Row style={{width:'100%'}}>
                           <Col span={24}>
@@ -2241,7 +2241,7 @@ const ScenarioPage = (props) => {
                               <span className="label">
                                 {excluMinValue}%-{excluMaxValue}%
                               </span>
-                              <EditFilled />
+                              <EditFilled className={`${excluVisible ? 'active' : ''}`}/>
                             </div>
                             </Col>
                           </Row>
@@ -2383,7 +2383,7 @@ const ScenarioPage = (props) => {
                     </Col>
                     <Col flex="auto">
                       <Row>
-                        <Col span={24}><span className="tab-tiltle">Add Exclusion Criteria</span></Col>
+                        <Col span={24}><span className="tab-title">Add Exclusion Criteria</span></Col>
                       </Row>
                       <Row>
                         <Col span={24}>
@@ -2484,7 +2484,7 @@ const ScenarioPage = (props) => {
                     </Col>
                     <Col flex="auto" className="enrollment-right-section">
                       <Row>
-                        <Col span={24}><span className="tab-tiltle">Enrollment Feasibility</span></Col>
+                        <Col span={24}><span className="tab-title">Enrollment Feasibility</span></Col>
                       </Row>
                       <Row>
                         <Col span={24}>
@@ -2503,7 +2503,7 @@ const ScenarioPage = (props) => {
                           <Row><Col className="tab-item">
                             <Row className="tab-desc">Patients Eligible&nbsp;
                               {activeEnrollmentTabKey === '1'?(<CaretRightOutlined />):(<></>)}</Row>
-                            <Row className="tab-title">80K</Row>
+                            <Row className="sub-tab-title">80K</Row>
                             <Row className="tab-desc">16% of Dataset</Row>
                           </Col></Row>
                         </Col>
@@ -2512,7 +2512,7 @@ const ScenarioPage = (props) => {
                           <Row><Col className="tab-item" span={24}>
                             <Row className="tab-desc">Female patients eligible&nbsp;
                                 {activeEnrollmentTabKey === '2'?(<CaretRightOutlined />):(<></>)}</Row>
-                            <Row className="tab-title">20%</Row>
+                            <Row className="sub-tab-title">20%</Row>
                           </Col></Row>
                         </Col>
                         <Col span={1}></Col>

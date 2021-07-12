@@ -199,7 +199,7 @@
     
                 span{
                     font-size:16px;
-                    font-weight: 500;
+                    font-weight: bold;
                     color: #333;
                 }
     
@@ -333,7 +333,6 @@
                 .bar-desc {
                     font-size: 18px;
                     color: #333;
-                    font-weight: bold;
                     display:inline-block;
                     min-width:150px;
                     border-right: 2px solid #ddd;
@@ -499,7 +498,7 @@
                             padding:10px;
                             color: #333;
 
-                            .tab-title{
+                            .sub-tab-title{
                                 font-size:42px;
                                 font-weight:bold;
                             }
@@ -597,11 +596,14 @@ font-size: 12px;
 }
 
 .anticon-edit{
-    color: #333;
+    color: #999;
+}
+.anticon-edit.active{
+    color: #CA4A04;
 }
 }
 
-.tab-tiltle{
+.tab-title{
     font-size: 24px;
     color: #000000;
     font-weight: bold;

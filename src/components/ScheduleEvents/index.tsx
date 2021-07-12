@@ -140,10 +140,10 @@ const ScheduleEvents = (props) => {
             
             setPatientRate('{p|$'+ eventsConfigure.TotalCost +'K}\n{'+eventsConfigure.CostRate + '|' + eventsConfigure.CostRate + '}')
             setCostData(eventsConfigure.CostData)
-            setCostSubTitle('Average from Similar Historical \nTrials - $' + eventsConfigure.CostAvg + 'K / Patient')
+            setCostSubTitle('Average from Similar Historical\nTrials - $' + eventsConfigure.CostAvg + 'K / Patient')
             setBurdenData(eventsConfigure.BurdenData)
             setBurdenXAxis(eventsConfigure.BurdenXAxis)
-            setBurdenSubTitle('Average from similar Historical \nTrials - ' + eventsConfigure.BurdenAvg)
+            setBurdenSubTitle('Average from similar\nHistorical Trials - ' + eventsConfigure.BurdenAvg)
             setShowTooltip(true)
 
             setFilteredLabs(filterLibs(response[CATEGORY_LABS], eventsConfigure[CATEGORY_LABS].entities, minV, maxV))
@@ -194,7 +194,7 @@ const ScheduleEvents = (props) => {
     return (
         <div className="event-panelHeader">
             <div>
-                <div style={{fontWeight: 'bold', fontSize: '16px'}}><span>Impact</span></div>
+                <div style={{color:'#333', fontSize: '18px'}}><span>Impact</span></div>
             </div>
         </div>
     );
@@ -204,7 +204,7 @@ const ScheduleEvents = (props) => {
     return (
       <Row className="section-header">
         <Col span={23}><span>{name}</span><span className="count-span">{count}</span></Col>
-        <Col span={1}>{activeCollapse.indexOf(key) >= 0 ?(<MinusOutlined />):(<PlusOutlined />)}</Col>
+        <Col span={1} className="collapse-icon">{activeCollapse.indexOf(key) >= 0 ?(<MinusOutlined />):(<PlusOutlined />)}</Col>
       </Row>
     );
   };
@@ -216,12 +216,14 @@ const ScheduleEvents = (props) => {
       x:'left',
       y:'center',
       textStyle: {
-        fontSize: 14,
-        fontWeight: 'bold'
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333'
       },
       subtextStyle: {
-        fontSize: 12,
-        fontWeight: 'normal'
+        fontSize: 14,
+        fontWeight: 'normal',
+        color: '#999'
       }
     },
     tooltip: {
@@ -234,7 +236,7 @@ const ScheduleEvents = (props) => {
     grid: {
         left: '50%',
         right: '4%',
-        top: '5%',
+        top: '8%',
         bottom: '10%',
         containLabel: true
     },
@@ -264,8 +266,14 @@ const ScheduleEvents = (props) => {
             name: 'Patient Burder',
             type: 'bar',
             barWidth: '60%',
-            color:'#ed7738',
-            data: burdenData
+            color:'#E53500',
+            data: burdenData,
+            label: {
+              show: showTooltip,
+              position: 'top',
+              fontSize: 12,
+              color: '#666'
+          },
         }
     ]
   };
@@ -277,21 +285,24 @@ const ScheduleEvents = (props) => {
       x:'left',
       y:'top',
       textStyle: {
-        fontSize: 14,
-        fontWeight: 'bold'
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333'
       },
       subtextStyle: {
-        fontSize: 12,
-        fontWeight: 'normal'
+        fontSize: 14,
+        fontWeight: 'normal',
+        color: '#999'
       }
     },
     legend: {
       x:'left',
-      y:'50/%',
+      y:'37%',
       orient: 'vertical',
       itemHeight: 7,
       textStyle: {
-        fontSize: 10
+        fontSize: 12,
+        color: '#333'
       },
       data: [CATEGORY_LABS, CATEGORY_PHYSICAL_EXAMINATION, CATEGORY_PROCEDURES, CATEGORY_QUESTIONNAIRES, CATEGORY_STUDY_PROCEDURES]
     },
@@ -320,25 +331,25 @@ const ScheduleEvents = (props) => {
           emphasis: '',
           rich: {
             p: {
-              color: '#aba9a9',
-              fontSize: 16,
+              color: '#848484',
+              fontSize: 20,
               backgroundColor: "white"
             },
             GOOD: {
-              color: 'green',
-              fontSize: 8,
+              color: '#00A947',
+              fontSize: 12,
               fontWeight:'bold',
               backgroundColor: "white"
             },
             FAIR: {
               color: 'gray',
-              fontSize: 8,
+              fontSize: 12,
               fontWeight:'bold',
               backgroundColor: "white"
             },
             POOR: {
               color: '#c33232',
-              fontSize: 8,
+              fontSize: 12,
               fontWeight:'bold',
               backgroundColor: "white"
             }
@@ -516,10 +527,10 @@ const ScheduleEvents = (props) => {
     }
     setPatientRate('{p|$'+ formatCostAvg(totalCost, 1000) +'K}\n{' +costBreakdown+ '|' + costBreakdown + '}')
     setCostData(tempCostData)
-    setCostSubTitle('Average from Similar Historical \nTrials - $' + formatCostAvg(totalCost, 5000) + 'K / Patient')
+    setCostSubTitle('Average from Similar Historical\nTrials - $' + formatCostAvg(totalCost, 5000) + 'K / Patient')
     setBurdenData(tempBurdenData)
     setBurdenXAxis(tempBurdenXAxis)
-    setBurdenSubTitle('Average from similar Historical \nTrials - ' + formatBurdenAvg(totalCost, numbers.visitNumber))
+    setBurdenSubTitle('Average from similar\nHistorical Trials - ' + formatBurdenAvg(totalCost, numbers.visitNumber))
     setShowTooltip(true)
 
     let newScenario = props.record.scenarios.find( i=> i['scenario_id'] == props.scenarioId)
@@ -575,7 +586,10 @@ const ScheduleEvents = (props) => {
     title: 'Standard Event',
     dataIndex: 'Standard Event',
     key: 'Standard Event',
-    width: '70%'
+    width: '70%',
+    render: () => {
+      return <span className="event-text">Remove</span>
+    }
   }, {
     title: 'selected',
     dataIndex: 'selected',
@@ -768,7 +782,7 @@ const ScheduleEvents = (props) => {
       </div>
       <Row>
         <Col span={eventLib} className="event-left-container">
-          <Row style={{backgroundColor: '#f3f3f3'}}>
+          <Row style={{backgroundColor: '#F8F8F8'}}>
             <Col span={24}>
               <div className="item-header">
                 <Row>
@@ -785,12 +799,12 @@ const ScheduleEvents = (props) => {
               </div>
             </Col>
           </Row>
-          <Row style={{borderBottom:'10px solid #f3f3f3'}}>
+          <Row style={{borderBottom:'10px solid #F8F8F8'}}>
             <Col flex="none">
               <div style={{ padding: '0 10px' }}></div>
             </Col>
             <Col className="left-section">
-              <Row style={{alignItems: 'center', marginBottom: '10px'}}>
+              <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
                 <Col span={16}>
                   <div className="item-option">
                     <span>Select / Unselect events from library</span>
@@ -798,7 +812,7 @@ const ScheduleEvents = (props) => {
                 </Col>
                 <Col span={8} style={{textAlign:'right', paddingRight:'10px', fontSize:'14px'}}>
                   <Row>
-                  <Col span={24}><span>EVENT FREQUENCY</span></Col>
+                  <Col span={24}><span className="frequency">EVENT FREQUENCY</span></Col>
                   </Row>
                   <Row style={{width:'100%'}}>
                   <Col span={24}>
@@ -806,7 +820,7 @@ const ScheduleEvents = (props) => {
                       <span className="label">
                         {minV}%-{maxV}%
                       </span>
-                      <EditFilled />
+                      <EditFilled className={`${visibleSlider ? 'active' : ''}`}/>
                     </div>
                     </Col>
                   </Row>
@@ -917,7 +931,7 @@ const ScheduleEvents = (props) => {
         <Col span={24 - eventLib} className="event-right-container">
           <div style={{ padding: '10px 20px 0px 20px' }}>
             <Row>
-              <Col span={24}><span className="title">Schedule of Events</span></Col>
+              <Col span={24}><span className="tab-title">Schedule of Events</span></Col>
             </Row>
             <Spin spinning={showConfigure}>
             <Row>
@@ -928,12 +942,12 @@ const ScheduleEvents = (props) => {
               </Col>
               <Col span={1}></Col>
               <Col span={5} className={`${hiddeTags ? 'hidde' : ''}`}>
-                <span className="tip1-desc none-click">
+                <span className="none-click right">
                 Number of Visits <InputNumber size="small" value={numbers.visitNumber} />
                 </span>
               </Col>
               <Col span={6} className={`center ${hiddeTags ? 'hidde' : ''}`}>
-                <span className="tip1-desc center none-click">
+                <span className="none-click">
                   Number of Weeks <InputNumber size="small" value={numbers.weekNumber} />&nbsp;
                 </span>
                 <EditFilled className="edit-icon" onClick={showConfigureModal}/>
@@ -956,13 +970,13 @@ const ScheduleEvents = (props) => {
                 <Panel header={panelHeader()} key="1">
                   <Row>
                     <Col span={12}>
-                      <ReactECharts option={costOption} style={{ height: 140}}/>
-                      <div style={{paddingLeft: '50%'}}>
+                      <ReactECharts option={costOption} style={{ height: 175}}/>
+                      <div style={{paddingLeft: '50%', fontSize: '14px', color: '#999'}}>
                         <span>Click on each metrics to filter</span>
                       </div>
                     </Col>
                     <Col span={12}>
-                      <ReactECharts option={burdenOption} style={{ height: 150}}/>
+                      <ReactECharts option={burdenOption} style={{ height: 180}}/>
                     </Col>
                   </Row>
                 </Panel>
@@ -993,11 +1007,11 @@ const ScheduleEvents = (props) => {
 
       <Modal visible={showConfigure} title="" closable={false} mask={false}
         footer={null} style={{ left: '12%', top:200 }} centered={false} > 
-        <Row style={{justifyContent: 'center'}}>
-         <span style={{fontSize: 16, fontWeight: 'bold'}}>Configure Schedule Of Events Table</span>
+        <Row className="configure-title">
+         <span>Configure Schedule Of Events Table</span>
         </Row>
         <br/>
-        <Row style={{justifyContent: 'center'}}>
+        <Row className="configure-desc">
          <span >Aliquam faucibus, odio nec commodo aliquam, neque felis placerat dui, a porta ante lectus dapibus</span>
         </Row>
         <br/>

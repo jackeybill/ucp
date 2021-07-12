@@ -10,15 +10,21 @@
 
         .section-header{
             font-weight: bold;
-            align-items: center;
+            font-size: 16px;
+            color: #333;
 
             .count-span{
                 margin-left: 5px;
-                padding: 0px 2px;
-                background-color: black;
+                padding: 0px 3px;
+                background-color: #333;
                 color: #fff;
-                font-weight: 400;
-                font-size: 6px;
+                font-size: 12px;
+            }
+
+            .collapse-icon{
+                .anticon-plus, .anticon-minus{
+                    color: #999;
+                }
             }
         }
 
@@ -32,17 +38,20 @@
 
         .ant-table-tbody > tr > td{
             padding: 6px 10px 6px 16px;
+            font-size: 16px;
 
-            .add{
-                color: #d04a02;
+            .add, .remove{
                 cursor: pointer;
                 text-align: right;
             }
-
+            .add{
+                color: #CA4A04;
+            }
             .remove{
-                color:#aba9a9;
-                cursor: pointer;
-                text-align: right;
+                color:#A5A5A5;
+            }
+            .event-text{
+                color:#333333;
             }
         }
     }
@@ -51,26 +60,22 @@
 .event-right-container{
     height: 100%;
     width: 75%;
-    .title {
-      font-size: 24px;
-      color: #000000;
-    }
     .ant-dropdown-button{
-        border: 1px solid #d04a02;
+        border: 1px solid #CA4A04;
     }
     .anticon.anticon-down{
-        color: #d04a02;
+        color: #CA4A04;
     }
-    .anticon.anticon-down.ant-input-number-handler-down-inner{
-        color:#00000073;
+    .anticon.anticon-down.ant-input-number-handler-down-inner, .anticon.anticon-up.ant-input-number-handler-up-inner{
+        color:#666;
     }
     .ant-btn-group.ant-dropdown-button{
         .ant-btn.ant-btn-default{
-            color:#d04a02;
-            border-left: unset;
+            color:#CA4A04;
+            border: unset;
         }
         .ant-btn.ant-btn-default.ant-btn-icon-only.ant-dropdown-trigger{
-            border-left: 1px solid #d04a02;
+            border-left: 1px solid #CA4A04;
         }
     }
 
@@ -84,17 +89,16 @@
     }
 
     .ant-input-number.ant-input-number-sm {
-        width: 60px;
+        width: 50px;
     }
 
     .hidde{
         display: none;
     }
 
-    .tip1-desc{
-        font-size:13px;
+    .right{
+        float: right;
     }
-
     .center{
         justify-content:center;
         text-align: center;
@@ -105,11 +109,19 @@
     }
 
     .none-click{
+        font-size: 16px;
+        color: #333;
         pointer-events: none;
+        input{
+            color: #333;
+        }
     }
-
-    .edit-icon{
+    .anticon-edit.edit-icon{
         display:inline-block;
+        color: #999;
+    }
+    .anticon-edit.edit-icon.active{
+        color: #CA4A04;
     }
 
     .event-chart{
@@ -169,19 +181,40 @@
     }
 }
 
+.configure-title{
+    justify-content: center;
+    span{
+        font-size: 18px;
+        color:#333;
+    }
+}
+.configure-desc{
+    justify-content: center;
+    span{
+        font-size: 15px;
+        color:#999;
+    }
+}
 .modal-filed{
     .label{
         text-align: right;
         padding: 5px 10px;
         transform: translateY(5px);
+        span{
+            color: #333;
+        }
     }
 
     .input-number{
         padding: 5px 10px;
+        input{
+            color: #333;
+            font-size: 14px;
+        }
     }
 
     .anticon.anticon-down.ant-input-number-handler-down-inner{
-        color:#00000073;
+        color:#666;
     }
 
     .ant-input-number .ant-input-number-handler-wrap {
@@ -200,4 +233,5 @@
 
 .step-btn.create-btn span{
     color: #ffffff;
+    font-size: 14px;
 }
