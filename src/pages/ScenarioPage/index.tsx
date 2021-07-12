@@ -21,7 +21,7 @@ const { Step } = Steps;
 
 const frequencyFilter = [80, 100]
 const inActiveChartColors = ['#514c4a', '#65615f', '#86817f', '#a59e9b']
-const activeChartColors = ['#d04a02', '#ed7738', '#ed9d72', '#f5b795']
+const activeChartColors = ['#E53500', '#F27A26', '#F5924D', '#FBD0B3']
 
 
 const panelHeader = () => {
@@ -93,7 +93,8 @@ const ScenarioPage = (props) => {
 
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
-    const [freqColor, setFreqColor] = useState('#ed7738')
+    const [freqColor, setFreqColor] = useState('#EF7A57')
+    const [freqFontColor, setFreqFontColor] = useState('#fff')
     const [totalData, setTotalData] = useState([])
     const [freqData, setFreqdata] = useState([])
     const [chartTitle, setChartTitle] = useState('Patients Eligible - 80K(16% of Dataset)')
@@ -787,12 +788,14 @@ const ScenarioPage = (props) => {
         x:'left',
         y:'center',
         textStyle: {
-          fontSize: 14,
-          fontWeight: 'bold'
+          fontSize: 16,
+          fontWeight: 'bold',
+          color: '#333'
         },
         subtextStyle: {
-          fontSize: 12,
-          fontWeight: 'normal'
+            fontSize: 14,
+            fontWeight: 'normal',
+            color: '#999'
         }
       },
       tooltip: {
@@ -819,25 +822,25 @@ const ScenarioPage = (props) => {
             emphasis: '',
             rich: {
               p: {
-                color: '#aba9a9',
-                fontSize: 16,
+                color: '#848484',
+                fontSize: 20,
                 backgroundColor: "white"
               },
               good: {
-                color: 'green',
-                fontSize: 8,
+                color: '#00A947',
+                fontSize: 12,
                 fontWeight:'bold',
                 backgroundColor: "white"
               },
               fair: {
                 color: 'gray',
-                fontSize: 8,
+                fontSize: 12,
                 fontWeight:'bold',
                 backgroundColor: "white"
               },
               poor: {
                 color: '#c33232',
-                fontSize: 8,
+                fontSize: 12,
                 fontWeight:'bold',
                 backgroundColor: "white"
               }
@@ -866,12 +869,14 @@ const ScenarioPage = (props) => {
         x:'left',
         y:'center',
         textStyle: {
-          fontSize: 14,
-          fontWeight: 'bold'
+          fontSize: 16,
+          fontWeight: 'bold',
+          color: '#333'
         },
         subtextStyle: {
-          fontSize: 12,
-          fontWeight: 'normal'
+          fontSize: 14,
+          fontWeight: 'normal',
+          color: '#999'
         }
       },
       tooltip: {
@@ -898,25 +903,25 @@ const ScenarioPage = (props) => {
             emphasis: '',
             rich: {
               p: {
-                color: '#aba9a9',
-                fontSize: 16,
+                color: '#848484',
+                fontSize: 20,
                 backgroundColor: "white"
               },
               good: {
-                color: 'green',
-                fontSize: 8,
+                color: '#00A947',
+                fontSize: 12,
                 fontWeight:'bold',
                 backgroundColor: "white"
               },
               fair: {
                 color: 'gray',
-                fontSize: 8,
+                fontSize: 12,
                 fontWeight:'bold',
                 backgroundColor: "white"
               },
               poor: {
                 color: '#c33232',
-                fontSize: 8,
+                fontSize: 12,
                 fontWeight:'bold',
                 backgroundColor: "white"
               }
@@ -945,12 +950,14 @@ const ScenarioPage = (props) => {
         x:'left',
         y:'center',
         textStyle: {
-          fontSize: 14,
-          fontWeight: 'bold'
+          fontSize: 16,
+          fontWeight: 'bold',
+          color: '#333'
         },
         subtextStyle: {
-          fontSize: 12,
-          fontWeight: 'normal'
+          fontSize: 14,
+          fontWeight: 'normal',
+          color: '#999'
         }
       },
     
@@ -978,25 +985,25 @@ const ScenarioPage = (props) => {
               emphasis: '',
               rich: {
                 p: {
-                  color: '#aba9a9',
-                  fontSize: 16,
+                  color: '#848484',
+                  fontSize: 20,
                   backgroundColor: "white"
                 },
                 good: {
-                  color: 'green',
-                  fontSize: 8,
+                  color: '#00A947',
+                  fontSize: 12,
                   fontWeight:'bold',
                   backgroundColor: "white"
                 },
                 fair: {
                   color: 'gray',
-                  fontSize: 8,
+                  fontSize: 12,
                   fontWeight:'bold',
                   backgroundColor: "white"
                 },
                 poor: {
                   color: '#c33232',
-                  fontSize: 8,
+                  fontSize: 12,
                   fontWeight:'bold',
                   backgroundColor: "white"
                 }
@@ -1025,12 +1032,14 @@ const ScenarioPage = (props) => {
         x:'left',
         y:'center',
         textStyle: {
-          fontSize: 14,
-          fontWeight: 'bold'
+          fontSize: 16,
+          fontWeight: 'bold',
+          color: '#333'
         },
         subtextStyle: {
-          fontSize: 12,
-          fontWeight: 'normal'
+            fontSize: 14,
+            fontWeight: 'normal',
+            color: '#999'
         }
       },
   
@@ -1058,25 +1067,25 @@ const ScenarioPage = (props) => {
             emphasis: '',
             rich: {
               p: {
-                color: '#aba9a9',
-                fontSize: 16,
+                color: '#848484',
+                fontSize: 20,
                 backgroundColor: "white"
               },
               good: {
-                color: 'green',
-                fontSize: 8,
+                color: '#00A947',
+                fontSize: 12,
                 fontWeight:'bold',
                 backgroundColor: "white"
               },
               fair: {
                 color: 'gray',
-                fontSize: 8,
+                fontSize: 12,
                 fontWeight:'bold',
                 backgroundColor: "white"
               },
               poor: {
                 color: '#c33232',
-                fontSize: 8,
+                fontSize: 12,
                 fontWeight:'bold',
                 backgroundColor: "white"
               }
@@ -1130,7 +1139,7 @@ const ScenarioPage = (props) => {
         label: {
           show: false,
         },
-        color:['#d04a02', '#ed7738', '#ed9d72', '#f5b795'],
+        color:['#F27A26', '#F5924D', '#FBD6BD', '#FDECE0'],
         data: [
           {value: 75, name: 'Caucasian'},
           {value: 12, name: 'Hispanic'},
@@ -1143,11 +1152,12 @@ const ScenarioPage = (props) => {
     const resultOption = {
       title : {
         text: chartTitle,
-        x:'45%',
+        x:'40%',
         y:'top',
         textStyle: {
-          fontSize: 14,
-          fontWeight: 'bold'
+          fontSize: 18,
+          fontWeight: 'bold',
+          color: '#333'
         }
       },
       grid: {
@@ -1200,7 +1210,8 @@ const ScenarioPage = (props) => {
                   formatter: function(p) {
                       return p.data.freq+'%'
                   },
-                  position: 'insideRight'
+                  position: 'insideRight',
+                  color: freqFontColor
               },
               data: freqData
           }, {
@@ -1208,7 +1219,7 @@ const ScenarioPage = (props) => {
               type: 'bar',
               stack: 'total',
               barWidth:'20px',
-              color: '#fa4203',
+              color: '#E84F22',
               label: {
                   show: true,
                   formatter: function(p) {
@@ -1234,7 +1245,8 @@ const ScenarioPage = (props) => {
       setFreqdata([])
     } else if(key === '2'){
       setChartTitle('Female patients eligible - 20%')
-      setFreqColor('#ed7738')
+      setFreqColor('#EF7A57')
+      setFreqFontColor('#fff')
 
       let tempData = [];
       for(let i = 0, l = resultdata.length; i < l; i++){
@@ -1251,7 +1263,8 @@ const ScenarioPage = (props) => {
       setFreqdata(tempData2)
     } else {
       setChartTitle('Race & Ethnicity - Afican American - 5%')
-      setFreqColor('#f5b795')
+      setFreqColor('#FDECE0')
+      setFreqFontColor('#333')
 
       let tempData = [];
       for(let i = 0, l = resultdata.length; i < l; i++){
@@ -1810,7 +1823,7 @@ const ScenarioPage = (props) => {
         <Row className="process-container">
             <Col span={2} style={{borderRight: '1.5px solid #c4bfbf'}}>
                 <div className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
-                    <LeftOutlined /> Trial Page
+                    <LeftOutlined /> &nbsp;Trial Page
                 </div>
             </Col>
             <Col span={4} style={{maxHeight: '32px',borderRight: '1.5px solid #c4bfbf'}}>
@@ -1823,7 +1836,7 @@ const ScenarioPage = (props) => {
                 <Row className="item-translate">
                     
                     <Col flex="10px"></Col>
-                    <Col flex="auto" style={{fontSize: '15px', fontWeight: 'bold'}}>{scenario['scenario_name']}</Col>
+                    <Col flex="auto" style={{fontSize: '16px', fontWeight: 'bold'}}>{scenario['scenario_name']}</Col>
                 </Row>
                 </Col>
                 </Row>
@@ -1919,8 +1932,8 @@ const ScenarioPage = (props) => {
           <Tabs onChange={changeActiveTabKey} activeKey={activeTabKey} centered>
             <TabPane tab="Inclusion Criteria" key="1">
               <Row>
-                <Col span={criteriaLib} style={{backgroundColor: '#f3f3f3'}}>
-                  <Row style={{backgroundColor: '#f3f3f3'}}>
+                <Col span={criteriaLib} style={{backgroundColor: '#F8F8F8'}}>
+                  <Row style={{backgroundColor: '#F8F8F8'}}>
                     <Col span={24}>
                       <div className="item-header">
                         <span>Inclusion Criteria Library</span>
@@ -1933,7 +1946,7 @@ const ScenarioPage = (props) => {
                       </div>
                     </Col>
                   </Row>
-                  <Row style={{borderBottom:'10px solid #f3f3f3'}}>
+                  <Row style={{borderBottom:'10px solid #F8F8F8'}}>
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>
                     </Col>
@@ -1970,9 +1983,10 @@ const ScenarioPage = (props) => {
                             onClick={() => setVisible(false)}
                           ></CloseOutlined>
                         </div>
+                        <br/>
                         <div className="content">
                           <span>Criteria Frequency</span>
-                          <span style={{ float: "right" }}>
+                          <span style={{ float: "right", fontWeight: 'bold' }}>
                             {minValue}% - {maxValue}%
                           </span>
                         </div>
@@ -2093,7 +2107,7 @@ const ScenarioPage = (props) => {
                     </Col>
                     <Col flex="auto">
                       <Row>
-                        <Col span={24}><h4>Add Inclusion Criteria</h4></Col>
+                        <Col span={24}><span className="tab-tiltle">Add Inclusion Criteria</span></Col>
                       </Row>
                       <Row>
                         <Col span={24}>
@@ -2192,8 +2206,8 @@ const ScenarioPage = (props) => {
             </TabPane>
             <TabPane tab="Exclusion Criteria" key="2" disabled={collapsible}>
               <Row>
-                <Col span={excluCriteriaLib} style={{backgroundColor: '#f3f3f3'}}>
-                  <Row style={{backgroundColor: '#f3f3f3'}}>
+                <Col span={excluCriteriaLib} style={{backgroundColor: '#F8F8F8'}}>
+                  <Row style={{backgroundColor: '#F8F8F8'}}>
                     <Col span={24}>
                       <div className="item-header">
                         <span>Exclusion Criteria Library</span>
@@ -2206,7 +2220,7 @@ const ScenarioPage = (props) => {
                       </div>
                     </Col>
                   </Row>
-                  <Row style={{borderBottom:'10px solid #f3f3f3'}}>
+                  <Row style={{borderBottom:'10px solid #F8F8F8'}}>
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>
                     </Col>
@@ -2243,9 +2257,10 @@ const ScenarioPage = (props) => {
                             onClick={() => setExcluVisible(false)}
                           ></CloseOutlined>
                         </div>
+                        <br/>
                         <div className="content">
                           <span>Criteria Frequency</span>
-                          <span style={{ float: "right" }}>
+                          <span style={{ float: "right", fontWeight: 'bold' }}>
                             {excluMinValue}% - {excluMaxValue}%
                           </span>
                         </div>
@@ -2368,7 +2383,7 @@ const ScenarioPage = (props) => {
                     </Col>
                     <Col flex="auto">
                       <Row>
-                        <Col span={24}><h4>Add Exclusion Criteria</h4></Col>
+                        <Col span={24}><span className="tab-tiltle">Add Exclusion Criteria</span></Col>
                       </Row>
                       <Row>
                         <Col span={24}>
@@ -2461,66 +2476,6 @@ const ScenarioPage = (props) => {
             <TabPane tab="Enrollment Feasibility" key="3" disabled={collapsible}>
             <Row>
                 <Col span={5}>
-                  {/* <Row style={{backgroundColor: '#f3f3f3'}}>
-                    <Col span={24}>
-                      <div style={{padding: '5px 15px'}}>
-                        <span style={{fontSize: '16px', fontWeight: 500}}>My Protocol</span>
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row style={{borderBottom:'10px solid #f3f3f3'}}>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                    <Col className="enrollment-left-section">
-                      <Row className="check-header">
-                        <Col span={24}><Checkbox onChange={null} defaultChecked={true} >Demographic</Checkbox></Col>
-                      </Row>
-                      <Row className="list-item">
-                        <Col span={5}><span>Age</span></Col>
-                        <Col span={6}><Input defaultValue=">18" /></Col>
-                      </Row>
-                      <Row className="list-item">
-                        <Col span={5}><span>Gender</span></Col>
-                        <Col span={18}><Input defaultValue="Men or nonpregnant women" /></Col>
-                      </Row>
-                      <Row className="list-item">
-                        <Col span={9}><span>Stable body weight</span></Col>
-                        <Col span={14}><Input defaultValue="Not charged by more than 5%" /></Col>
-                      </Row>
-                      <Row className="check-header">
-                        <Col span={24}><Checkbox onChange={null} defaultChecked={true} >Medical Condition</Checkbox></Col>
-                      </Row>
-                      <Row className="list-item">
-                        <Col span={10}><span>Type 2 Diabetes</span></Col>
-                      </Row>
-                      <Row className="check-header">
-                        <Col span={24}><Checkbox onChange={null} defaultChecked={true} >Intervention</Checkbox></Col>
-                      </Row>
-                      <Row className="list-item">
-                        <Col span={6}><span>Meformin</span></Col>
-                        <Col span={6}><Input defaultValue="Stable" /></Col>
-                      </Row>
-                      <Row className="check-header">
-                        <Col span={24}><Checkbox onChange={null} defaultChecked={true} >Lab / Test</Checkbox></Col>
-                      </Row>
-                      <Row className="list-item">
-                        <Col span={3}><span>TSH</span></Col>
-                        <Col span={20}><Input defaultValue="Normal or clinically euthyroid" /></Col>
-                      </Row>
-                      <Row className="list-item">
-                        <Col span={10}><span>Fasting C-peptide</span></Col>
-                        <Col span={8}><Input defaultValue="&ge;0.8 ng/mL" /></Col>
-                      </Row>
-                      <Row className="list-item">
-                        <Col span={5}><span>HbA1c</span></Col>
-                        <Col span={12}><Input defaultValue="&ge;7.0% and &le;9.0%" /></Col>
-                      </Row>
-                    </Col>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                  </Row> */}
                 </Col>
                 <Col span={14}>
                   <Row style={{ paddingTop: '10px' }}>
@@ -2529,7 +2484,7 @@ const ScenarioPage = (props) => {
                     </Col>
                     <Col flex="auto" className="enrollment-right-section">
                       <Row>
-                        <Col span={24}><h4>Enrollment Feasibility</h4></Col>
+                        <Col span={24}><span className="tab-tiltle">Enrollment Feasibility</span></Col>
                       </Row>
                       <Row>
                         <Col span={24}>
@@ -2543,69 +2498,6 @@ const ScenarioPage = (props) => {
                           <span className="chart-title">My Protocol</span>
                         </Col>
                       </Row>
-                      {/* <Row>
-                        <Col span={24}>
-                          <div className="content-outer">
-                            <div className="enrollment-item">
-                              {option.map((item, index) => {
-                                return (
-                                  <div key={index}>
-                                  {index == 0 ? (
-                                    <div className="first-item">
-                                      <Row className="title-box">
-                                        <Col span={18} className="name-box"><span>{item.Name}</span></Col>
-                                        <Col span={6} className="count-box"><span>{item.Count}K</span></Col>
-                                      </Row>
-                                      <Row>
-                                        <Col span={item.span} className="item-bar"></Col>
-                                      </Row>
-                                      <Row>
-                                        <Col span={option[index+1].span} className="content-box">
-                                          <Row>
-                                            <Col flex="50px" className="desc-box"><span>{item.Desc}</span></Col>
-                                            <Col flex="auto" className="subdesc-box"><span>{item.SubDesc}</span></Col>
-                                          </Row>
-                                          <br/>
-                                          <Row className="title-box">
-                                            <Col span={18} className="name-box"><span>{option[index+1].Name}</span></Col>
-                                            <Col span={6} className="count-box"><span>{option[index+1].Count}K</span></Col>
-                                          </Row>
-                                        </Col>
-                                        <Col span={item.span-option[index+1].span} className="triangle-topleft"></Col>
-                                      </Row>
-                                    </div>
-                                  ):(index != option.length -1?(
-                                    <div className="normal-item">
-                                      <Row>
-                                        <Col span={item.span} className="item-bar"></Col>
-                                      </Row>
-                                      <Row>
-                                        <Col span={option[index+1].span} className="content-box">
-                                          <Row>
-                                            <Col flex="100px" className="desc-box"><span>{item.Desc}</span></Col>
-                                            <Col flex="auto" className="subdesc-box"><span>{item.SubDesc}</span></Col>
-                                          </Row>
-                                          <br/>
-                                          <Row className="title-box">
-                                            <Col span={18} className="name-box"><span>{option[index+1].Name}</span></Col>
-                                            <Col span={6} className="count-box"><span>{option[index+1].Count}K</span></Col>
-                                          </Row>
-                                        </Col>
-                                        <Col span={item.span - option[index+1].span} className="triangle-topleft"></Col>
-                                      </Row>
-                                    </div>
-                                  ):(
-                                    <Row>
-                                        <Col span={item.span} className="item-bar"></Col>
-                                      </Row>
-                                  ))}
-                                  </div>
-                                )
-                              })}
-                            </div>
-                          </div>
-                        </Col>
-                      </Row> */}
                       <Row className="enroll-tab">
                         <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => switchTabkey('1')}>
                           <Row><Col className="tab-item">
@@ -2660,7 +2552,7 @@ const ScenarioPage = (props) => {
           onClose={handleCancel}
           visible={showHistorical}
           getContainer={false}
-          style={{ position: 'absolute' }}
+          // style={{ position: 'absolute' }}
         >
           <Row>
           <Spin spinning={spinning}>

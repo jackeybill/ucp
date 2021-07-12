@@ -50,27 +50,27 @@
     }
 
     .ant-steps-item-process .ant-steps-item-icon > .ant-steps-icon .ant-steps-icon-dot {
-        background: #fff;
-        border: 2px solid #ca4a04;
+        background: #FFFEFD;
+        border: 2px solid #E68700;
     }
     .ant-steps-item-wait .ant-steps-item-icon > .ant-steps-icon .ant-steps-icon-dot {
         background: #fff;
     }
     .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
-        color: #ca4a04;
+        color: #E68700;
         font-weight: 600;
     }
     .ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
         color: #fff;
     }
     .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon .ant-steps-icon-dot {
-        background: #ca4a04;
+        background: #E68700;
     }
     .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
         color: #fff;
     }
     .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
-        background-color: #ca4a04;
+        background-color: #E68700;
     }
 
     .ant-steps-dot .ant-steps-item-tail, .ant-steps-dot.ant-steps-small .ant-steps-item-tail {
@@ -102,7 +102,7 @@
             align-items: center;
     
             .ant-btn-group.ant-dropdown-button{
-                border: 1.5px solid #d04a02;
+                border: 1.5px solid #CA4A04;
                 margin-top: 7px;
                 float: right;
     
@@ -110,12 +110,12 @@
                     border-top:none;
                     border-left:none;
                     border-bottom:none;
-                    border-right: 1px solid #d04a02;
-                    color:#d04a02;
+                    border-right: unset;
+                    color:#CA4A04;
                 }
     
                 .ant-btn.ant-btn-default.ant-btn-icon-only{
-                    border-left:1px solid #d04a02;
+                    border-left:1px solid #CA4A04;
                 }
             }
         }
@@ -158,18 +158,22 @@
             }
 
             .tip1-desc{
-                color:#aba9a9;
-                font-size: 14px;
+                color:#999;
+                font-size: 15px;
             }
     
+            .ant-tabs-tab {
+                font-size: 16px;
+                color: #676767;
+            }
             .ant-tabs-tab:hover {
-                color: #d04a02;
+                color: #CA4A04;
             }
             .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-                color: #d04a02;
+                color: #CA4A04;
             }
             .ant-tabs-ink-bar {
-                background: #d04a02;
+                background: #CA4A04;
             }
             .ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar, .ant-tabs-bottom > .ant-tabs-nav .ant-tabs-ink-bar, .ant-tabs-top > div > .ant-tabs-nav .ant-tabs-ink-bar, .ant-tabs-bottom > div > .ant-tabs-nav .ant-tabs-ink-bar {
                 height: 3px;
@@ -196,6 +200,7 @@
                 span{
                     font-size:16px;
                     font-weight: 500;
+                    color: #333;
                 }
     
                 .right-icon{
@@ -228,12 +233,20 @@
                 padding: 5px 10px 15px 5px;
                 .title, .content{
                     span{
-                        font-size: 8px;
+                        font-size: 14px;
                     }
                     .right-icon{
                         font-size: 12px;
+                        color: #999;
                     }
                 }
+                .title{
+                    color:#666;
+                }
+                .content{
+                    color:#333;
+                }
+
     
                 .right-icon{
                     float: right;
@@ -260,16 +273,20 @@
                     padding: 10px;
                     font-weight:bold;
                     margin-bottom: 10px;
+                    font-size: 15px;
+                    color:#000;
     
                     .select-option {
                         font-weight:normal;
-                        border: 1px solid #ddd;
+                        border: 1px solid #E5E5E5;
                         margin: 4px 10px 5px 0px;
                         padding: 2px 15px;
-                        border-radius: 10px;
-                        border-top-right-radius: 10px;
-                        border-top-left-radius: 10px;
+                        border-radius: 16px;
+                        // border-top-right-radius: 16px;
+                        // border-top-left-radius: 16px;
                         display: inline-block;
+                        color: #4E4E4E;
+                        font-size: 14px;
                     }
     
                     .select-option:hover {
@@ -277,8 +294,8 @@
                     }
     
                     .select-option.selected{
-                        color:#578be2;
-                        border-color: #578be2;
+                        color:#3193E5;
+                        border-color: #3193E5;
                     }
     
                     .anticon-check{
@@ -299,8 +316,8 @@
     
                 .update-btn{
                     margin-top: 20px;
-                    border: 1.5px solid #d04a02;
-                    color: #d04a02;
+                    border: 1.5px solid #CF4500;
+                    color: #CA4A04;
                     width: 90%;
                     margin: 10px 5% 0 5%;
                     background-color: #fff;
@@ -314,7 +331,8 @@
     
             .trial-panelHeader{
                 .bar-desc {
-                    font-size: 16px;
+                    font-size: 18px;
+                    color: #333;
                     font-weight: bold;
                     display:inline-block;
                     min-width:150px;
@@ -327,6 +345,7 @@
                     display:inline-block;
                     span{
                         font-size:12px;
+                        color: #333;
                     }
     
                     .bar-item{
@@ -339,24 +358,25 @@
                     }
     
                     .item1{
-                        background-color: #d04a02;
+                        background-color: #E53500;
                     }
     
                     .item2{
-                        background-color: #ed7738;
+                        background-color: #F27A26;
                     }
     
                     .item3{
-                        background-color: #ed9d72;
+                        background-color: #F5924D;
                     }
     
                     .item4{
-                        background-color: #f5b795;
+                        background-color: #FBD0B3;
                     }
                 }
     
                 .header-section{
                     font-weight: 500;
+                    color: #333;
                 }
             }
     
@@ -393,6 +413,7 @@
     
                     .label{
                         padding-left: calc(80% - 120px);
+                        color: #999999;
                     }
                 }
     
@@ -404,6 +425,8 @@
     
             .impact-summary{
                 border-bottom: 1px solid #ddd;
+                font-size: 18px;
+                color: #333;
             }
     
             .impact-summary, .criteria-list{
@@ -412,10 +435,6 @@
                 border-left: 1px solid #ddd;
                 border-right: 1px solid #ddd;
                 padding:5px 20px;
-    
-                span{
-                    font-weight: bold;
-                }
     
                 bUtton{
                     float:right;
@@ -427,8 +446,8 @@
     
                     div {
                         flex: 1 1;
-                        color: #000000;
-                        font-size: 12px;
+                        color: #333;
+                        font-size: 14px;
                         font-weight: 600;
                     }
                 }
@@ -459,47 +478,13 @@
                 height:230px
             }
     
-            // .enrollment-left-section{
-            //     width: calc(100% - 30px);
-            //     margin: 0 15px;
-    
-            //     .check-header{
-            //         background-color: #DEDEDE;
-            //         height: 42px;
-            //         align-items: center;
-            //         padding-left: 15px;
-    
-            //         .ant-checkbox-wrapper > span{
-            //             color: #333333;
-            //             font-size: 14px;
-            //             font-weight: 500;
-            //         }
-            //     }
-    
-            //     .list-item{
-            //         background-color: #fff;
-            //         height: 42px;
-            //         align-items: center;
-            //         padding-left: 15px;
-            //         border: 1px solid #DEDEDE;
-    
-            //         span{
-            //             font-size: 14px;
-            //         }
-            //     }
-            // }
-    
             .enrollment-right-section{
                 span.chart-title {
                     font-size: 16px;
+                    color: #000;
                     font-weight: bold;
                     margin-top: 10px;
                     padding: 10px 0;
-                }
-
-                .tip1-desc{
-                    color:#aba9a9;
-                    font-size: 13px;
                 }
 
                 .enroll-tab{
@@ -512,14 +497,16 @@
 
                         .tab-item{
                             padding:10px;
+                            color: #333;
 
                             .tab-title{
-                                font-size:24px;
+                                font-size:42px;
                                 font-weight:bold;
                             }
 
                             .tab-desc{
-                                font-weight: 500;
+                                font-weight: normal;
+                                font-size: 16px;
                             }
                         }
 
@@ -533,7 +520,7 @@
                     }
 
                     .chart-tab.active{
-                        border: 3px solid #f3884d;
+                        border: 3px solid #CA4A04;
                     }
                 }
 
@@ -545,60 +532,6 @@
                     box-shadow: #f5f5f5 1px 1px 1px 1px;
                 }
             }
-    
-            // .enrollment-item{
-            //     height: 420px;
-            //     width: calc(100% + 22px);
-            //     overflow-y:scroll;
-            //     box-sizing: content-box;
-    
-            //     .title-box{
-            //         span{
-            //             font-size:16px;
-            //             font-weight: bold;
-            //         }
-    
-            //         .name-box{
-            //             padding-left:20px;
-            //         }
-    
-            //         .count-box{
-            //             text-align: right;
-            //             color:#9C7ED1;
-            //             padding-right: 5px;
-            //         }
-            //     }
-                
-            //     .item-bar{
-            //         background-color:#634A8F;
-            //         height:15px;
-            //     }
-    
-            //     .content-box{
-            //         background-color:#d5cce5;
-            //         height:80px;
-    
-            //         .desc-box{
-            //             padding-left:20px;
-    
-            //             span{
-            //                 font-size: 14px;
-            //                 font-weight: 500;
-            //             }
-            //         }
-    
-            //         .subdesc-box{
-            //             span{
-            //                 font-size: 14px;
-            //                 color:#9C7ED1;
-            //             }
-            //         }
-            //     }
-    
-            //     .triangle-topleft{
-            //         background:linear-gradient(to bottom right, #d5cce5 0%, #d5cce5 50%,transparent calc(50% + 1px),#fff 100%);
-            //     }
-            // }
         }
     }
     
@@ -634,25 +567,42 @@ button.ant-btn.ant-btn-text, button.ant-btn.ant-btn-text:focus, button.ant-btn.a
 }
 
 .action-title {
+  font-size: 14px;
   display: flex;
-  align-items: center;
   padding-left: 8px;
+  margin-top: 5px;
+
+  .anticon-left{
+    margin-top: 5px;
+  }
 }
 
 .ant-steps-item-title {
 font-size: 12px;
 }
 .item-option span {
-font-size: 12px;
+    font-size: 14px;
+    color: #999;
 }
 
 .left-section .head-row {
 .frequency {
-  color: #333333;
-  font-size: 12px;
+  color: #333;
+  font-size: 10px;
 }
 .label {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
 }
+
+.anticon-edit{
+    color: #333;
+}
+}
+
+.tab-tiltle{
+    font-size: 24px;
+    color: #000000;
+    font-weight: bold;
 }

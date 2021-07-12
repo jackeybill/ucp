@@ -19,7 +19,7 @@
 
 a.ant-typography,
 .ant-typography a {
-  color: #000000d9;
+  color: #333;
   span {
     width: 100%;
   }
@@ -95,4 +95,32 @@ span.anticon.anticon-close.ant-modal-close-icon {
 .sub-row-non-editable {
   flex: 1;
   padding: 4px 11px;
+}
+
+.ant-modal-title{
+  font-size: 24px;
+  color: #2D2D2D;
+}
+
+.ant-modal-body{
+  p{
+    font-size: 18px;
+    color: #333;
+  }
+
+  span{
+    font-size: 16px;
+    color: #666666;
+  }
+
+  .ant-input{
+    font-size: 18px;
+    color: #333;
+  }
+}
+
+.ant-modal-footer{
+  .ant-btn-primary{
+    font-size: 16px;
+  }
 }

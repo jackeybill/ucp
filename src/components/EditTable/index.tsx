@@ -498,7 +498,7 @@ const panelHeaderSection = (header, count) => {
         <Modal visible={visible} title="Add / Edit Condition or Exception" onOk={handleOk} onCancel={handleCancel}
           footer={[<Button key="submit" type="primary" onClick={handleOk}>Submit</Button>]}>
           <p>Add / Edit condition or exception for <b>{conOrExcpContent}</b></p>
-          <p>Condition or Exception</p>
+          <span>Condition or Exception</span>
           <TextArea value={conOrExp} onChange={(e) => handleInputChange(e)} autoSize={{ minRows: 3, maxRows: 5 }}/>
         </Modal>
     </Form>
