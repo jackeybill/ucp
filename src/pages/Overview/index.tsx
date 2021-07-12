@@ -141,7 +141,7 @@ const Overview = (props: any) => {
           <Table
             columns={columns}
             dataSource={data}
-            pagination={{ position: ["bottomRight"], size: "small" }}
+            pagination={{ position: ["bottomRight"], size: "small", pageSize: 6 }}
               onRow={
                 record => {
                   return {

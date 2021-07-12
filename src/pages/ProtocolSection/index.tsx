@@ -100,10 +100,10 @@ const ProtocolSection = (props: any) => {
 
   useEffect(() => {
     if (props.location.pathname == "/extraction") {
-      if (entity && activeSection && file[key][activeSection][0].comprehendMedical[entity]) {
-        setEntities(file[key][activeSection][0].comprehendMedical[entity].Entities)
-      } else if (entity && activeSection && file[key][activeSection][0].table) {
-        setEntities(file[key][activeSection][0].table)
+      if (entity && activeSection && file[key][activeSection][0] && file[key][activeSection][0].comprehendMedical[entity]) {
+        setEntities(file[key][activeSection][0] && file[key][activeSection][0].comprehendMedical[entity].Entities)
+      } else if (entity && activeSection && file[key][activeSection][0] && file[key][activeSection][0].table) {
+        setEntities(file[key][activeSection][0] && file[key][activeSection][0].table)
       }
     }
   }, [activeSection]);
@@ -171,7 +171,7 @@ const ProtocolSection = (props: any) => {
       const file = props.fileReader.file;
       const key = file.keyName || Object.keys(file)[0] || [];
       const jsonData = activeSection
-        ? (activeSection === "scheduleActivities"? file[key][activeSection][0].table : file[key][activeSection][0].comprehendMedical[entity].Entities)
+        ? (activeSection === "scheduleActivities"&&file[key][activeSection][0]? file[key][activeSection][0].table : file[key][activeSection][0].comprehendMedical[entity].Entities)
         : file[key]["includeAllText"][0].comprehendMedical[entity].Entities;
       jsonExport(jsonData, fname);
     }
@@ -418,7 +418,7 @@ const ProtocolSection = (props: any) => {
               />
             </>
           )}
-          {props.location.pathname === "/extraction" && (activeSection === "scheduleActivities"|| checkedSections[0]=== "scheduleActivities")&& (
+          {props.location.pathname === "/extraction" && (activeSection === "scheduleActivities"|| checkedSections[0]=== "scheduleActivities")&& (file[key]["scheduleActivities"][0]&&file[key]["scheduleActivities"][0].table&&file[key]["scheduleActivities"][0].table!=={}&&file[key]["scheduleActivities"][0].table[0])&&(
             <>
               <ExtractionTable
                 updateCurrentEntity={updateCurrentEntity}
