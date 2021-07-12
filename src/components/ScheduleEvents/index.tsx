@@ -44,6 +44,9 @@ const ScheduleEvents = (props) => {
     { ...initialNumber }
   );
   const [weeks, setWeeks] = useState([])
+  const [minV, setMinV] = useState(50)
+  const [maxV, setMaxV] = useState(100)
+  const [visibleSlider, setVisibleSlider] = useState(false)
 
   //Cost Per Patient Chart
   const [patientChartColor, setPatientChartColor] = useState(iChartColors)
@@ -143,61 +146,11 @@ const ScheduleEvents = (props) => {
             setBurdenSubTitle('Average from similar Historical \nTrials - ' + eventsConfigure.BurdenAvg)
             setShowTooltip(true)
 
-            setFilteredLabs(response[CATEGORY_LABS].filter((d) => {
-              var index = eventsConfigure[CATEGORY_LABS].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
-              if(index > -1){
-                return Object.assign(d, {
-                  selected: true, 
-                  condition: eventsConfigure[CATEGORY_LABS].entities[index].condition, 
-                  totalVisit: eventsConfigure[CATEGORY_LABS].entities[index].totalVisit})
-              } else {
-                return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-              }
-            }))
-            setFilteredExamination(response[CATEGORY_PHYSICAL_EXAMINATION].filter((d) => {
-              var index = eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
-              if(index > -1){
-                return Object.assign(d, {
-                  selected: true, 
-                  condition: eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities[index].condition, 
-                  totalVisit: eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities[index].totalVisit})
-              } else {
-                return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-              }
-            }))
-            setFilteredProcedures(response[CATEGORY_PROCEDURES].filter((d) => {
-              var index = eventsConfigure[CATEGORY_PROCEDURES].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
-              if(index > -1){
-                return Object.assign(d, {
-                  selected: true, 
-                  condition: eventsConfigure[CATEGORY_PROCEDURES].entities[index].condition, 
-                  totalVisit: eventsConfigure[CATEGORY_PROCEDURES].entities[index].totalVisit})
-              } else {
-                return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-              }
-            }))
-            setFilteredQuestionnaires(response[CATEGORY_QUESTIONNAIRES].filter((d) => {
-              var index = eventsConfigure[CATEGORY_QUESTIONNAIRES].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
-              if(index > -1){
-                return Object.assign(d, {
-                  selected: true, 
-                  condition: eventsConfigure[CATEGORY_QUESTIONNAIRES].entities[index].condition, 
-                  totalVisit: eventsConfigure[CATEGORY_QUESTIONNAIRES].entities[index].totalVisit})
-              } else {
-                return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-              }
-            }))
-            setFilteredStudyProcedures(response[CATEGORY_STUDY_PROCEDURES].filter((d) => {
-              var index = eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
-              if(index > -1){
-                return Object.assign(d, {
-                  selected: true, 
-                  condition: eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities[index].condition, 
-                  totalVisit: eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities[index].totalVisit})
-              } else {
-                return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
-              }
-            }))
+            setFilteredLabs(filterLibs(response[CATEGORY_LABS], eventsConfigure[CATEGORY_LABS].entities, minV, maxV))
+            setFilteredExamination(filterLibs(response[CATEGORY_PHYSICAL_EXAMINATION], eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities, minV, maxV))
+            setFilteredProcedures(filterLibs(response[CATEGORY_PROCEDURES], eventsConfigure[CATEGORY_PROCEDURES].entities, minV, maxV))
+            setFilteredQuestionnaires(filterLibs(response[CATEGORY_QUESTIONNAIRES], eventsConfigure[CATEGORY_QUESTIONNAIRES].entities, minV, maxV))
+            setFilteredStudyProcedures(filterLibs(response[CATEGORY_STUDY_PROCEDURES], eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities, minV, maxV))
           } else {
             setFilteredLabs(response[CATEGORY_LABS].filter((d) => {
               return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
@@ -219,6 +172,23 @@ const ScheduleEvents = (props) => {
     };
     getStandardEventsLib();
   }, []);
+
+  function filterLibs(orgLibs, addedEvents, minValue, maxValue){
+    let filteredLibs = orgLibs.filter((d) => {
+      if(d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue){
+        var index = addedEvents.findIndex((domain) => d['Standard Event'] === domain['Standard Event']);
+        if(index > -1){
+          return Object.assign(d, {
+            selected: true, 
+            condition: addedEvents[index].condition, 
+            totalVisit: addedEvents[index].totalVisit})
+        } else {
+          return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+        }
+      }
+    })
+    return filteredLibs
+  }
 
   const panelHeader = () => {
     return (
@@ -628,7 +598,7 @@ const ScheduleEvents = (props) => {
         const newSelectedData = [...addedLabs]
 
         if(item.selected){
-          newData.splice(index, 1, { ...item, ...{selected: false}});
+          newData.splice(index, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
           newSelectedData.splice(selectedIndex, 1)
         } else {
@@ -645,7 +615,7 @@ const ScheduleEvents = (props) => {
         const newSelectedData2 = [...addedExamination]
 
         if(item.selected){
-          newData2.splice(index2, 1, { ...item, ...{selected: false}});
+          newData2.splice(index2, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
           newSelectedData2.splice(selectedIndex, 1)
         } else {
@@ -662,7 +632,7 @@ const ScheduleEvents = (props) => {
         const newSelectedData3 = [...addedProcedures]
 
         if(item.selected){
-          newData3.splice(index3, 1, { ...item, ...{selected: false}});
+          newData3.splice(index3, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
           newSelectedData3.splice(selectedIndex, 1)
         } else {
@@ -679,7 +649,7 @@ const ScheduleEvents = (props) => {
         const newSelectedData4 = [...addedQuestionnaires]
 
         if(item.selected){
-          newData4.splice(index4, 1, { ...item, ...{selected: false}});
+          newData4.splice(index4, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
           newSelectedData4.splice(selectedIndex, 1)
         } else {
@@ -695,7 +665,7 @@ const ScheduleEvents = (props) => {
         const newSelectedData5 = [...addedStudyProcedures]
 
         if(item.selected){
-          newData5.splice(index5, 1, { ...item, ...{selected: false}});
+          newData5.splice(index5, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
           newSelectedData5.splice(selectedIndex, 1)
         } else {
@@ -774,6 +744,22 @@ const ScheduleEvents = (props) => {
     return subStr
   }
 
+  const formatter = (value) => {
+    return value+'%'
+  }
+
+  const getFrequency = (value) => {
+
+    setMinV(value[0])
+    setMaxV(value[1])
+
+    setFilteredLabs(filterLibs(orgLabs, addedLabs, value[0], value[1]))
+    setFilteredExamination(filterLibs(orgExamination, addedExamination, value[0], value[1]))
+    setFilteredQuestionnaires(filterLibs(orgQuestionnaires, addedQuestionnaires, value[0], value[1]))
+    setFilteredProcedures(filterLibs(orgProcedures, addedProcedures, value[0], value[1]))
+    setFilteredStudyProcedures(filterLibs(orgStudyProcedures, addedStudyProcedures, value[0], value[1]))
+  }
+
   return (
     <div className="tab-container">
       <div className={`side-toolbar ${eventLib > 0 ? 'hidden' : ''}`} onClick={()=> setEventLib(6)}>
@@ -816,9 +802,9 @@ const ScheduleEvents = (props) => {
                   </Row>
                   <Row style={{width:'100%'}}>
                   <Col span={24}>
-                    <div id="freqModal" ref={null}>
+                    <div id="freqModal" ref={null} onClick={() => setVisibleSlider(true)}>
                       <span className="label">
-                        80%-100%
+                        {minV}%-{maxV}%
                       </span>
                       <EditFilled />
                     </div>
@@ -826,12 +812,42 @@ const ScheduleEvents = (props) => {
                   </Row>
                 </Col>
               </Row>
+              {visibleSlider ? (
+              <div className="freqSection">
+                <div className="title">
+                  <span>Set Frequency</span>
+                  <CloseOutlined
+                    className="right-icon"
+                    onClick={() => setVisibleSlider(false)}
+                  ></CloseOutlined>
+                </div>
+                <br/>
+                <div className="content">
+                  <span>Criteria Frequency</span>
+                  <span style={{ float: "right", fontWeight: 'bold' }}>
+                    {minV}% - {maxV}%
+                  </span>
+                </div>
+                <Slider
+                  range={{ draggableTrack: true }}
+                  defaultValue={[minV, maxV]}
+                  tipFormatter={formatter}
+                  onAfterChange={getFrequency}
+                />
+              </div>
+              ) : (
+              <></>
+              )}
               <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
                   <Panel showArrow={false} header={eventLibHeader(CATEGORY_LABS, filteredLabs.length, "1")} key="1">
-                    <Table dataSource={filteredLabs} columns={columns} pagination={false} showHeader={false} 
-                      locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
+                    {filteredLabs.length>0 ? (
+                      <Table dataSource={filteredLabs} columns={columns} pagination={false} showHeader={false} 
+                      locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                    ): (
+                      <></>
+                    )}
                   </Panel>
                 </Collapse>
                 </Col>
@@ -840,8 +856,12 @@ const ScheduleEvents = (props) => {
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
                   <Panel showArrow={false} header={eventLibHeader(CATEGORY_PHYSICAL_EXAMINATION, filteredExamination.length, "2")} key="2">
-                    <Table dataSource={filteredExamination} columns={columns} pagination={false} showHeader={false} 
-                      locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
+                    {filteredExamination.length>0 ? (
+                      <Table dataSource={filteredExamination} columns={columns} pagination={false} showHeader={false} 
+                        locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                    ): (
+                      <></>
+                    )}
                   </Panel>
                 </Collapse>
                 </Col>
@@ -850,8 +870,12 @@ const ScheduleEvents = (props) => {
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
                   <Panel showArrow={false} header={eventLibHeader(CATEGORY_PROCEDURES, filteredProcedures.length, "3")} key="3">
-                    <Table dataSource={filteredProcedures} columns={columns} pagination={false} showHeader={false} 
-                      locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
+                    {filteredProcedures.length>0 ? (
+                      <Table dataSource={filteredProcedures} columns={columns} pagination={false} showHeader={false} 
+                        locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                    ): (
+                      <></>
+                    )}
                   </Panel>
                 </Collapse>
                 </Col>
@@ -860,8 +884,12 @@ const ScheduleEvents = (props) => {
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
                   <Panel showArrow={false} header={eventLibHeader(CATEGORY_QUESTIONNAIRES, filteredQuestionnaires.length, "4")} key="4">
-                    <Table dataSource={filteredQuestionnaires} columns={columns} pagination={false} showHeader={false} 
-                      locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
+                    {filteredQuestionnaires.length>0 ? (
+                      <Table dataSource={filteredQuestionnaires} columns={columns} pagination={false} showHeader={false} 
+                        locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                    ): (
+                      <></>
+                    )}
                   </Panel>
                 </Collapse>
                 </Col>
@@ -870,8 +898,12 @@ const ScheduleEvents = (props) => {
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
                   <Panel showArrow={false} header={eventLibHeader(CATEGORY_STUDY_PROCEDURES, filteredStudyProcedures.length, "5")} key="5">
-                    <Table dataSource={filteredStudyProcedures} columns={columns} pagination={false} showHeader={false} 
-                      locale={{emptyText: ''}} rowKey={record => record['Standard Event']}/>
+                    {filteredStudyProcedures.length>0 ? (
+                      <Table dataSource={filteredStudyProcedures} columns={columns} pagination={false} showHeader={false} 
+                        locale={{emptyText: 'No Data'}} rowKey={record => record['Standard Event']}/>
+                    ): (
+                      <></>
+                    )}
                   </Panel>
                 </Collapse>
                 </Col>

@@ -474,7 +474,7 @@ export const getStandardEvents = async () => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      "standard_events": ''
+      "schedule_activities": ''
       })
   })
 
