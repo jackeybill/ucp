@@ -11,6 +11,9 @@ import "./index.scss";
 const backgroundImg = {
   background: "url(" + background + ")",
   backgroundRepeat: "no-repeat",
+  overflow: "hidden", 
+  // marginLeft: "-1px",
+  backgroundSize: "100%",
 };
 
 const LoginErr = "Invalidate username or password";
@@ -69,7 +72,7 @@ const Login = (props: any) => {
               form={form}
             >
               <label htmlFor="username" className="form__label">
-                USERNAME
+                Username
               </label>
               <Form.Item
                 name="username"
@@ -84,7 +87,7 @@ const Login = (props: any) => {
                 <Input size="small" />
               </Form.Item>
               <label htmlFor="password" className="form__label">
-                PASSWORD
+                Password
               </label>
               <Form.Item
                 name="password"
@@ -114,7 +117,7 @@ const Login = (props: any) => {
                 >
                   LOGIN
                 </Button>
-                <div className="forget__password">Forget password?</div>
+                <div className="forget__password">Forgot password?</div>
               </Form.Item>
             </Form>
           </div>
