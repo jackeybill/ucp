@@ -64,6 +64,7 @@ const SceneriosDashbaord = (props: any) => {
             scenario_id: scenario['scenario_id'],
             scenario_name: scenario['scenario_name'],
             scenario_description: scenario['scenario_description'],
+            scenario_type: scenario['scenario_type'],
             "Inclusion Criteria": {},
             "Exclusion Criteria": {},
             "Enrollment Feasibility": {},
