@@ -346,7 +346,7 @@ const TrialPortfolio = (props) => {
                   onClick={() => setStatus("COMPLETED")}
                 >
                   <span className="number">{count.completed}</span>
-                  <span className="status">COMPLETED</span>
+                  <span className="status">COMPLETE</span>
                 </div>
               </div>
             </div>
@@ -359,7 +359,7 @@ const TrialPortfolio = (props) => {
             </div>
             <div className="filter-selector">
               <div className="selector-item">
-                <label>Therapeutic Area</label> <br />
+                <label>THERAPEUTIC AREA</label> <br />
                 <Select
                   defaultValue="All"
                   value={area}
@@ -382,7 +382,7 @@ const TrialPortfolio = (props) => {
                 </Select>
               </div>
               <div className="selector-item">
-                <label> Study Phase</label>
+                <label> TRIAL PHASE</label>
                 <br />
                 <Select
                   value={phase}
@@ -402,7 +402,7 @@ const TrialPortfolio = (props) => {
               <div className="selector-item add-new-trial">
                 <div className="add-btn" onClick={() => setVisible(true)}>
                 <PlusCircleOutlined />
-                New Trial
+                NEW TRIAL
                 </div>              
               </div>
             </div>

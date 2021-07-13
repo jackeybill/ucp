@@ -1,6 +1,7 @@
 import React, { useState, } from "react";
 import { withRouter } from 'react-router';
 import { Select, Collapse,Modal,Input,Tooltip} from "antd";
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import "./index.scss";
 const { Panel } = Collapse;
 
@@ -56,7 +57,7 @@ const panelHeader = (props, record) => {
         
       </div>
       <div>
-      <span className="view-btn" onClick={(e)=>props.onViewTrial(e,record)}>View Trial</span>
+      <span className="view-btn" onClick={(e)=>props.onViewTrial(e,record)}>VIEW TRIAL</span>
       </div>
       
 
@@ -126,6 +127,7 @@ const TrailList = (props: any) => {
   const showModal =() =>{
     setVisible(true)
   }
+
   return (
     <div className="trail-list-container">
       <div className="trails-list">
@@ -135,14 +137,14 @@ const TrailList = (props: any) => {
           <div className="col-item">STUDY PHASE</div>
           <div className="col-item">THERAPEUTIC AREA</div>
           {/* <div className="col-item">MODULE STATUS</div> */}
-          <div className="col-item">STATUS</div>
+          <div className="col-item">TRIAL STATUS</div>
           <div className="col-item"></div>
         </div>
         <div>
           <Collapse
             onChange={callback}
             expandIconPosition="right"
-          >
+            expandIcon={({ isActive }) => <DownOutlined style={{ color: '#CA4A04' }} rotate={isActive ? 180 : 0} />}          >
             {data.length > 0 && data.map((d, idx) => {
               return (
                 <Panel header={panelHeader(props,d)} key={idx}>
