@@ -326,7 +326,7 @@ const TrialPortfolio = (props) => {
             <span className="small-trial">MY TRIALS</span>
             <p className="title">Hello, {username}</p>
             <span className="sub-title">
-              Here is a glance of your trial portfolio.
+              Here is a glance at your trial portfolio.
             </span>
             <div className="action-part">
               <div className="status-filter">

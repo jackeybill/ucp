@@ -1,21 +1,21 @@
 import { CREATE_TRIAL } from '../constants/index';
 
 const testUsers = [
-  {
-    name: "user1",
-    id: "001",
-    role: "Trial Designer",
-  },
-  {
-    name: "user2",
-    id: "002",
-    role: "Trial Designer",
-  },
-  {
-    name: "user3",
-    id: "003",
-    role: "Trial Designer",
-  },
+  // {
+  //   name: "user1",
+  //   id: "001",
+  //   role: "Trial Designer",
+  // },
+  // {
+  //   name: "user2",
+  //   id: "002",
+  //   role: "Trial Designer",
+  // },
+  // {
+  //   name: "user3",
+  //   id: "003",
+  //   role: "Trial Designer",
+  // },
 ];
 export const initialTrial = {
     trial_title: "",
