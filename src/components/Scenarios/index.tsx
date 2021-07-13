@@ -301,7 +301,7 @@ const SceneriosDashbaord = (props: any) => {
       <Drawer
         title={scenarioType + " - Scenario Builder"}
         placement="right"
-        closable={false}
+        closable={true}
         onClose={handleCancel}
         visible={newScenarioVisiable}
         footer={[
@@ -309,7 +309,6 @@ const SceneriosDashbaord = (props: any) => {
             key="cancel"
             type="text"
             onClick={handleCancel}
-            style={{ float: "left" }}
           >
             CANCEL
           </Button>,
@@ -323,6 +322,7 @@ const SceneriosDashbaord = (props: any) => {
             <Row>
               <h5>Scenario Details</h5>
             </Row>
+            <br />
             <Row>
               <span>Scenario Name</span>
             </Row>
@@ -378,10 +378,10 @@ const SceneriosDashbaord = (props: any) => {
         <div className="select-scenario-wrapper">
           <div className="scenario-table-header">
             <div className="scenario-col scenario-name">Select Scenario</div>
-            <div className="scenario-col">Protocol Amendment Rate</div>
-            <div className="scenario-col">Screen Failure Rate</div>
-            <div className="scenario-col">Patient Burden</div>
-            <div className="scenario-col">Cost</div>
+            <div className="scenario-col scenario-rate">Protocol Amendment Rate</div>
+            <div className="scenario-col scenario-rate">Screen Failure Rate</div>
+            <div className="scenario-col scenario-rate">Patient Burden</div>
+            <div className="scenario-col scenario-rate">Cost</div>
           </div>
           <div className="scenario-table-body">
             {scenarioList.map((scenario, idx) => {

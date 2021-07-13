@@ -12,21 +12,36 @@
         font-size: 12px;
       }
       .trail-alias {
-        font-size: 20px;
+        font-size: 28px;
         color: #333333;
       }
       .update-time {
         color: #333333;
-        font-size: 12px;
+        font-size: 13px;
       }
     }
+    .setting-action{
+      color: #999999;
+    }
     .status {
-      background-color: #e68700;
-      color: #ffffff;
-      padding: 3px 5px;
-      border-radius: 10px;
+      color: #000000;
       font-size: 12px;
-      margin-left: 30px;
+      padding-left: 10px;
+      text-transform: uppercase;
+
+      .my_icon.in-progress-icon{
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        margin-right: 5px;
+        border-radius: 3px;
+      }
+      .my_icon.in-progress-icon{
+        background-color: #FFC107;
+      }
+      .my_icon.complete-icon{
+        background-color: green;
+      }
     }
   }
 
@@ -43,7 +58,9 @@
         }
         .readonly-value {
           display: block;
-          font-size: 14px;
+          font-size: 15px;
+          color: #333;
+          padding-bottom: 10px;
         }
         .view-endpoint {
           color: #e68700;
