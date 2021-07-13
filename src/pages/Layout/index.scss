@@ -7,7 +7,7 @@
   }
 
   .ant-layout-header {
-    background-color: $theme-color;
+    background-color: #FFFFFF;
     display: flex;
     line-height: unset;
     padding: 0 30px;
@@ -27,7 +27,12 @@
       align-items: center;
       margin-right: 20px;
       font-size: 14px;
-      span{
+      .system__info_title {
+        border-left: 1px solid #333333;
+        border-right: 1px solid #333333;
+        padding: 2px 20px;
+        color:#333333;
+        font-weight: 600;
         cursor: pointer;
       }
 
@@ -37,28 +42,56 @@
     }
     .menu-box {
       .ant-menu-horizontal {
-        border-bottom: none;
+        // border-bottom: none;
+      }
+      .ant-menu-title-content {
+        color: #333333;
+        font-weight: 500;
+        padding-bottom: 15px;
       }
       .ant-menu {
         height: 100%;
         display: flex;
         align-items: center;
-        background-color: $theme-color;
-        color: #ffffff;
+        background-color: #FFFFFF;
+        color: #333333;
+        font-weight: 500;
         .ant-menu-item.ant-menu-item-only-child.ant-menu-item-selected {
-          color: #ffffff;
-          border-bottom: 2px solid #ffffff;
+          // color: #333333;
+          // font-weight: 600;
+          // padding-bottom: 15px;
+          // border-bottom: 2px solid #ffffff;
         }
       }
       .ant-menu-horizontal:not(.ant-menu-dark)
         > .ant-menu-item-selected::after {
-        border-bottom: 2px solid transparent;
+        // border-bottom: 2px solid transparent;
       }
       .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover {
-        color: #ffffff;
+        .ant-menu-title-content {
+          color: $theme-color!important;
+        }
+        // font-weight: 500;
       }
       .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after {
-        border-bottom: 2px solid transparent;
+        // border-bottom: 2px solid transparent;
+      }
+      .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover,
+      .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active {
+        border-bottom: none!important;
+      }
+
+      .ant-menu-item-selected {
+        .ant-menu-title-content {
+          color: $theme-color!important;
+        }
+      }
+
+      .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected::after {
+        border-bottom: 2px solid $theme-color;
+      }
+      .ant-menu-horizontal > .ant-menu-item::after, .ant-menu-horizontal > .ant-menu-submenu::after {
+        bottom: -13px!important;
       }
     }
 
@@ -74,7 +107,7 @@
 .user__tag {
   width: 30px;
   height: 30px;
-  background: red;
+  background: #CA4A04;
   border-radius: 20px;
   text-align: center;
   line-height: 30px;
