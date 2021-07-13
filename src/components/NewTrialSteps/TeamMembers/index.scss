@@ -7,6 +7,10 @@
       margin-right: 10px;
       flex: 1;
     }
+    label{
+      font-size: 10px;
+      color:#787878;
+    }
   }
 
   .user-list-wrapper {
@@ -15,6 +19,8 @@
       padding: 20px 0 10px 0;
       border-bottom: 1px solid #eeeeee;
       font-weight: 600;
+      color: #333;
+      font-size: 14px;
     }
     .user-list {
       .user-item {
@@ -23,24 +29,42 @@
         border-bottom: 1px solid #eeeeee;
         align-items: center;
         .id {
-          color: rgba(0, 0, 0, 0.25);
+          color: #999999;
+          font-size: 12px;
         }
         .icon {
           display: inline-block;
           background-color: $theme-color;
-          border-radius: 12px;
-          width: 24px;
-          height: 24px;
+          border-radius: 16px;
+          width: 32px;
+          height: 32px;
           display: flex;
           align-items: center;
           justify-content: center;
           color: #ffffff;
           margin-right: 10px;
+          font-size: 14px;
+          text-transform: uppercase;
+        }
+        .name{
+          color: #333;
+          font-size: 14px;
         }
 
         div {
           flex: 1;
         }
+
+        .anticon.anticon-close{
+          color: #999999;
+          font-size: 16px;
+        }
+        
+      }
+
+      .role{
+        color:#383A3C;
+        font-size: 14px;
       }
     }
   }

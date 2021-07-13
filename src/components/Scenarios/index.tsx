@@ -248,7 +248,7 @@ const SceneriosDashbaord = (props: any) => {
               </div>
             )
            : (
-            <div className="bottom">Duis pretium gravida enim,</div>
+            <div className="bottom">Design Inclusion / Exclusion Criteria and Schedule of Events</div>
           )}
           {
              props.record.scenarios.length>0 && props.record['Therapeutic Area Average'] !==undefined && (
@@ -258,10 +258,10 @@ const SceneriosDashbaord = (props: any) => {
                     Average from Similar Historical Trials
                   </div>
                   <div className="item-values average">
-                    <div>{props.record['Therapeutic Area Average'].protocol_amendment_rate }</div>
-                    <div>{props.record['Therapeutic Area Average'].screen_failure_rate }</div>
-                    <div>{props.record['Therapeutic Area Average'].patient_burden }</div>
-                    <div>{props.record['Therapeutic Area Average'].cost}</div>
+                    <div>40%</div>
+                    <div>35%</div>
+                    <div>40</div>
+                    <div>$15-20M</div>
                     <div></div>
                   </div>
                 </div>
@@ -271,12 +271,12 @@ const SceneriosDashbaord = (props: any) => {
         </div>
         <div className="module-item">
           <div className="top">
-            <div className="module-name">Country Allocation</div>
+            <div className="module-name">Country Selection</div>
             <Button type="primary" size="small">
               START MODULE
             </Button>
           </div>
-          <div className="bottom">Duis pretium gravida enim,</div>
+          <div className="bottom">Select countries to support study strategy and execution</div>
         </div>
         <div className="module-item">
           <div className="top">
@@ -285,16 +285,7 @@ const SceneriosDashbaord = (props: any) => {
               START MODULE
             </Button>
           </div>
-          <div className="bottom">Duis pretium gravida enim,</div>
-        </div>
-        <div className="module-item">
-          <div className="top">
-            <div className="module-name">Trial Budgeting</div>
-            <Button type="primary" size="small">
-              START MODULE
-            </Button>
-          </div>
-          <div className="bottom">Duis pretium gravida enim,</div>
+          <div className="bottom">Select sites to support study strategy and execution</div>
         </div>
       </div>
 

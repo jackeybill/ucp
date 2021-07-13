@@ -3,8 +3,12 @@
   .step-desc {
     color: #ddd;
   }
+  
   .filter-item {
     margin-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 6px;
+
     label {
       margin-bottom: 0;
     }
@@ -23,10 +27,20 @@
       }
     }
   }
+
+  .filter-item.filter-label{
+    padding: 20px;
+    border-bottom: 1px solid #D8D8D8;
+    span{
+      color: #333333;
+      font-size: 16px;
+    }
+  }
+
   .side-bar {
     border-right: 1px solid #ddd;
-    padding-right: 6px;
-    font-size: 12px;
+    font-size: 10px;
+    color: #787878;
 
     .filter-icon {
       border: 1px solid #ddd;
@@ -38,21 +52,70 @@
   }
 
   .historical-desc {
-    text-align: center;
+    padding: 0px 10px;
     .num-desc {
       font-size: 12px;
+    }
+
+    .title{
+      margin-top: 10px;
+      margin-bottom: 10px !important;
+    }
+    .title-desc{
+      color: #999999;
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+
+    ul.ant-pagination{
+      border-left: 1px solid #ccc;
+      border-right: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      margin-top: 0px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+    .ant-table-container{
+      border: 1px solid #ccc;
+
+      .ant-table-thead > tr > th{
+        background: #666666;
+        color: #fff;
+      }
+
+      .ant-table-tbody > tr > td{
+        color: #333333;
+
+        .nctid{
+          color: #CA4A04;
+        }
+      }
+      
     }
   }
 }
 
 .chart-wrapper {
+  border-right: 1px solid #CCCCCC;
+  border-left: 1px solid #CCCCCC;
+  padding-bottom: 10px;
+  padding-top: 5px;
   display: flex;
   .chart {
     flex: 2;
   }
-  .summary-count {
-    flex: 1;
-    padding: 0 2px;
-    border-right: 1px solid #ddd;
+}
+.summary-count {
+  border-top: 1px solid #f7f7f7;
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #CCCCCC;
+  border-left: 1px solid #CCCCCC;
+  font-size: 24px;
+  color: #000000;
+  padding-left: 20px;
+
+  .num-desc{
+    color: #999999;
+    font-size: 12px;
   }
 }

@@ -68,6 +68,7 @@ let raceFreq = [5, 8, 9, 10, 15, 20, 24, 25];
 
 const ScenarioPage = (props) => {
     //Common cons
+    const [trialTitle, setTrialTitle] = useState('')
     const [trialRecord, setTrialRecord] = useReducer(
         (state, newState) => ({ ...state, ...newState }),
         { ...initialTrial }
@@ -204,6 +205,7 @@ const ScenarioPage = (props) => {
             if(resp.statusCode == 200){
                 const tempRecord = resp.body
                 setTrialRecord(tempRecord)
+                setTrialTitle(tempRecord['trial_title'])
                 if(tempRecord.similarHistoricalTrials !== undefined){
                   setSimilarHistoricalTrials(tempRecord.similarHistoricalTrials)
                 }
@@ -1833,7 +1835,7 @@ const ScenarioPage = (props) => {
               <Col span={24}>
                 <Row className="item-translate">
                     <Col flex="10px"></Col>
-                    <Col flex="auto"><span style={{fontSize: '15px'}}>Albiglutide: {scenarioType}</span></Col>
+                    <Col flex="auto"><span style={{fontSize: '15px'}}>{trialTitle}: {scenarioType}</span></Col>
                 </Row>
                 <Row className="item-translate">
                     

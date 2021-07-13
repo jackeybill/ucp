@@ -450,11 +450,11 @@ const TrialPortfolio = (props) => {
         footer={
           <div className="action-btn-footer">
             <div className="left-action">
-              <Button size="small"  onClick={handleCancel}>Cancel</Button>
+              <Button size="small" type="text" onClick={handleCancel}>Cancel</Button>
               {step > 0 && step <=(timeline.length-1)? <span className="go-prev-step" onClick={()=>setStep(step-1)}><LeftOutlined />{ timeline[step-1]}</span>:null}
             </div>          
             {
-              <Button  size="small" type="primary" onClick={step>=(timeline.length-1)?handleOk:handleNextStep}>
+              <Button  size="small" type="primary" className="create-update-btn" onClick={step>=(timeline.length-1)?handleOk:handleNextStep}>
                 {
                   step>=(timeline.length-1)? "Create Trial":`Next Step: ${timeline[step+1]}`
                 }            
@@ -475,8 +475,8 @@ const TrialPortfolio = (props) => {
               {timeline.map((t, idx) =><Step title={t} key={t}/>)}
             </Steps>
           </div>
-          <div className="main-content">
-            <span className="title">{timeline[step]}</span>         
+          <div className={`main-content ${step === 2 ? 'similar-table' : ''}`}>
+            {step != 2 ? (<><span className="title">{timeline[step]}</span></>):(<></>)}
             {step==0 && <TrialSummary handleNewTrialInputChange={handleNewTrialInputChange} handleNewTrialSelectChange={ handleNewTrialSelectChange} newTrial={newTrial} indicationList={ indicationList}/>}
             {step==1 && <TrialEndpoints />}
             {step == 2 && <SimilarHistoricalTrials indicationList={ indicationList}/>}
