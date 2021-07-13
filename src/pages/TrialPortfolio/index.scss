@@ -123,10 +123,14 @@
   margin-bottom: 10px;
 
   label {
-    color: #666666;
-    font-size: 12px;
+    color: #787878;
+    font-size: 10px;
     display: block;
     margin-bottom: 2px;
+  }
+  .ant-input{
+    color: #333333;
+    font-size: 14px;
   }
 }
 
@@ -232,8 +236,12 @@
 
 .new-trial-wrapper {
   .navigation-bar {
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid #CCCCCC;
     padding-bottom: 10px;
+    margin-left: -24px;
+    margin-right: -24px;
+    padding-left: 40px;
+    padding-right: 40px;
   }
   .navigation-title {
     color: #333333;
@@ -246,11 +254,20 @@
     padding-left: 20px;
     padding-top: 15px;
     .title {
-      color: #333333;
+      color: #383A3C;
       font-weight: 600;
       margin-bottom: 30px;
       display: block;
+      font-size: 18px;
     }
+  }
+
+  .main-content.similar-table{
+    margin-left: -24px;
+    margin-right: -24px;
+    margin-bottom: -24px;
+    padding-top: 0px;
+    padding-left: 0px;
   }
 }
 .navigation-bar {
@@ -258,7 +275,14 @@
     margin-top: 2px;
   }
   .ant-steps-item .ant-steps-item-title {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title{
+    color: #CF4500;
+  }
+  .ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title{
+    color: #999999;
   }
   .ant-steps-item-finish
     > .ant-steps-item-container
@@ -275,6 +299,27 @@
     .ant-steps-item-icon
     > .ant-steps-icon
     .ant-steps-icon-dot {
-    background: $theme-color;
+      background: #fff;
+      border: 1px solid #CA4A04;
+  }
+  .ant-steps-item-wait .ant-steps-item-icon > .ant-steps-icon .ant-steps-icon-dot{
+    background: #D8D8D8;
+  }
+  .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title{
+    color: #333333;
+  }
+  .ant-steps-dot .ant-steps-item-tail, .ant-steps-dot.ant-steps-small .ant-steps-item-tail{
+    margin: 0 0 0 0px;
+  }
+  .ant-steps-dot .ant-steps-item-process .ant-steps-item-icon, .ant-steps-dot.ant-steps-small .ant-steps-item-process .ant-steps-item-icon,
+  .ant-steps-dot .ant-steps-item-icon, .ant-steps-dot.ant-steps-small .ant-steps-item-icon{
+    margin-left:unset;
+  }
+  .ant-steps-dot .ant-steps-item-tail, .ant-steps-dot.ant-steps-small .ant-steps-item-tail{
+    width: calc(100% + 5px);
+  }
+  .ant-steps-dot .ant-steps-item-content, .ant-steps-dot.ant-steps-small .ant-steps-item-content{
+    width: 100%;
+    text-align:left;
   }
 }

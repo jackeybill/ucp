@@ -17,6 +17,7 @@ const columns = [
     title: "NCT ID",
     dataIndex: "nct_id",
     ellipsis: true,
+    render: (text) => <span className="nctid">{text || "-"}</span>,
   },
   {
     title: "Study Title",
@@ -26,14 +27,12 @@ const columns = [
   {
     title: "Sponsor",
     dataIndex: "sponsor",
-    ellipsis: true,
-    render: (text) => <span>{text || "-"}</span>,
+    ellipsis: true
   },
   {
     title: "Status",
     dataIndex: "study_status",
-    ellipsis: true,
-    render: (text) => <span>{text || "-"}</span>,
+    ellipsis: true
   },
   {
     title: "Phase",
@@ -73,8 +72,8 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     current: 1,
     pageSize: 5,
     pageSizeOptions: ["5", "10", "20", "50", "100"],
-    sideBar: 2,
-    showFilter: false,
+    sideBar: 6,
+    showFilter: true,
     studyType: this.props.newTrial.study_type||"",
     studyPhase: this.props.newTrial.study_phase||"",
     studyStatus: "",
@@ -157,20 +156,6 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     });
   };
 
-  showFilter = () => {
-    if (this.state.showFilter) {
-      this.setState({
-        sideBar: 2,
-        showFilter: false,
-      });
-    } else {
-      this.setState({
-        sideBar: 6,
-        showFilter: true,
-      });
-    }
-  };
-
   onSelectChange = (key, v) => {
     this.setState({
       [key]: v,
@@ -232,7 +217,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     const optionOne = {
       title: {
         text: "By Sponsor",
-        x: "left",
+        x: "5%",
         y: "top",
         textStyle: {
           fontSize: 14,
@@ -294,7 +279,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     const optionTwo = {
       title: {
         text: "By Status",
-        x: "left",
+        x: "5%",
         y: "top",
         textStyle: {
           fontSize: 14,
@@ -374,18 +359,8 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     return (
       <div className="historical-trial-list">
         <Row>
-          <Col span={24} style={{ marginBottom: "10px" }}>
-            <span className="step-desc">
-              Refine the list of similar historical trials that you will use to
-              design your trial.
-            </span>
-          </Col>
-        </Row>
-        <Row>
           <Col span={this.state.sideBar} className="side-bar">
-            <FilterOutlined onClick={this.showFilter} className="filter-icon" />
-            {this.state.showFilter ? (
-              <>
+                <div className="filter-item filter-label"><span>Filters</span></div>
                 <div className="filter-item">
                   <label>STUDY PHASE</label>
                   <Select
@@ -483,22 +458,22 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                     onChange={this.handleDateChange}
                   />
                 </div>
-                <div>
+                <div className="filter-item">
                   <Button type="primary" onClick={()=>this.onFindTrials(this.state.rawData)}>
                     Find Trials
                   </Button>
                 </div>
-              </>
-            ) : null}
           </Col>
 
           <Col span={24 - this.state.sideBar} className="historical-desc">
             <Spin spinning={this.state.spinning} >
-              <div className="chart-wrapper">
-                <div className="summary-count">
-                  <h4>{this.state.data && this.state.data.length}</h4>
-                  <span className="num-desc">Total Number of Trials</span>
+              <div className="title">Similar Historical Trials</div>
+              <div className="title-desc">Refine the list of similar historical trials that you will use to design your trial.</div>
+              <div className="summary-count">
+                  {this.state.data && this.state.data.length}
+                  <span className="num-desc">&nbsp;Total Number of Trials</span>
                 </div>
+              <div className="chart-wrapper">
                 <div className="chart">
                   <ReactECharts option={this.getOptionOne()}></ReactECharts>          
                 </div>
@@ -506,35 +481,24 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                     {this.state.showStatusChart?<ReactECharts option={this.getOptionTwo()}></ReactECharts>:null}     
                 </div>
               </div>
-              {/* <Row>
-                <Col span={6} style={{ borderRight: "1px solid #ddd" }}>
-                  <h4>{this.state.data && this.state.data.length}</h4>
-                  <span className="num-desc">Total Number of Trials</span>
-                </Col>
-                <Col span={12}>
-                      
-                </Col>
-                <Col span={6}>
-                  {this.state.showStatusChart?<ReactECharts option={this.getOptionTwo()}></ReactECharts>:null}               
-                </Col>
-              </Row> */}
               <Row>
                 <Table
                   columns={columns}
                   dataSource={this.state.data}
                   pagination={{
                     position: ["bottomRight"],
+                    showTotal: (total, range) => `${range[0]}-${range[1]} of ${this.state.data.length} items`,
                     // pageSize: this.state.pageSize,
                     pageSize: 5,
                     onChange: this.changePage,
                     current: this.state.current,
                     total: this.state.data.length,
-                    // showTotal: (total, range) => `${range[0]}-${range[1]} of ${this.state.data.length} items`,
+                    
                     // showSizeChanger: true,
                     // onShowSizeChange: this.onShowSizeChange,
                     // pageSizeOptions: this.state.pageSizeOptions
                   }}
-                  sticky
+                  // sticky
                   // scroll={{y: 300}}
                   rowSelection={rowSelection}
                 />

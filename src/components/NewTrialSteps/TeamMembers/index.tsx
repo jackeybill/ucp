@@ -79,13 +79,13 @@ const TeamMembers = (props) => {
       <div className="user-list-wrapper">
         <span className="user-list-title">
           Total Users{" "}
-          <i
+          <span
             className={`count count-icon ${
               users.length > 0 ? "active-count" : "inactive-count"
             }`}
           >
             {users.length}
-          </i>
+          </span>
         </span>
         <div className="user-list">
           {users.map((u) => {

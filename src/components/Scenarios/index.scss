@@ -506,6 +506,13 @@
     color: #383A3C;
   }
 
+  .ant-btn{
+    span{
+      color: #fff;
+      font-size: 16px;
+    }
+  }
+
   span{
     font-size: 10px;
     color: #787878;
@@ -521,6 +528,7 @@
       span{
         color: #333333;
         font-size: 14px;
+        text-transform: uppercase;
       }
     }
 
@@ -529,7 +537,13 @@
       span{
         color: #fff;
         font-size: 14px;
+        text-transform: uppercase;
       }
     }
   }
+}
+
+.ant-btn:focus, .ant-btn:hover{
+  color: #fff !important;
+  background: #ca4a04 !important;
 }

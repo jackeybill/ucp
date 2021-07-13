@@ -77,8 +77,9 @@ const TrialEndpoits = (props: any) => {
       <div className="endpoints-item">
         <div className="add-box">
           <span className="endpoint-title">
-            Primary Endpoints <i className={`count count-icon ${primary.length>0?"active-count":"inactive-count"}`}>{primary.length}</i>
+            Primary Endpoints 
           </span>
+          <span className={`count count-icon ${primary.length>0?"active-count":"inactive-count"}`}>{primary.length}</span>
           <div className="add-endpoint">
             <Input
               allowClear
@@ -89,7 +90,7 @@ const TrialEndpoits = (props: any) => {
               
             />
             <Button type="primary" onClick={() => handleAdd("primary")}>
-              Add
+              ADD
             </Button>
           </div>
         </div>
@@ -103,13 +104,15 @@ const TrialEndpoits = (props: any) => {
               </div>
             );
           })}
+          <br/>
         </div>
       </div>
       <div className="endpoints-item">
         <div className="add-box">
           <span className="endpoint-title">
-            Secondary Endpoints <i className={`count count-icon ${secondary.length>0?"active-count":"inactive-count"}`}>{secondary.length}</i>
+            Secondary Endpoints
           </span>
+          <span className={`count count-icon ${secondary.length>0?"active-count":"inactive-count"}`}>{secondary.length}</span>
           <div className="add-endpoint">
             <Input
               allowClear
@@ -119,7 +122,7 @@ const TrialEndpoits = (props: any) => {
               onChange={(e) => handleChange("secondary", e)}
             />
             <Button type="primary" onClick={() => handleAdd("secondary")}>
-              Add
+            ADD
             </Button>
           </div>
         </div>
@@ -133,14 +136,15 @@ const TrialEndpoits = (props: any) => {
               </div>
             );
           })}
+          <br/>
         </div>
       </div>
       <div className="endpoints-item">
         <div className="add-box">
           <span className="endpoint-title">
             Tertiary/Exploratory Endpoints
-            <i className={`count count-icon ${tertiary.length>0?"active-count":"inactive-count"}`}>{tertiary.length}</i>
           </span>
+          <span className={`count count-icon ${tertiary.length>0?"active-count":"inactive-count"}`}>{tertiary.length}</span>
           <div className="add-endpoint">
             <Input
               allowClear
@@ -150,7 +154,7 @@ const TrialEndpoits = (props: any) => {
               onChange={(e) => handleChange("tertiary", e)}
             />
             <Button type="primary" onClick={() => handleAdd("tertiary")}>
-              Add
+            ADD
             </Button>
           </div>
         </div>
@@ -164,6 +168,7 @@ const TrialEndpoits = (props: any) => {
               </div>
             );
           })}
+          <br/>
         </div>
       </div>
     </div>
