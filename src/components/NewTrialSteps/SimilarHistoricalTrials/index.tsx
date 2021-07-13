@@ -200,8 +200,8 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         (this.state.studyStatus != "" && this.state.studyStatus != "All"
           ? d['study_status'] == this.state.studyStatus
           : true) &&
-        (this.state.indication.length != "" && this.state.indication != "All"
-          ? d.indication == this.state.indication
+        (this.state.indication.length != ""
+          ? this.state.indication.indexOf(d.indication)>-1
           : true) &&
         (this.state.pediatric != "" && this.state.pediatric != "All"
           ? d.pediatric == this.state.pediatric
@@ -445,9 +445,6 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("indication", e)}
                   >
-                    <Option value="All" key="all">
-                      All
-                    </Option>
                     {this.props.indicationList.map((o) => {
                       return (
                         <Option value={o} key={o}>
