@@ -29,7 +29,9 @@ const TrialDetails = (props) => {
           <span className="nct-id">{record["nct_id"] || "-"}</span>
           <br />
           <span className="trail-alias">{record["trial_alias"]}</span>
-          <span className="status">{record["status"] || "In Progress"}</span>
+          <span className="status">
+            <i className={`${props.record.status=="In Progress"?"in-progress-icon":'complete-icon'} my_icon`}></i>{record["status"] || "In Progress"}
+          </span>
           <br />
           <span className="update-time">
             Last updated {record["updateDate"] || record["createDate"] || "-"}
@@ -45,7 +47,7 @@ const TrialDetails = (props) => {
               </div>
             }
           >
-            <SettingOutlined />
+            <SettingOutlined className="setting-action"/>
           </Tooltip>
         </div>
       </div>
