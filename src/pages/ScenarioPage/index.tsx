@@ -1880,10 +1880,10 @@ const ScenarioPage = (props) => {
                     </>
                 ):(
                     <>
-                        <Button type="primary" className="step-btn" >
+                        <Button type="primary" className="step-btn"  onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
                             SUBMIT
                         </Button>
-                        <Button type="primary" className="step-btn" >
+                        <Button type="primary" className="step-btn"  onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
                             SAVE AND FINISH LATER
                         </Button>
                         <Button className="view-btn step-btn" onClick={() => setProcessStep(0)}>
@@ -2555,9 +2555,8 @@ const ScenarioPage = (props) => {
           placement="right"
           onClose={handleCancel}
           visible={showHistorical}
-          getContainer={false}
-          // style={{ position: 'absolute' }}
         >
+
           <Row>
           <Spin spinning={spinning}>
             <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>

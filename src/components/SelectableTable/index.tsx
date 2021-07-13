@@ -15,8 +15,7 @@ const columns = [
  {
     title: "Sponsor",
     dataIndex: "sponsor",
-    ellipsis: true,
-    render: (text) => <span>{text || "-"}</span>,
+    ellipsis: true
   },
   {
     title: 'Status',

@@ -9,6 +9,7 @@ const { TextArea } = Input;
 const initialStates = {
   scenario_id: "",
   scenario_name: "",
+  scenario_description: "",
   "Inclusion Criteria": {},
   "Exclusion Criteria": {},
   "Enrollment Feasibility": {},
@@ -59,7 +60,15 @@ const SceneriosDashbaord = (props: any) => {
         const index = tempScenarios.findIndex((e) => e['scenario_id'] === scenarioId)
         tempScenarios.splice(index, 1, scenario)
       } else {
-        tempScenarios.push(scenario)
+        tempScenarios.push({
+            scenario_id: scenario['scenario_id'],
+            scenario_name: scenario['scenario_name'],
+            scenario_description: scenario['scenario_description'],
+            "Inclusion Criteria": {},
+            "Exclusion Criteria": {},
+            "Enrollment Feasibility": {},
+            "Schedule of Events": {},
+          })
       }
 
       const tempTrial = props.record
@@ -133,7 +142,6 @@ const SceneriosDashbaord = (props: any) => {
   }
   const cancelCompleteModule = () => {
     setCompleteModuleVisible(false)
-    setScenario(props.record.scenarios)
   }
 
   const noEdit = props.record.scenarios.find(sce=>sce.rationale!=undefined)

@@ -226,6 +226,11 @@
         align-items: center;
         cursor: pointer;
         color: $theme-color;
+        text-transform: uppercase;
+
+        .anticon-left{
+          color:#CA4A04;
+        }
       }
     }
   }
