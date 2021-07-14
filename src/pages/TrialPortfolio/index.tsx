@@ -50,9 +50,9 @@ const { Step } = Steps;
 const backgroundPic = {
   background: "url(" + bgDotPic + ")",
   backgroundRepeat: "no-repeat",
-  backgroundSize: "50%",
+  backgroundSize: "45%",
   backgroundColor: "#dedede",
-  backgroundPosition: "bottom 50px right 100px",
+  backgroundPosition: "bottom 50px right 250px",
 };
 
 export const phase_options = [
@@ -425,7 +425,11 @@ const TrialPortfolio = (props) => {
           </Spin>
         </>
       ) : (
-        <>
+        <div 
+          style={{
+            background: 'url(' + bgDotPic + ') right 400px top 30px / 40% no-repeat, linear-gradient(rgb(222, 222, 222) 250px, rgb(222, 222, 222) 10px, rgb(255, 255, 255) 50px, rgb(255, 255, 255) 51px)',
+          }}
+        >
           <Breadcrumb>
             <Breadcrumb.Item
               className="homepage"
@@ -448,7 +452,7 @@ const TrialPortfolio = (props) => {
             />
               <Scenarios record={trial} updateRecord={(t)=>setTrial(t)}/>
           </div>
-        </>
+        </div>
       )}
 
       <Drawer
