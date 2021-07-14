@@ -35,6 +35,7 @@ import SimilarHistoricalTrials from '../../components/NewTrialSteps/SimilarHisto
 import Scenarios from "../../components/Scenarios";
 import TrialSummary from '../../components/NewTrialSteps/TrialSummary';
 import { getTrialList, addStudy, updateStudy, listStudy, getIndicationList, getStudy} from "../../utils/ajax-proxy";
+import bgDotPic from "../../assets/dots.svg";
 import { COUNTRY_MAP } from "../../utils/country-map";
 import { Therapeutic_Area_Map } from "../../utils/area-map";
 import addIcon from "../../assets/add.svg";
@@ -45,6 +46,15 @@ const { Search } = Input;
 const { TextArea } = Input;
 const { Option } = Select;
 const { Step } = Steps;
+
+const backgroundPic = {
+  background: "url(" + bgDotPic + ")",
+  backgroundRepeat: "no-repeat",
+  backgroundSize: "50%",
+  backgroundColor: "#dedede",
+  backgroundPosition: "bottom 50px right 100px",
+};
+
 export const phase_options = [
   "All",
   "Early Phase 1",
@@ -322,7 +332,7 @@ const TrialPortfolio = (props) => {
     <div className="trial-portfolio-container">
       {!showDetails ? (
         <>
-          <div className="upper">
+          <div className="upper" style={backgroundPic}>
             <span className="small-trial">MY TRIALS</span>
             <p className="title">Hello, {username}</p>
             <span className="sub-title">
