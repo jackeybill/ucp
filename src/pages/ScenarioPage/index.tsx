@@ -1815,12 +1815,24 @@ const ScenarioPage = (props) => {
   }
 
   const goBack = () =>{
-    setProcessStep(0)
     setSubmitType(1)
   }
 
-  const handleEventChange = (events) =>{
-    console.log(events)
+  const handleGoBack = (scheduleOfEvents) =>{
+    let newScenario = trialRecord.scenarios.find( i=> i['scenario_id'] == scenarioId)
+    newScenario['Schedule of Events'] = scheduleOfEvents
+    const newScenarioList = trialRecord.scenarios.map((item, id) =>{
+      if(item['scenario_id'] == scenarioId){
+          return newScenario
+      } else {
+          return item
+      }
+    })
+    let newTrial = trialRecord
+    newTrial.scenarios = newScenarioList
+    setTrialRecord(newTrial)
+    setProcessStep(0)
+    setSubmitType(0)
   }
   
     return (
@@ -2549,7 +2561,7 @@ const ScenarioPage = (props) => {
       </div>
 
       ) : (
-              <div className="ie-container"><ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleEventChange={handleEventChange} history={props.history}/></div>
+              <div className="ie-container"><ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} history={props.history}/></div>
       )}
       </Spin>
       <Drawer

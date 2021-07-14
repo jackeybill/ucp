@@ -33,6 +33,17 @@ const initialNumber = {
   weekNumber: 26
 }
 
+const initEventCriteria = {
+  'TotalCost': 0,
+  'CostRate': '',
+  'CostData': [],
+  'CostAvg': 0,
+  'BurdenData': [],
+  'BurdenXAxis': [],
+  'BurdenAvg': 0,
+  'Finished': false
+}
+
 const ScheduleEvents = (props) => {
 
   const [hiddeTags, setHiddeTags] = useState(true)
@@ -44,9 +55,14 @@ const ScheduleEvents = (props) => {
     { ...initialNumber }
   );
   const [weeks, setWeeks] = useState([])
-  const [minV, setMinV] = useState(50)
+  const [minV, setMinV] = useState(80)
   const [maxV, setMaxV] = useState(100)
   const [visibleSlider, setVisibleSlider] = useState(false)
+  const [finished, setFinished] = useState(false)
+  const [eventCriteria, setEventCriteria] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    { ...initEventCriteria }
+  );
 
   //Cost Per Patient Chart
   const [patientChartColor, setPatientChartColor] = useState(iChartColors)
@@ -101,7 +117,7 @@ const ScheduleEvents = (props) => {
 
   useEffect(() => {
     console.log(props.submitType)
-    if(props.submitType != 0 && props.submitType != 1){
+    if(props.submitType != 0 && !finished){
       setSubmitType(props.submitType)
     }
   },[props.submitType]);
@@ -137,9 +153,7 @@ const ScheduleEvents = (props) => {
               ['weekNumber']: eventsConfigure.Weeks[eventsConfigure.Weeks.length -1]
             });
             setWeeks(eventsConfigure.Weeks)
-            setPatientChartColor(aChartColors)
-            setShowPatientLabel(true)
-
+            
             setAddedLabs(eventsConfigure[CATEGORY_LABS].entities)
             setAddedExamination(eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities)
             setAddedQuestionnaires(eventsConfigure[CATEGORY_QUESTIONNAIRES].entities)
@@ -152,13 +166,20 @@ const ScheduleEvents = (props) => {
             setBurdenData(eventsConfigure.BurdenData)
             setBurdenXAxis(eventsConfigure.BurdenXAxis)
             setBurdenSubTitle('Average from similar\nHistorical Trials - ' + eventsConfigure.BurdenAvg)
-            setShowTooltip(true)
+            if(eventsConfigure.CostRate.length > 0){
+              setShowTooltip(true)
+              setShowPatientLabel(true)
+              setPatientChartColor(aChartColors)
+            }
+            setFinished(eventsConfigure.Finished)
 
             setFilteredLabs(filterLibs(response[CATEGORY_LABS], eventsConfigure[CATEGORY_LABS].entities, minV, maxV))
             setFilteredExamination(filterLibs(response[CATEGORY_PHYSICAL_EXAMINATION], eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities, minV, maxV))
             setFilteredProcedures(filterLibs(response[CATEGORY_PROCEDURES], eventsConfigure[CATEGORY_PROCEDURES].entities, minV, maxV))
             setFilteredQuestionnaires(filterLibs(response[CATEGORY_QUESTIONNAIRES], eventsConfigure[CATEGORY_QUESTIONNAIRES].entities, minV, maxV))
             setFilteredStudyProcedures(filterLibs(response[CATEGORY_STUDY_PROCEDURES], eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities, minV, maxV))
+          
+            setEventCriteria(eventsConfigure)
           } else {
             setFilteredLabs(filterLibs(response[CATEGORY_LABS], [], minV, maxV))
             setFilteredExamination(filterLibs(response[CATEGORY_PHYSICAL_EXAMINATION], [], minV, maxV))
@@ -441,6 +462,19 @@ const ScheduleEvents = (props) => {
   }
 
   const saveEvents = async (scheduleOfEvents) =>{
+    if(submitType === 1){
+      props.handleGoBack(Object.assign(scheduleOfEvents,{
+        'TotalCost': eventCriteria.TotalCost,
+        'CostRate': eventCriteria.CostRate,
+        'CostData': costData,
+        'CostAvg': eventCriteria.CostAvg,
+        'BurdenData': burdenData,
+        'BurdenXAxis': burdenXAxis,
+        'BurdenAvg': eventCriteria.BurdenAvg,
+        'Finished': eventCriteria.Finished
+      }))
+      return;
+    }
     console.log("save action")
     setPatientChartColor(aChartColors)
     setShowPatientLabel(true)
@@ -539,9 +573,10 @@ const ScheduleEvents = (props) => {
       'CostAvg': formatCostAvg(totalCost, 5000),
       'BurdenData': tempBurdenData,
       'BurdenXAxis': tempBurdenXAxis,
-      'BurdenAvg': formatBurdenAvg(totalCost, numbers.visitNumber)
+      'BurdenAvg': formatBurdenAvg(totalCost, numbers.visitNumber),
+      'Finished': submitType === 3 ? true : false
     })
-
+    setEventCriteria(newScenario['Schedule of Events'])
     const newScenarioList = props.record.scenarios.map((item, id) =>{
       if(item['scenario_id'] == props.scenarioId){
           return newScenario
@@ -777,7 +812,7 @@ const ScheduleEvents = (props) => {
   }
 
   return (
-    <div className="tab-container">
+    <div className={`tab-container ${finished ? 'none-click' : ''}`}>
       <div className={`side-toolbar ${eventLib > 0 ? 'hidden' : ''}`} onClick={()=> setEventLib(6)}>
         <div className="panel-label">Event Library</div>
         <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
