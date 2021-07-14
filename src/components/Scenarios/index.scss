@@ -131,12 +131,15 @@
                 font-size: 22px;
                 color:#333333;
               }
-              p:hover, p:focus{
-                color: #CA4A04;
-              }
               span {
                 font-size: 14px;
                 color: #999999;
+              }
+            }
+
+            .title:hover, .title:focus {
+              p{
+                color: #CA4A04;
               }
             }
 
@@ -199,6 +202,12 @@
           width: 150px;
           font-size: 16px;
           color: #333333;
+
+          .material-info{
+            transform: translateY(-3px);
+            font-size: 14px;
+            color: #000000;
+          }
         }
 
         .item-values.average {

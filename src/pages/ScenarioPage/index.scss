@@ -490,9 +490,7 @@
                     margin-top: 10px;
 
                     .chart-tab{
-                        border: 2px solid #f5f5f5;
-                        border-radius: 7px;
-                        box-shadow: #f5f5f5 1px 1px 1px 1px;
+                        box-shadow: 0px 1px 3px #31393F33;
 
                         .tab-item{
                             padding:10px;
@@ -519,16 +517,15 @@
                     }
 
                     .chart-tab.active{
-                        border: 3px solid #CA4A04;
+                        border: 2px solid #CA4A04;
+                        box-shadow: 0px 0px 11px #31393F33;
                     }
                 }
 
                 .result-chart{
                     margin-top:20px;
                     margin-bottom: 20px;
-                    border: 2px solid #f5f5f5;
-                    border-radius: 7px;
-                    box-shadow: #f5f5f5 1px 1px 1px 1px;
+                    box-shadow: 0px 1px 5px #31393F33;
                 }
             }
         }

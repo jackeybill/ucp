@@ -1,6 +1,7 @@
 import React, { useState, useReducer,useEffect } from "react";
 import { withRouter } from "react-router";
-import { Tooltip,Button, Row, Col, Input, Drawer, Radio } from "antd";
+import { Button, Row, Col, Input, Drawer, Radio } from "antd";
+import { InfoCircleOutlined} from "@ant-design/icons";
 import { updateStudy,getStudy  } from "../../utils/ajax-proxy";
 import "./index.scss";
 
@@ -275,7 +276,7 @@ const SceneriosDashbaord = (props: any) => {
               <div className="item-wrapper average-item">
                 <div className="scenario-item">
                   <div className="title average-title">
-                    Average from Similar Historical Trials
+                    Average from Similar Historical Trials &nbsp;<InfoCircleOutlined className="material-info"/>
                   </div>
                   <div className="item-values average">
                     <div>{props.record['Therapeutic Area Average'].protocol_amendment_rate }</div>
