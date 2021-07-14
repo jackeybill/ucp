@@ -79,14 +79,12 @@ const ScenarioPage = (props) => {
     );
 
     const [scenarioId, setScenarioId] = useState('')
-    // const [scenario, setScenario] = useState({})
     const [editFlag, setEditFlag] = useState(false)
     const [scenarioType, setScenarioType] = useState('')
     const [activeEnrollmentTabKey, setActiveEnrollmentTabKey] = useState('1')
     const [activeTabKey, setActiveTabKey] = useState('1')
     const [processStep, setProcessStep] = useState(0)
-    // const [activeTabKey, setActiveTabKey] = useState('3')
-    // const [processStep, setProcessStep] = useState(1)
+    const [submitType, setSubmitType] = useState(0)
     const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState([])
     const [spinning, setSpinning] = useState(false)
     const [showChartLabel, setShowChartLabel] = useState(false)
@@ -116,8 +114,8 @@ const ScenarioPage = (props) => {
     //For inclusion chart data display
     const [protocolRateData, setProtocolRateData] = useState(defaultChartValue)
     const [screenRateData, setScreenRateData] = useState(defaultChartValue)
-    const [therapeutic_Amend_Avg, setTherapeutic_Amend_Avg] = useState('Therapeutic Area Average - 40%')
-    const [therapeutic_Screen_Avg, setTherapeutic_Screen_Avg] = useState('Therapeutic Area Average - 35%')
+    const [therapeutic_Amend_Avg, setTherapeutic_Amend_Avg] = useState('')
+    const [therapeutic_Screen_Avg, setTherapeutic_Screen_Avg] = useState('')
     const [impactColors, setImpactColors] = useState(inActiveChartColors)
     const [amend_avg_rate, setAmend_avg_rate] = useState('')
     const [screen_avg_rate, setScreen_avg_rate] = useState('')
@@ -251,9 +249,6 @@ const ScenarioPage = (props) => {
             
                     var tempScoreA = ''
                     var tempScoreB = ''
-                    if(tempRecord['Therapeutic Area Average']){
-                        // setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
-                        // setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
                         
                         var score = formatNumber(tempScenario.protocol_amendment_rate)
                         if(score <= 33){
@@ -275,7 +270,6 @@ const ScenarioPage = (props) => {
 
                         setAmend_avg_rate(tempScoreA)
                         setScreen_avg_rate(tempScoreB)
-                    }
 
                     //Get exclusion chart info
                     var exclu = tempScenario["Exclusion Criteria"]
@@ -293,16 +287,19 @@ const ScenarioPage = (props) => {
                         {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
                     ])
             
-                    if(tempRecord['Therapeutic Area Average']){
-                        // setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
-                        // setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
                         setExcluAmend_avg_rate(tempScoreA)
                         setExcluScreen_avg_rate(tempScoreB)
-                    }
 
                     setShowChartLabel(true)
                     setImpactColors(activeChartColors)
                     setExcluImpactColors(activeChartColors)
+                }
+                
+                if(tempRecord['Therapeutic Area Average']){
+                  setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
+                  setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
+                  setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
+                  setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
                 }
                 
                 if(tempEditFlag){
@@ -1597,9 +1594,6 @@ const ScenarioPage = (props) => {
   
         var tempScoreA = ''
         var tempScoreB = ''
-        if(resp.body['Therapeutic Area Average']){
-          // setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
-          // setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
 
           var score = formatNumber(currentScenario.protocol_amendment_rate)
           if(score <= 33){
@@ -1621,7 +1615,6 @@ const ScenarioPage = (props) => {
 
           setAmend_avg_rate(tempScoreA)
           setScreen_avg_rate(tempScoreB)
-        }
 
         //Get exclusion chart info
         var exclu = currentScenario["Exclusion Criteria"]
@@ -1638,12 +1631,13 @@ const ScenarioPage = (props) => {
           {value: formatNumber(exclu.Demographics.screen_failure_rate), name: 'Demographics'},
           {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
         ])
-  
-        if(resp.body['Therapeutic Area Average']){
-          // setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].protocol_amendment_rate)
-          // setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + resp.body['Therapeutic Area Average'].screen_failure_rate)
           setExcluAmend_avg_rate(tempScoreA)
           setExcluScreen_avg_rate(tempScoreB)
+        if(currentScenario['Therapeutic Area Average']){
+          setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].protocol_amendment_rate)
+          setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].screen_failure_rate)
+          setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].protocol_amendment_rate)
+          setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].screen_failure_rate)
         }
   
         setShowChartLabel(true)
@@ -1819,6 +1813,15 @@ const ScenarioPage = (props) => {
       setExcluDefaultActiveKey(['2'])
     }
   }
+
+  const goBack = () =>{
+    setProcessStep(0)
+    setSubmitType(1)
+  }
+
+  const handleEventChange = (events) =>{
+    console.log(events)
+  }
   
     return (
     <div className="scenario-container">
@@ -1845,7 +1848,6 @@ const ScenarioPage = (props) => {
                 </Col>
                 </Row>
             </Col>
-            {/* <Col span={1} style={{borderLeft: '1.5px solid #c4bfbf'}}/> */}
             <Col span={8} style={{paddingLeft: '10px'}}>
                 <Steps progressDot current={processStep} size="small" >
                     <Step title="Add Inclusion / Exclusion Criteria"/>
@@ -1880,13 +1882,13 @@ const ScenarioPage = (props) => {
                     </>
                 ):(
                     <>
-                        <Button type="primary" className="step-btn"  onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
+                        <Button type="primary" className="step-btn"  onClick={()=> setSubmitType(3)}>
                             SUBMIT
                         </Button>
-                        <Button type="primary" className="step-btn"  onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
+                        <Button type="primary" className="step-btn"  onClick={()=> setSubmitType(2)}>
                             SAVE AND FINISH LATER
                         </Button>
-                        <Button className="view-btn step-btn" onClick={() => setProcessStep(0)}>
+                        <Button className="view-btn step-btn" onClick={() => goBack()}>
                             PREV:ENROLLMENT FEASIBILITY
                         </Button>
                     </>
@@ -1902,7 +1904,7 @@ const ScenarioPage = (props) => {
             <Col span={17}>
               <div style={{ bottom: '0',height: '50px' }}></div>
             </Col>
-            <Col span={7}>
+            <Col span={7} style={{paddingRight: '20px'}}>
               <Dropdown.Button style={{zIndex: 1}}
                 overlay={
                   <Menu>
@@ -2547,7 +2549,7 @@ const ScenarioPage = (props) => {
       </div>
 
       ) : (
-              <div className="ie-container"><ScheduleEvents record={trialRecord} editFlag={editFlag} scenarioId={scenarioId}/></div>
+              <div className="ie-container"><ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleEventChange={handleEventChange} history={props.history}/></div>
       )}
       </Spin>
       <Drawer

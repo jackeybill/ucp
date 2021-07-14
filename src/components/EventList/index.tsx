@@ -152,6 +152,12 @@ const EventList = (props) => {
     getVisits()
   }, [visitNumber,weekNumber])
 
+  useEffect(() => {
+    if(props.submitType != 0){
+      onSave()
+    }
+  }, [props.submitType])
+
 
 
   const onEndpointChange = (value, evt,idx) => {

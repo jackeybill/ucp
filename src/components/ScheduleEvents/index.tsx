@@ -60,6 +60,7 @@ const ScheduleEvents = (props) => {
   const [burdenSubTitle, setBurdenSubTitle] = useState('')
   const [burdenXAxis, setBurdenXAxis] = useState(['1', '2', '3', '4', '5', '6', '7', '8', '9'])
   const [showTooltip, setShowTooltip] = useState(false)
+  const [submitType, setSubmitType] = useState(0)
 
   //Event Libs
   //Original data from backend
@@ -97,6 +98,13 @@ const ScheduleEvents = (props) => {
 
   function excluCallback(key) {
   }
+
+  useEffect(() => {
+    console.log(props.submitType)
+    if(props.submitType != 0 && props.submitType != 1){
+      setSubmitType(props.submitType)
+    }
+  },[props.submitType]);
 
   useEffect(() => {
     console.log(props.record)
@@ -548,6 +556,9 @@ const ScheduleEvents = (props) => {
     const resp = await updateStudy(newTrial)
     if (resp.statusCode == 200) {
       message.success('Save successfully')
+      if(submitType != 0){
+        props.history.push({pathname: '/trials', state: {trial_id: props.record['_id']}})
+      }
     }
   }
 
@@ -987,6 +998,8 @@ const ScheduleEvents = (props) => {
                       procedures={addedProcedures}
                       questionnaire={addedQuestionnaires}
                       studyProcedures={addedStudyProcedures}
+                      weeks={weeks}
+                      submitType={submitType}
                     />
                 </div>
               </Col>
