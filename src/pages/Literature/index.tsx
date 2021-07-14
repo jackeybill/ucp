@@ -23,9 +23,9 @@ interface literatureIF {
 
 const { Panel } = Collapse;
 const source = [
-  "www.ema.europe.eu",
-  "www.accessdata.fda.gov",
-  "dailymed.nim.nih.gov",
+  "Database-1",
+  "Database-2",
+  "Database-3",
 ];
 
 const mockData = [
@@ -35,7 +35,7 @@ const mockData = [
     drugNames:'',
     title: "208119.pdf",
     text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, insulin do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    articleSource: "www.ema.europe.eu",
+    articleSource: "Database-1",
   },
   {
     fileTypes:"pdf",
@@ -43,7 +43,7 @@ const mockData = [
     drugNames:'',
     title: "208120.pdf",
     text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, insulin do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    articleSource: "www.ema.europe.eu",
+    articleSource: "Database-1",
   },
   {
     fileTypes:"txt",
@@ -51,7 +51,7 @@ const mockData = [
     drugNames:'',
     title: "208121.txt",
     text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, insulin do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    articleSource: "dailymed.nim.nih.gov",
+    articleSource: "Database-3",
   },
   {
     fileTypes:"txt",
@@ -59,7 +59,7 @@ const mockData = [
     drugNames:'',
     title: "208122.txt",
     text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, insulin do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    articleSource: "dailymed.nim.nih.gov",
+    articleSource: "Database-3",
   },
   {
     fileTypes:"pdf",
@@ -67,7 +67,7 @@ const mockData = [
     drugNames:'',
     title: "208127.pdf",
     text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, insulin do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    articleSource: "www.ema.europe.eu",
+    articleSource: "Database-1",
   },
   {
     fileTypes:"docx",
@@ -76,7 +76,7 @@ const mockData = [
     
     title: "208123.docx",
     text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, insulin do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    articleSourcee: "www.accessdata.fda.gov",
+    articleSourcee: "Database-2",
   },
   {
     fileTypes:"pdf",
@@ -84,7 +84,7 @@ const mockData = [
     drugNames:'',
     title: "208124.pdf",
     text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, insulin do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    articleSource: "www.accessdata.fda.gov",
+    articleSource: "Database-2",
   },
   {
     fileTypes:"docx",
@@ -92,7 +92,7 @@ const mockData = [
     drugNames:'',
     title: "208125.docx",
     text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, insulin do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    articleSource: "www.ema.europe.eu",
+    articleSource: "Database-1",
   },
   {
     fileTypes:"docx",
@@ -100,14 +100,14 @@ const mockData = [
     drugNames:'',
     title: "208126.docx",
     text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, insulin do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    articleSource: "www.ema.europe.eu",
+    articleSource: "Database-1",
   },
 ];
 
 const paginationOptions = [10, 20, 30, 40, 50];
 const fileTypes = ["pdf", "docx", "txt"];
-const drugNames = ["drug1", "drug2"];
-const products = ["product1", "product2"];
+const drugNames = ["a week ago", "last month"];
+const products = ["MySQL", "Dynamo DB"];
 const initialFilters = {
   articleSource: [],
   fileTypes: [],
@@ -209,26 +209,27 @@ const Literature = (props:any) => {
         <div className="sidebar">
           <div className="filter-by">Filter by</div>
           <div className="filter-item">
+
             <Collapse defaultActiveKey={["1"]} expandIconPosition="right">
-              <Panel header="Article Source" key="1">
+              <Panel header="Database Name" key="1">
                 <Checkbox.Group
                   options={source}
                   onChange={(e) => onCheckChange(e, "articleSource")}
                 />
               </Panel>
-              <Panel header="File Type" key="fileTypes">
+              <Panel header="Content Type" key="fileTypes">
                 <Checkbox.Group
                   options={fileTypes}
                   onChange={(e) => onCheckChange(e, "fileTypes")}
                 />
               </Panel>
-              <Panel header="Product Type" key="productTypes">
+              <Panel header="Database Type" key="productTypes">
                 <Checkbox.Group
                   options={products}
                   onChange={(e) => onCheckChange(e, "productTypes")}
                 />
               </Panel>
-              <Panel header="Drug Name" key="drugNames">
+              <Panel header="Last Updated" key="drugNames">
                 <Checkbox.Group
                   options={drugNames}
                   onChange={(e) => onCheckChange(e, "drugNames")}
