@@ -278,10 +278,10 @@ const SceneriosDashbaord = (props: any) => {
                     Average from Similar Historical Trials
                   </div>
                   <div className="item-values average">
-                    <div>40%</div>
-                    <div>35%</div>
-                    <div>40</div>
-                    <div>$15-20M</div>
+                    <div>{props.record['Therapeutic Area Average'].protocol_amendment_rate }</div>
+                    <div>{props.record['Therapeutic Area Average'].screen_failure_rate }</div>
+                    <div>{props.record['Therapeutic Area Average'].patient_burden }</div>
+                    <div>{props.record['Therapeutic Area Average'].cost}</div>
                     <div></div>
                   </div>
                 </div>
