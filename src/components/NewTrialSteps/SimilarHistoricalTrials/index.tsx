@@ -364,7 +364,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 <div className="filter-item">
                   <label>STUDY PHASE</label>
                   <Select
-                    value={this.state.studyPhase}
+                    value={this.state.studyPhase||"All"}
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("studyPhase", e)}
                   >
@@ -381,7 +381,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 <div className="filter-item">
                   <label>STUDY TYPE</label>
                   <Select
-                    value={this.state.studyType}
+                    value={this.state.studyType||"All"}
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("studyType", e)}
                   >
@@ -397,7 +397,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 <div className="filter-item">
                   <label>STUDY STATUS</label>
                   <Select
-                    value={this.state.studyStatus}
+                    value={this.state.studyStatus||"All"}
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("studyStatus", e)}
                   >
@@ -416,7 +416,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                   <Select
                     mode="multiple"
                     allowClear
-                    value={this.state.indication}
+                    value={this.state.indication.length==0?this.props.indicationList:this.state.indication}
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("indication", e)}
                   >
@@ -432,7 +432,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 <div className="filter-item">
                   <label>PEDIATRIC</label>
                   <Select
-                    value={this.state.pediatric}
+                    value={this.state.pediatric||"All"}
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("pediatric", e)}
                   >

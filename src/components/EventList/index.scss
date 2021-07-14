@@ -108,12 +108,39 @@
         flex: 1.5;
         font-size: 14px;
 
+        .custom-event{
+          padding:0 5px;
+          display: flex;
+          align-items: center;
+          
+          .ant-input{
+            margin-left: 5px;
+          }
+
+          .anticon{
+            color:$theme-color;
+            cursor: pointer;
+          }
+        }
+
+
+        .cost-td{
+          display: flex;
+          align-items: center;
+
+          .ant-input{
+            margin-right: 2px;
+          }
+        }
+
         div {
           flex: 1;
           padding-left: 10px;
           &.endpoint-td {
             overflow: hidden;
             padding: 0 2px;
+            display: flex;
+            align-items: center;
             .ant-select {
               padding-left: 0;
             }
@@ -169,6 +196,8 @@
           color:#333333;
           .add-event {
             cursor: pointer;
+            font-size: 14px;
+            color: #333333;
             font-weight: 400;
             display: inline-block;
             padding: 0 5px;

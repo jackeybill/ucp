@@ -126,8 +126,12 @@ const SceneriosDashbaord = (props: any) => {
   }
 
   const handleCompleteModule = async() => {
+    const isValidate = scenarioList.findIndex(s=>s.hasOwnProperty("rationale")&&s.rationale !="")>-1?true:false
+    if(!isValidate) return false
+
     const tempTrial =JSON.parse(JSON.stringify(props.record)) 
     tempTrial.scenarios = scenarioList
+    tempTrial.status="Completed"
     const trialId=tempTrial["_id"]
     
     const resp = await updateStudy(tempTrial);
@@ -146,6 +150,7 @@ const SceneriosDashbaord = (props: any) => {
   }
 
   const noEdit = props.record.scenarios.find(sce=>sce.rationale!=undefined)
+  console.log( props.record)
   return (
     <div className="scenarios-container">
       <div className="container-top">What would you like to explore today?</div>
@@ -160,23 +165,29 @@ const SceneriosDashbaord = (props: any) => {
               </span>
             </div>
             {props.record.scenarios && props.record.scenarios.length > 0 ? (
-              <div>
-                <Button
-                  size="small"
-                  className="complete-module-btn"
-                  type="link"
-                  onClick={() => showCompleteModule("Protocol Design")}
-                >
-                  COMPLETE MODULE
-                </Button>
-                <Button
-                  size="small"                 
-                  danger
-                  onClick={() => addNewScenario("Protocol Design")}
-                >
-                  CREATE SCENARIO
-                </Button>
-              </div>
+              <>
+              {
+                (props.record.scenarios.findIndex(s=>s.hasOwnProperty("rationale") && s['rationale'] != "")<0 || props.record.status!="Completed") &&(
+                  <div>
+                  <Button
+                    size="small"
+                    className="complete-module-btn"
+                    type="link"
+                    onClick={() => showCompleteModule("Protocol Design")}
+                  >
+                    COMPLETE MODULE
+                  </Button>
+                  <Button
+                    size="small"                 
+                    danger
+                    onClick={() => addNewScenario("Protocol Design")}
+                  >
+                    CREATE SCENARIO
+                  </Button>
+                </div>
+                )
+              }
+              </>
             ) : (
               <Button
                 size="small"
@@ -366,6 +377,7 @@ const SceneriosDashbaord = (props: any) => {
             type="primary"
             className="submit-complete-btn"
             onClick={handleCompleteModule}
+            disabled={scenarioList.findIndex(s=>s.hasOwnProperty('rationale')&& s.rationale!="")<0}
           >
             COMPLETE MODULE
           </Button>,

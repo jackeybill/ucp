@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Button, Collapse, Select, Input, message, } from "antd";
 import { withRouter } from 'react-router';
-import { CheckCircleFilled, CheckCircleTwoTone,CaretUpOutlined,CaretDownOutlined } from "@ant-design/icons";
-import { updateStudy,getStudy } from '../../utils/ajax-proxy';
+import { CheckCircleFilled, CheckCircleTwoTone,CaretUpOutlined,CaretDownOutlined,MinusCircleOutlined} from "@ant-design/icons";
+import { updateStudy,getStudy, } from '../../utils/ajax-proxy';
 import "./index.scss";
 
 const { Panel } = Collapse;
@@ -28,6 +28,8 @@ const EventList = (props) => {
   const { visitNumber, weekNumber } = props.numbers;
   const [sort,setSort] = useState("")
   const [weeks, setWeeks] = useState([])
+  const [visits, setVisits] = useState([])
+  const [expandKeys, setExpandKeys] = useState(["1"])
   let [labs, setLabs] = useState(props.labs||[]);
   let [examination, setExamination] = useState(props.examination||[])
   let [procedures, setProcedures] = useState(props.procedures||[])
@@ -133,8 +135,21 @@ const EventList = (props) => {
     weeks,
   ]);
 
+  const getInitCodition = () =>{
+    let initCodition = [];
+    visits.forEach((e, idx) => {
+      initCodition.push({
+          visits: e,
+          weeks: weeks[idx],
+          checked: false,
+        });
+      });
+      return initCodition
+  }
+
   useEffect(() => {
     getWeeks()
+    getVisits()
   }, [visitNumber,weekNumber])
 
 
@@ -173,7 +188,7 @@ const EventList = (props) => {
         tmpCategories[idx].endpoint = value;
         setLabs(tmpCategories)
     }
-    props.handleEventChange(evt,false)
+    // props.handleEventChange(evt,evt.Custom)
   }
 
   const toggleChecked = (evt, idx) => {
@@ -224,7 +239,7 @@ const EventList = (props) => {
       
       default:
     }
-    props.handleEventChange(evt,false)
+    // props.handleEventChange(evt,false)
   };
 
   const renderVisit = () => {
@@ -249,6 +264,14 @@ const EventList = (props) => {
     }
     setWeeks(weeksArr)
   };
+
+  const getVisits = () =>{
+    let visitArr = [];
+    for (let i = 0; i <= visitNumber-1; i++) {
+      visitArr.push(i+1)
+    }
+    setVisits(visitArr)
+  }
 
   const endpointsSelector = (evt,idx) => {
     return (
@@ -295,6 +318,164 @@ const EventList = (props) => {
     return 0
   }
 
+  const onAddEvent = (e,key) =>{
+    e.stopPropagation();
+    let temp;
+    let expandPanel=expandKeys.slice(0)
+    let initCodition=getInitCodition()
+    switch (key){
+      case LABS:
+        expandPanel.push("1")   
+        temp=labs.slice(0)
+        temp.push({
+          "Standard Event": "",
+          "Categories": LABS,
+          "Count": 0,
+          "Dummy Cost": 0,          
+          "condition":initCodition,
+          "nct_id":[],
+          "Custom":true
+        })
+        
+        setLabs(temp)
+        break;
+
+      case PHYSICAL_EXAMINATION:
+        expandPanel.push("2")
+        temp=examination.slice(0)
+        temp.push({
+          "Standard Event": "",
+          "Categories": PHYSICAL_EXAMINATION,
+          "Count": 0,
+          "Dummy Cost": 0,          
+          "condition":initCodition,
+          "nct_id":[],
+          "Custom":true
+        })
+        setExamination(temp)
+        break;
+
+      case PROCEDURES:
+        expandPanel.push("3")
+        temp=procedures.slice(0)
+        temp.push({
+          "Standard Event": "",
+          "Categories": PROCEDURES,
+          "Count": 0,
+          "Dummy Cost": 0,          
+          "condition":initCodition,
+          "nct_id":[],
+          "Custom":true
+        })
+        setProcedures(temp)
+        break;
+
+      case QUESTIONNAIRES:
+        expandPanel.push("4")
+        temp=questionnaire.slice(0)
+        temp.push({
+          "Standard Event": "",
+          "Categories": QUESTIONNAIRES,
+          "Count": 0,
+          "Dummy Cost": 0,          
+          "condition":initCodition,
+          "nct_id":[],
+          "Custom":true
+        })
+        setQuestionnaire(temp)
+        break;
+
+      case STUDY_PROCEDURES:
+        expandPanel.push("5")
+        temp=studyProcedures.slice(0)
+        temp.push({
+          "Standard Event": "",
+          "Categories": STUDY_PROCEDURES,
+          "Count": 0,
+          "Dummy Cost": 0,          
+          "condition":initCodition,
+          "nct_id":[],
+          "Custom":true
+        })
+        setStudyProcedures(temp)
+        break;
+        default:
+        
+      }
+      expandPanel = Array.from(new Set(expandPanel))
+      setExpandKeys(expandPanel)
+  }
+
+  const onCustomEventNameChange = (e,category, idx,key)=>{
+    let temp;
+    const value = e.target.value;
+    switch (category){
+      case LABS:
+        temp=labs.slice(0)
+        temp[idx][key] = value  
+        setLabs(temp)
+        break;
+
+      case PHYSICAL_EXAMINATION:
+        temp=examination.slice(0)
+        temp[idx][key] = value  
+        setExamination(temp)
+        break;
+
+      case PROCEDURES:
+        temp=procedures.slice(0)
+        temp[idx][key] = value  
+        setProcedures(temp)
+        break;
+
+      case QUESTIONNAIRES:
+        temp=questionnaire.slice(0)
+        temp[idx][key] = value  
+        setQuestionnaire(temp)
+        break;
+
+      case STUDY_PROCEDURES:
+        temp=studyProcedures.slice(0)
+        temp[idx][key] = value  
+        setStudyProcedures(temp)
+        break;
+      }
+  }
+  const onRemoveCustomEvent=(category,idx) =>{
+    let temp;
+    switch (category){
+      case LABS:
+        temp=labs.slice(0)
+        temp.splice(idx,1)
+        setLabs(temp)
+        break;
+
+        case PHYSICAL_EXAMINATION:
+          temp=examination.slice(0)
+          temp.splice(idx,1)
+          setExamination(temp)
+          break;
+  
+        case PROCEDURES:
+          temp=procedures.slice(0)
+          temp.splice(idx,1)
+          setProcedures(temp)
+          break;
+  
+        case QUESTIONNAIRES:
+          temp=questionnaire.slice(0)
+          temp.splice(idx,1)
+          setQuestionnaire(temp)
+          break;
+  
+        case STUDY_PROCEDURES:
+          temp=studyProcedures.slice(0)
+          temp.splice(idx,1)
+          setStudyProcedures(temp)
+          break;
+      }
+  }
+
   const onSave = async () => {
     const scheduleOfEvents = {
       "Labs": {
@@ -321,6 +502,10 @@ const EventList = (props) => {
       "Visits": visitNumber
     }
     props.saveEvents(scheduleOfEvents)
+  }
+
+  function callback(key) {
+    setExpandKeys(key)
   }
 
   return (
@@ -366,13 +551,13 @@ const EventList = (props) => {
             </div>
           </div>
         </div>
-        <Collapse defaultActiveKey={["1"]}>
+        <Collapse defaultActiveKey={["1"]} activeKey={expandKeys}  onChange={callback}>
           <Panel
             header={
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${LABS} (${labs.length})`}
+                    {`${LABS} (${labs.length})`} <span className="add-event" onClick={(e)=>onAddEvent(e,LABS)}>Add Event</span>
                   </div>
                   <div className="cost">
                     $ {getTotalCost(labs)}
@@ -394,14 +579,22 @@ const EventList = (props) => {
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
-                      <div className="my-event-td td f-2">
-                        {evt["Standard Event"]}
+                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
+                        {
+                          !evt.Custom?evt["Standard Event"]:(
+                            <>
+                              <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(LABS,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,LABS,idx,"Standard Event")} />
+                            </>
+                          )                       
+                        }            
                       </div>
                       <div className="endpoint-td td f-2">
                         {endpointsSelector(evt,idx)}
                       </div>
                       <div className="cost-td td f-1-small">
-                        ${evt["Dummy Cost"]}
+                        ${
+                          !evt.Custom?evt["Dummy Cost"]:<Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,LABS,idx,"Dummy Cost")} />
+                        } 
                       </div>
                       <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
@@ -435,7 +628,7 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${PHYSICAL_EXAMINATION} (${examination.length})`}
+                    {`${PHYSICAL_EXAMINATION} (${examination.length})`} <span className="add-event" onClick={(e)=>onAddEvent(e,PHYSICAL_EXAMINATION)}>Add Event</span>
                   </div>
                   <div className="cost">
                     $ {getTotalCost(examination)}
@@ -457,14 +650,22 @@ const EventList = (props) => {
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
-                      <div className="my-event-td td f-2">
-                        {evt["Standard Event"]}
+                      <div className={`${evt.Custom?"custom-event":""} my-event-td td f-2`}>
+                      {
+                          !evt.Custom?evt["Standard Event"]:(
+                            <>
+                              <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(PHYSICAL_EXAMINATION,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,PHYSICAL_EXAMINATION,idx,"Standard Event")} />
+                            </>
+                          )                       
+                        }    
                       </div>
                       <div className="endpoint-td td f-2">
                         {endpointsSelector(evt,idx)}
                       </div>
                       <div className="cost-td td f-1-small">
-                        ${evt["Dummy Cost"]}
+                      ${
+                          !evt.Custom?evt["Dummy Cost"]:<Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,PHYSICAL_EXAMINATION,idx,"Dummy Cost")} />
+                        } 
                       </div>
                       <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
@@ -498,7 +699,7 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${PROCEDURES} (${procedures.length})`}
+                    {`${PROCEDURES} (${procedures.length})`} <span className="add-event" onClick={(e)=>onAddEvent(e,PROCEDURES)}>Add Event</span>
                   </div>
                   <div className="cost">
                      $ {getTotalCost(procedures)}
@@ -520,14 +721,22 @@ const EventList = (props) => {
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
-                      <div className="my-event-td td f-2">
-                        {evt["Standard Event"]}
+                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
+                      {
+                          !evt.Custom?evt["Standard Event"]:(
+                            <>
+                              <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(PROCEDURES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,PROCEDURES,idx,"Standard Event")} />
+                            </>
+                          )                       
+                        }    
                       </div>
                       <div className="endpoint-td td f-2">
                         {endpointsSelector(evt,idx)}
                       </div>
                       <div className="cost-td td f-1-small">
-                        ${evt["Dummy Cost"]}
+                      ${
+                          !evt.Custom?evt["Dummy Cost"]:<Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,PROCEDURES,idx,"Dummy Cost")} />
+                        } 
                       </div>
                       <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
@@ -561,7 +770,7 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${QUESTIONNAIRES} (${questionnaire.length})`}
+                    {`${QUESTIONNAIRES} (${questionnaire.length})`} <span className="add-event" onClick={(e)=>onAddEvent(e,QUESTIONNAIRES)}>Add Event</span>
                   </div>
                   <div className="cost">
                      $ {getTotalCost(questionnaire)}                 
@@ -583,14 +792,22 @@ const EventList = (props) => {
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
-                      <div className="my-event-td td f-2">
-                        {evt["Standard Event"]}
+                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
+                      {
+                          !evt.Custom?evt["Standard Event"]:(
+                            <>
+                              <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(QUESTIONNAIRES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,QUESTIONNAIRES,idx,"Standard Event")} />
+                            </>
+                          )                       
+                        }    
                       </div>
                       <div className="endpoint-td td f-2">
                         {endpointsSelector(evt,idx)}
                       </div>
                       <div className="cost-td td f-1-small">
-                        ${evt["Dummy Cost"]}
+                      ${
+                          !evt.Custom?evt["Dummy Cost"]:<Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,QUESTIONNAIRES,idx,"Dummy Cost")} />
+                        } 
                       </div>
                       <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
@@ -624,7 +841,7 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${STUDY_PROCEDURES} (${studyProcedures.length})`}
+                    {`${STUDY_PROCEDURES} (${studyProcedures.length})`} <span className="add-event" onClick={(e)=>onAddEvent(e,STUDY_PROCEDURES)}>Add Event</span>
                   </div>
                   <div className="cost">
                    $ {getTotalCost(studyProcedures)}   
@@ -646,14 +863,22 @@ const EventList = (props) => {
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
-                      <div className="my-event-td td f-2">
-                        {evt["Standard Event"]}
+                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
+                      {
+                          !evt.Custom?evt["Standard Event"]:(
+                            <>
+                              <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(STUDY_PROCEDURES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,STUDY_PROCEDURES,idx,"Standard Event")} />
+                            </>
+                          )                       
+                        }   
                       </div>
                       <div className="endpoint-td td f-2">
                        {endpointsSelector(evt,idx)}
                       </div>
                       <div className="cost-td td f-1-small">
-                        ${evt["Dummy Cost"]}
+                      ${
+                          !evt.Custom?evt["Dummy Cost"]:<Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,STUDY_PROCEDURES,idx,"Dummy Cost")} />
+                        } 
                       </div>
                       <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
