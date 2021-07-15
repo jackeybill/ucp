@@ -201,20 +201,23 @@
         text-align: center;
       }
       }
+      .key-word-in-first-column {
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
       mark {
         position: relative;
         display: inline-block;
         vertical-align: text-top;
         margin-top: -5px;
         margin-left: -2px;
-        span {
-          white-space: nowrap;
-        }
     
         .key-word {
           font-size: 12px;
           font-weight: 600;
           border-color: #9EDB85;
+          white-space: nowrap;
         }
         .LABS {
           border-color:$LABS!important;

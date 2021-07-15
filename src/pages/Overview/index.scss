@@ -89,6 +89,9 @@
       }
     }
   }
+  .ant-table-column-sorter-up.active, .ant-table-column-sorter-down.active {
+    color: #d04a02;
+}
 }
 
 .ant-drawer.upload-drawer {
