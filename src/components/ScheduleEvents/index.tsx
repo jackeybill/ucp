@@ -485,7 +485,9 @@ const ScheduleEvents = (props) => {
       tempBurdenXAxis.push((i+1)+'')
     }
 
+    let labeTotalCost = 0
     for(const a in scheduleOfEvents[CATEGORY_LABS].entities) {
+      labeTotalCost += Number(scheduleOfEvents[CATEGORY_LABS].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_LABS].entities[a].totalVisit
       if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length; b ++){
           if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition[b].checked){
@@ -495,7 +497,9 @@ const ScheduleEvents = (props) => {
       }
     }
 
+    let examinationTotalCost = 0
     for(const a in scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities) {
+      examinationTotalCost += Number(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].totalVisit
       if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length; b ++){
           if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition[b].checked){
@@ -505,7 +509,9 @@ const ScheduleEvents = (props) => {
       }
     }
 
+    let proceduresTotalCost = 0
     for(const a in scheduleOfEvents[CATEGORY_PROCEDURES].entities) {
+      proceduresTotalCost += Number(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].totalVisit
       if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length; b ++){
           if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition[b].checked){
@@ -515,7 +521,9 @@ const ScheduleEvents = (props) => {
       }
     }
 
+    let questionairesTotalCost = 0
     for(const a in scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities) {
+      questionairesTotalCost += Number(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].totalVisit
       if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length; b ++){
           if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition[b].checked){
@@ -525,7 +533,9 @@ const ScheduleEvents = (props) => {
       }
     }
 
+    let studyTotalCost = 0
     for(const a in scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities) {
+      studyTotalCost += Number(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].totalVisit
       if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length; b ++){
           if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition[b].checked){
@@ -536,16 +546,14 @@ const ScheduleEvents = (props) => {
     }
 
     let tempCostData = [
-      {value: scheduleOfEvents[CATEGORY_LABS].totalCost, name: CATEGORY_LABS},
-      {value: scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].totalCost, name: CATEGORY_PHYSICAL_EXAMINATION},
-      {value: scheduleOfEvents[CATEGORY_PROCEDURES].totalCost, name: CATEGORY_PROCEDURES},
-      {value: scheduleOfEvents[CATEGORY_QUESTIONNAIRES].totalCost, name: CATEGORY_QUESTIONNAIRES},
-      {value: scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].totalCost, name: CATEGORY_STUDY_PROCEDURES}
+      {value: labeTotalCost, name: CATEGORY_LABS},
+      {value: examinationTotalCost, name: CATEGORY_PHYSICAL_EXAMINATION},
+      {value: proceduresTotalCost, name: CATEGORY_PROCEDURES},
+      {value: questionairesTotalCost, name: CATEGORY_QUESTIONNAIRES},
+      {value: studyTotalCost, name: CATEGORY_STUDY_PROCEDURES}
     ]
 
-    let totalCost = scheduleOfEvents[CATEGORY_LABS].totalCost + scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].totalCost
-       + scheduleOfEvents[CATEGORY_PROCEDURES].totalCost + scheduleOfEvents[CATEGORY_QUESTIONNAIRES].totalCost
-       + scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].totalCost
+    let totalCost = labeTotalCost + examinationTotalCost + proceduresTotalCost + questionairesTotalCost + studyTotalCost
 
     let costBreakdown = ''
     if(totalCost < 12826){
