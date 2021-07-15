@@ -1,7 +1,6 @@
 import React, { useState, useReducer, useEffect } from "react";
 import { withRouter } from "react-router";
 import {
-  Modal,
   Input,
   Select,
   message,
@@ -9,17 +8,12 @@ import {
   Spin,
   Breadcrumb,
   Drawer,
-  Timeline,
   Steps
 } from "antd";
 import Cookies from "js-cookie";
 import {
   PlusCircleOutlined,
-  LeftCircleOutlined,
-  RightCircleOutlined,
-  CheckCircleOutlined,
   HomeOutlined,
-  SearchOutlined,
   LoadingOutlined,
   LeftOutlined
 } from "@ant-design/icons";
@@ -34,11 +28,10 @@ import TeamMembers from '../../components/NewTrialSteps/TeamMembers';
 import SimilarHistoricalTrials from '../../components/NewTrialSteps/SimilarHistoricalTrials';
 import Scenarios from "../../components/Scenarios";
 import TrialSummary from '../../components/NewTrialSteps/TrialSummary';
-import { getTrialList, addStudy, updateStudy, listStudy, getIndicationList, getStudy} from "../../utils/ajax-proxy";
+import ScenarioDetails from "../../components/ScenarioDetails";
+import { getTrialList, addStudy, updateStudy, getIndicationList, getStudy} from "../../utils/ajax-proxy";
 import bgDotPic from "../../assets/dots.svg";
-import { COUNTRY_MAP } from "../../utils/country-map";
 import { Therapeutic_Area_Map } from "../../utils/area-map";
-import addIcon from "../../assets/add.svg";
 
 import "./index.scss";
 
@@ -111,9 +104,6 @@ const initialStates = {
   scenarios: [],
 };
 
-const step1 = "details";
-const step2 = "endpoints";
-
 const TrialPortfolio = (props) => {
   const { keyWords, showSearch, setShowSearch } = props;
   const username = Cookies.get("username");
@@ -124,9 +114,9 @@ const TrialPortfolio = (props) => {
   const [phase, setPhase] = useState("All");
   const [area, setArea] = useState("All");
   const [visible, setVisible] = useState(false);
-  const [currentTrial, setCurrentTrial] = useState({});
   const [loading, setLoading] = useState(false);
   const [indicationList, setIndicationList] = useState([])
+  const [viewScenario, setViewScenario] = useState({viewScenarioDetails: false, scnarioId: ''})
 
   const [step, setStep] = useState(0);
 
@@ -328,6 +318,14 @@ const TrialPortfolio = (props) => {
     fetchList();
   }, [showDetails]);
 
+  const handleViewScenario = (scenarioId) =>{
+    setViewScenario({viewScenarioDetails: true, scnarioId: scenarioId})
+  }
+
+  const handleBack = (scenarioId) =>{
+    setViewScenario({viewScenarioDetails: false, scnarioId: ''})
+  }
+
   return (
     <div className="trial-portfolio-container">
       {!showDetails ? (
@@ -443,6 +441,12 @@ const TrialPortfolio = (props) => {
             <Breadcrumb.Item>Trial Design</Breadcrumb.Item>
           </Breadcrumb>
           <div className="trial-details-wrapper">
+            {viewScenario.viewScenarioDetails ? (
+              <>
+                <ScenarioDetails record={trial} scenarioId={viewScenario.scnarioId} handleBack={handleBack}/>
+              </>
+            ):(
+            <>
               <TrialDetails
               indicationList={ indicationList}
               record={trial}
@@ -450,7 +454,9 @@ const TrialPortfolio = (props) => {
               onInputChange={handleTrialInputChange}
               onSelectChange={handleTrialSelectChange}
             />
-              <Scenarios record={trial} updateRecord={(t)=>setTrial(t)}/>
+              <Scenarios record={trial} updateRecord={(t)=>setTrial(t)} handleViewScenario={handleViewScenario}/>
+            </>
+            )}
           </div>
         </div>
       )}
