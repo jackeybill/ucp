@@ -188,7 +188,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         (this.state.studyStatus != "" && this.state.studyStatus != "All"
           ? d['study_status'] == this.state.studyStatus
           : true) &&
-        (tempIndication.length != ""
+        (tempIndication.length > 0
           ? tempIndication.indexOf(d.indication)>-1
           : true) &&
         (this.state.pediatric != "" && this.state.pediatric != "All"
