@@ -77,7 +77,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     studyType: this.props.newTrial.study_type||"",
     studyPhase: this.props.newTrial.study_phase||"",
     studyStatus: "",
-    indication: this.props.newTrial.indication||[],
+    indication: this.props.newTrial.indication.length === 0 ? this.props.indicationList : this.props.newTrial.indication,
     pediatric: this.props.newTrial.pediatric_study||"",
     dateFrom: 1990,
     dateTo: 2020,
@@ -172,7 +172,10 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
   }
 
   onFindTrials = (datasource) => {
-
+    let tempIndication = this.state.indication.length > 0 ? [...this.state.indication] : []
+    if(tempIndication.indexOf('Type2 Diabetes') > -1){
+      tempIndication.push('Diabetes Mellitus Type 2')
+    }
     const filteredData = datasource.filter((d) => {
       const date = d['start_date'].split('-')[0]
       return (
@@ -185,8 +188,8 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         (this.state.studyStatus != "" && this.state.studyStatus != "All"
           ? d['study_status'] == this.state.studyStatus
           : true) &&
-        (this.state.indication.length != ""
-          ? this.state.indication.indexOf(d.indication)>-1
+        (tempIndication.length != ""
+          ? tempIndication.indexOf(d.indication)>-1
           : true) &&
         (this.state.pediatric != "" && this.state.pediatric != "All"
           ? d.pediatric == this.state.pediatric
@@ -416,7 +419,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                   <Select
                     mode="multiple"
                     allowClear
-                    value={this.state.indication.length==0?this.props.indicationList:this.state.indication}
+                    value={this.state.indication}
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("indication", e)}
                   >

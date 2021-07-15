@@ -27,7 +27,7 @@ const endpoints_map = [
 const EventList = (props) => {
   const { visitNumber, weekNumber } = props.numbers;
   const [sort,setSort] = useState("")
-  const [weeks, setWeeks] = useState([])
+  const [weeks, setWeeks] = useState(props.weeks||[])
   const [visits, setVisits] = useState([])
   const [expandKeys, setExpandKeys] = useState(["1"])
   let [labs, setLabs] = useState(props.labs||[]);
@@ -49,10 +49,11 @@ const EventList = (props) => {
     for (var i = 1; i <= visitNumber; i++) {
       visitsArr.push(i);
     }
-    if (weeks.length == 0) {
+    if (props.weeks.length == 0) {
       getWeeks()
     } else {
-      weeksArr=weeks
+      weeksArr=props.weeks
+      setWeeks(props.weeks)
      }
 
     tmpLabs.forEach((ele) => {
@@ -132,7 +133,7 @@ const EventList = (props) => {
     props.examination,
     visitNumber,
     weekNumber,
-    weeks,
+    props.weeks,
   ]);
 
   const getInitCodition = () =>{
