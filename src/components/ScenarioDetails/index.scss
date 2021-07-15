@@ -148,8 +148,14 @@
         border: 1px solid #CCCCCC;
       }
 
-      .criteria-table.none-click{
-        pointer-events:none;
+
+      .criteria-table{
+        .ant-collapse-icon-position-left>.ant-collapse-item>.ant-collapse-header{
+          padding-left: 40px;
+        }
+        span.anticon.anticon-caret-right.ant-collapse-arrow{
+          position: absolute;
+        }
       }
     }
   }

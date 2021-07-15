@@ -322,7 +322,12 @@ const TrialPortfolio = (props) => {
     setViewScenario({viewScenarioDetails: true, scnarioId: scenarioId})
   }
 
-  const handleBack = (scenarioId) =>{
+  const handleBack = () =>{
+    setViewScenario({viewScenarioDetails: false, scnarioId: ''})
+  }
+
+  const backToHome = () => {
+    setShowDetails(false)
     setViewScenario({viewScenarioDetails: false, scnarioId: ''})
   }
 
@@ -431,7 +436,7 @@ const TrialPortfolio = (props) => {
           <Breadcrumb>
             <Breadcrumb.Item
               className="homepage"
-              onClick={() => setShowDetails(false)}
+              onClick={backToHome}
             >
               <span>
                 <HomeOutlined />
