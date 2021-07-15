@@ -34,7 +34,7 @@ const SceneriosDashbaord = (props: any) => {
     setScenarioList(JSON.parse(JSON.stringify(props.record.scenarios)))
   }, [props.record.scenarios])
 
-  const viewScenario = (s) =>{
+  const editScenario = (s) =>{
     setScenarioId(s['scenario_id'])
     setScenario(s);
     setScenarioType(s['scenario_type'])
@@ -51,6 +51,9 @@ const SceneriosDashbaord = (props: any) => {
     setScenarioType(scenarioType)
     setNewScenarioVisiable(true)
     setEditFlag(false)
+  }
+  const viewScenario = (s) =>{
+    props.handleViewScenario(s['scenario_id'])
   }
 
   const handleOk = async () => {
@@ -244,12 +247,19 @@ const SceneriosDashbaord = (props: any) => {
                             </div>
                             <div>
                               {
-                                noEdit==undefined && (
+                                noEdit==undefined ? (
+                                  <Button
+                                    size="small"
+                                    onClick={() => editScenario(s)}
+                                  >
+                                    EDIT SCENARIO
+                                  </Button>
+                                ) : (
                                   <Button
                                     size="small"
                                     onClick={() => viewScenario(s)}
                                   >
-                                    EDIT SCENARIO
+                                    VIEW SCENARIO
                                   </Button>
                                 )
                               }
