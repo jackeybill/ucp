@@ -129,6 +129,7 @@
     overflow-y:hidden;
 
     .criteria-inner{
+      width: calc(100% + 20px);
       height:400px;
       overflow-y:scroll;
       border: 1px solid #CCCCCC;
@@ -155,7 +156,20 @@
         }
         span.anticon.anticon-caret-right.ant-collapse-arrow{
           position: absolute;
+          top: 5.0005px;
+          left: 16px;
+          padding: 12px 16px 12px 0;
+          font-size: 12px;
         }
+        .trial-panelHeader{
+          .header-section{
+              font-weight: 500;
+              color: #333;
+          }
+        }
+      }
+      .criteria-table.none-click{
+        pointer-events:none;
       }
     }
   }

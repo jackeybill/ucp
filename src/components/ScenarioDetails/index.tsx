@@ -131,13 +131,14 @@ const ScenarioDetails = (props: any) => {
                         </div>
                         <div className="criteria-header">
                             <Row>
-                                <Col span={3}><div className="col-item">S/No.</div></Col>
+                                <Col span={1}></Col>
+                                <Col span={2}><div className="col-item">S/No.</div></Col>
                                 <Col span={7}><div className="col-item">Eligibility Criteria</div></Col>
                                 <Col span={7}><div className="col-item">Values</div></Col>
                                 <Col span={7}><div className="col-item">Timeframe</div></Col>
                             </Row>
                         </div>
-                        <div className="criteria-table">
+                        <div className="criteria-table none-click">
                             <EditTable tableIndex={2}                                
                                 data={demographicsTableData} defaultActiveKey={defaultActiveKey}
                                 collapsible={false} panelHeader={"Demographics"} viewOnly={true}/>
@@ -156,7 +157,8 @@ const ScenarioDetails = (props: any) => {
                         </div>
                         <div className="criteria-header">
                             <Row>
-                                <Col span={3}><div className="col-item">S/No.</div></Col>
+                                <Col span={1}></Col>
+                                <Col span={2}><div className="col-item">S/No.</div></Col>
                                 <Col span={7}><div className="col-item">Eligibility Criteria</div></Col>
                                 <Col span={7}><div className="col-item">Values</div></Col>
                                 <Col span={7}><div className="col-item">Timeframe</div></Col>

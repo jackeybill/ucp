@@ -315,9 +315,13 @@ const panelHeaderSection = (header, count) => {
       editable: false,
       render: (_, record) => {
         return record.splitPart ? (
-           <span>{record['MainKey']}</span>
+          <Typography.Link style={{cursor: 'default'}}>
+          <span>{record['MainKey']}</span>
+          </Typography.Link>
         ) : (
+          <Typography.Link style={{cursor: 'default'}}>
           <span>{record['Key']}</span>
+          </Typography.Link>
         );
       }
     },
@@ -329,7 +333,9 @@ const panelHeaderSection = (header, count) => {
       render: (_, record) => {
         const editable = isEditing(record);
         return record.splitPart ? (
+          <Typography.Link style={{cursor: 'default'}}>
           <div><span style={{fontSize: '14px'}}>{record['Eligibility Criteria']}</span></div>
+          </Typography.Link>
         ) : (editable ? (
             <Input value={record["Eligibility Criteria"]}/>
         ) : (
