@@ -46,6 +46,13 @@ const EditTable = (props) => {
         (state, newState) => ({ ...state, ...newState }),
         { ...initialEditable }
   );
+  const [viewOnly, setViewOnly] = useState(false)
+
+  useEffect(() => {
+    if(props.viewOnly != undefined){
+      setViewOnly(props.viewOnly)
+    }
+  },[props.viewOnly]);
 
   useEffect(() => {
     let newList = []
@@ -291,8 +298,10 @@ const panelHeaderSection = (header, count) => {
   return (
       <div className="trial-panelHeader">
           <div>
-            <div className="header-section"><span>{header}({count == 0 ? 0 : count})</span>
-            <PlusCircleOutlined className="right-icon" onClick={(e)=>handleAdd(e)}/></div>
+            <div className="header-section">
+              <span>{header}({count == 0 ? 0 : count})</span>
+              {!viewOnly && <PlusCircleOutlined className="right-icon" onClick={(e)=>handleAdd(e)}/>}
+            </div>
           </div>
       </div>
   );
@@ -366,7 +375,7 @@ const panelHeaderSection = (header, count) => {
       dataIndex: 'operation',
       render: (_, record) => {
         const editable = isEditing(record);
-        return editable ? (
+        return !viewOnly && (editable ? (
           <span style={{float:'right'}}>
             <CheckOutlined onClick={() => save(record.Key)}/> &nbsp;&nbsp;
             <CloseOutlined onClick={cancel}/>
@@ -382,7 +391,7 @@ const panelHeaderSection = (header, count) => {
                 title={false} placement="bottomRight">
             <MoreOutlined style={{float:'right'}}/>
           </Popover>
-        ))
+        )))
       }
     }
   ];
@@ -454,6 +463,7 @@ const panelHeaderSection = (header, count) => {
       <Table pagination={false} showHeader={false} rowKey={record => record.Key}
         components={{ body: { cell: EditableCell } }} locale={{emptyText: 'No Data'}}
             dataSource={data} columns={mergedColumns} rowClassName="editable-row"
+            expandedRowKeys={data.map(item => item.Key)}
              expandable={{
                expandedRowRender: record => {
                  return (
@@ -480,8 +490,10 @@ const panelHeaderSection = (header, count) => {
                               </>
                               )}                      
                              <div className="actions">
+                              {!viewOnly ? (<>
                               {editable[record.Key+idx]&& <CheckOutlined style={{ color: 'green' }} onClick={()=>saveSubCriteria(record, subRecord,idx)}/>}
                               <CloseOutlined style={{ color: 'red' }} onClick={() =>deleteSubCriteria(record, idx)}/>
+                              </>):null}
                             </div>                 
                         </div>
                          )                       

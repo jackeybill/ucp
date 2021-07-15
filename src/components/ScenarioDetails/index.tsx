@@ -51,7 +51,7 @@ const ScenarioDetails = (props: any) => {
 
   useEffect(() => {
     const scenario = props.record.scenarios.find((e) => e['scenario_id'] === props.scenarioId)
-    const eventsConfigure = scenario['Schedule of Events']
+    const eventsConfigure = scenario['Schedule of Events'] === undefined ? {} : scenario['Schedule of Events'] 
 
     if(scenario != undefined){
         setScenario(scenario)
@@ -140,16 +140,16 @@ const ScenarioDetails = (props: any) => {
                         <div className="criteria-table none-click">
                             <EditTable tableIndex={2}                                
                                 data={demographicsTableData} defaultActiveKey={defaultActiveKey}
-                                collapsible={false} panelHeader={"Demographics"} />
+                                collapsible={false} panelHeader={"Demographics"} viewOnly={true}/>
                             <EditTable tableIndex={3}
                                 data={medConditionTableData} defaultActiveKey={defaultActiveKey}
-                                collapsible={true} panelHeader={"Medical Condition"} />
+                                collapsible={true} panelHeader={"Medical Condition"} viewOnly={true}/>
                             <EditTable tableIndex={4} 
                                 data={interventionTableData} defaultActiveKey={defaultActiveKey}
-                                collapsible={true} panelHeader={"Intervention"} />
+                                collapsible={true} panelHeader={"Intervention"} viewOnly={true}/>
                             <EditTable tableIndex={5} 
                                 data={labTestTableData} defaultActiveKey={defaultActiveKey}
-                                collapsible={true} panelHeader={"Lab / Test"} />
+                                collapsible={true} panelHeader={"Lab / Test"} viewOnly={true}/>
                         </div>
                         <div className="criteria-type">
                             <span>Exclusion Criteria</span>
@@ -165,16 +165,16 @@ const ScenarioDetails = (props: any) => {
                         <div className="criteria-table none-click">
                             <EditTable tableIndex={6}                                
                                 data={excluDemographicsTableData} defaultActiveKey={defaultActiveKey}
-                                collapsible={false} panelHeader={"Demographics"} />
+                                collapsible={false} panelHeader={"Demographics"} viewOnly={true}/>
                             <EditTable tableIndex={7}
                                 data={excluMedConditionTableData} defaultActiveKey={defaultActiveKey}
-                                collapsible={true} panelHeader={"Medical Condition"} />
+                                collapsible={true} panelHeader={"Medical Condition"} viewOnly={true}/>
                             <EditTable tableIndex={8} 
                                 data={excluInterventionTableData} defaultActiveKey={defaultActiveKey}
-                                collapsible={true} panelHeader={"Intervention"} />
+                                collapsible={true} panelHeader={"Intervention"} viewOnly={true}/>
                             <EditTable tableIndex={9} 
                                 data={excluLabTestTableData} defaultActiveKey={defaultActiveKey}
-                                collapsible={true} panelHeader={"Lab / Test"} />
+                                collapsible={true} panelHeader={"Lab / Test"} viewOnly={true}/>
                         </div>
                     </div>
                 </div>
