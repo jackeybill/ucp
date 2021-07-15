@@ -1,8 +1,10 @@
 import React, { useState, useReducer, useEffect } from "react";
 import { withRouter } from "react-router";
-import { Tabs } from 'antd';
+import { Tabs, Row, Col } from 'antd';
 import { ArrowLeftOutlined} from "@ant-design/icons";
 import "./index.scss";
+import EditTable from "../../components/EditTable";
+import EventList from '../EventList';
 
 const { TabPane } = Tabs;
 const initialNumber = {
@@ -15,6 +17,8 @@ const CATEGORY_PHYSICAL_EXAMINATION = 'Physical Examination';
 const CATEGORY_PROCEDURES = 'Procedures';
 const CATEGORY_QUESTIONNAIRES = 'Questionnaires';
 const CATEGORY_STUDY_PROCEDURES = 'Study Procedures';
+
+const defaultActiveKey = [2, 3, 4, 5, 6, 7, 8, 9]
 
 const ScenarioDetails = (props: any) => {
   const [record, setRecord] = useState(props.record || {});
@@ -113,18 +117,82 @@ const ScenarioDetails = (props: any) => {
                 </div>
             </div>
         </div>
-        <div className="rationale-info">
+        <div className={`rationale-info ${scenario['rationale'] === undefined ? 'hidde' : ''}`}>
             <span className="title">Rationale</span>
             <span className="content">{scenario['rationale']}</span>
         </div>
-        <Tabs defaultActiveKey="1" centered>
-            <TabPane tab="INCLUSION / EXCLUSION CRITERIA" key="1">
-                INCLUSION / EXCLUSION CRITERIA
-            </TabPane>
-            <TabPane tab="SCHEDULE OF EVENTS" key="2">
-                INCLUSION / EXCLUSION CRITERIA
-            </TabPane>
-        </Tabs>
+        <div className="scenario-details-tab">
+            <Tabs defaultActiveKey="1" centered>
+                <TabPane tab="INCLUSION / EXCLUSION CRITERIA" key="1">
+                <div className="criteria-container">
+                    <div className="criteria-inner">
+                        <div className="criteria-type">
+                            <span>Inclusion Criteria</span>
+                        </div>
+                        <div className="criteria-header">
+                            <Row>
+                                <Col span={3}><div className="col-item">S/No.</div></Col>
+                                <Col span={7}><div className="col-item">Eligibility Criteria</div></Col>
+                                <Col span={7}><div className="col-item">Values</div></Col>
+                                <Col span={7}><div className="col-item">Timeframe</div></Col>
+                            </Row>
+                        </div>
+                        <div className="criteria-table none-click">
+                            <EditTable tableIndex={2}                                
+                                data={demographicsTableData} defaultActiveKey={defaultActiveKey}
+                                collapsible={false} panelHeader={"Demographics"} />
+                            <EditTable tableIndex={3}
+                                data={medConditionTableData} defaultActiveKey={defaultActiveKey}
+                                collapsible={true} panelHeader={"Medical Condition"} />
+                            <EditTable tableIndex={4} 
+                                data={interventionTableData} defaultActiveKey={defaultActiveKey}
+                                collapsible={true} panelHeader={"Intervention"} />
+                            <EditTable tableIndex={5} 
+                                data={labTestTableData} defaultActiveKey={defaultActiveKey}
+                                collapsible={true} panelHeader={"Lab / Test"} />
+                        </div>
+                        <div className="criteria-type">
+                            <span>Exclusion Criteria</span>
+                        </div>
+                        <div className="criteria-header">
+                            <Row>
+                                <Col span={3}><div className="col-item">S/No.</div></Col>
+                                <Col span={7}><div className="col-item">Eligibility Criteria</div></Col>
+                                <Col span={7}><div className="col-item">Values</div></Col>
+                                <Col span={7}><div className="col-item">Timeframe</div></Col>
+                            </Row>
+                        </div>
+                        <div className="criteria-table none-click">
+                            <EditTable tableIndex={6}                                
+                                data={excluDemographicsTableData} defaultActiveKey={defaultActiveKey}
+                                collapsible={false} panelHeader={"Demographics"} />
+                            <EditTable tableIndex={7}
+                                data={excluMedConditionTableData} defaultActiveKey={defaultActiveKey}
+                                collapsible={true} panelHeader={"Medical Condition"} />
+                            <EditTable tableIndex={8} 
+                                data={excluInterventionTableData} defaultActiveKey={defaultActiveKey}
+                                collapsible={true} panelHeader={"Intervention"} />
+                            <EditTable tableIndex={9} 
+                                data={excluLabTestTableData} defaultActiveKey={defaultActiveKey}
+                                collapsible={true} panelHeader={"Lab / Test"} />
+                        </div>
+                    </div>
+                </div>
+                </TabPane>
+                <TabPane tab="SCHEDULE OF EVENTS" key="2">
+                    <EventList
+                      numbers={numbers}
+                      labs={addedLabs}
+                      examination={addedExamination}
+                      procedures={addedProcedures}
+                      questionnaire={addedQuestionnaires}
+                      studyProcedures={addedStudyProcedures}
+                      weeks={weeks}
+                      submitType={0}
+                    />
+                </TabPane>
+            </Tabs>
+        </div>
     </>
   );
 };

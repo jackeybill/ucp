@@ -74,6 +74,10 @@
     box-shadow: 0px 0px 6px #00000029;
     display: flex;
 
+    &.hidde{
+      display: none;
+    }
+
     .title{
         font-size: 16px;
         color: #666666;
@@ -88,5 +92,66 @@
         font: normal normal normal 14px/21px Helvetica Neue; letter-spacing: 0px;
         color: #000000;
     }
+}
+
+.scenario-details-tab{
+  padding: 20px 0px;
+
+  .ant-tabs-tab-btn{
+    color: #999999;
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
+    color: #CA4A04;
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+
+  .ant-tabs-ink-bar{
+    background: #CA4A04;
+  }
+
+  .ant-tabs-tab:hover, .ant-tabs-tab-btn:focus, .ant-tabs-tab-remove:focus, .ant-tabs-tab-btn:active, .ant-tabs-tab-remove:active{
+    color: #CA4A04;
+  }
+  .ant-tabs-nav::before{
+    border-bottom: unset !important;
+  }
+  .ant-tabs-nav{
+    margin: 0 0 0 0 !important;
+  }
+
+  .criteria-container::-webkit-scrollbar {
+    display: none;
+  }
+  .criteria-container{
+    overflow-y:hidden;
+
+    .criteria-inner{
+      height:400px;
+      overflow-y:scroll;
+      border: 1px solid #CCCCCC;
+
+      .criteria-type{
+        background-color: #282F34;
+        color: #FFFFFF;
+        font-size: 18px;
+        padding: 20px 24px;
+      }
+
+      .criteria-header{
+        font-size: 14px;
+        color:#333;
+        font-weight: bold;
+        padding: 5px 24px;
+        border: 1px solid #CCCCCC;
+      }
+
+      .criteria-table.none-click{
+        pointer-events:none;
+      }
+    }
+  }
 }
   
