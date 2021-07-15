@@ -692,13 +692,19 @@ const ExtractionTable = (props: any, ref) => {
                               {
                                 item.map((iten, indey) => {
                                   return (
-                                    <td>
-                                      <Select className={`table_head key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{ width: 140 }} value={iten} bordered={false} onChange={(val)=>{handleHeadChange(val, index, indey)}}>
-                                        {headData.map(head => (
-                                          <Option key={head} value={head}>{head}</Option>
-                                        ))}
-                                      </Select>
-                                    </td>
+                                    indey < 1? (
+                                      <td>
+                                        {renderPlainText(iten)}
+                                      </td>
+                                    ): (
+                                      <td>
+                                        <Select className={`table_head key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{ width: 140 }} value={iten} bordered={false} onChange={(val)=>{handleHeadChange(val, index, indey)}}>
+                                          {headData.map(head => (
+                                            <Option key={head} value={head}>{head}</Option>
+                                          ))}
+                                        </Select>
+                                      </td>
+                                    )
                                   )
                                 })
                               }
