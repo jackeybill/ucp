@@ -189,6 +189,7 @@ const ScenarioDetails = (props: any) => {
                       studyProcedures={addedStudyProcedures}
                       weeks={weeks}
                       submitType={0}
+                      viewOnly={true}
                     />
                 </TabPane>
             </Tabs>
