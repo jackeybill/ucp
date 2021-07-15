@@ -188,7 +188,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         (this.state.studyStatus != "" && this.state.studyStatus != "All"
           ? d['study_status'] == this.state.studyStatus
           : true) &&
-        (tempIndication.length != ""
+        (tempIndication.length != 0
           ? tempIndication.indexOf(d.indication)>-1
           : true) &&
         (this.state.pediatric != "" && this.state.pediatric != "All"
@@ -306,8 +306,15 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         textStyle: {
           fontSize: 8,
         },
-        formatter: function (params) {
-          const chartData = optionTwo.series[0].data      
+        formatter: function (params,idx) {
+          const chartData = optionTwo.series[0].data   
+          
+          const top5Data =chartData.sort((a,b)=>{
+            return b.value -a.value
+          }).slice(0,5)
+          if(top5Data.findIndex(d=>d.name==params)==-1) return 
+          
+          
           const sum = chartData.reduce((accumulator, currentValue) => {
            return accumulator + currentValue.value
           }, 0)

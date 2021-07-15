@@ -26,8 +26,11 @@ const endpoints_map = [
 
 const EventList = (props) => {
   const { visitNumber, weekNumber } = props.numbers;
+  console.log( visitNumber, weekNumber)
+  const viewOnly = props.viewOnly ||false;
   const [sort,setSort] = useState("")
   const [weeks, setWeeks] = useState(props.weeks||[])
+  // const [weeks, setWeeks] = useState([])
   const [visits, setVisits] = useState([])
   const [expandKeys, setExpandKeys] = useState(["1"])
   let [labs, setLabs] = useState(props.labs||[]);
@@ -52,16 +55,19 @@ const EventList = (props) => {
     if (props.weeks.length == 0) {
       getWeeks()
     } else {
-      weeksArr=props.weeks
-      setWeeks(props.weeks)
+      // weeksArr=props.weeks
+      // setWeeks(props.weeks)
      }
+
+     console.log( weeksArr)
 
     tmpLabs.forEach((ele) => {
       let condition = [];
       visitsArr.forEach((e, idx) => {
         condition.push({
           visits: e,
-          weeks: weeksArr[idx],
+          // weeks: props.weeks.length>0?weeks[idx]: weeksArr[idx],
+          weeks:weeks[idx],
           checked: ele.condition.length>0?ele.condition[idx].checked:false,
         });
       });
@@ -75,7 +81,8 @@ const EventList = (props) => {
       visitsArr.forEach((e, idx) => {
         condition.push({
           visits: e,
-          weeks: weeksArr[idx],
+          // weeks: weeksArr[idx],
+          weeks:weeks[idx],
           checked: ele.condition.length>0?ele.condition[idx].checked:false,
         });
       });
@@ -87,7 +94,8 @@ const EventList = (props) => {
       visitsArr.forEach((e, idx) => {
         condition.push({
           visits: e,
-          weeks: weeksArr[idx],
+          // weeks: weeksArr[idx],
+          weeks:weeks[idx],
           checked: ele.condition.length>0?ele.condition[idx].checked:false,
         });
       });
@@ -99,7 +107,8 @@ const EventList = (props) => {
       visitsArr.forEach((e, idx) => {
         condition.push({
           visits: e,
-          weeks: weeksArr[idx],
+          // weeks: weeksArr[idx],
+          weeks:weeks[idx],
           checked: ele.condition.length>0?ele.condition[idx].checked:false,
         });
       });
@@ -111,7 +120,8 @@ const EventList = (props) => {
       visitsArr.forEach((e, idx) => {
         condition.push({
           visits: e,
-          weeks: weeksArr[idx],
+          // weeks: weeksArr[idx],
+          weeks:weeks[idx],
           checked: ele.condition.length>0?ele.condition[idx].checked:false,
         });
       });
@@ -133,7 +143,7 @@ const EventList = (props) => {
     props.examination,
     visitNumber,
     weekNumber,
-    props.weeks,
+    // props.weeks,
   ]);
 
   const getInitCodition = () =>{
@@ -269,6 +279,7 @@ const EventList = (props) => {
       }
       weeksArr.push(sum)
     }
+    console.log(weeksArr)
     setWeeks(weeksArr)
   };
 
@@ -551,7 +562,7 @@ const EventList = (props) => {
                 <div className="colunm td ">Weeks</div>
                 {
                   weeks.map((week, idx) => {
-                    return <Input className="td" value={week} onChange={(e)=>onWeekChange(e,idx)} />                  
+                    return viewOnly?<span className="td">{week}</span>: <Input className="td" value={week} onChange={(e)=>onWeekChange(e,idx)} />                  
                   })
                 }
               </div>
@@ -564,7 +575,7 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${LABS} (${labs.length})`} <span className="add-event" onClick={(e)=>onAddEvent(e,LABS)}>Add Event</span>
+                    {`${LABS} (${labs.length})`} {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,LABS)}>Add Event</span> } 
                   </div>
                   <div className="cost">
                     $ {getTotalCost(labs)}
@@ -586,22 +597,36 @@ const EventList = (props) => {
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
-                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
+                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>                      
                         {
-                          !evt.Custom?evt["Standard Event"]:(
+                          viewOnly?evt["Standard Event"]:(
                             <>
-                              <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(LABS,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,LABS,idx,"Standard Event")} />
+                            {
+                              !evt.Custom?evt["Standard Event"]:(
+                                <>
+                                  <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(LABS,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,LABS,idx,"Standard Event")} />
+                                </>
+                              )                       
+                            }
                             </>
-                          )                       
+                          )
                         }            
                       </div>
                       <div className="endpoint-td td f-2">
-                        {endpointsSelector(evt,idx)}
+                        {
+                          viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
+                        }                     
                       </div>
                       <div className="cost-td td f-1-small">
-                        ${
-                          !evt.Custom?evt["Dummy Cost"]:<Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,LABS,idx,"Dummy Cost")} />
-                        } 
+                        {
+                          viewOnly?`$ ${evt["Dummy Cost"]}`:(
+                            <>
+                             {
+                              !evt.Custom?`$${evt["Dummy Cost"]}`:<>$ <Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,LABS,idx,"Dummy Cost")} /></>
+                              } 
+                            </>
+                          )
+                        }                   
                       </div>
                       <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
@@ -612,8 +637,8 @@ const EventList = (props) => {
                           return (
                             <div className="td">
                               <span
-                                className="incon-wrapper"
-                                onClick={() => toggleChecked(evt, idx)}
+                                className={`${viewOnly?'viewOnly':''} incon-wrapper`}
+                                onClick={!viewOnly?() => toggleChecked(evt, idx):null}
                               >
                                 {con.checked ? (
                                   <CheckCircleFilled />
@@ -635,7 +660,7 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${PHYSICAL_EXAMINATION} (${examination.length})`} <span className="add-event" onClick={(e)=>onAddEvent(e,PHYSICAL_EXAMINATION)}>Add Event</span>
+                    {`${PHYSICAL_EXAMINATION} (${examination.length})`} {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,PHYSICAL_EXAMINATION)}>Add Event</span> }
                   </div>
                   <div className="cost">
                     $ {getTotalCost(examination)}
@@ -658,20 +683,34 @@ const EventList = (props) => {
                   <div className="event-item">
                     <div className="events-wrapper e-row">
                       <div className={`${evt.Custom?"custom-event":""} my-event-td td f-2`}>
-                      {
-                          !evt.Custom?evt["Standard Event"]:(
+                        {
+                          viewOnly?evt["Standard Event"]:(
                             <>
-                              <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(PHYSICAL_EXAMINATION,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,PHYSICAL_EXAMINATION,idx,"Standard Event")} />
+                            {
+                              !evt.Custom?evt["Standard Event"]:(
+                                <>
+                                  <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(PHYSICAL_EXAMINATION,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,PHYSICAL_EXAMINATION,idx,"Standard Event")} />
+                                </>
+                              )                       
+                            }  
                             </>
-                          )                       
-                        }    
+                          )
+                        }                
                       </div>
                       <div className="endpoint-td td f-2">
-                        {endpointsSelector(evt,idx)}
+                      {
+                          viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
+                        } 
                       </div>
                       <div className="cost-td td f-1-small">
-                      ${
-                          !evt.Custom?evt["Dummy Cost"]:<Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,PHYSICAL_EXAMINATION,idx,"Dummy Cost")} />
+                        {
+                          viewOnly?`$ ${evt["Dummy Cost"]}`:(
+                            <>
+                             {
+                              !evt.Custom?`$${evt["Dummy Cost"]}`:<>$ <Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,PHYSICAL_EXAMINATION,idx,"Dummy Cost")} /></>
+                              } 
+                            </>
+                          )
                         } 
                       </div>
                       <div className="visits-td td f-1-small">{totalVisit}</div>
@@ -684,7 +723,7 @@ const EventList = (props) => {
                             <div className="td">
                               <span
                                 className="incon-wrapper"
-                                onClick={() => toggleChecked(evt, idx)}
+                                onClick={!viewOnly?() => toggleChecked(evt, idx):null}
                               >
                                 {con.checked ? (
                                   <CheckCircleFilled />
@@ -706,7 +745,7 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${PROCEDURES} (${procedures.length})`} <span className="add-event" onClick={(e)=>onAddEvent(e,PROCEDURES)}>Add Event</span>
+                    {`${PROCEDURES} (${procedures.length})`} {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,PROCEDURES)}>Add Event</span>}
                   </div>
                   <div className="cost">
                      $ {getTotalCost(procedures)}
@@ -738,12 +777,21 @@ const EventList = (props) => {
                         }    
                       </div>
                       <div className="endpoint-td td f-2">
-                        {endpointsSelector(evt,idx)}
+                      {
+                          viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
+                        } 
                       </div>
                       <div className="cost-td td f-1-small">
-                      ${
-                          !evt.Custom?evt["Dummy Cost"]:<Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,PROCEDURES,idx,"Dummy Cost")} />
-                        } 
+                        {
+                          viewOnly?`$ ${evt["Dummy Cost"]}`:(
+                            <>
+                             {
+                              !evt.Custom?`$${evt["Dummy Cost"]}`:<>$ <Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,PROCEDURES,idx,"Dummy Cost")} /></>
+                              } 
+                            </>
+                          )
+                        }  
+                        
                       </div>
                       <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
@@ -755,7 +803,7 @@ const EventList = (props) => {
                             <div className="td">
                               <span
                                 className="incon-wrapper"
-                                onClick={() => toggleChecked(evt, idx)}
+                                onClick={!viewOnly?() => toggleChecked(evt, idx):null}
                               >
                                 {con.checked ? (
                                   <CheckCircleFilled />
@@ -777,7 +825,7 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${QUESTIONNAIRES} (${questionnaire.length})`} <span className="add-event" onClick={(e)=>onAddEvent(e,QUESTIONNAIRES)}>Add Event</span>
+                    {`${QUESTIONNAIRES} (${questionnaire.length})`} {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,QUESTIONNAIRES)}>Add Event</span>}
                   </div>
                   <div className="cost">
                      $ {getTotalCost(questionnaire)}                 
@@ -809,12 +857,24 @@ const EventList = (props) => {
                         }    
                       </div>
                       <div className="endpoint-td td f-2">
-                        {endpointsSelector(evt,idx)}
+                      {
+                          viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
+                        } 
                       </div>
                       <div className="cost-td td f-1-small">
-                      ${
+                      {/* ${
                           !evt.Custom?evt["Dummy Cost"]:<Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,QUESTIONNAIRES,idx,"Dummy Cost")} />
-                        } 
+                        }  */}
+                        {
+                          viewOnly?`$ ${evt["Dummy Cost"]}`:(
+                            <>
+                             {
+                              !evt.Custom?`$${evt["Dummy Cost"]}`:<>$ <Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,QUESTIONNAIRES,idx,"Dummy Cost")} /></>
+                              } 
+                            </>
+                          )
+                        }  
+
                       </div>
                       <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
@@ -826,7 +886,7 @@ const EventList = (props) => {
                             <div className="td">
                               <span
                                 className="incon-wrapper"
-                                onClick={() => toggleChecked(evt, idx)}
+                                onClick={!viewOnly?() => toggleChecked(evt, idx):null}
                               >
                                 {con.checked ? (
                                   <CheckCircleFilled />
@@ -848,7 +908,7 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${STUDY_PROCEDURES} (${studyProcedures.length})`} <span className="add-event" onClick={(e)=>onAddEvent(e,STUDY_PROCEDURES)}>Add Event</span>
+                    {`${STUDY_PROCEDURES} (${studyProcedures.length})`} {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,STUDY_PROCEDURES)}>Add Event</span>}
                   </div>
                   <div className="cost">
                    $ {getTotalCost(studyProcedures)}   
@@ -880,12 +940,23 @@ const EventList = (props) => {
                         }   
                       </div>
                       <div className="endpoint-td td f-2">
-                       {endpointsSelector(evt,idx)}
+                        {
+                          viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
+                        } 
                       </div>
                       <div className="cost-td td f-1-small">
-                      ${
+                      {/* ${
                           !evt.Custom?evt["Dummy Cost"]:<Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,STUDY_PROCEDURES,idx,"Dummy Cost")} />
-                        } 
+                        }  */}
+                        {
+                          viewOnly?`$ ${evt["Dummy Cost"]}`:(
+                            <>
+                             {
+                              !evt.Custom?`$${evt["Dummy Cost"]}`:<>$ <Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,STUDY_PROCEDURES,idx,"Dummy Cost")} /></>
+                              } 
+                            </>
+                          )
+                        }  
                       </div>
                       <div className="visits-td td f-1-small">{totalVisit}</div>
                     </div>
@@ -897,7 +968,7 @@ const EventList = (props) => {
                             <div className="td">
                               <span
                                 className="incon-wrapper"
-                                onClick={() => toggleChecked(evt, idx)}
+                                onClick={!viewOnly?() => toggleChecked(evt, idx):null}
                               >
                                 {con.checked ? (
                                   <CheckCircleFilled />
