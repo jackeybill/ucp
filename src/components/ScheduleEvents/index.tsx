@@ -9,7 +9,7 @@ import FileSaver from 'file-saver';
 
 const { Panel } = Collapse;
 
-const iChartColors = ['#514c4a', '#65615f', '#86817f', '#a59e9b', '#d2cbc8']
+const iChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA', '#DADADA']
 const aChartColors = ['#d04a02', '#ed7738', '#ed9d72', '#f5b795', '#f5ddcf']
 
 const CATEGORY_LABS = 'Labs';
@@ -58,7 +58,6 @@ const ScheduleEvents = (props) => {
   const [minV, setMinV] = useState(80)
   const [maxV, setMaxV] = useState(100)
   const [visibleSlider, setVisibleSlider] = useState(false)
-  const [finished, setFinished] = useState(false)
   const [eventCriteria, setEventCriteria] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     { ...initEventCriteria }
@@ -117,7 +116,7 @@ const ScheduleEvents = (props) => {
 
   useEffect(() => {
     console.log(props.submitType)
-    if(props.submitType != 0 && !finished){
+    if(props.submitType != 0){
       setSubmitType(props.submitType)
     }
   },[props.submitType]);
@@ -171,7 +170,6 @@ const ScheduleEvents = (props) => {
               setShowPatientLabel(true)
               setPatientChartColor(aChartColors)
             }
-            setFinished(eventsConfigure.Finished)
 
             setFilteredLabs(filterLibs(response[CATEGORY_LABS], eventsConfigure[CATEGORY_LABS].entities, minV, maxV))
             setFilteredExamination(filterLibs(response[CATEGORY_PHYSICAL_EXAMINATION], eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities, minV, maxV))
@@ -255,8 +253,8 @@ const ScheduleEvents = (props) => {
     grid: {
         left: '50%',
         right: '4%',
-        top: '8%',
-        bottom: '10%',
+        top: '10%',
+        bottom: '5%',
         containLabel: true
     },
     legend: {
@@ -277,7 +275,7 @@ const ScheduleEvents = (props) => {
     yAxis: [
         { type: 'value', name:'Patient Burden', 
         nameRotate: 90, nameGap: 40, nameLocation: "middle", 
-        axisLine: { lineStyle: { color: '#333' } }, 
+        axisLine: { lineStyle: { color: '#666666' } }, 
         axisLabel : { formatter : function(value) { return value; } }, }
     ],
     series: [
@@ -361,7 +359,7 @@ const ScheduleEvents = (props) => {
               backgroundColor: "white"
             },
             FAIR: {
-              color: 'gray',
+              color: '#0084A9',
               fontSize: 12,
               fontWeight:'bold',
               backgroundColor: "white"
@@ -812,7 +810,7 @@ const ScheduleEvents = (props) => {
   }
 
   return (
-    <div className={`tab-container ${finished ? 'none-click' : ''}`}>
+    <div className="tab-container">
       <div className={`side-toolbar ${eventLib > 0 ? 'hidden' : ''}`} onClick={()=> setEventLib(6)}>
         <div className="panel-label">Event Library</div>
         <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
@@ -1013,7 +1011,7 @@ const ScheduleEvents = (props) => {
                       </div>
                     </Col>
                     <Col span={12}>
-                      <ReactECharts option={burdenOption} style={{ height: 180}}/>
+                      <ReactECharts option={burdenOption} style={{ height: 190}}/>
                     </Col>
                   </Row>
                 </Panel>

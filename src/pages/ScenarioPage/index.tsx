@@ -20,7 +20,7 @@ const { TabPane } = Tabs;
 const { Step } = Steps;
 
 const frequencyFilter = [80, 100]
-const inActiveChartColors = ['#514c4a', '#65615f', '#86817f', '#a59e9b']
+const inActiveChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA']
 const activeChartColors = ['#E53500', '#F27A26', '#F5924D', '#FBD0B3']
 
 
@@ -834,7 +834,7 @@ const ScenarioPage = (props) => {
                 backgroundColor: "white"
               },
               fair: {
-                color: 'gray',
+                color: '#0084A9',
                 fontSize: 12,
                 fontWeight:'bold',
                 backgroundColor: "white"
@@ -915,7 +915,7 @@ const ScenarioPage = (props) => {
                 backgroundColor: "white"
               },
               fair: {
-                color: 'gray',
+                color: '#0084A9',
                 fontSize: 12,
                 fontWeight:'bold',
                 backgroundColor: "white"
@@ -997,7 +997,7 @@ const ScenarioPage = (props) => {
                   backgroundColor: "white"
                 },
                 fair: {
-                  color: 'gray',
+                  color: '#0084A9',
                   fontSize: 12,
                   fontWeight:'bold',
                   backgroundColor: "white"
@@ -1079,7 +1079,7 @@ const ScenarioPage = (props) => {
                 backgroundColor: "white"
               },
               fair: {
-                color: 'gray',
+                color: '#0084A9',
                 fontSize: 12,
                 fontWeight:'bold',
                 backgroundColor: "white"
