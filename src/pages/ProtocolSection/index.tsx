@@ -21,9 +21,10 @@ import SectionText from "../../components/SectionsText";
 import Extraction from "../../components/Extraction";
 import ExtractionTable from "../../components/ExtractionTable";
 import * as fileActions from "../../actions/file.js";
+import { Document, Page } from 'react-pdf';
 import "./index.scss";
 
-const baseUrl = "https://iso-dean-test.s3.amazonaws.com/RawDocuments/"
+// const baseUrl = "https://iso-dean-test.s3.amazonaws.com/RawDocuments/"
 
 const completeDocument = "includeAllText";
 
@@ -84,6 +85,12 @@ const ProtocolSection = (props: any) => {
   const [filePath, setFilePath] = useState("")
   const[isModalVisible,setIsModalVisible] = useState(false)
 
+  useEffect(()=>{
+    const file = require("../../assets/files/"+protocolTitleText)
+    setFilePath(file)
+
+  },[protocolTitleText])
+
   useEffect(() => {
     if (props.fileReader.activeTabKey == "ENTITY RELATIONSHIPS") {
       setFormatOptions(relationshipExportOptions);
@@ -116,10 +123,11 @@ const ProtocolSection = (props: any) => {
   }, [activeSection]);
 
   useEffect( ()=>{
-    setFilePath(`${baseUrl}${protocolTitleText}#page=${pageNum}`)
+    // setFilePath(`${baseUrl}${protocolTitleText}#page=${pageNum}`)
   },[pageNum])
+  // const iframeStr = '<iframe src='+filePath+'></iframe>'; 
 
-  const iframeStr = '<iframe src='+filePath+' title="pdf"></iframe>'; 
+  const iframeStr = `<iframe src=${require("../../assets/files/"+protocolTitleText)}#page=${pageNum}></iframe>`; 
   const onIframe = ()=>{
     return  {__html: iframeStr}
   }
