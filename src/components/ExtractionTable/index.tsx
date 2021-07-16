@@ -191,6 +191,13 @@ const ExtractionTable = (props: any, ref) => {
       </span>
     )
   }
+  const renderPlainTextForFirstColumn = (iten) => {
+    return (
+      <span className={`key-word-in-first-column ${searchTxt && matchWord(iten, searchTxt)}`}>
+        {iten}
+      </span>
+    )
+  }
 
   // The table cell underlined
   const renderMarkText = (iten) => {
@@ -569,7 +576,7 @@ const ExtractionTable = (props: any, ref) => {
                                           </td>
                                           ):(
                                             <td>
-                                              {renderPlainText(iten)}
+                                              {renderPlainTextForFirstColumn(iten)}
                                             </td>
                                           )
                                         ):
@@ -579,7 +586,7 @@ const ExtractionTable = (props: any, ref) => {
                                           </td>
                                         )
                                       ) :(
-                                        iten.startsWith("X") ? (
+                                        iten.startsWith("X")||iten==="(X)"? (
                                           <td>
                                             <CheckCircleFilled/>
                                             {/* {iten.substr(1)} */}
@@ -685,13 +692,19 @@ const ExtractionTable = (props: any, ref) => {
                               {
                                 item.map((iten, indey) => {
                                   return (
-                                    <td>
-                                      <Select className={`table_head key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{ width: 140 }} value={iten} bordered={false} onChange={(val)=>{handleHeadChange(val, index, indey)}}>
-                                        {headData.map(head => (
-                                          <Option key={head} value={head}>{head}</Option>
-                                        ))}
-                                      </Select>
-                                    </td>
+                                    indey < 1? (
+                                      <td>
+                                        {renderPlainText(iten)}
+                                      </td>
+                                    ): (
+                                      <td>
+                                        <Select className={`table_head key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{ width: 140 }} value={iten} bordered={false} onChange={(val)=>{handleHeadChange(val, index, indey)}}>
+                                          {headData.map(head => (
+                                            <Option key={head} value={head}>{head}</Option>
+                                          ))}
+                                        </Select>
+                                      </td>
+                                    )
                                   )
                                 })
                               }
@@ -733,7 +746,7 @@ const ExtractionTable = (props: any, ref) => {
                                           </td>
                                         ):(
                                           <td onClick={()=>{handleAddUnderline(iten)}}>
-                                            {renderPlainText(iten)}
+                                            {renderPlainTextForFirstColumn(iten)}
                                           </td>
                                         )
                                       ):
@@ -743,7 +756,7 @@ const ExtractionTable = (props: any, ref) => {
                                         </td>
                                       )
                                     ):(
-                                      iten.startsWith("X") ? (
+                                      iten.startsWith("X")||iten==="(X)" ? (
                                         <td>
                                           <CheckCircleFilled/>
                                           {/* {iten.substr(1)} */}
@@ -794,7 +807,7 @@ const ExtractionTable = (props: any, ref) => {
                                             </td>
                                         ):(
                                           <td onClick={()=>{handleAddUnderline(iten)}}>
-                                            {renderPlainText(iten)}
+                                            {renderPlainTextForFirstColumn(iten)}
                                           </td>
                                         )
                                       ):
@@ -804,7 +817,7 @@ const ExtractionTable = (props: any, ref) => {
                                         </td>
                                       )
                                     ):(
-                                      iten.startsWith("X") ? (
+                                      iten.startsWith("X")||iten==="(X)"? (
                                         <td onClick={()=>{onChangeIconType("X", index, indey)}} style={{cursor:"pointer"}}>
                                           <CheckCircleFilled/>
                                           {/* {iten.substr(1)} */}

@@ -80,7 +80,7 @@ const SectionText = (props: SectionTextIF) => {
                                             indey < 1? (
                                               <td>{iten}</td>
                                             ) :(
-                                              iten.startsWith("X") ? (
+                                              iten.startsWith("X")||iten==="(X)" ? (
                                                 <td>
                                                   <CheckCircleFilled/>
                                                   {/* {iten.substr(1)} */}

@@ -24,16 +24,50 @@ const columns = [
       title: "NCT ID",
       dataIndex: "nctID",
       key: "nctID",
+      sorter: (a, b) => a.nctID.substr(4,7) - b.nctID.substr(4,7),
+      
+      // sorter: {
+      //   compare: (a, b) => a.nctID - b.nctID,
+      //   multiple: 4,
+      // },
     },
     {
       title: "Protocol Name",
       dataIndex: "protocolName",
       key: "protocolName",
+      sorter: (a, b) => a.protocolName.substr(4,7) - b.protocolName.substr(4,7),
+      // sorter: {
+      //   compare: (a, b) => a.protocolName - b.protocolName,
+      //   multiple: 3,
+      // },
     },
     {
       title: "Validation Status",
       dataIndex: "status",
       key: "status",
+      sorter: (a, b) => {
+        let numA;
+        let numB;
+        if (a.status==="Not started") {
+           numA = 10
+        } else if (a.status==="In progress") {
+           numA = 20
+        } else {
+           numA = 30
+        }
+        if (b.status==="Not started") {
+           numB = 10
+        } else if (b.status==="In progress") {
+           numB = 20
+        } else {
+           numB = 30
+        }        
+        return numA - numB
+      },
+      // sorter: {
+      //   compare: (a, b) => a.status - b.status,
+      //   multiple: 2,
+      // },
       render: (text, row, index) => {
         return (
           <>
@@ -47,9 +81,23 @@ const columns = [
       title: "Last Updated",
       dataIndex: "lastUpdate",
       key: "lastUpdate",
+      defaultSortOrder: 'descend' as 'descend',
+      sorter: (a, b) => { 
+          let aTime = new Date(a.lastUpdate).getTime();
+          let bTime = new Date(b.lastUpdate).getTime();
+          return aTime - bTime;
+      },
+      // sorter: {
+      //   compare:  (a, b) => { 
+      //     let aTime = new Date(a.lastUpdate).getTime();
+      //     let bTime = new Date(b.lastUpdate).getTime();
+      //     return aTime - bTime;
+      //   },
+      //   multiple: 1,
+      // },
       render: (text, row, index) => {
         return moment(text).format('MM-DD-YYYY');   
-      }
+      },
     },
   ];
 
@@ -141,6 +189,7 @@ const Overview = (props: any) => {
           <Table
             columns={columns}
             dataSource={data}
+            showSorterTooltip={false}
             pagination={{ position: ["bottomRight"], size: "small", pageSize: 6 }}
               onRow={
                 record => {
