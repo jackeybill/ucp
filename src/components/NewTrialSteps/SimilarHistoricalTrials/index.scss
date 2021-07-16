@@ -1,5 +1,11 @@
 @import "../../../styles/variables.scss";
 .historical-trial-list {
+
+  .ant-spin.ant-spin-spinning{
+    span{
+      font-size: 20px;
+    }
+  }
   .step-desc {
     color: #ddd;
   }
@@ -118,4 +124,25 @@
     color: #999999;
     font-size: 12px;
   }
+}
+
+.my-legend-wrapper{
+  margin-top: -80px;
+  padding-left: 30px;
+
+  .custom-legend{
+    .my_legend{
+      display: inline-block;
+      width: 26px;
+      height: 6px;
+      border-radius: 1px;
+      margin-right: 4px;
+    }
+    .my_legend_text{
+      color: #666666;
+      font-size: 10px;
+      font-style:normal;
+    }
+  }
+
 }

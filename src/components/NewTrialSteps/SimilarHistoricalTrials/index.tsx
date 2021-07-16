@@ -61,6 +61,26 @@ const marks = {
   2020: "2020",
 };
 
+const sponsorChartColor =[
+    "#d04a02",
+    "#d4520d",
+    "#d85d1c",
+    "#de6c30",
+    "#e47d47",
+    "#e68d5e",
+    "#e8aa89",
+]
+const statusChartColor=[
+  "#d04a02",
+  "#d4520d",
+  "#d85d1c",
+  "#de6c30",
+  "#e47d47",
+  "#e68d5e",
+  "#e8aa89"
+]
+
+
 
 class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
   constructor(props: HistoricalProps) {
@@ -231,28 +251,29 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         formatter: function (params) {
           return (
             [params.name] +
-            "-" +
+            " - " +
             [params.value] 
           );
         },
       },
-      legend: {
-        x: "left",
-        y: "60%",
-        itemHeight: 7,
-        textStyle: {
-          fontSize: 8,
-        },
-        formatter: function (params) {
-          const chartData = optionOne.series[0].data      
-          const sum = chartData.reduce((accumulator, currentValue) => {
-           return accumulator + currentValue.value
-          }, 0)
-          const targetVal = chartData.find(d => d.name == params).value
-          let p = ((targetVal / sum) * 100).toFixed(2);
-          return params + " - " + p + "%";
-        },
-      },
+      // legend: {
+      //   show:false,
+      //   x: "left",
+      //   y: "60%",
+      //   itemHeight: 7,
+      //   textStyle: {
+      //     fontSize: 8,
+      //   },
+      //   formatter: function (params) {
+      //     const chartData = optionOne.series[0].data      
+      //     const sum = chartData.reduce((accumulator, currentValue) => {
+      //      return accumulator + currentValue.value
+      //     }, 0)
+      //     const targetVal = chartData.find(d => d.name == params).value
+      //     let p = ((targetVal / sum) * 100).toFixed(2);
+      //     return params + " - " + p + "%";
+      //   },
+      // },
       series: [
         {
           type: "pie",
@@ -262,15 +283,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
           label: {
             show: false,
           },
-          color: [
-            "#d04a02",
-            "#d4520d",
-            "#d85d1c",
-            "#de6c30",
-            "#e47d47",
-            "#e68d5e",
-            "#e8aa89",
-          ],
+          color: sponsorChartColor,
           data: this.state.sponsorChartData,
         },
       ],
@@ -294,35 +307,29 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         formatter: function (params) {
           return (
             [params.name] +
-            "-" +
+            " - " +
             [params.value]
           );
         },
       },
-      legend: {
-        x: "left",
-        y: "60%",
-        itemHeight: 7,
-        textStyle: {
-          fontSize: 8,
-        },
-        formatter: function (params,idx) {
-          const chartData = optionTwo.series[0].data   
-          
-          const top5Data =chartData.sort((a,b)=>{
-            return b.value -a.value
-          }).slice(0,5)
-          if(top5Data.findIndex(d=>d.name==params)==-1) return 
-          
-          
-          const sum = chartData.reduce((accumulator, currentValue) => {
-           return accumulator + currentValue.value
-          }, 0)
-          const targetVal = chartData.find(d => d.name == params).value
-          let p = ((targetVal / sum) * 100).toFixed(2);
-          return params + " - " + p + "%";
-        },
-      },
+      // legend: {
+      //   show:false,
+      //   x: "left",
+      //   y: "60%",
+      //   itemHeight: 7,
+      //   textStyle: {
+      //     fontSize: 8,
+      //   },
+      //   formatter: function (params,idx) {
+      //     const chartData = optionTwo.series[0].data   
+      //     const sum = chartData.reduce((accumulator, currentValue) => {
+      //      return accumulator + currentValue.value
+      //     }, 0)
+      //     const targetVal = chartData.find(d => d.name == params).value
+      //     let p = ((targetVal / sum) * 100).toFixed(2);
+      //     return params + " - " + p + "%";
+      //   },
+      // },
       series: [
         {
           type: "pie",
@@ -332,14 +339,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
           label: {
             show: false,
           },
-          color: [
-            "#d04a02",
-            "#d4520d",
-            "#d85d1c",
-            "#de6c30",
-            "#e47d47",
-            "#e68d5e",
-            "#e8aa89"],
+          color:statusChartColor,
           data: this.state.statusChartData,
         },
       ],
@@ -361,7 +361,6 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
   };
 
   render() {
-    console.log(this.state.sponsorChartData, this.state.statusChartData)
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onRowSelectChange,
@@ -485,10 +484,50 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 </div>
               <div className="chart-wrapper">
                 <div className="chart">
-                  <ReactECharts option={this.getOptionOne()}></ReactECharts>          
+                  <ReactECharts option={this.getOptionOne()}></ReactECharts> 
+                  <div className="my-legend-wrapper">         
+                  {
+                    this.state.sponsorChartData.sort((a,b)=>{
+                      return b.value -a.value
+                    }).slice(0,5).map( (d,idx)=>{
+                      const chartData = this.state.sponsorChartData
+                      const sum = chartData.reduce((accumulator, currentValue) => {
+                       return accumulator + currentValue.value
+                      }, 0)                    
+                      let percent = ((d.value / sum) * 100).toFixed(2);                  
+                      return(
+                        <div className="custom-legend" >
+                        <span className="my_legend" style={{'backgroundColor':sponsorChartColor[idx]}}></span><i className="my_legend_text">{`${d.name} - ${percent}%`}</i> 
+                      </div>  
+                      )
+                    })
+                  }  
+                </div>   
                 </div>
                 <div className="chart">
-                    {this.state.showStatusChart?<ReactECharts option={this.getOptionTwo()}></ReactECharts>:null}     
+                    {this.state.showStatusChart?(
+                      <>
+                        <ReactECharts option={this.getOptionTwo()}></ReactECharts>
+                        <div className="my-legend-wrapper">         
+                        {
+                          this.state.statusChartData.sort((a,b)=>{
+                            return b.value -a.value
+                          }).slice(0,5).map( (d,idx)=>{
+                            const chartData = this.state.statusChartData
+                            const sum = chartData.reduce((accumulator, currentValue) => {
+                            return accumulator + currentValue.value
+                            }, 0)                    
+                            let percent = ((d.value / sum) * 100).toFixed(2);                  
+                            return(
+                              <div className="custom-legend" >
+                              <span className="my_legend" style={{'backgroundColor':statusChartColor[idx]}}></span><i className="my_legend_text">{`${d.name} - ${percent}%`}</i> 
+                            </div>  
+                            )
+                          })
+                        }  
+                      </div>  
+                     </>
+                    ):null}     
                 </div>
               </div>
               <Row>
