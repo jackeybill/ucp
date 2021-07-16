@@ -193,9 +193,34 @@ const ExtractionTable = (props: any, ref) => {
   }
   const renderPlainTextForFirstColumn = (iten) => {
     return (
-      <span className={`key-word-in-first-column ${searchTxt && matchWord(iten, searchTxt)}`}>
+      <span className={`key-word-in-first-column ${searchTxt && matchWord(iten, searchTxt)}`} style={{display:"inline-block",width: "180px"}}>
         {iten}
       </span>
+    )
+  }
+  const renderPlainTextForComments = (iten,index,indey,content) => {
+    return (
+      iten.toString().length > 68? (
+        <td>
+          <span className={`key-word-in-first-column ${searchTxt && matchWord(iten, searchTxt)}`} style={{display:"inline-block",width: "400px", textAlign:"left"}}>
+            {iten}
+          </span>
+        </td>
+      ):(
+        indey === content[index].length-1?(
+          <td style={{textAlign:"left"}}>
+            <span className={`key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{textAlign:"left"}}>
+              {iten}
+            </span>
+          </td>
+        ):(
+          <td >
+            <span className={`key-word ${searchTxt && matchWord(iten, searchTxt)}`}>
+              {iten}
+            </span>
+          </td>
+        )
+      )
     )
   }
 
@@ -557,7 +582,9 @@ const ExtractionTable = (props: any, ref) => {
                                   item.map((iten, indey) => {
                                     return (
                                       <td>
-                                        {renderPlainText(iten)}
+                                        <span className={`key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{display:"inline-block",width: "80px"}}>
+                                          {iten}
+                                        </span>
                                       </td>
                                     )
                                   })
@@ -592,9 +619,7 @@ const ExtractionTable = (props: any, ref) => {
                                             {/* {iten.substr(1)} */}
                                           </td>
                                         ) : (
-                                          <td>
-                                            {renderPlainText(iten)}
-                                          </td>
+                                          renderPlainTextForComments(iten,index,indey,content)
                                         )
                                       )
                                     )
@@ -762,9 +787,7 @@ const ExtractionTable = (props: any, ref) => {
                                           {/* {iten.substr(1)} */}
                                         </td>
                                       ) : (
-                                        <td>
-                                          {renderPlainText(iten)}
-                                        </td>
+                                        renderPlainTextForComments(iten,index,indey,content)
                                       )
                                     )
                                   )
@@ -828,9 +851,7 @@ const ExtractionTable = (props: any, ref) => {
                                             <CheckCircleTwoTone twoToneColor="#ddd" />
                                           </td>
                                         ):(
-                                          <td>
-                                            {renderPlainText(iten)}
-                                          </td>
+                                          renderPlainTextForComments(iten,index,indey,content)
                                         )
                                       )
                                     )

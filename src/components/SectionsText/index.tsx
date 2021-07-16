@@ -62,12 +62,16 @@ const SectionText = (props: SectionTextIF) => {
                             {
                                 tableTxt.map((item, index) => {
                                   return (
-                                    index < 2? (
+                                    index < 1? (
                                       <tr>
                                       {
                                         item.map((iten, indey) => {
                                           return (
-                                            <td>{iten}</td>
+                                            <td>
+                                              <span style={{display:"inline-block",width: "80px"}}>
+                                                {iten}
+                                              </span>
+                                            </td>
                                           )
                                         })
                                       }
@@ -78,7 +82,11 @@ const SectionText = (props: SectionTextIF) => {
                                         item.map((iten, indey) => {
                                           return (
                                             indey < 1? (
-                                              <td>{iten}</td>
+                                              <td>
+                                                <span style={{display:"inline-block",width: "180px", textAlign:"left"}}>
+                                                  {iten}
+                                                </span>
+                                              </td>
                                             ) :(
                                               iten.startsWith("X")||iten==="(X)" ? (
                                                 <td>
@@ -86,7 +94,27 @@ const SectionText = (props: SectionTextIF) => {
                                                   {/* {iten.substr(1)} */}
                                                 </td>
                                               ) : (
-                                                <td>{iten}</td>
+                                                iten.toString().length > 68? (
+                                                  <td>
+                                                    <span style={{display:"inline-block",width: "400px", textAlign:"left"}}>
+                                                      {iten}
+                                                    </span>
+                                                  </td>
+                                                ):(
+                                                  indey === tableTxt[index].length-1?(
+                                                    <td style={{textAlign:"left"}}>
+                                                      <span >
+                                                        {iten}
+                                                      </span>
+                                                    </td>
+                                                  ):(
+                                                    <td >
+                                                      <span >
+                                                        {iten}
+                                                      </span>
+                                                    </td>
+                                                  )
+                                                )
                                               )
                                             )
                                           )
