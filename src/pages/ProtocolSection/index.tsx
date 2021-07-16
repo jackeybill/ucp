@@ -21,7 +21,6 @@ import SectionText from "../../components/SectionsText";
 import Extraction from "../../components/Extraction";
 import ExtractionTable from "../../components/ExtractionTable";
 import * as fileActions from "../../actions/file.js";
-import { Document, Page } from 'react-pdf';
 import "./index.scss";
 
 const baseUrl = "https://iso-dean-test.s3.amazonaws.com/RawDocuments/"
