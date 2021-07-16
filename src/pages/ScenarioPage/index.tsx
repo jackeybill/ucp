@@ -447,8 +447,8 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
-                "Timeframe": "-",
+                "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
               demographicsElements.push(newItem)
@@ -465,8 +465,8 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
-                "Timeframe": "-",
+                "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
               medConditionElements.push(newItem)
@@ -483,8 +483,8 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
-                "Timeframe": "-",
+                "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
               interventionElements.push(newItem)           
@@ -501,8 +501,8 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
-                "Timeframe": "-",
+                "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
               labTestElements.push(newItem)
