@@ -127,12 +127,12 @@
   }
   .criteria-container{
     overflow-y:hidden;
+    border: 1px solid #CCCCCC;
 
     .criteria-inner{
       width: calc(100% + 20px);
       height:400px;
       overflow-y:scroll;
-      border: 1px solid #CCCCCC;
 
       .criteria-type{
         background-color: #282F34;

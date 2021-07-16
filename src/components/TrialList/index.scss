@@ -14,7 +14,7 @@
       background-color: #ffffff;
     }
     .ant-collapse-content {
-      border-top: 1px solid transparent;
+      border: 1px solid #D6E1E4;
       background: #f3f6f7;
       box-shadow: 0px 2px 4px #a4b3b757;
     }
@@ -35,6 +35,10 @@
       flex: 1;
       padding-right: 8px;
       padding-left: 8px;
+      color: #333333;
+      font-size: 16px;
+      align-self: center;
+      text-transform: capitalize;
     }
     .status {
       display: flex;
@@ -58,10 +62,11 @@
       padding: 5px;
       color: $theme-color;
       border: 1px solid $theme-color;
+      font-size: 14px;
     }
     .update-time {
       color: #999999;
-      font-size: 10px;
+      font-size: 12px;
       display: block;
       margin-top: -4px;
     }
@@ -75,11 +80,11 @@
     }
     .key {
       color: #999999;
-      font-size: 12px;
+      font-size: 14px;
     }
     .value {
       color: #333333;
-      font-size: 12px;
+      font-size: 15px;
     }
     .view-endpoint {
       color: #e68700;
@@ -114,10 +119,6 @@
   }
 }
 
-.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
-  //   right: 16px;
-  //   left: unset;
-}
 .ant-collapse > .ant-collapse-item > .ant-collapse-header {
   padding-left: 16px;
 }
@@ -159,6 +160,14 @@
   .ant-collapse-content
   .ant-collapse-content-box {
   padding: 8px 16px;
+}
+.trails-list {
+  .ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow{
+    right: 16px;
+    left: auto;
+    top: 45%;
+    padding: unset;
+  }
 }
 .no-data {
   font-size: 20px;
