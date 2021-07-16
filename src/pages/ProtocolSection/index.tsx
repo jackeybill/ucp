@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { withRouter } from "react-router";
-import { Radio, Checkbox, Button, Menu, Dropdown, message } from "antd";
+import { Radio, Checkbox, Button, Menu, Dropdown, message,Modal } from "antd";
 import {
   SaveOutlined,
   DownOutlined,
@@ -21,7 +21,10 @@ import SectionText from "../../components/SectionsText";
 import Extraction from "../../components/Extraction";
 import ExtractionTable from "../../components/ExtractionTable";
 import * as fileActions from "../../actions/file.js";
+import { Document, Page } from 'react-pdf';
 import "./index.scss";
+
+const baseUrl = "https://iso-dean-test.s3.amazonaws.com/RawDocuments/"
 
 const completeDocument = "includeAllText";
 
@@ -78,6 +81,9 @@ const ProtocolSection = (props: any) => {
   const [entity, setEntity] = useState("");
   const [formatOptions, setFormatOptions] = useState(defaultExportOptions);
   const [checkedSections, setCheckSections] = useState(initSelectedSections);
+  const [pageNum, setPageNum] = useState(1)
+  const [filePath, setFilePath] = useState("")
+  const[isModalVisible,setIsModalVisible] = useState(false)
 
   useEffect(() => {
     if (props.fileReader.activeTabKey == "ENTITY RELATIONSHIPS") {
@@ -105,8 +111,19 @@ const ProtocolSection = (props: any) => {
       } else if (entity && activeSection && file[key][activeSection][0] && file[key][activeSection][0].table) {
         setEntities(file[key][activeSection][0] && file[key][activeSection][0].table)
       }
+      setPageNum(file[key][activeSection][0].pageNo )
     }
+    
   }, [activeSection]);
+
+  useEffect( ()=>{
+    setFilePath(`${baseUrl}${protocolTitleText}#page=${pageNum}`)
+  },[pageNum])
+
+  const iframeStr = '<iframe src='+filePath+' title="pdf"></iframe>'; 
+  const onIframe = ()=>{
+    return  {__html: iframeStr}
+  }
 
   const updateCurrentEntity = (e) => {
     setEntity(e);
@@ -208,7 +225,7 @@ const ProtocolSection = (props: any) => {
 
   const onHandleActiveSection = (s) => {
     setProtocolSection("sections");
-    setActiveSection(s);    
+    setActiveSection(s);   
   };
 
   const onRadioChange = (e) => {
@@ -268,6 +285,15 @@ const ProtocolSection = (props: any) => {
     }
   };
 
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <div className="protocol-section">
       <div className="section-header">
@@ -325,7 +351,11 @@ const ProtocolSection = (props: any) => {
       </div>
       <div className="section-body">
         {
-          props.location.pathname == "/extraction" && <div className="section-header-bar"></div>
+          props.location.pathname == "/extraction" && <div className="section-header-bar">
+            {
+              activeSection=="scheduleActivities" && <Button type="primary"  onClick={()=>setIsModalVisible(true)}>View Source</Button> 
+            }
+          </div>
         }
         <div className="sidebar">
           {
@@ -526,6 +556,10 @@ const ProtocolSection = (props: any) => {
             </div>
           )}
       </div>
+
+      <Modal title={protocolTitleText} wrapClassName="file-source-modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+        <div className="iframe-wrapper" dangerouslySetInnerHTML={ onIframe() } />
+      </Modal>
     </div>
   );
 };
