@@ -127,7 +127,7 @@ const ProtocolSection = (props: any) => {
   // const iframeStr = '<iframe src='+filePath+'></iframe>'; 
   // const iframeStr = `<iframe src=${require("../../assets/files/"+protocolTitleText)}#page=${pageNum}></iframe>`; 
   
-  const iframeStr = `<iframe src=${process.env.PUBLIC_URL}/assets/${protocolTitleText}#page=${pageNum}></iframe>`; 
+  const iframeStr = `<iframe src=${window.location.origin}/assets/${protocolTitleText}#page=${pageNum}></iframe>`; 
   const onIframe = ()=>{
     return  {__html: iframeStr}
   }
