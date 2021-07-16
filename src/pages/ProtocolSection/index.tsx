@@ -359,9 +359,9 @@ const ProtocolSection = (props: any) => {
       <div className="section-body">
         {
           props.location.pathname == "/extraction" && <div className="section-header-bar">
-            {
+            {/* {
               activeSection=="scheduleActivities" && <Button type="primary"  onClick={()=>setIsModalVisible(true)}>View Source</Button> 
-            }
+            } */}
           </div>
         }
         <div className="sidebar">
