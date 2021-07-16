@@ -225,7 +225,7 @@ const SceneriosDashbaord = (props: any) => {
                       <div className="item-wrapper" key={s["scenario_id"] + idx}>
                         <div className="scenario-item">
                           <div className="title">
-                            <p>Scenario {idx + 1}</p>
+                            <p>{s["scenario_name"]}</p>
                             <span>{s["scenario_description"]}</span>
                           </div>
                           <div className="item-values">
