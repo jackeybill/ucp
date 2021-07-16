@@ -104,7 +104,6 @@ const TrialEndpoits = (props: any) => {
               </div>
             );
           })}
-          <br/>
         </div>
       </div>
       <div className="endpoints-item">
@@ -136,7 +135,6 @@ const TrialEndpoits = (props: any) => {
               </div>
             );
           })}
-          <br/>
         </div>
       </div>
       <div className="endpoints-item">
@@ -168,7 +166,6 @@ const TrialEndpoits = (props: any) => {
               </div>
             );
           })}
-          <br/>
         </div>
       </div>
     </div>

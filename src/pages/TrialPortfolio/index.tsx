@@ -367,8 +367,7 @@ const TrialPortfolio = (props) => {
 
           <div className="list-top">
             <div className="count">
-              Your {status == "IN PROGRESS" ? "Current" : "Completed"} Trials (
-              {data.length})
+              Your {status == "IN PROGRESS" ? "Current" : "Completed"} Trials <span className="num">({data.length})</span>
             </div>
             <div className="filter-selector">
               <div className="selector-item">

@@ -20,6 +20,7 @@
     .add-endpoint {
       display: flex;
       align-items: center;
+      width: 70%;
       .ant-btn {
         margin-left: 10px;
       }
@@ -29,7 +30,7 @@
       }
     }
     .endpoint-list {
-      margin-top: 20px;
+      padding-bottom: 20px;
       .list-item {
         span{
           font-size: 15px;
