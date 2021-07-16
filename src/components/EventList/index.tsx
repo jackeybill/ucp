@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Button, Collapse, Select, Input, message, } from "antd";
 import { withRouter } from 'react-router';
 import { CheckCircleFilled, CheckCircleTwoTone,CaretUpOutlined,CaretDownOutlined,MinusCircleOutlined} from "@ant-design/icons";
-import { updateStudy,getStudy, } from '../../utils/ajax-proxy';
 import "./index.scss";
 
 const { Panel } = Collapse;
@@ -26,11 +25,9 @@ const endpoints_map = [
 
 const EventList = (props) => {
   const { visitNumber, weekNumber } = props.numbers;
-  console.log( visitNumber, weekNumber)
   const viewOnly = props.viewOnly ||false;
   const [sort,setSort] = useState("")
-  const [weeks, setWeeks] = useState(props.weeks||[])
-  // const [weeks, setWeeks] = useState([])
+  const [weeks, setWeeks] = useState([])
   const [visits, setVisits] = useState([])
   const [expandKeys, setExpandKeys] = useState(["1"])
   let [labs, setLabs] = useState(props.labs||[]);
@@ -40,94 +37,67 @@ const EventList = (props) => {
   let [studyProcedures, setStudyProcedures] = useState(props.studyProcedures||[])
 
   useEffect(() => {
-    let tmpLabs = props.labs.slice(0);
-    let tmpExamination = props.examination.slice(0);
-    let tmpProcedures = props.procedures.slice(0);
-    let tmpQuestionnaire = props.questionnaire.slice(0);
-    let tmpStudyProcedures = props.studyProcedures.slice(0);
+    if(props.viewOnly) setExpandKeys(['1','2','3','4','5'])
+  }, [props.viewOnly])
 
-    let visitsArr = [];
-    let weeksArr
-      
-    for (var i = 1; i <= visitNumber; i++) {
-      visitsArr.push(i);
-    }
-    if (props.weeks.length == 0) {
-      getWeeks()
-    } else {
-      // weeksArr=props.weeks
-      // setWeeks(props.weeks)
-     }
+  useEffect(() => {
+    getWeeks()
+    getVisits()
+  }, [visitNumber,weekNumber])
 
-     console.log( weeksArr)
+  useEffect(()=>{
+    updateCondition()
+  },[weeks])
 
-    tmpLabs.forEach((ele) => {
-      let condition = [];
-      visitsArr.forEach((e, idx) => {
-        condition.push({
-          visits: e,
-          // weeks: props.weeks.length>0?weeks[idx]: weeksArr[idx],
-          weeks:weeks[idx],
-          checked: ele.condition.length>0?ele.condition[idx].checked:false,
+  
+  useEffect(()=>{
+    getWeeks()
+
+  },[props.weeks])
+
+  const getCondition = (category) =>{
+    let tmpCategory = [category].slice(0)[0];
+
+    tmpCategory.forEach((ele) => {
+      if(!ele.condition || ele.condition.length==0){
+        let condition = [];
+        visits.forEach((e, idx) => {
+          condition.push({
+            visits: e,
+            weeks:weeks[idx],
+            checked:false,
+          });
         });
-      });
-      const totalVisit = condition.filter(e=>e.checked).length
-      ele.condition = condition;
-      ele.totalVisit = totalVisit;
+        const totalVisit = condition.filter(e=>e.checked).length
+        ele.condition = condition;
+        ele.totalVisit = totalVisit;
+      }
     });
+    return tmpCategory
+  }
 
-     tmpExamination.forEach((ele,index) => {
-      let condition = [];
-      visitsArr.forEach((e, idx) => {
-        condition.push({
-          visits: e,
-          // weeks: weeksArr[idx],
-          weeks:weeks[idx],
-          checked: ele.condition.length>0?ele.condition[idx].checked:false,
-        });
-      });
-      ele.condition = condition;
-     });
-    
-     tmpProcedures.forEach((ele) => {
-      let condition = [];
-      visitsArr.forEach((e, idx) => {
-        condition.push({
-          visits: e,
-          // weeks: weeksArr[idx],
-          weeks:weeks[idx],
-          checked: ele.condition.length>0?ele.condition[idx].checked:false,
-        });
-      });
-      ele.condition = condition;
-     });
-    
-    tmpQuestionnaire.forEach((ele) => {
-      let condition = [];
-      visitsArr.forEach((e, idx) => {
-        condition.push({
-          visits: e,
-          // weeks: weeksArr[idx],
-          weeks:weeks[idx],
-          checked: ele.condition.length>0?ele.condition[idx].checked:false,
-        });
-      });
-      ele.condition = condition;
-    });
-    
-    tmpStudyProcedures.forEach((ele) => {
-      let condition = [];
-      visitsArr.forEach((e, idx) => {
-        condition.push({
-          visits: e,
-          // weeks: weeksArr[idx],
-          weeks:weeks[idx],
-          checked: ele.condition.length>0?ele.condition[idx].checked:false,
-        });
-      });
-      ele.condition = condition;
-    });
-    
+  const updateCondition = () =>{
+    let tmpLabs = getCondition(labs)
+    let tmpExamination =getCondition(examination)
+    let tmpProcedures = getCondition(procedures)
+    let tmpQuestionnaire =getCondition(questionnaire)
+    let tmpStudyProcedures =  getCondition(studyProcedures)
+
+    setLabs(tmpLabs);
+    setExamination(tmpExamination);
+    setProcedures(tmpProcedures);
+    setQuestionnaire(tmpQuestionnaire);
+    setStudyProcedures(tmpStudyProcedures);
+  }
+
+
+  useEffect(() => {
+    //initial condition
+    let tmpLabs = getCondition(props.labs)
+    let tmpExamination =getCondition(props.examination)
+    let tmpProcedures = getCondition(props.procedures)
+    let tmpQuestionnaire =getCondition(props.questionnaire)
+    let tmpStudyProcedures =  getCondition(props.studyProcedures)
 
     setLabs(tmpLabs);
     setExamination(tmpExamination);
@@ -143,7 +113,6 @@ const EventList = (props) => {
     props.examination,
     visitNumber,
     weekNumber,
-    // props.weeks,
   ]);
 
   const getInitCodition = () =>{
@@ -159,17 +128,10 @@ const EventList = (props) => {
   }
 
   useEffect(() => {
-    getWeeks()
-    getVisits()
-  }, [visitNumber,weekNumber])
-
-  useEffect(() => {
     if(props.submitType != 0){
       onSave()
     }
   }, [props.submitType])
-
-
 
   const onEndpointChange = (value, evt,idx) => {
     const Categories = evt.Categories
@@ -268,20 +230,25 @@ const EventList = (props) => {
   };
 
   const getWeeks = () => {
-    let weeksArr = [1];
-    let week = Math.floor((weekNumber-1) / (visitNumber-1));
-    let sum = 1;
-    for (var i = 1; i <= visitNumber-1; i++) {
-      sum = sum + week;
-      if (sum > weekNumber) sum = weekNumber;
-      if (i == visitNumber - 1) {
-        sum=weekNumber
+    if (props.weeks && props.weeks.length > 0) {
+      setWeeks(props.weeks)
+    }else{
+      let weeksArr = [1];
+      let week = Math.floor((weekNumber-1) / (visitNumber-1));
+      let sum = 1;
+      for (var i = 1; i <= visitNumber-1; i++) {
+        sum = sum + week;
+        if (sum > weekNumber) sum = weekNumber;
+        if (i == visitNumber - 1) {
+          sum=weekNumber
+        }
+        weeksArr.push(sum)
       }
-      weeksArr.push(sum)
-    }
-    console.log(weeksArr)
-    setWeeks(weeksArr)
+      setWeeks(weeksArr)
+    } 
   };
+
+
 
   const getVisits = () =>{
     let visitArr = [];
@@ -321,6 +288,7 @@ const EventList = (props) => {
   const onWeekChange = (e,idx) => {
     const tmpWeeks = weeks.slice(0)
     tmpWeeks[idx] = Number(e.target.value)
+
     setWeeks(tmpWeeks)
   }
 
@@ -530,9 +498,13 @@ const EventList = (props) => {
     <div className="event-list-container">
       <div className="container-top">
         <span>Schedule of Events</span>
-        <Button type="primary" size="small" onClick={onSave}>
-          Save
-        </Button>
+        {
+          !viewOnly&&(
+            <Button type="primary" size="small" onClick={onSave}>
+            Save
+            </Button>
+          )
+        }   
       </div>
 
       <div className="event-dashboard">
@@ -769,12 +741,18 @@ const EventList = (props) => {
                     <div className="events-wrapper e-row">
                       <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
                       {
-                          !evt.Custom?evt["Standard Event"]:(
-                            <>
-                              <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(PROCEDURES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,PROCEDURES,idx,"Standard Event")} />
-                            </>
-                          )                       
-                        }    
+                        viewOnly?evt["Standard Event"]:(
+                          <>
+                            {
+                            !evt.Custom?evt["Standard Event"]:(
+                              <>
+                                <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(PROCEDURES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,PROCEDURES,idx,"Standard Event")} />
+                              </>
+                            )                       
+                            }
+                          </>
+                        )
+                      }                            
                       </div>
                       <div className="endpoint-td td f-2">
                       {
@@ -849,12 +827,18 @@ const EventList = (props) => {
                     <div className="events-wrapper e-row">
                       <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
                       {
-                          !evt.Custom?evt["Standard Event"]:(
-                            <>
-                              <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(QUESTIONNAIRES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,QUESTIONNAIRES,idx,"Standard Event")} />
-                            </>
-                          )                       
-                        }    
+                        viewOnly?evt["Standard Event"]:(
+                          <>
+                            {
+                              !evt.Custom?evt["Standard Event"]:(
+                                <>
+                                  <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(QUESTIONNAIRES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,QUESTIONNAIRES,idx,"Standard Event")} />
+                                </>
+                              )                       
+                            }  
+                          </>
+                        )
+                      }         
                       </div>
                       <div className="endpoint-td td f-2">
                       {
@@ -862,9 +846,6 @@ const EventList = (props) => {
                         } 
                       </div>
                       <div className="cost-td td f-1-small">
-                      {/* ${
-                          !evt.Custom?evt["Dummy Cost"]:<Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,QUESTIONNAIRES,idx,"Dummy Cost")} />
-                        }  */}
                         {
                           viewOnly?`$ ${evt["Dummy Cost"]}`:(
                             <>
@@ -932,12 +913,19 @@ const EventList = (props) => {
                     <div className="events-wrapper e-row">
                       <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
                       {
-                          !evt.Custom?evt["Standard Event"]:(
-                            <>
-                              <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(STUDY_PROCEDURES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,STUDY_PROCEDURES,idx,"Standard Event")} />
-                            </>
-                          )                       
-                        }   
+                        viewOnly?evt["Standard Event"]:(
+                          <>
+                           {
+                            !evt.Custom?evt["Standard Event"]:(
+                              <>
+                                <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(STUDY_PROCEDURES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,STUDY_PROCEDURES,idx,"Standard Event")} />
+                              </>
+                            )                       
+                          }   
+                          </>
+                        )
+                      }  
+                      
                       </div>
                       <div className="endpoint-td td f-2">
                         {
@@ -945,9 +933,6 @@ const EventList = (props) => {
                         } 
                       </div>
                       <div className="cost-td td f-1-small">
-                      {/* ${
-                          !evt.Custom?evt["Dummy Cost"]:<Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,STUDY_PROCEDURES,idx,"Dummy Cost")} />
-                        }  */}
                         {
                           viewOnly?`$ ${evt["Dummy Cost"]}`:(
                             <>

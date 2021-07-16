@@ -83,7 +83,7 @@ const ScenarioDetails = (props: any) => {
         setAddedStudyProcedures(eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities)
       } 
   },[props.record, props.scenarioId]);
-  
+
   return (
     <>
         <div className="trial-detail-container">
