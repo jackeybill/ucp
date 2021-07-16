@@ -27,7 +27,21 @@
         color:#fff;
 
         .item-translate{
-            transform: translateY(-10px);
+            font-size: 15px;
+            padding: 0px 10px;
+
+            .name{
+                font-size: 16px;
+                font-weight: bold;
+            }
+        }
+
+        .scenario-header{
+            border-left: 1.5px solid #c4bfbf;
+            border-right: 1.5px solid #c4bfbf;
+        }
+        .center{
+            align-self: center;
         }
     }
     
