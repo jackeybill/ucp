@@ -1840,33 +1840,30 @@ const ScenarioPage = (props) => {
       <Spin spinning={pageLoading} indicator={<LoadingOutlined style={{ color: "#ca4a04" }} />}>
       <div>
         <Row className="process-container">
-            <Col span={2} style={{borderRight: '1.5px solid #c4bfbf'}}>
+            <Col span={2} className="center">
                 <div className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
                     <LeftOutlined /> &nbsp;Trial Page
                 </div>
             </Col>
-            <Col span={4} style={{maxHeight: '32px',borderRight: '1.5px solid #c4bfbf'}}>
+            <Col span={4} className="scenario-header center">
               <Row>
               <Col span={24}>
                 <Row className="item-translate">
-                    <Col flex="10px"></Col>
-                    <Col flex="auto"><span style={{fontSize: '15px'}}>{trialTitle}: {scenarioType}</span></Col>
+                    <Col flex="auto">{trialTitle}&nbsp;:&nbsp;{scenarioType}</Col>
                 </Row>
                 <Row className="item-translate">
-                    
-                    <Col flex="10px"></Col>
-                    <Col flex="auto" style={{fontSize: '16px', fontWeight: 'bold'}}>{scenario['scenario_name']}</Col>
+                    <Col flex="auto" className="name">{scenario['scenario_name']}</Col>
                 </Row>
                 </Col>
                 </Row>
             </Col>
-            <Col span={8} style={{paddingLeft: '10px'}}>
+            <Col span={8} className="center" style={{paddingLeft: '10px'}}>
                 <Steps progressDot current={processStep} size="small" >
                     <Step title="Add Inclusion / Exclusion Criteria"/>
                     <Step title="Add Schedule of Events"/>
                 </Steps>
             </Col>
-            <Col span={10} className={`${ collapsible ? "none-click" : "" }`} >
+            <Col span={10} className={`center ${ collapsible ? "none-click" : "" }`} >
                 {activeTabKey === '1'?(
                     <>
                         <Button type="primary" className="step-btn" onClick={() => setActiveTabKey('2')}>
