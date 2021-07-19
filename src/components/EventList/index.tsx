@@ -167,6 +167,7 @@ const EventList = (props) => {
         tmpCategories[idx].endpoint = value;
         setLabs(tmpCategories)
     }
+    props.handleEventChange()
   }
 
   const toggleChecked = (evt, idx) => {
@@ -227,6 +228,7 @@ const EventList = (props) => {
       
       default:
     }
+    props.handleEventChange()
   };
 
   const renderVisit = () => {
@@ -398,6 +400,7 @@ const EventList = (props) => {
       }
       expandPanel = Array.from(new Set(expandPanel))
       setExpandKeys(expandPanel)
+      props.handleEventChange()
   }
 
   const onCustomEventNameChange = (e,category, idx,key)=>{
@@ -434,6 +437,7 @@ const EventList = (props) => {
         setStudyProcedures(temp)
         break;
       }
+      props.handleEventChange()
   }
   const onRemoveCustomEvent=(category,idx) =>{
     let temp;
@@ -468,6 +472,7 @@ const EventList = (props) => {
           setStudyProcedures(temp)
           break;
       }
+      props.handleEventChange()
   }
 
   const onSave = async () => {

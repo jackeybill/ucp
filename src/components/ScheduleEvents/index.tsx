@@ -11,6 +11,9 @@ const { Panel } = Collapse;
 
 const iChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA', '#DADADA']
 const aChartColors = ['#d04a02', '#ed7738', '#ed9d72', '#f5b795', '#f5ddcf']
+const burdenColors = {active: '#E53500', inactive: '#DADADA'}
+const aLabelColors = {GOOD: '#00A947', FAIR: '#0084A9', POOR: '#c33232'}
+const iLabelColors = {GOOD: burdenColors.inactive, FAIR: burdenColors.inactive, POOR: burdenColors.inactive}
 
 const CATEGORY_LABS = 'Labs';
 const CATEGORY_PHYSICAL_EXAMINATION = 'Physical Examination';
@@ -65,6 +68,8 @@ const ScheduleEvents = (props) => {
 
   //Cost Per Patient Chart
   const [patientChartColor, setPatientChartColor] = useState(iChartColors)
+  const [burdenChartColor, setBurdenChartColor] = useState(burdenColors.inactive)
+  const [labelColors, setLabelColors] = useState(iLabelColors)
   const [costData, setCostData] = useState(defaultCostValue)
   const [costSubTitle, setCostSubTitle] = useState('')
   const [showPatientLabel, setShowPatientLabel] = useState(false)
@@ -169,6 +174,8 @@ const ScheduleEvents = (props) => {
               setShowTooltip(true)
               setShowPatientLabel(true)
               setPatientChartColor(aChartColors)
+              setBurdenChartColor(burdenColors.active)
+              setLabelColors(aLabelColors)
             }
 
             setFilteredLabs(filterLibs(response[CATEGORY_LABS], eventsConfigure[CATEGORY_LABS].entities, minV, maxV))
@@ -283,7 +290,7 @@ const ScheduleEvents = (props) => {
             name: 'Patient Burder',
             type: 'bar',
             barWidth: '60%',
-            color:'#E53500',
+            color: burdenChartColor,
             data: burdenData,
             label: {
               show: showTooltip,
@@ -353,19 +360,19 @@ const ScheduleEvents = (props) => {
               backgroundColor: "white"
             },
             GOOD: {
-              color: '#00A947',
+              color: labelColors.GOOD,
               fontSize: 12,
               fontWeight:'bold',
               backgroundColor: "white"
             },
             FAIR: {
-              color: '#0084A9',
+              color: labelColors.FAIR,
               fontSize: 12,
               fontWeight:'bold',
               backgroundColor: "white"
             },
             POOR: {
-              color: '#c33232',
+              color: labelColors.POOR,
               fontSize: 12,
               fontWeight:'bold',
               backgroundColor: "white"
@@ -388,75 +395,10 @@ const ScheduleEvents = (props) => {
     ]
   };
 
-  const handleEventChange = (event, newFlag) =>{
-    switch (event.Categories.trim()) {
-      case CATEGORY_LABS:     
-        const tmpLabs = addedLabs.slice(0);
-        if(newFlag){
-          tmpLabs.push(event)
-        } else {
-          let index = addedLabs.findIndex((d) => d['Standard Event'] == event['Standard Event'])
-          if(index > -1){
-            tmpLabs.splice(index, 1, event)
-          }
-        }
-        setAddedLabs(tmpLabs)
-        break;
-      
-      case CATEGORY_PHYSICAL_EXAMINATION:    
-        const tmpExamination = addedExamination.slice(0);
-        if(newFlag){
-          tmpExamination.push(event)
-        } else {
-          let index = addedExamination.findIndex((d) => d['Standard Event'] == event['Standard Event'])
-          if(index > -1){
-            tmpExamination.splice(index, 1, event)
-          }
-        }
-        setAddedExamination(tmpExamination)
-        break;
-      
-      case CATEGORY_PROCEDURES:       
-        const tmpProcedures = addedProcedures.slice(0);
-        if(newFlag){
-          tmpProcedures.push(event)
-        } else {
-          let index = addedProcedures.findIndex((d) => d['Standard Event'] == event['Standard Event'])
-          if(index > -1){
-            tmpProcedures.splice(index, 1, event)
-          }
-        }
-        setAddedProcedures(tmpProcedures)
-        break;
-      
-       case CATEGORY_QUESTIONNAIRES:       
-        const tmpQuestionnaires = addedQuestionnaires.slice(0);
-        if(newFlag){
-          tmpQuestionnaires.push(event)
-        } else {
-          let index = addedQuestionnaires.findIndex((d) => d['Standard Event'] == event['Standard Event'])
-          if(index > -1){
-            tmpQuestionnaires.splice(index, 1, event)
-          }
-        }
-        setAddedQuestionnaires(tmpQuestionnaires)
-        break;
-      
-       case CATEGORY_STUDY_PROCEDURES: 
-       const tmpStudyProcedures = addedStudyProcedures.slice(0);
-        if(newFlag){
-          tmpStudyProcedures.push(event)
-        } else {
-          let index = addedStudyProcedures.findIndex((d) => d['Standard Event'] == event['Standard Event'])
-          if(index > -1){
-            tmpStudyProcedures.splice(index, 1, event)
-          }
-        }
-        setAddedStudyProcedures(tmpStudyProcedures)
-        break;
-      
-      default: break;
-    }
+  const handleEventChange = () =>{
+    setPatientChartColor(iChartColors)
+    setBurdenChartColor(burdenColors.inactive)
+    setLabelColors(iLabelColors)
   }
 
   const saveEvents = async (scheduleOfEvents) =>{
@@ -475,6 +417,8 @@ const ScheduleEvents = (props) => {
     }
     console.log("save action")
     setPatientChartColor(aChartColors)
+    setBurdenChartColor(burdenColors.active)
+    setLabelColors(aLabelColors)
     setShowPatientLabel(true)
     setWeeks(scheduleOfEvents.Weeks)
 
