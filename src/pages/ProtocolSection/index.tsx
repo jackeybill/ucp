@@ -23,7 +23,8 @@ import ExtractionTable from "../../components/ExtractionTable";
 import * as fileActions from "../../actions/file.js";
 import "./index.scss";
 
-// const baseUrl = "https://iso-dean-test.s3.amazonaws.com/RawDocuments/"
+const baseUrl = "https://iso-dean-test.s3.amazonaws.com/RawDocuments/"
+
 
 const completeDocument = "includeAllText";
 
@@ -85,7 +86,9 @@ const ProtocolSection = (props: any) => {
   const[isModalVisible,setIsModalVisible] = useState(false)
 
   useEffect(()=>{
-    const file = require("../../assets/files/"+protocolTitleText)
+    // const file = require("../../assets/files/"+protocolTitleText)
+    const file="https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/RawDocuments/NCT01999972.pdf"
+
     setFilePath(file)
 
   },[protocolTitleText])
@@ -123,11 +126,14 @@ const ProtocolSection = (props: any) => {
 
   useEffect( ()=>{
     // setFilePath(`${baseUrl}${protocolTitleText}#page=${pageNum}`)
+    setFilePath(`https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/RawDocuments/NCT01999972.pdf#page=${pageNum}`)
   },[pageNum])
-  // const iframeStr = '<iframe src='+filePath+'></iframe>'; 
+
+  // const fileUrl = "https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/RawDocuments/NCT01999972.pdf"
+  const iframeStr = '<iframe src='+filePath+'></iframe>'; 
   // const iframeStr = `<iframe src=${require("../../assets/files/"+protocolTitleText)}#page=${pageNum}></iframe>`; 
   
-  const iframeStr = `<iframe src=${window.location.origin}/assets/${protocolTitleText}#page=${pageNum}></iframe>`; 
+  // const iframeStr = `<iframe src=${window.location.origin}/assets/${protocolTitleText}#page=${pageNum}></iframe>`; 
   const onIframe = ()=>{
     return  {__html: iframeStr}
   }
@@ -359,9 +365,9 @@ const ProtocolSection = (props: any) => {
       <div className="section-body">
         {
           props.location.pathname == "/extraction" && <div className="section-header-bar">
-            {/* {
+            {
               activeSection=="scheduleActivities" && <Button type="primary"  onClick={()=>setIsModalVisible(true)}>View Source</Button> 
-            } */}
+            }
           </div>
         }
         <div className="sidebar">
