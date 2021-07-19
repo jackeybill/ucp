@@ -25,7 +25,7 @@ import "./index.scss";
 
 
 // const baseUrl = "https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/RawDocuments/"
-const baseUrl ="https://ucp-docs.s3.us-west-2.amazonaws.com/iso-service-dev/RawDocuments/"
+// const baseUrl ="https://ucp-docs.s3.us-west-2.amazonaws.com/iso-service-dev/RawDocuments/"
 
 
 const completeDocument = "includeAllText";
@@ -118,14 +118,14 @@ const ProtocolSection = (props: any) => {
     
   }, [activeSection]);
 
-  useEffect( ()=>{
-    setFilePath(`${baseUrl}${protocolTitleText}#page=${pageNum}`)
-  },[pageNum,protocolTitleText])
-  const iframeStr = '<iframe src='+filePath+'></iframe>'; 
+  // useEffect( ()=>{
+  //   setFilePath(`${baseUrl}${protocolTitleText}#page=${pageNum}`)
+  // },[pageNum,protocolTitleText])
+  // const iframeStr = '<iframe src='+filePath+'></iframe>'; 
   
-  const onIframe = ()=>{
-    return  {__html: iframeStr}
-  }
+  // const onIframe = ()=>{
+  //   return  {__html: iframeStr}
+  // }
 
   const updateCurrentEntity = (e) => {
     setEntity(e);
@@ -354,9 +354,9 @@ const ProtocolSection = (props: any) => {
       <div className="section-body">
         {
           props.location.pathname == "/extraction" && <div className="section-header-bar">
-            {
+            {/* {
               activeSection=="scheduleActivities" && <Button type="primary"  onClick={()=>setIsModalVisible(true)}>View Source</Button> 
-            }
+            } */}
           </div>
         }
         <div className="sidebar">
@@ -559,9 +559,9 @@ const ProtocolSection = (props: any) => {
           )}
       </div>
 
-      <Modal title={protocolTitleText} wrapClassName="file-source-modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      {/* <Modal title={protocolTitleText} wrapClassName="file-source-modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <div className="iframe-wrapper" dangerouslySetInnerHTML={ onIframe() } />
-      </Modal>
+      </Modal> */}
     </div>
   );
 };
