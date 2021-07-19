@@ -167,58 +167,66 @@ const EventList = (props) => {
         tmpCategories[idx].endpoint = value;
         setLabs(tmpCategories)
     }
-    props.handleEventChange(evt,evt.Custom)
   }
 
   const toggleChecked = (evt, idx) => {
     const { Categories, condition } = evt;
     const tmpCon = condition.slice(0);
     tmpCon[idx].checked = !tmpCon[idx].checked;
-
+    const totalVisitTmp = condition.filter(c => c.checked).length
     switch (Categories) {
       case LABS:     
         const tmpLabs = labs.slice(0);
-        tmpLabs.find(
+        const targetLab = tmpLabs.find(
           (ele) => ele["Standard Event"] == evt["Standard Event"]
-        ).condition = tmpCon;
+        )
+        targetLab.condition = tmpCon;
+        targetLab.totalVisit = totalVisitTmp
         setLabs(tmpLabs);
         break;
       
       case PHYSICAL_EXAMINATION:       
         const tmpExamination = examination.slice(0);
-        tmpExamination.find(
+        const targetEaxm = tmpExamination.find(
           (ele) => ele["Standard Event"] == evt["Standard Event"]
-        ).condition = tmpCon;
+        )
+        targetEaxm.condition = tmpCon;
+        targetEaxm.totalVisit = totalVisitTmp
         setExamination(tmpExamination);
         break;
       
       case PROCEDURES:       
         const tmpProcedures= procedures.slice(0);
-        tmpProcedures.find(
+        const targetProcedure = tmpProcedures.find(
           (ele) => ele["Standard Event"] == evt["Standard Event"]
-        ).condition = tmpCon;
+        )
+        targetProcedure.condition = tmpCon;
+        targetProcedure.totalVisit = totalVisitTmp
         setProcedures(tmpProcedures);
         break;
       
        case QUESTIONNAIRES:       
         const tmpQuestionnaire= questionnaire.slice(0);
-        tmpQuestionnaire.find(
+        const targetQuestionnaire = tmpQuestionnaire.find(
           (ele) => ele["Standard Event"] == evt["Standard Event"]
-        ).condition = tmpCon;
+        )
+        targetQuestionnaire.condition = tmpCon;
+        targetQuestionnaire.totalVisit = totalVisitTmp
         setQuestionnaire(tmpQuestionnaire);
         break;
       
        case STUDY_PROCEDURES:       
         const tmpStudyProcedures= studyProcedures.slice(0);
-        tmpStudyProcedures.find(
+        const targetStudyProcedure=tmpStudyProcedures.find(
           (ele) => ele["Standard Event"] == evt["Standard Event"]
-        ).condition = tmpCon;
+        )
+        targetStudyProcedure.condition = tmpCon;
+        targetStudyProcedure.totalVisit = totalVisitTmp
         setStudyProcedures(tmpStudyProcedures);
         break;
       
       default:
     }
-    props.handleEventChange(evt,false)
   };
 
   const renderVisit = () => {
@@ -493,7 +501,7 @@ const EventList = (props) => {
   function callback(key) {
     setExpandKeys(key)
   }
-
+  
   return (
     <div className="event-list-container">
       <div className="container-top">
@@ -550,7 +558,7 @@ const EventList = (props) => {
                     {`${LABS} (${labs.length})`} {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,LABS)}>Add Event</span> } 
                   </div>
                   <div className="cost">
-                    $ {getTotalCost(labs)}
+                  $ {getTotalCost(labs)}
                     </div>
                   <div></div>
                 </div>
@@ -564,8 +572,6 @@ const EventList = (props) => {
                 return onSort(a,b)
                 })
                 .map((evt, idx) => {
-                const totalVisit = evt.condition.filter(c => c.checked).length
-                evt.totalVisit = totalVisit
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
@@ -600,7 +606,7 @@ const EventList = (props) => {
                           )
                         }                   
                       </div>
-                      <div className="visits-td td f-1-small">{totalVisit}</div>
+                      <div className="visits-td td f-1-small">{evt.totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td"></div>
@@ -649,8 +655,6 @@ const EventList = (props) => {
                 return onSort(a,b)
                 })
                 .map((evt, idx) => {
-                const totalVisit = evt.condition.filter(c => c.checked).length
-                evt.totalVisit = totalVisit
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
@@ -685,7 +689,7 @@ const EventList = (props) => {
                           )
                         } 
                       </div>
-                      <div className="visits-td td f-1-small">{totalVisit}</div>
+                      <div className="visits-td td f-1-small">{evt.totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td"></div>
@@ -734,8 +738,6 @@ const EventList = (props) => {
                 return onSort(a,b)
               })
                 .map((evt, idx) => {
-                const totalVisit = evt.condition.filter(c => c.checked).length
-                evt.totalVisit = totalVisit
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
@@ -771,7 +773,7 @@ const EventList = (props) => {
                         }  
                         
                       </div>
-                      <div className="visits-td td f-1-small">{totalVisit}</div>
+                      <div className="visits-td td f-1-small">{evt.totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td"></div>
@@ -820,8 +822,6 @@ const EventList = (props) => {
                 return onSort(a,b)
                 })
                 .map((evt, idx) => {
-                const totalVisit = evt.condition.filter(c => c.checked).length
-                evt.totalVisit = totalVisit
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
@@ -857,7 +857,7 @@ const EventList = (props) => {
                         }  
 
                       </div>
-                      <div className="visits-td td f-1-small">{totalVisit}</div>
+                      <div className="visits-td td f-1-small">{evt.totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td"></div>
@@ -906,8 +906,6 @@ const EventList = (props) => {
                 return onSort(a,b)
                 })
                 .map((evt, idx) => {
-                const totalVisit = evt.condition.filter(c => c.checked).length
-                evt.totalVisit = totalVisit
                 return (
                   <div className="event-item">
                     <div className="events-wrapper e-row">
@@ -943,7 +941,7 @@ const EventList = (props) => {
                           )
                         }  
                       </div>
-                      <div className="visits-td td f-1-small">{totalVisit}</div>
+                      <div className="visits-td td f-1-small">{evt.totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td"></div>
