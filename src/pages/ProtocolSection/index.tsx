@@ -23,7 +23,8 @@ import ExtractionTable from "../../components/ExtractionTable";
 import * as fileActions from "../../actions/file.js";
 import "./index.scss";
 
-const baseUrl = "https://iso-dean-test.s3.amazonaws.com/RawDocuments/"
+
+const baseUrl = "https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/RawDocuments/"
 
 
 const completeDocument = "includeAllText";
@@ -125,15 +126,10 @@ const ProtocolSection = (props: any) => {
   }, [activeSection]);
 
   useEffect( ()=>{
-    // setFilePath(`${baseUrl}${protocolTitleText}#page=${pageNum}`)
-    setFilePath(`https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/RawDocuments/NCT01999972.pdf#page=${pageNum}`)
+    setFilePath(`${baseUrl}${protocolTitleText}#page=${pageNum}`)
   },[pageNum])
-
-  // const fileUrl = "https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/RawDocuments/NCT01999972.pdf"
   const iframeStr = '<iframe src='+filePath+'></iframe>'; 
-  // const iframeStr = `<iframe src=${require("../../assets/files/"+protocolTitleText)}#page=${pageNum}></iframe>`; 
   
-  // const iframeStr = `<iframe src=${window.location.origin}/assets/${protocolTitleText}#page=${pageNum}></iframe>`; 
   const onIframe = ()=>{
     return  {__html: iframeStr}
   }
