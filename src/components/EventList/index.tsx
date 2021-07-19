@@ -167,6 +167,7 @@ const EventList = (props) => {
         tmpCategories[idx].endpoint = value;
         setLabs(tmpCategories)
     }
+    props.handleEventChange(evt,evt.Custom)
   }
 
   const toggleChecked = (evt, idx) => {
@@ -217,6 +218,7 @@ const EventList = (props) => {
       
       default:
     }
+    props.handleEventChange(evt,false)
   };
 
   const renderVisit = () => {
