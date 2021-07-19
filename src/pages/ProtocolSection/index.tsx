@@ -86,14 +86,6 @@ const ProtocolSection = (props: any) => {
   const [filePath, setFilePath] = useState("")
   const[isModalVisible,setIsModalVisible] = useState(false)
 
-  useEffect(()=>{
-    // const file = require("../../assets/files/"+protocolTitleText)
-    const file="https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/RawDocuments/NCT01999972.pdf"
-
-    setFilePath(file)
-
-  },[protocolTitleText])
-
   useEffect(() => {
     if (props.fileReader.activeTabKey == "ENTITY RELATIONSHIPS") {
       setFormatOptions(relationshipExportOptions);
@@ -127,7 +119,7 @@ const ProtocolSection = (props: any) => {
 
   useEffect( ()=>{
     setFilePath(`${baseUrl}${protocolTitleText}#page=${pageNum}`)
-  },[pageNum])
+  },[pageNum,protocolTitleText])
   const iframeStr = '<iframe src='+filePath+'></iframe>'; 
   
   const onIframe = ()=>{
