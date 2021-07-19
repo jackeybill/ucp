@@ -24,7 +24,7 @@ import * as fileActions from "../../actions/file.js";
 import "./index.scss";
 
 
-const baseUrl = "https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/RawDocuments/"
+// const baseUrl = "https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/RawDocuments/"
 
 
 const completeDocument = "includeAllText";
