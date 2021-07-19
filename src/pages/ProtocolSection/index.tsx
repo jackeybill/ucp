@@ -86,7 +86,7 @@ const ProtocolSection = (props: any) => {
   const [pageNum, setPageNum] = useState(1)
   const [filePath, setFilePath] = useState("")
   const[isModalVisible,setIsModalVisible] = useState(false)
-
+  
   useEffect(() => {
     if (props.fileReader.activeTabKey == "ENTITY RELATIONSHIPS") {
       setFormatOptions(relationshipExportOptions);
@@ -119,8 +119,8 @@ const ProtocolSection = (props: any) => {
   }, [activeSection]);
 
   useEffect( ()=>{
-    setFilePath(`${baseUrl}${protocolTitleText}#page=${pageNum}`)
-  },[pageNum,protocolTitleText])
+    setFilePath(`${baseUrl}${fileName}#page=${pageNum}`)
+  },[pageNum,fileName])
   const iframeStr = '<iframe src='+filePath+'></iframe>'; 
   
   const onIframe = ()=>{
