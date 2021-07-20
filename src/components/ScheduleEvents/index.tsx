@@ -36,6 +36,9 @@ const initialNumber = {
   weekNumber: 26
 }
 
+const defaultCostAvg = 0.04
+const defaultBurdenAvg = 300
+
 const initEventCriteria = {
   'TotalCost': 0,
   'CostRate': '',
@@ -520,10 +523,10 @@ const ScheduleEvents = (props) => {
       'TotalCost': formatCostAvg(totalCost, 1000),
       'CostRate': costBreakdown,
       'CostData': tempCostData,
-      'CostAvg': formatCostAvg(totalCost, 5000),
+      'CostAvg': defaultCostAvg, //formatCostAvg(totalCost, 5000),
       'BurdenData': tempBurdenData,
       'BurdenXAxis': tempBurdenXAxis,
-      'BurdenAvg': formatBurdenAvg(totalCost, numbers.visitNumber),
+      'BurdenAvg': defaultBurdenAvg, //formatBurdenAvg(totalCost, numbers.visitNumber),
       'Finished': submitType === 3 ? true : false
     })
     setEventCriteria(newScenario['Schedule of Events'])
