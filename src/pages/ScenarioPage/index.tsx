@@ -22,6 +22,7 @@ const { Step } = Steps;
 const frequencyFilter = [80, 100]
 const inActiveChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA']
 const activeChartColors = ['#E53500', '#F27A26', '#F5924D', '#FBD0B3']
+const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2020}
 
 
 const panelHeader = () => {
@@ -1298,7 +1299,14 @@ const ScenarioPage = (props) => {
         const resp = await getSimilarhistoricalTrialById(similarHistoricalTrials);
         if (resp.statusCode == 200) {
           setSpinning(false)
-          setHistoricalTrialdata(JSON.parse(resp.body))
+
+          const filteredData =  JSON.parse(resp.body).filter((d) => {
+            const date = d['start_date'].split('-')[0]
+            return (
+              date >= simliarTrialStudyStartDate.dateFrom && date<= simliarTrialStudyStartDate.dateTo
+            );
+          });
+          setHistoricalTrialdata(filteredData)
         }
       }
     }
