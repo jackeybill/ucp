@@ -23,8 +23,6 @@ import ExtractionTable from "../../components/ExtractionTable";
 import * as fileActions from "../../actions/file.js";
 import "./index.scss";
 
-
-// const baseUrl = "https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/RawDocuments/"
 const baseUrl ="https://ucp-docs.s3.us-west-2.amazonaws.com/iso-service-dev/RawDocuments/"
 
 
@@ -33,13 +31,13 @@ const completeDocument = "includeAllText";
 export const sectionOptions = [
   { label: "PROTOCOL TITLE", value: "protocolTitle" },
   { label: "BRIEF SUMMARY", value: "briefSummary" },
-  // {
-  //   label: "OBJECTIVES, ENDPOINTS, ESTIMANDS",
-  //   value: "objectivesEndpointsEstimands",
-  // },
   { label: "INCLUSION CRITERIA", value: "inclusionCriteria" },
   { label: "EXCLUSION CRITERIA", value: "exclusionCriteria" },
   { label: "SCHEDULE OF ACTIVITIES", value: "scheduleActivities" },
+  {
+    label: "OBJECTIVES, ENDPOINTS, ESTIMANDS",
+    value: "objectivesEndpointsEstimands",
+  },
 ];
 export const initSelectedSections = sectionOptions.map((s) => {
   return s.value;
