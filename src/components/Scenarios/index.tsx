@@ -2,7 +2,7 @@ import React, { useState, useReducer,useEffect } from "react";
 import { withRouter } from "react-router";
 import { Button, Row, Col, Input, Drawer, Radio } from "antd";
 import { InfoCircleOutlined} from "@ant-design/icons";
-import { updateStudy,getStudy  } from "../../utils/ajax-proxy";
+import { updateStudy,getStudy,getEventAverageCost } from "../../utils/ajax-proxy";
 import "./index.scss";
 
 const { TextArea } = Input;
@@ -78,6 +78,16 @@ const SceneriosDashbaord = (props: any) => {
 
       const tempTrial = props.record
       tempTrial.scenarios = tempScenarios
+      if(tempTrial.CostAvg === undefined || tempTrial.CostAvg === 0){
+        const resp = await getEventAverageCost(tempTrial.similarHistoricalTrials);
+        if(resp.statusCode === 200){
+          tempTrial.CostAvg = JSON.parse(resp.body).Cost
+          tempTrial.BurdenAvg = JSON.parse(resp.body).PB
+        } else {
+          tempTrial.CostAvg = 0
+          tempTrial.BurdenAvg = 0
+        }
+      }
 
       const resp = await updateStudy(tempTrial);
       if (resp.statusCode == 200) {

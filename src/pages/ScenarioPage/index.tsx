@@ -98,6 +98,7 @@ const ScenarioPage = (props) => {
     const [totalData, setTotalData] = useState([])
     const [freqData, setFreqdata] = useState([])
     const [chartTitle, setChartTitle] = useState('Patients Eligible - 80K(16% of Dataset)')
+    const [visibleSOA, setVisibleSOA] = useState(false)
 
     //------------------------INCLUSION CRITERIA CONST START-----------------------------
     //Original libs for filter purpose
@@ -1290,6 +1291,26 @@ const ScenarioPage = (props) => {
     
     const handleCancel = () => {
       setShowHistorical(false)
+    }
+
+    const showSOAModal = async () => {
+      console.log('test')
+      setVisibleSOA(true)
+      if(historicalTrialdata.length == 0){
+        setSpinning(true)
+        const resp = await getSimilarhistoricalTrialById(similarHistoricalTrials);
+        if (resp.statusCode == 200) {
+          setSpinning(false)
+
+          const filteredData =  JSON.parse(resp.body).filter((d) => {
+            const date = d['start_date'].split('-')[0]
+            return (
+              date >= simliarTrialStudyStartDate.dateFrom && date<= simliarTrialStudyStartDate.dateTo
+            );
+          });
+          setHistoricalTrialdata(filteredData)
+        }
+      }
     }
 
     const searchHistoricalTrials = async () => {
@@ -2566,22 +2587,24 @@ const ScenarioPage = (props) => {
       </div>
 
       ) : (
-              <div className="ie-container"><ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} history={props.history}/></div>
+              <div className="ie-container"><ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} history={props.history} setVisibleSOA={showSOAModal}/></div>
       )}
       </Spin>
-      <Drawer
-          title="Historical Trial List"
-          placement="right"
-          onClose={handleCancel}
-          visible={showHistorical}
-        >
-
-          <Row>
+      <Drawer title="Historical Trial List" placement="right" onClose={handleCancel} visible={showHistorical}>
+        <Row>
           <Spin spinning={spinning}>
             <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
           </Spin>
         </Row>
-        </Drawer>
+      </Drawer>
+
+      <Drawer title="Historical Trial List" placement="right" onClose={() => setVisibleSOA(false)} visible={visibleSOA}>
+        <Row>
+          <Spin spinning={spinning}>
+            <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
+          </Spin>
+        </Row>
+      </Drawer>
     </div>
       
     );

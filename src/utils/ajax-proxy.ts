@@ -481,6 +481,23 @@ export const getStandardEvents = async () => {
   return await response.json();
 }
 
+export const getEventAverageCost = async (nctids) => {
+  const response = await fetch('https://hp5pe11vg7.execute-api.us-east-1.amazonaws.com/prod/', {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "findMeanCost": {
+        "nctList": nctids
+      }
+    })
+  })
+
+  return await response.json();
+}
+
 //for test only
 // export const deleteAllStudy = async () => {
 //   const response = await fetch(criteria_url, {

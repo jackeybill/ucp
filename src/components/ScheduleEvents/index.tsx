@@ -1,6 +1,6 @@
 import React, { useState, useReducer, useEffect } from "react";
 import {Table, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, InputNumber, Tooltip, Button, Spin, message} from "antd";
-import {ArrowRightOutlined, CloseOutlined, EditFilled, MinusOutlined, PlusOutlined, DownOutlined, DownloadOutlined} from "@ant-design/icons";
+import {ArrowRightOutlined, CloseOutlined, EditFilled, MinusOutlined, PlusOutlined, DownOutlined, DownloadOutlined, HistoryOutlined} from "@ant-design/icons";
 import {getStandardEvents, updateStudy} from "../../utils/ajax-proxy";
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
@@ -36,19 +36,27 @@ const initialNumber = {
   weekNumber: 26
 }
 
-const defaultCostAvg = 0.04
-const defaultBurdenAvg = 300
-
 const initEventCriteria = {
   'TotalCost': 0,
   'CostRate': '',
   'CostData': [],
-  'CostAvg': 0,
   'BurdenData': [],
   'BurdenXAxis': [],
-  'BurdenAvg': 0,
   'Finished': false
 }
+
+const visitDimensionalScore = [
+  {Dimension: 'AnxietyInducing', Value: 5},
+  {Dimension: 'HospitalDependent', Value: 25},
+  {Dimension: 'PhysicallyInvasive', Value: 10},
+  {Dimension: 'BloodDraw', Value: 15},
+  {Dimension: 'Sedation', Value: 35},
+  {Dimension: 'Injection', Value: 15},
+  {Dimension: 'Urine', Value: 5},
+  {Dimension: 'RequireFasting', Value: 7},
+  {Dimension: 'LongerThanTwoHours', Value: 20},
+  {Dimension: 'Questionnaire', Value: 5}
+]
 
 const ScheduleEvents = (props) => {
 
@@ -140,6 +148,9 @@ const ScheduleEvents = (props) => {
     } else {
       setShowConfigure(true)
     }
+    setCostSubTitle('Average from Similar Historical\nTrials - $' + formatCostAvg(props.record.CostAvg, 1000) + 'K / Patient')
+    setBurdenSubTitle('Average from similar\nHistorical Trials - ' + props.record.BurdenAvg)
+
     const getStandardEventsLib = async () => {
       var resp = await getStandardEvents();
 
@@ -166,13 +177,10 @@ const ScheduleEvents = (props) => {
             setAddedQuestionnaires(eventsConfigure[CATEGORY_QUESTIONNAIRES].entities)
             setAddedProcedures(eventsConfigure[CATEGORY_PROCEDURES].entities)
             setAddedStudyProcedures(eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities)
-            
             setPatientRate('{p|$'+ eventsConfigure.TotalCost +'K}\n{'+eventsConfigure.CostRate + '|' + eventsConfigure.CostRate + '}')
             setCostData(eventsConfigure.CostData)
-            setCostSubTitle('Average from Similar Historical\nTrials - $' + eventsConfigure.CostAvg + 'K / Patient')
             setBurdenData(eventsConfigure.BurdenData)
             setBurdenXAxis(eventsConfigure.BurdenXAxis)
-            setBurdenSubTitle('Average from similar\nHistorical Trials - ' + eventsConfigure.BurdenAvg)
             if(eventsConfigure.CostRate.length > 0){
               setShowTooltip(true)
               setShowPatientLabel(true)
@@ -210,7 +218,7 @@ const ScheduleEvents = (props) => {
             condition: addedEvents[index].condition, 
             totalVisit: addedEvents[index].totalVisit})
         } else {
-          return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+          return Object.assign(d, {selected: false, condition: [], totalVisit: 0, burdenMatrix: [1,1,1,1,1,1,1,1,1,1]})
         }
       }
     })
@@ -410,10 +418,8 @@ const ScheduleEvents = (props) => {
         'TotalCost': eventCriteria.TotalCost,
         'CostRate': eventCriteria.CostRate,
         'CostData': costData,
-        'CostAvg': eventCriteria.CostAvg,
         'BurdenData': burdenData,
         'BurdenXAxis': burdenXAxis,
-        'BurdenAvg': eventCriteria.BurdenAvg,
         'Finished': eventCriteria.Finished
       }))
       return;
@@ -425,10 +431,10 @@ const ScheduleEvents = (props) => {
     setShowPatientLabel(true)
     setWeeks(scheduleOfEvents.Weeks)
 
-    let tempBurdenData = []
+    let burdenMatrixList = []
     let tempBurdenXAxis = []
     for(var i =0; i< numbers.visitNumber; i ++){
-      tempBurdenData.push(0)
+      burdenMatrixList.push([0,0,0,0,0,0,0,0,0,0])
       tempBurdenXAxis.push((i+1)+'')
     }
 
@@ -438,7 +444,11 @@ const ScheduleEvents = (props) => {
       if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length; b ++){
           if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents[CATEGORY_LABS].entities[a]['Dummy Cost'])
+            let tempBurdenMatrix = []
+            burdenMatrixList[b].map((item, idx) =>{
+              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_LABS].entities[a].burdenMatrix[idx])
+            })
+            burdenMatrixList.splice(b, 1, tempBurdenMatrix)
           }
         }
       }
@@ -450,7 +460,11 @@ const ScheduleEvents = (props) => {
       if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length; b ++){
           if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a]['Dummy Cost'])
+            let tempBurdenMatrix = []
+            burdenMatrixList[b].map((item, idx) =>{
+              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].burdenMatrix[idx])
+            })
+            burdenMatrixList.splice(b, 1, tempBurdenMatrix)
           }
         }
       }
@@ -462,7 +476,11 @@ const ScheduleEvents = (props) => {
       if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length; b ++){
           if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a]['Dummy Cost'])
+            let tempBurdenMatrix = []
+            burdenMatrixList[b].map((item, idx) =>{
+              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].burdenMatrix[idx])
+            })
+            burdenMatrixList.splice(b, 1, tempBurdenMatrix)
           }
         }
       }
@@ -474,7 +492,11 @@ const ScheduleEvents = (props) => {
       if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length; b ++){
           if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a]['Dummy Cost'])
+            let tempBurdenMatrix = []
+            burdenMatrixList[b].map((item, idx) =>{
+              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].burdenMatrix[idx])
+            })
+            burdenMatrixList.splice(b, 1, tempBurdenMatrix)
           }
         }
       }
@@ -486,10 +508,31 @@ const ScheduleEvents = (props) => {
       if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length; b ++){
           if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition[b].checked){
-            tempBurdenData[b] = tempBurdenData[b] + Number(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a]['Dummy Cost'])
+            let tempBurdenMatrix = []
+            burdenMatrixList[b].map((item, idx) =>{
+              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].burdenMatrix[idx])
+            })
+            burdenMatrixList.splice(b, 1, tempBurdenMatrix)
           }
         }
       }
+    }
+
+    let tempBurdenData = []
+    console.log(burdenMatrixList)
+    for(const m in burdenMatrixList){
+      const visitMatrix = burdenMatrixList[m].map((max) => {
+        return max > 0 ? 1 : 0
+      })
+      const excessMatrix = burdenMatrixList[m].map((max) => {
+        return max - 1 >= 0 ? max - 1 : 0
+      })
+
+      let currentVisitScore = 0
+      for(const c in visitMatrix){
+        currentVisitScore += visitMatrix[c] * visitDimensionalScore[c].Value + excessMatrix[c]
+      }
+      tempBurdenData.push(currentVisitScore)
     }
 
     let tempCostData = [
@@ -512,10 +555,8 @@ const ScheduleEvents = (props) => {
     }
     setPatientRate('{p|$'+ formatCostAvg(totalCost, 1000) +'K}\n{' +costBreakdown+ '|' + costBreakdown + '}')
     setCostData(tempCostData)
-    setCostSubTitle('Average from Similar Historical\nTrials - $' + formatCostAvg(totalCost, 5000) + 'K / Patient')
     setBurdenData(tempBurdenData)
     setBurdenXAxis(tempBurdenXAxis)
-    setBurdenSubTitle('Average from similar\nHistorical Trials - ' + formatBurdenAvg(totalCost, numbers.visitNumber))
     setShowTooltip(true)
 
     let newScenario = props.record.scenarios.find( i=> i['scenario_id'] == props.scenarioId)
@@ -523,10 +564,8 @@ const ScheduleEvents = (props) => {
       'TotalCost': formatCostAvg(totalCost, 1000),
       'CostRate': costBreakdown,
       'CostData': tempCostData,
-      'CostAvg': defaultCostAvg, //formatCostAvg(totalCost, 5000),
       'BurdenData': tempBurdenData,
       'BurdenXAxis': tempBurdenXAxis,
-      'BurdenAvg': defaultBurdenAvg, //formatBurdenAvg(totalCost, numbers.visitNumber),
       'Finished': submitType === 3 ? true : false
     })
     setEventCriteria(newScenario['Schedule of Events'])
@@ -776,10 +815,15 @@ const ScheduleEvents = (props) => {
             <Col span={24}>
               <div className="item-header">
                 <Row>
-                  <Col span={21}>
+                  <Col span={20}>
                     <span>Event Library</span>
                   </Col>
-                  <Col span={3}>
+                  <Col span={2}>
+                  <Tooltip title={'View Historical Trial SOA'}>
+                    <HistoryOutlined className="right-icon" onClick={() => props.setVisibleSOA(true)}></HistoryOutlined>
+                  </Tooltip>
+                  </Col>
+                  <Col span={2}>
                   <Tooltip title={'Collapse Event Library'}>
                     <CloseOutlined className="right-icon" onClick={() => setEventLib(0)}></CloseOutlined>
                   </Tooltip>
