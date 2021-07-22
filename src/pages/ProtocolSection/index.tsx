@@ -298,10 +298,10 @@ const ProtocolSection = (props: any) => {
     <div className="protocol-section">
       <div className="section-header">
         <span className="file-name">
-          {props.location.pathname === "/protocol-sections" && protocolTitleText}
+          {props.location.pathname === "/protocol-sections" && <span className="title_protocol_text_plain">{protocolTitleText}</span>}
           {props.location.pathname !== "/protocol-sections" &&
           protocolSection != completeDocument && (
-              <span>
+              <span className="protocol-wrapper">
                 <span
                 className="back-btn"
                 onClick={() => {props.history.push("/overview");props.readFile({ activeTabKey: "ENTITY RECOGNITION" })

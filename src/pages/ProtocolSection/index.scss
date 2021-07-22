@@ -85,10 +85,34 @@
         background-color: #FFC107;
       }
     }
-    .title_protocol_text {
-      padding: 0 18px 0 18px;
+    .protocol-wrapper {
+      white-space: nowrap;
+      .title_protocol_text {
+        display: inline-block;
+        vertical-align: middle;
+        max-width: 600px;
+        height: 18px;
+        line-height: 18px;
+        padding: 0 18px 0 18px;
+        margin-bottom: 3px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
     }
     
+    .title_protocol_text_plain{
+        display: inline-block;
+        vertical-align: middle;
+        max-width: 1300px;
+        height: 18px;
+        line-height: 18px;
+        padding: 0 18px 0 18px;
+        margin-bottom: 3px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
   }
 
   .section-body {
