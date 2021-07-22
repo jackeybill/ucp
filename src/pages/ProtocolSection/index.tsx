@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { withRouter } from "react-router";
-import { Radio, Checkbox, Button, Menu, Dropdown, message,Modal } from "antd";
+import { Radio, Checkbox, Button, Menu, Dropdown, message,Modal, Tooltip } from "antd";
 import {
   SaveOutlined,
   DownOutlined,
@@ -215,6 +215,35 @@ const ProtocolSection = (props: any) => {
     );
   };
 
+  const showProtocolTitleText = (text) => {
+      if (text.length>98) {
+        return (
+          <Tooltip title={text} overlayStyle={{minWidth:1100}}>
+            <span className="title_protocol_text">{text}</span>
+          </Tooltip>
+        );  
+      } 
+      else {
+        return (
+          <span className="title_protocol_text">{text}</span>
+        );  
+      }
+  }
+  const showProtocolTitlePlainText = (text) => {
+      if (text.length>98) {
+        return (
+          <Tooltip title={text} overlayStyle={{minWidth:1100}}>
+            <span className="title_protocol_text_plain">{text}</span>
+          </Tooltip>
+        );  
+      } 
+      else {
+        return (
+          <span className="title_protocol_text_plain">{text}</span>
+        );  
+      }
+  }
+
   const onChange = (checkedValues) => {
     if (checkedValues) {
       setProtocolSection("sections");
@@ -298,7 +327,7 @@ const ProtocolSection = (props: any) => {
     <div className="protocol-section">
       <div className="section-header">
         <span className="file-name">
-          {props.location.pathname === "/protocol-sections" && <span className="title_protocol_text_plain">{protocolTitleText}</span>}
+          {props.location.pathname === "/protocol-sections" && showProtocolTitlePlainText(protocolTitleText)}
           {props.location.pathname !== "/protocol-sections" &&
           protocolSection != completeDocument && (
               <span className="protocol-wrapper">
@@ -310,7 +339,7 @@ const ProtocolSection = (props: any) => {
                   <LeftOutlined /> 
                   <i>Home</i>
                 </span>
-                <span className="title_protocol_text">{protocolTitleText}</span>
+                {showProtocolTitleText(protocolTitleText)}
                 <span className="title_status_icon">
                   {showStatusCircle(protocolStatus)}
                   {protocolStatus}
