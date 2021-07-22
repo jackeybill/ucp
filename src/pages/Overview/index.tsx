@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
-import { Button, Drawer, Table, Spin, message } from "antd";
+import { Button, Drawer, Table, Spin, message, Tooltip } from "antd";
 import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
 import { LoadingOutlined, CloseOutlined } from '@ant-design/icons';
@@ -25,21 +25,37 @@ const columns = [
       dataIndex: "nctID",
       key: "nctID",
       sorter: (a, b) => a.nctID.substr(4,7) - b.nctID.substr(4,7),
-      
-      // sorter: {
-      //   compare: (a, b) => a.nctID - b.nctID,
-      //   multiple: 4,
-      // },
+      render: (text, row, index) => {
+        return (
+          <>
+            <span className="nct_id_column">{text}</span>
+          </>
+        );   
+      }
     },
     {
       title: "Protocol Name",
       dataIndex: "protocolName",
       key: "protocolName",
-      sorter: (a, b) => a.protocolName.substr(4,7) - b.protocolName.substr(4,7),
-      // sorter: {
-      //   compare: (a, b) => a.protocolName - b.protocolName,
-      //   multiple: 3,
-      // },
+      sorter: (a, b) => a.protocolName.length - b.protocolName.length,
+      ellipsis: {
+        showTitle: false,
+      },
+      width: "680px",
+      render: (text, row, index) => {
+        if (text.length>98) {
+          return (
+            <Tooltip placement="topLeft" title={text} overlayStyle={{minWidth:600}}>
+              {text}
+            </Tooltip>
+          );  
+        } 
+        else {
+          return (
+            <span>{text}</span>
+          );  
+        }
+      }
     },
     {
       title: "Validation Status",
@@ -64,16 +80,12 @@ const columns = [
         }        
         return numA - numB
       },
-      // sorter: {
-      //   compare: (a, b) => a.status - b.status,
-      //   multiple: 2,
-      // },
       render: (text, row, index) => {
         return (
-          <>
+          <div className="status_column">
             {showStatusCircle(text)}
             <span>{text}</span>
-          </>
+          </div>
         );   
       }
     },
@@ -87,16 +99,12 @@ const columns = [
           let bTime = new Date(b.lastUpdate).getTime();
           return aTime - bTime;
       },
-      // sorter: {
-      //   compare:  (a, b) => { 
-      //     let aTime = new Date(a.lastUpdate).getTime();
-      //     let bTime = new Date(b.lastUpdate).getTime();
-      //     return aTime - bTime;
-      //   },
-      //   multiple: 1,
-      // },
       render: (text, row, index) => {
-        return moment(text).format('MM-DD-YYYY');   
+        return (
+          <>
+            <span className="update_column">{moment(text).format('MM-DD-YYYY')}</span>
+          </>
+        )
       },
     },
   ];
