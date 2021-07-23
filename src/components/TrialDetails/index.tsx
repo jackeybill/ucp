@@ -47,7 +47,7 @@ const TrialDetails = (props) => {
               </div>
             }
           >
-            <SettingOutlined className="setting-action"/>
+            <SettingOutlined className={`setting-action ${props.record.status==="In Progress" ? '': 'hidden'}`}/>
           </Tooltip>
         </div>
       </div>

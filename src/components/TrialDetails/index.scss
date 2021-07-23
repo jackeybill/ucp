@@ -24,6 +24,9 @@
     .setting-action{
       color: #999999;
     }
+    .setting-action.hidden{
+      display: none;
+    }
     .status {
       color: #000000;
       font-size: 12px;
