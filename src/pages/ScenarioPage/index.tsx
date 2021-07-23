@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
 import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer} from "antd";
-import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId} from "../../utils/ajax-proxy";
+import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getEventAverageCost} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
@@ -99,6 +99,8 @@ const ScenarioPage = (props) => {
     const [freqData, setFreqdata] = useState([])
     const [chartTitle, setChartTitle] = useState('Patients Eligible - 80K(16% of Dataset)')
     const [visibleSOA, setVisibleSOA] = useState(false)
+    const [soaResource, setSOAResource] = useState([])
+    const [ieResource, setIEResource] = useState([])
 
     //------------------------INCLUSION CRITERIA CONST START-----------------------------
     //Original libs for filter purpose
@@ -327,8 +329,6 @@ const ScenarioPage = (props) => {
           setPageLoading(false)
             if (resp.statusCode == 200) {
                 const response = JSON.parse(resp.body)
-                console.log(response)
-    
                 const inclusionCriteria = response[0].InclusionCriteria
                 for(var i = 0; i < inclusionCriteria.length; i ++){
                     var incluIndex = getCatorgoryIndex(i, inclusionCriteria)
@@ -1284,33 +1284,15 @@ const ScenarioPage = (props) => {
       setFreqdata(tempData2)
     }
   }
-  
-    const handleOk = () => {
-      setShowHistorical(false)
-    }
     
     const handleCancel = () => {
       setShowHistorical(false)
+      setVisibleSOA(false)
     }
 
     const showSOAModal = async () => {
-      console.log('test')
       setVisibleSOA(true)
-      if(historicalTrialdata.length == 0){
-        setSpinning(true)
-        const resp = await getSimilarhistoricalTrialById(similarHistoricalTrials);
-        if (resp.statusCode == 200) {
-          setSpinning(false)
-
-          const filteredData =  JSON.parse(resp.body).filter((d) => {
-            const date = d['start_date'].split('-')[0]
-            return (
-              date >= simliarTrialStudyStartDate.dateFrom && date<= simliarTrialStudyStartDate.dateTo
-            );
-          });
-          setHistoricalTrialdata(filteredData)
-        }
-      }
+      searchHistoricalTrials()
     }
 
     const searchHistoricalTrials = async () => {
@@ -1333,7 +1315,6 @@ const ScenarioPage = (props) => {
     }
 
     const handleExport = (fileType) => {
-      console.log("export josn file:")
       switch(fileType){
         case 'csv':
           csvExport();
@@ -1350,7 +1331,7 @@ const ScenarioPage = (props) => {
 
       //Get Inclusion Criteria Data
       str += 'Inclusion Criteria';
-      str += '\n' + 'Caregory' + ',' + 'S/No.' + ',' + 'Eligibility Criteria' + ',' + 'Values' + ',' 
+      str += '\n' + 'Category' + ',' + 'S/No.' + ',' + 'Eligibility Criteria' + ',' + 'Values' + ',' 
           + 'Timeframe' + ',' + 'Condition Or Exception';
       var serialNum = 0
       str += getCSVContent('Demographics', demographicsElements, serialNum)
@@ -1363,7 +1344,7 @@ const ScenarioPage = (props) => {
 
       //Get Exclusion Criteria Data
       str += '\n\n\n' + 'Exclusion Criteria';
-      str += '\n' + 'Caregory' + ',' + 'S/No.' + ',' + 'Eligibility Criteria' + ',' + 'Values' + ',' 
+      str += '\n' + 'Category' + ',' + 'S/No.' + ',' + 'Eligibility Criteria' + ',' + 'Values' + ',' 
           + 'Timeframe' + ',' + 'Condition Or Exception';
       serialNum = 0
       str += getCSVContent('Demographics', excluDemographicsElements, serialNum)
@@ -1600,7 +1581,6 @@ const ScenarioPage = (props) => {
       setExcluImpactColors(activeChartColors)
       //Update record
       const resp = await updateStudy(newTrial);
-      console.log(newTrial)
       setPageLoading(false)
       if (resp.statusCode == 200) {
         var currentScenario = resp.body.scenarios.find( i=> i['scenario_id'] == scenarioId)
@@ -1684,7 +1664,7 @@ const ScenarioPage = (props) => {
 
     const pdfMake = async () =>{
       const pdf = new jsPDF('p', 'pt');
-      const tableColumn = ['Caregory', 'S/No.', 'Eligibility Criteria', 'Values', 'Timeframe','Condition Or Exception'];
+      const tableColumn = ['Category', 'S/No.', 'Eligibility Criteria', 'Values', 'Timeframe','Condition Or Exception'];
 
       var serialNum = 0
       var tableRows = formatColumns('Demographics', demographicsElements, serialNum)
@@ -1719,7 +1699,6 @@ const ScenarioPage = (props) => {
       });
 
       const date = Date().split(" ");
-      console.log(date)
       const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
       pdf.save(`Inclusion_Criteria_${dateStr}.pdf`);
     };
@@ -1816,7 +1795,6 @@ const ScenarioPage = (props) => {
     if(activeKey === '3'){
       keepUpdatedTrialInfo()
     }
-    console.log(activeKey)
   }
 
   const onInclusionChartClick = (e) =>{
@@ -1862,6 +1840,42 @@ const ScenarioPage = (props) => {
     setTrialRecord(newTrial)
     setProcessStep(0)
     setSubmitType(0)
+  }
+
+  const downloadSOA = async () => {
+    let tempResource = []
+    if(soaResource.length == 0){
+      setSpinning(true)
+      const resp = await getEventAverageCost(similarHistoricalTrials);
+      if (resp.statusCode == 200) {
+        setSpinning(false)
+        setSOAResource(JSON.parse(resp.body).soaItemList)
+        tempResource = JSON.parse(resp.body).soaItemList
+      }
+    } else {
+      tempResource = soaResource
+    }
+
+    //export
+    let str = 'SOA';
+    str += '\n' + 'NCT ID' + ',' + 'Category' + ',' + 'Raw Activity' + ',' + 'Standardized' + ',' + 'Frequency'
+    for(const id in tempResource){
+      str += '\n' + tempResource[id].nctID + ',"' + tempResource[id].category +  '","' + tempResource[id].raw + '","' 
+        + tempResource[id].standardized + '","'  + Math.floor(tempResource[id].frequency * 10000) / 100 + '%"'
+    }
+
+    let exportContent = "\uFEFF";
+    let blob = new Blob([exportContent + str], {
+      type: "text/plain;charset=utf-8"
+    });
+
+    const date = Date().split(" ");
+    const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
+    FileSaver.saveAs(blob, `SOA_Resource_${dateStr}.csv`);
+  }
+
+  const downloadIE = async () => {
+
   }
   
     return (
@@ -2591,19 +2605,20 @@ const ScenarioPage = (props) => {
       )}
       </Spin>
       <Drawer title="Historical Trial List" placement="right" onClose={handleCancel} visible={showHistorical}>
+        <Spin spinning={spinning}>
         <Row>
-          <Spin spinning={spinning}>
-            <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
-          </Spin>
+            <Col span={24} style={{paddingBottom: '10px'}}>
+              {visibleSOA ? (
+                <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCCE</Button>
+              ) : (
+                <Button type="primary" onClick={downloadIE} style={{float: 'right'}}>VIEW SOURCCE</Button>
+              )}
+            </Col>
         </Row>
-      </Drawer>
-
-      <Drawer title="Historical Trial List" placement="right" onClose={() => setVisibleSOA(false)} visible={visibleSOA}>
         <Row>
-          <Spin spinning={spinning}>
             <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
-          </Spin>
         </Row>
+        </Spin>
       </Drawer>
     </div>
       

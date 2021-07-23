@@ -131,15 +131,12 @@ const ScheduleEvents = (props) => {
   }
 
   useEffect(() => {
-    console.log(props.submitType)
     if(props.submitType != 0){
       setSubmitType(props.submitType)
     }
   },[props.submitType]);
 
   useEffect(() => {
-    console.log(props.record)
-
     //Verify if this is the first time to set Events
     const scenario = props.record.scenarios.find(s=> s['scenario_id'] === props.scenarioId)
     const eventsConfigure = scenario['Schedule of Events']
@@ -149,15 +146,13 @@ const ScheduleEvents = (props) => {
       setShowConfigure(true)
     }
     setCostSubTitle('Average from Similar Historical\nTrials - $' + formatCostAvg(props.record.CostAvg, 1000) + 'K / Patient')
-    setBurdenSubTitle('Average from similar\nHistorical Trials - ' + props.record.BurdenAvg)
+    setBurdenSubTitle('Average from similar\nHistorical Trials - ' + Number(props.record.BurdenAvg.toString().match(/^\d+(?:\.\d{0,2})?/)))
 
     const getStandardEventsLib = async () => {
       var resp = await getStandardEvents();
 
       if (resp.statusCode == 200) {
           const response = JSON.parse(resp.body)
-          console.log(response)
-
           setOrgLabs(response[CATEGORY_LABS])
           setOrgExamination(response[CATEGORY_PHYSICAL_EXAMINATION])
           setOrgProcedures(response[CATEGORY_PROCEDURES])
@@ -424,7 +419,6 @@ const ScheduleEvents = (props) => {
       }))
       return;
     }
-    console.log("save action")
     setPatientChartColor(aChartColors)
     setBurdenChartColor(burdenColors.active)
     setLabelColors(aLabelColors)
@@ -519,7 +513,6 @@ const ScheduleEvents = (props) => {
     }
 
     let tempBurdenData = []
-    console.log(burdenMatrixList)
     for(const m in burdenMatrixList){
       const visitMatrix = burdenMatrixList[m].map((max) => {
         return max > 0 ? 1 : 0
@@ -772,14 +765,11 @@ const ScheduleEvents = (props) => {
   }
 
   function getEventContent(catrgory, events) {
-    console.log(catrgory)
     let subStr = ''
     for(const event in events){
-      console.log(event)
       subStr += '\n' + catrgory + ',"' + events[event]['Standard Event'] + '",' + events[event]['Dummy Cost']
       if(events[event]['condition'].length > 0){
         for(const idx in events[event]['condition']){
-          console.log(idx)
           subStr += ',' + (events[event]['condition'][idx].checked ? 'x' : '')
         }
       }

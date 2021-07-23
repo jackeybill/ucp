@@ -482,7 +482,7 @@ export const getStandardEvents = async () => {
 }
 
 export const getEventAverageCost = async (nctids) => {
-  const response = await fetch('https://hp5pe11vg7.execute-api.us-east-1.amazonaws.com/prod/', {
+  const response = await fetch(criteria_url, {
     method: 'POST',
     headers: {
       'Access-Control-Request-Method': 'POST',

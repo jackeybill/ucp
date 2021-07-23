@@ -84,8 +84,7 @@ class SelectableTable extends React.Component <SelectableTableProps>{
           onShowSizeChange: this.onShowSizeChange,
           pageSizeOptions: this.state.pageSizeOptions
         }} sticky 
-        // scroll={{y: 300}}
-        />
+        rowKey={record => record['nct_id']} />
       </>
     );
   }
