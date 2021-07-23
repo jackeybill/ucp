@@ -71,9 +71,9 @@ const Dropzone = (props: any) => {
       if (nctID === "") {
         nctID = f.name.split(".")[0].toString()
       }
-      if (protocolName === "") {
-        protocolName = f.name
-      }
+      // if (protocolName === "") {
+      //   protocolName = f.name
+      // }
       const res = await uploadFile(nctID, protocolName, f.name, PATH, base64.split(",")[1]);
       console.log(res);
       
@@ -92,7 +92,7 @@ const Dropzone = (props: any) => {
             const availableTabs: string[] = [];
             form.setFieldsValue({
               nctID: nctID === ""?f.name.split(".")[0].toString():nctID,
-              protocolName: protocolName === ""?f.name:protocolName,
+              protocolName: protocolName === ""?result[Object.keys(result)[0]]["protocolTitle"][0].title:protocolName,
             });
             props.readFile({
               file: result,
