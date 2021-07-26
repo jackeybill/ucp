@@ -153,6 +153,7 @@ const ScheduleEvents = (props) => {
 
       if (resp.statusCode == 200) {
           const response = JSON.parse(resp.body)
+          console.log(response)
           setOrgLabs(response[CATEGORY_LABS])
           setOrgExamination(response[CATEGORY_PHYSICAL_EXAMINATION])
           setOrgProcedures(response[CATEGORY_PROCEDURES])
@@ -213,7 +214,7 @@ const ScheduleEvents = (props) => {
             condition: addedEvents[index].condition, 
             totalVisit: addedEvents[index].totalVisit})
         } else {
-          return Object.assign(d, {selected: false, condition: [], totalVisit: 0, burdenMatrix: [1,1,1,1,1,1,1,1,1,1]})
+          return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
         }
       }
     })
@@ -440,7 +441,7 @@ const ScheduleEvents = (props) => {
           if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition[b].checked){
             let tempBurdenMatrix = []
             burdenMatrixList[b].map((item, idx) =>{
-              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_LABS].entities[a].burdenMatrix[idx])
+              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_LABS].entities[a].soaWeights[idx])
             })
             burdenMatrixList.splice(b, 1, tempBurdenMatrix)
           }
@@ -456,7 +457,7 @@ const ScheduleEvents = (props) => {
           if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition[b].checked){
             let tempBurdenMatrix = []
             burdenMatrixList[b].map((item, idx) =>{
-              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].burdenMatrix[idx])
+              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].soaWeights[idx])
             })
             burdenMatrixList.splice(b, 1, tempBurdenMatrix)
           }
@@ -472,7 +473,7 @@ const ScheduleEvents = (props) => {
           if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition[b].checked){
             let tempBurdenMatrix = []
             burdenMatrixList[b].map((item, idx) =>{
-              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].burdenMatrix[idx])
+              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].soaWeights[idx])
             })
             burdenMatrixList.splice(b, 1, tempBurdenMatrix)
           }
@@ -488,7 +489,7 @@ const ScheduleEvents = (props) => {
           if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition[b].checked){
             let tempBurdenMatrix = []
             burdenMatrixList[b].map((item, idx) =>{
-              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].burdenMatrix[idx])
+              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].soaWeights[idx])
             })
             burdenMatrixList.splice(b, 1, tempBurdenMatrix)
           }
@@ -504,7 +505,7 @@ const ScheduleEvents = (props) => {
           if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition[b].checked){
             let tempBurdenMatrix = []
             burdenMatrixList[b].map((item, idx) =>{
-              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].burdenMatrix[idx])
+              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].soaWeights[idx])
             })
             burdenMatrixList.splice(b, 1, tempBurdenMatrix)
           }
