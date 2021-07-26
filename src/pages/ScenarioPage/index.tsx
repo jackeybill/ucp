@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
 import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer} from "antd";
-import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getEventAverageCost} from "../../utils/ajax-proxy";
+import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getSOAResource} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
@@ -1846,7 +1846,7 @@ const ScenarioPage = (props) => {
     let tempResource = []
     if(soaResource.length == 0){
       setSpinning(true)
-      const resp = await getEventAverageCost(similarHistoricalTrials);
+      const resp = await getSOAResource(similarHistoricalTrials);
       if (resp.statusCode == 200) {
         setSpinning(false)
         setSOAResource(JSON.parse(resp.body).soaItemList)
@@ -1858,10 +1858,10 @@ const ScenarioPage = (props) => {
 
     //export
     let str = 'SOA';
-    str += '\n' + 'NCT ID' + ',' + 'Category' + ',' + 'Raw Activity' + ',' + 'Standardized' + ',' + 'Frequency'
+    str += '\n' + 'NCT ID' + ',' + 'Category' + ',' + 'Raw Activity' + ',' + 'Standardized'
     for(const id in tempResource){
       str += '\n' + tempResource[id].nctID + ',"' + tempResource[id].category +  '","' + tempResource[id].raw + '","' 
-        + tempResource[id].standardized + '","'  + Math.floor(tempResource[id].frequency * 10000) / 100 + '%"'
+        + tempResource[id].standardized + '"'
     }
 
     let exportContent = "\uFEFF";
