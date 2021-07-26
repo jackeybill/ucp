@@ -240,7 +240,7 @@ const Overview = (props: any) => {
               pathname: "/protocol-sections",
               state: {
                 status: "Not started",
-                title: props.fileReader.protocolName? props.fileReader.protocolName: props.fileReader.fileName
+                title: props.fileReader.protocolName !== ""? props.fileReader.protocolName: props.fileReader.fileName
               }
             })}
           >

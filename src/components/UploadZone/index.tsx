@@ -96,7 +96,7 @@ const Dropzone = (props: any) => {
             });
             props.readFile({
               file: result,
-              protocolName:protocolName,
+              protocolName:protocolName === ""?result[Object.keys(result)[0]]["protocolTitle"][0].title:protocolName,
               fileName:f.name,
             });
             fileList.push({ 'nctID': nctID, 'protocolName': protocolName, filename: f.name, result, availableTabs });
