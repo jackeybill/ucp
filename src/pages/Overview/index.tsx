@@ -41,11 +41,11 @@ const columns = [
       ellipsis: {
         showTitle: false,
       },
-      width: "680px",
+      width: "770px",
       render: (text, row, index) => {
         if (text.length>98) {
           return (
-            <Tooltip placement="topLeft" title={text} overlayStyle={{minWidth:600}}>
+            <Tooltip placement="topLeft" title={text} overlayStyle={{minWidth:690}}>
               {text}
             </Tooltip>
           );  
