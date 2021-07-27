@@ -75,10 +75,22 @@ def parseTOC(text,verbose=False):
     return None,None
 
 
+def selectSponsorbullet(text):
+    bullets_lst = []
+    for sponsor in bullets_patterns:
+        bullet_p1,bullet_p2 = bullets_patterns[sponsor]
+        s1 = re.sub(bullet_p1,"$$$", text)
+        s2 = re.sub(bullet_p2,"###", s1)
+        bullets = s2.split("$$$")
+        bullets_lst.append([len(bullets),bullets,bullet_p1,bullet_p2])
+    bullets_lst = sorted(bullets_lst, key=lambda x:x[0],reverse=True)
+    return bullets_lst[0][1],bullets_lst[0][2],bullets_lst[0][3]
+
 def bulletsToJson(text,pretty=False,dictionary=False):
-    s1 = re.sub(bullet_p1,"$$$", text)
-    s2 = re.sub(bullet_p2,"###", s1)
-    bullets = s2.split("$$$") 
+    #s1 = re.sub(bullet_p1,"$$$", text)
+    #s2 = re.sub(bullet_p2,"###", s1)
+    #bullets = s2.split("$$$") 
+    bullets,bullet_p1,bullet_p2 = selectSponsorbullet(text)
     bulletData = {}
     for bullet in bullets:
         bulletNumber = bullets.index(bullet)
@@ -96,11 +108,11 @@ def bulletsToJson(text,pretty=False,dictionary=False):
         else:
             bulletData[bulletNumber]=bullet            
     if dictionary:
-        return(bulletData)
+        return(bulletData,bullet_p1,bullet_p2)
     elif pretty:
-        return(json.dumps(bulletData,indent=2))
+        return(json.dumps(bulletData,indent=2),bullet_p1,bullet_p2)
     else:
-        return(json.dumps(bulletData))
+        return(json.dumps(bulletData),bullet_p1,bullet_p2)
 
 def getindexes(toc,name,partial=False):
     result = []
@@ -118,13 +130,19 @@ def getsubsections(toc,index):
                 result.append(t)
     return result
 
-def processTextforUI(text):
-    r1 = re.compile(r"("+bullet_p1+")[\n ]")
-    r2 = re.compile(r"("+bullet_p2+")[\n ]")
+def processTextforUI(text,bullet_p1,bullet_p2):
+    text = text.replace('0 or\n1.','0 or 1.') #Work-around
+    if bullet_p1 == r'\n[\[]+[\d{1,3}]+[\]]':
+        r1 = re.compile(r"("+bullet_p1+")[\n ]")
+        r2 = re.compile(r"("+bullet_p2+")[\n ]")
+    else:
+        r1 = re.compile(r"("+bullet_p1+")")
+        r2 = re.compile(r"("+bullet_p2+")")
     output = r1.sub(r' $$$\1 ', text)
-    output = r2.sub(r' $$$\1 ', output)
+    output = r2.sub(r' ###\1 ', output)
     output = output.replace('\n',' ')
-    output = output.replace('$$$ ','\n').replace('$$$','\n')
+    output = output.replace('$$$ ','\n\t').replace('$$$','\n\t')
+    output = output.replace('### ','\n\t\t').replace('$$$','\n\t\t')
     for sc in spl_chars:
         output = output.replace(sc,f' {sc} ')
     return output
@@ -136,8 +154,8 @@ def extractsectiontext(toc,t,text):
     t2 = toc[toc.index(t)+1]
     subtext = text[t[2][0]:t2[2][0]]
     subtext = subtext.replace(t[0],'').replace(t[1],'').strip()
-    result['text'] = processTextforUI(subtext)  #subtext
-    result['json'] = bulletsToJson(subtext,dictionary=True)
+    result['json'],bullet_p1,bullet_p2 = bulletsToJson(subtext,dictionary=True)
+    result['text'] = processTextforUI(subtext,bullet_p1,bullet_p2)  #subtext
     return result
 
 def extractcompletesection(toc,name,text):
@@ -191,16 +209,31 @@ def nctExtractSections(s3BucketName,documentPath,filename,sectionNames,pretty=Fa
     return result
 
 
+### Test Local ###
+# from os.path import join
+# def loadtext(filename):
+#     if filename.endswith('.txt'):  
+#         with open(join(path, filename), "rb") as f:
+#             print(f'Reading: {filename}')
+#             return f.read().decode()
+#     return None
+# #path = 'study_protocols_Eli_Lilly_and_Company_phase1_textract_HF' #'study_protocols_pfizer_phase1_textract_HF/'
+# path = 'study_protocols_pfizer_phase1_textract_HF/'
+# filename = 'NCT01307267.txt' #'NCT01307267.txt' 
+# sectionNames = ['Inclusion Criteria','Exclusion Criteria']
+# text = loadtext(filename)
+# result = extractSections(text,sectionNames,pretty=True)
+# print(result)
+
+
 ### Inference ###
 
 #s3 
-s3BucketName = "iso-data-zone"                    #"iso-clinicaltrial-studyprotocols"
-documentPath = "iso-service-dev/RawDocuments/"    #"study_protocols_eli_lilly_and_company_phase1/"
-
-#document and spoonsor
-filename = 'Clinical Pharmacology Protocol 887663.pdf' #'NCT01484431.pdf'
-bullet_p1,bullet_p2 = bullets_patterns['eli_lilly']
-
-#Inferance call
-sectionNames = ['Inclusion Criteria','Exclusion Criteria']
-print(nctExtractSections(s3BucketName,documentPath,filename,sectionNames))
+# s3BucketName = "iso-data-zone"                    #"iso-clinicaltrial-studyprotocols"
+# documentPath = "iso-service-dev/RawDocuments/"    #"study_protocols_eli_lilly_and_company_phase1/"
+# #document and spoonsor
+# filename = 'Clinical Pharmacology Protocol 887663.pdf' #'NCT01484431.pdf'
+# bullet_p1,bullet_p2 = bullets_patterns['eli_lilly']
+# #Inferance call
+# sectionNames = ['Inclusion Criteria','Exclusion Criteria']
+# print(nctExtractSections(s3BucketName,documentPath,filename,sectionNames))
