@@ -216,9 +216,9 @@ const ProtocolSection = (props: any) => {
   };
 
   const showProtocolTitleText = (text) => {
-      if (text.length>98) {
+      if (text.length>71) {
         return (
-          <Tooltip title={text} overlayStyle={{minWidth:1100}}>
+          <Tooltip title={text} overlayStyle={{minWidth:800}}>
             <span className="title_protocol_text">{text}</span>
           </Tooltip>
         );  

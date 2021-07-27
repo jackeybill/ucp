@@ -92,11 +92,11 @@ const Dropzone = (props: any) => {
             const availableTabs: string[] = [];
             form.setFieldsValue({
               nctID: nctID === ""?f.name.split(".")[0].toString():nctID,
-              protocolName: protocolName === ""?result[Object.keys(result)[0]]["protocolTitle"][0].title:protocolName,
+              protocolName: protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
             });
             props.readFile({
               file: result,
-              protocolName:protocolName === ""?result[Object.keys(result)[0]]["protocolTitle"][0].title:protocolName,
+              protocolName:protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
               fileName:f.name,
             });
             fileList.push({ 'nctID': nctID, 'protocolName': protocolName, filename: f.name, result, availableTabs });
