@@ -722,10 +722,12 @@ def testMe():
     # If Column B is blank, Highlight display "Not Considered as an Activity" ；Fasting Visit NCT02133742.pdf
     #soaProcessedContent, pageNo = getSoaProcessedContent('', '')
     
-    #  test for uddateTitle() NCT04255433,NCT04864977,NCT04867785
+    #  test for uddateTitle() NCT04255433,NCT04864977,NCT04867785;
+    # 
     nctId = 'NCT02133742'
     #updateTitle('study_protocol', nctId, load_title_from_ctti(nctId))
-    processEndpoints("iso-data-zone", "iso-service-dev/comprehend-input/NCT03023826.pdf.txt")
+    # NCT02133742 , NCT03023826
+    processEndpoints("iso-data-zone", "iso-service-dev/comprehend-input/NCT02133742.pdf.txt")
     return
 
     item = fetchNCTDetails(nctId)
@@ -830,16 +832,16 @@ def lambda_handler(event, context):
     # del demo_data[0]['comprehendMedical']['Mosaic-ner']
     nct_id = getNctId(bucketKey)
     
-    incItem = {}     
+    incItem = {}    
     title = 'Protocol I7T-MC-RMAA Disposition of [14C]-LY2623091 following Oral Administration in Healthy Subjects'
         
     awsUtils:AwsUtils = AwsUtils()
     if len(nct_id) > 0 and len(load_title_from_ctti(nct_id)) > 0:
-        title, briefTitle = load_title_from_ctti(nct_id) # 'Protocol I7T-MC-RMAA Disposition of [14C]-LY2623091 following Oral Administration in Healthy Subjects'
-        #TODO update the 'study_protocol'
+        title, briefTitle = load_title_from_ctti(nct_id)
+        # update the 'study_protocol'
         updateTitle('study_protocol', nct_id, briefTitle)
         incItem['briefTitle'] = briefTitle
-
+        
     incItem['title'] = title
     incItem['content'] = title
     incItem['comprehendMedical'] = awsUtils.detectComprehendMedical(title)
