@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
 import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer} from "antd";
-import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getSOAResource} from "../../utils/ajax-proxy";
+import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getSOAResource, getIEResource} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
@@ -100,7 +100,9 @@ const ScenarioPage = (props) => {
     const [chartTitle, setChartTitle] = useState('Patients Eligible - 80K(16% of Dataset)')
     const [visibleSOA, setVisibleSOA] = useState(false)
     const [soaResource, setSOAResource] = useState([])
-    const [ieResource, setIEResource] = useState([])
+    const [ieResource, setIEResource] = useState(false)
+    const [inclusionResource, setInclusionResource] = useState([])
+    const [exclusionResource, setExclusionResource] = useState([])
 
     //------------------------INCLUSION CRITERIA CONST START-----------------------------
     //Original libs for filter purpose
@@ -1875,7 +1877,51 @@ const ScenarioPage = (props) => {
   }
 
   const downloadIE = async () => {
+    let tempInclusionResource = []
+    let tempExclusionResource = []
+    if(!ieResource){
+      setSpinning(true)
+      const resp = await getIEResource(similarHistoricalTrials);
+      if (resp.statusCode == 200) {
+        setSpinning(false)
+        setIEResource(true)
+        setInclusionResource(JSON.parse(resp.body).inResult)
+        setExclusionResource(JSON.parse(resp.body).exResult)
+        tempInclusionResource = JSON.parse(resp.body).inResult
+        tempExclusionResource = JSON.parse(resp.body).exResult
+      }
+    } else {
+      tempInclusionResource = inclusionResource
+      tempExclusionResource = exclusionResource
+    }
 
+    //export
+    let str = 'INDIVIDUAL PROTOCOL'
+    str += '\n' + 'I/E' + ',' + 'NCT ID' + ',' + 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ','
+                + 'Modifier (If Applicable)' + ',' + 'Lower Limit' + ',' + 'Upper Limit' + ',' + 'Units' + ',' + 'Time'
+    for(const id in tempInclusionResource){
+      str += '\n' + 'INCLUSION' + ',' + tempInclusionResource[id].nct + ',"' + tempInclusionResource[id].category +  '","'
+                  + tempInclusionResource[id].raw + '","' + tempInclusionResource[id].standardized + '","' 
+                  + tempInclusionResource[id].modifier +  '","' + tempInclusionResource[id].lower + '","' 
+                  + tempInclusionResource[id].upper + '","' + tempInclusionResource[id].units +  '","'
+                  + tempInclusionResource[id].time +  '"'
+    }
+    for(const idx in tempExclusionResource){
+      str += '\n' + 'EXCLUSION' + ',' + tempExclusionResource[idx].nct + ',"' + tempExclusionResource[idx].category +  '","'
+                  + tempExclusionResource[idx].raw + '","' + tempExclusionResource[idx].standardized + '","' 
+                  + tempExclusionResource[idx].modifier +  '","' + tempExclusionResource[idx].lower + '","' 
+                  + tempExclusionResource[idx].upper + '","' + tempExclusionResource[idx].units +  '","'
+                  + tempExclusionResource[idx].time +  '"'
+    }
+
+    let exportContent = "\uFEFF";
+    let blob = new Blob([exportContent + str], {
+      type: "text/plain;charset=utf-8"
+    });
+
+    const date = Date().split(" ");
+    const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
+    FileSaver.saveAs(blob, `IE_Resource_${dateStr}.csv`);
   }
   
     return (

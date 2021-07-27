@@ -515,6 +515,23 @@ export const getSOAResource = async (nctids) => {
   return await response.json();
 }
 
+export const getIEResource = async (nctids) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "findIeItem": {
+        "nctList": nctids
+      }
+    })
+  })
+
+  return await response.json();
+}
+
 //for test only
 // export const deleteAllStudy = async () => {
 //   const response = await fetch(criteria_url, {
