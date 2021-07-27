@@ -9,11 +9,28 @@ import os
 from collections import Counter
 from generate_text import convertToTxt
 import inference_section_extraction as infn_sect_extra
+import inference_endpoint_extraction as infn_ep_extra
 from ExtractUtils import ExtractUtils
 from AwsUtils import AwsUtils
+from soaFromResponse import SOAfromResponseUsingPA
+from updateDynamoDB import updateTitle
+from clinical_trial_api import fetchNCTDetails
+import csv
 
 lambda_client = boto3.client('lambda')
-
+runtime = boto3.client('runtime.sagemaker')
+s3 = boto3.client('s3')
+matchingPB = {}
+matchingPB[1] = 5
+matchingPB[2] = 25
+matchingPB[3] = 10
+matchingPB[4] = 15
+matchingPB[5] = 35
+matchingPB[6] = 15
+matchingPB[7] = 5
+matchingPB[8] = 7
+matchingPB[9] = 20
+matchingPB[10] = 5
 
 def process_summary(allBody):
     awsUtils:AwsUtils = AwsUtils()
@@ -46,9 +63,28 @@ def save_to_dynamodb(table, data):
         )
     else:
         pass
-    
+
+def getExistResult(s3BucketName, documentName):
+    # logger.info(f"getExistResult({s3BucketName},{documentName})")
+    results = None
+    try:
+        response = s3.get_object(Bucket=s3BucketName, Key=outputName)
+        results = json.loads(response['Body'].read().decode('utf-8'))
+    except Exception as e:
+        print(e)
+        # logger.error(e)
+    return results
 
 def process_result_summary(content):
+    print('content', content)
+    util:ExtractUtils = ExtractUtils()
+    #return ('md5:', util.md5_hash(content))
+    # s3://iso-data-zone/iso-service-dev/comprehendOutput/content/725e06607cc32e3f4a0cfddd14459cfb.json
+    s3BucketName = 'iso-data-zone'
+    documentName = 'iso-service-dev/comprehendOutput/content/'+util.md5_hash(content)+'.json'
+    results = getExistResult(s3BucketName,documentName)
+    if results != None:
+        return results
     awsUtils:AwsUtils = AwsUtils()
     comprehendmedical = boto3.client('comprehendmedical')
     chunk_data = awsUtils.splitContent(content)
@@ -67,6 +103,10 @@ def process_result_summary(content):
     Entities_summary = AddKeyForValue('Entities_keyvalue','Entities_Category',entity_result,'Entities')    
     icd10_summary = AddKeyForValue('icd10_keyvalue','icd10_Category',icd10_result,'ICD-10-CM') 
     rx_summary = AddKeyForValue('rx_keyvalue','rx_Category',rx_result,'RxNorm')
+    
+    # no need Time Expression for icd-10-cm
+    if 'TIME_EXPRESSION' in icd10_summary:
+        del icd10_summary['TIME_EXPRESSION']
     
     # return Entities_summary, icd10_summary, rx_summary
     # en_re, icd_10_re, rx_re = process_summary(content)
@@ -280,6 +320,8 @@ def handler_aws_attr_summary(data, hash_value):
                 continue
             for name in child['comprehendMedical']:
                 aws_result_data = child['comprehendMedical'][name]
+                if  'Entities' not in aws_result_data:
+                    continue
                 for entity in aws_result_data['Entities']:
                     if 'Attributes' in entity:
                         for attr in entity['Attributes']:
@@ -320,7 +362,6 @@ def save_csv(hashcode, d_json):
     
     
 def get_txt_format(bucketName, bucketKey):
-    s3 = boto3.client('s3')
     newbucketKey=bucketKey
     newbucketKey=newbucketKey.replace('comprehend-input','TextractOutput')
     newbucketKey=newbucketKey.replace('.txt','.json')
@@ -331,7 +372,17 @@ def get_txt_format(bucketName, bucketKey):
     
     allFormatText = convertToTxt(pdf_json)
     return allFormatText
+
+def get_json_format(bucketName, bucketKey):
+    newbucketKey=bucketKey
+    newbucketKey=newbucketKey.replace('comprehend-input','TextractOutput')
+    newbucketKey=newbucketKey.replace('.txt','.json')
+    print(f'read bucket {bucketName}, key {newbucketKey}')
     
+    response = s3.get_object(Bucket=bucketName, Key=newbucketKey)
+    pdf_json = json.loads(response['Body'].read().decode('utf-8'))
+
+    return pdf_json
 
 def using_new_format_for_label_edit_aws(data, hashcode):
     """
@@ -341,7 +392,8 @@ def using_new_format_for_label_edit_aws(data, hashcode):
         hashcode: generate's hashcode the root key
     """
     body = data[hashcode]
-    path_names = ['includeAllText', 'inclusionCriteria', 'exclusionCriteria', 'protocolTitle', 'scheduleActivities', 'briefSummary']
+    #path_names = ['includeAllText', 'inclusionCriteria', 'exclusionCriteria', 'protocolTitle', 'scheduleActivities', 'briefSummary']
+    path_names = ['includeAllText', 'inclusionCriteria', 'exclusionCriteria', 'protocolTitle', 'briefSummary']
     for path_name in path_names:
         # InclusionCriteria
         content = body[path_name][0]['content']
@@ -492,10 +544,245 @@ def using_new_format_for_label_edit(data, hashcode):
         # print(data)
     
     return data
+    
+    
+def processMedDRA(data, hashcode):
+    """
+    """
+    body = data[hashcode]
+    #path_names = ['inclusionCriteria', 'exclusionCriteria', 'protocolTitle', 'scheduleActivities', 'briefSummary', 'objectivesEndpointsEstimands']
+    path_names = ['inclusionCriteria', 'exclusionCriteria', 'protocolTitle', 'briefSummary', 'objectivesEndpointsEstimands']
+
+    model = 'mosaic-ner'
+
+    for path_name in path_names:
+        # if path_name == 'scheduleActivities':
+        #     continue
+        # InclusionCriteria
+        if len(body[path_name]) == 0:
+            continue
+        content = body[path_name][0]['content']
+        if not content or len(content) < 1:
+            continue
+
+        allBody = content
+        payload = json.dumps({'text': allBody, 'model': 'mosaic-ner'})
+        ENDPOINT_NAME = 'mosaic'
+
+        response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
+                                           ContentType='application/json',
+                                           Body=payload)
+        mosaic_result_data = json.loads(response['Body'].read().decode())
+        # print("------------------")
+        # print(mosaic_result_data)
+        # print(dict(mosaic_result)['entities'])
+        
+        # mosaic_data = mosaic_result['entities']
+        # print(mosaic_data)
+        
+        if mosaic_result_data and 'entities' in mosaic_result_data:
+            stand_result, mosaic_summary = AddKeyForValue('Mosaic_keyvalue', 'Mosaic_Category', mosaic_result_data['entities'], 'mosaic-ner')
+            data[hashcode][path_name][0]['comprehendMedical']['MedDRA'] = {'Entities': stand_result,
+                                                                       'Summary': mosaic_summary}
+        else:
+            data[hashcode][path_name][0]['comprehendMedical']['MedDRA'] = {}
+    return data
 
 
+def load_title_from_ctti(nct_id):
+    import psycopg2
+    conn = psycopg2.connect(
+        host="aact-db.ctti-clinicaltrials.org",
+        database="aact",
+        user="mi608",
+        password=urllib.parse.unquote_plus('Training@123'))
+    #
+    # nct_id = 'NCT00613574' 
+    #sql = "select s.brief_title from studies s where s.nct_id = '%s' limit 1;" % nct_id
+    sql = "select s.official_title, s.brief_title from studies s where s.nct_id = '%s' limit 1;" % nct_id
+    print(sql)
+    cur = conn.cursor()
+    cur.execute(sql)
+    rows = cur.fetchmany(1)
+    if len(rows) > 0 and len(rows[0]) > 0:
+        print('rows:', rows)
+        title = rows[0][1]
+        return rows[0][0], title 
+    else:
+        return '', ''
+    cur.close()
+       
+def load_brief_from_ctti(nct_id):
+    # return ''
+    import psycopg2
+    conn = psycopg2.connect(
+        host="aact-db.ctti-clinicaltrials.org",
+        database="aact",
+        user="mi608",
+        password=urllib.parse.unquote_plus('Training@123'))
+    #
+    # nct_id = 'NCT00613574'
+    sql = "select bs.description from brief_summaries bs where bs.nct_id ='%s' limit 1;" % nct_id
+    print(sql)
+    cur = conn.cursor()
+    cur.execute(sql)
+    rows = cur.fetchmany(1)
+    if len(rows) > 0 and len(rows[0]) > 0:
+        value = rows[0][0]
+        
+        value = ' '.join(str(value).strip().replace('\r\n', '\n').replace('\n', '').split())
+        
+        print(value)
+
+        cur.close()
+        print(value)
+        return value
+    else:
+        return ''
+    
+       
+def getNctId(fileName):
+    import os
+    file = os.path.split(fileName)[1]
+    if file.endswith('.txt') and file[:-4].endswith('.pdf'):
+        nct_id = file[:-8]
+        print(nct_id)
+        return nct_id
+    else:
+        return ''
+
+def removeSpecialChars(str):
+    str = re.sub('[^A-Za-z0-9]+', '', str)
+    return str.lower()
+    
+#TODO need to be done
+def getSoaProcessedContent(bucketName, bucketKey):
+    bucketName = "iso-data-zone"
+    #bucketKey = "iso-service-dev/comprehend-input/NCT02995733.pdf.txt"
+    bucketKey = "iso-service-dev/comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt"
+    
+    tabletype = 'list' #'html' 'csv'
+    soaRawContent = SOAfromResponseUsingPA(get_json_format(bucketName, bucketKey),jsontype=True,pretty=False,tabletype=tabletype)
+    soaProcessedContent = json.loads(soaRawContent)
+    #print('soaProcessedContent=', soaProcessedContent)
+    for item in soaProcessedContent.items():
+        soaProcessedContent = item[1]['table']
+        pageNo = item[1]['pages'][0]
+        #print('pageNo=', pageNo)
+        break
+    #print('soaProcessedContent=', soaProcessedContent)
+    return soaProcessedContent, pageNo
+    
+    mapping = {
+        'Height':'Height',
+        'HbA1c':'Hemoglobin A1c (HbA1c)',
+        'Electrocardiogram':'12-lead ECG (central or local)'
+    }
+    for col1 in soaProcessedContent:
+        print('col1=', removeSpecialChars(col1[0]))
+
+def getCostDic():
+    costDic = {}
+    with open('./Standard_Events_Dictionary.csv', mode='r') as infile:
+        reader = csv.reader(infile, delimiter=',')
+        costDic = {rows[0]:[rows[2],rows[3],rows[4],rows[5],rows[6],rows[7],rows[8],rows[9],rows[10],rows[11],rows[12]] for rows in reader}
+    return costDic
+    
+def processEndpoints(bucketName, bucketKey):
+    # NCT02133742, NCT03023826, 
+    #bucketName = "iso-data-zone"
+    #bucketKey = "iso-service-dev/comprehend-input/NCT03023826.pdf.txt"
+    #bucketKey = "iso-service-dev/comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt"
+    response = get_json_format(bucketName, bucketKey)
+    #print(response)
+    # path = 'data/processed/textract/document/pfizer/phase2/' #
+    # filename = 'NCT02969044.json' #NCT04091061 #Lilly-> #NCT02951780
+    # response = loadresponse(filename)
+    text = infn_ep_extra.loadtextforResponse(response)
+    #print(text)
+    tabletype = 'html'
+    output = infn_ep_extra.nctExtractObjectivesEndpoints(response,text,tabletype)
+    print(output)
+    result = ''
+    if output['type'] == 'table':
+        result = output['content']['table']
+    else:
+        for item in output['content']:
+            #print(output['content'][item]['name'])
+            result += output['content'][item]['name'] +'\n'
+            text = output['content'][item]['text']
+            for txt in text.split('. '):
+                result += '\t . ' + txt +'\n'
+    print(result)
+    return result
+    #tabletype = 'list' #'html' 'csv'
+    #soaRawContent = SOAfromResponseUsingPA(get_json_format(bucketName, bucketKey),jsontype=True,pretty=False,tabletype=tabletype)
+
+def testMe():
+    # If Column B is blank, Highlight display "Not Considered as an Activity" ；Fasting Visit NCT02133742.pdf
+    #soaProcessedContent, pageNo = getSoaProcessedContent('', '')
+    
+    #  test for uddateTitle() NCT04255433,NCT04864977,NCT04867785
+    nctId = 'NCT02133742'
+    #updateTitle('study_protocol', nctId, load_title_from_ctti(nctId))
+    processEndpoints()
+    return
+
+    item = fetchNCTDetails(nctId)
+    print( item )
+    
+    res = process_result_summary(item['inclusion_criteria'])
+    print('res', res)
+    #item['inclusion_comprehend'] = process_result_summary(item['inclusion_criteria'])
+    #item['exclusion_comprehend'] = process_result_summary(item['exclusion_criteria'])
+    
+    
+    # # iso-data-zone, and file name: iso-service-dev/comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt
+    #response = s3.put_object(Bucket='iso-data-zone', Key='iso-service-dev/comprehendOutput/data/'+nctId+'.json', Body=json.dumps(item))
+    return
+
+    #return processSoaProcessedContent(soaProcessedContent)
+    
+def processSoaProcessedContent(soaProcessedContent):
+    soaDic={}
+    with open('./StandardizedActivitiesMapping.csv', mode='r') as infile:
+        reader = csv.reader(infile, delimiter='\t')
+        for rows in reader:
+            #print(rows)
+            if not rows[1]:
+                rows[1] = 'Not Considered as an Activity'
+            soaDic[removeSpecialChars(rows[0])]={"value":rows[1],"category":rows[2]}
+            #break
+        #soaDic = {removeSpecialChars(rows[0]):rows[1]:rows[2] for rows in reader}
+    #print(soaDic)
+    
+    soaRes = []
+    soaSummary = {}
+    #soaProcessedContent = getSoaProcessedContent('', '')
+    for row in soaProcessedContent:
+        keyname = removeSpecialChars(row[0])
+        if(keyname in soaDic):
+            category = soaDic[keyname]['category'].strip().replace(' ','_').upper()
+            if category in soaSummary:
+                soaSummary[category] +=1
+            else:
+                soaSummary[category] = 1
+            soaRes.append({
+                'key' : row[0],
+                'value' : soaDic[keyname]['value'],
+                'category' : category
+            })
+    #new_content_s[hash_value]['scheduleActivities'][0]['soaResult'] = soaRes
+    #print(soaDic)
+    return soaRes,soaSummary, soaDic
+    
 def lambda_handler(event, context):
     print("event: {}".format(event))
+    if 'testMe' in event:
+        return testMe()
+    #TEST for the Schedule of Activities
+    # processScheduleOfActivities()
+    # return
     bucketName, bucketKey = getPathInfo(event)
     # iso-data-zone, and file name: iso-service-dev/comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt
     #bucketName = 'iso-data-zone'
@@ -503,7 +790,6 @@ def lambda_handler(event, context):
     if not bucketKey.endswith('.txt'):
         return
 
-    s3 = boto3.client('s3')
     response = s3.get_object(Bucket=bucketName, Key=bucketKey)
     txt = response['Body'].read().decode('utf-8')
     
@@ -542,10 +828,18 @@ def lambda_handler(event, context):
     # del demo_data[0]['comprehendMedical']['Craft']
     # del demo_data[0]['comprehendMedical']['Jnlpba']
     # del demo_data[0]['comprehendMedical']['Mosaic-ner']
-    awsUtils:AwsUtils = AwsUtils()
-    title = 'Protocol I7T-MC-RMAA Disposition of [14C]-LY2623091 following Oral Administration in Healthy Subjects'
+    nct_id = getNctId(bucketKey)
     
-    incItem = {}
+    incItem = {}    
+    title = 'Protocol I7T-MC-RMAA Disposition of [14C]-LY2623091 following Oral Administration in Healthy Subjects'
+        
+    awsUtils:AwsUtils = AwsUtils()
+    if len(nct_id) > 0 and len(load_title_from_ctti(nct_id)) > 0:
+        title, briefTitle = load_title_from_ctti(nct_id) # 'Protocol I7T-MC-RMAA Disposition of [14C]-LY2623091 following Oral Administration in Healthy Subjects'
+        #TODO update the 'study_protocol'
+        updateTitle('study_protocol', nct_id, briefTitle)
+        incItem['briefTitle'] = briefTitle
+        
     incItem['title'] = title
     incItem['content'] = title
     incItem['comprehendMedical'] = awsUtils.detectComprehendMedical(title)
@@ -555,8 +849,12 @@ def lambda_handler(event, context):
     incItem['comprehendMedical']['RxNorm']['Summary'] = rx_re
     protocol[hash_value]['protocolTitle']  = [incItem]
     
+    
     brief = 'The information contained in this protocol is confidential and is intended for the use of clinical investigators. It is the property of Eli Lilly and Company or its subsidiaries and should not be copied by or distributed to persons not involved in the clinical investigation of LY2623091, unless such persons are bound by a confidentiality agreement with Eli Lilly and Company or its subsidiaries. This document and its associated attachments are subject to United States Freedom of Information Act (FOIA) Exemption 4.'
     
+    if len(nct_id) > 0 and len(load_brief_from_ctti(nct_id)) > 0:
+        brief = load_brief_from_ctti(nct_id) # 'Protocol I7T-MC-RMAA Disposition of [14C]-LY2623091 following Oral Administration in Healthy Subjects'
+    print(brief)
     incItem = {}
     incItem['title'] = brief
     incItem['content'] = brief
@@ -567,7 +865,9 @@ def lambda_handler(event, context):
     incItem['comprehendMedical']['RxNorm']['Summary'] = rx_re
     protocol[hash_value]['briefSummary']  = [incItem]
     
-    endpoints='Mr . Nesser is a 52 - year - old Caucasian male with an extensive past medical history that includes coronary artery disease , atrial fibrillation , hypertension , hyperlipidemia , presented to North ED with complaints of chills , nausea , acute left flank pain and some numbness in his left leg.'
+    endpoints = processEndpoints(bucketName, bucketKey)
+    if len(endpoints) == 0:
+        endpoints='Mr . Nesser is a 52 - year - old Caucasian male with an extensive past medical history that includes coronary artery disease , atrial fibrillation , hypertension , hyperlipidemia , presented to North ED with complaints of chills , nausea , acute left flank pain and some numbness in his left leg.'    
     incItem = {}
     incItem['title'] = endpoints
     incItem['content'] = endpoints
@@ -579,7 +879,80 @@ def lambda_handler(event, context):
     protocol[hash_value]['objectivesEndpointsEstimands']  = [incItem]
     
     # protocol[hash_value]['objectivesEndpointsEstimands']  = []
-    protocol[hash_value]['scheduleActivities']  = []
+    
+    pageNo = 1
+    tabletype = 'list' #'html' 'csv'
+    soaRawContent = SOAfromResponseUsingPA(get_json_format(bucketName, bucketKey),jsontype=True,pretty=False,tabletype=tabletype)
+    soaProcessedContent = json.loads(soaRawContent)
+    for item in soaProcessedContent.items():
+        soaProcessedContent = item[1]['table']
+        pageNo = item[1]['pages'][0]
+        break
+    soaList = []
+    
+    sumText = ''
+    # protocolList = []
+    # for row in soaProcessedContent[4:len(soaProcessedContent)]:
+    xPos = -1
+    rowNum = 0
+    for row in soaProcessedContent:
+        rowNum += 1
+        # protocolList.append(row[0])
+        if(len(row[0])<1):
+            continue
+        sumText += str(row[0])
+        sumText += ','
+        if(xPos != -1):
+            continue
+        for column in row:
+            if(column == 'X'):
+                xPos = rowNum
+    
+            
+        
+    soaObj = {
+        'title' : 'Schedule of Activities',
+        'content' : sumText,
+        'comprehendMedical' : {},
+        'objectiveType' : 'scheduleActivities',
+        'id' : 'sch-0',
+        'RelationshipSummary' : []
+    }
+    # protocolEntityList = []
+    # protocolIcdList = []
+    # protocolRxNormList = []
+    # for item in protocolList:
+    #     if(len(item)) == 0:
+    #         item = 'Empty String'
+    #         # protocolEntityList.append({})
+    #         # protocolIcdList.append({})
+    #         # protocolRxNormList.append({})
+    #         # continue
+    #     soaComprehendMedical = awsUtils.detectComprehendMedical(item)
+    #     dummyEntity = soaComprehendMedical['Entities']
+    #     dummyICD = soaComprehendMedical['ICD-10-CM']
+    #     dummyRxNorm = soaComprehendMedical['RxNorm']
+    #     en_re, icd_10_re, rx_re = process_summary(item)
+    #     dummyEntity['Summary'] = en_re
+    #     dummyICD['Summary'] = icd_10_re
+    #     dummyRxNorm['Summary'] = rx_re
+    #     protocolEntityList.append(dummyEntity)
+    #     protocolIcdList.append(dummyICD)
+    #     protocolRxNormList.append(dummyRxNorm)
+    
+    # print(len(protocolEntityList))
+    # print(len(protocolIcdList))
+    # print(len(protocolRxNormList))
+    # print(len(protocolList))
+    # print(protocolList)
+    
+    # soaObj['comprehendMedical']['Entities'] = protocolEntityList
+    # soaObj['comprehendMedical']['ICD-10-CM'] = protocolIcdList
+    # soaObj['comprehendMedical']['RxNorm'] = protocolRxNormList
+    
+    soaList.append(soaObj)
+    protocol[hash_value]['scheduleActivities']  = soaList
+    
     new_content = protocol
     
     # for aws label need editor
@@ -589,19 +962,190 @@ def lambda_handler(event, context):
     # new_content = using_new_format_for_label_edit(new_content,hash_value)
 
     # set status
-    table = 'study_protocol'
-    t_item = {
-        "file_name": getFileName(bucketKey),
-        "status": "Not started",
-        "lastUpdate": strftime("%Y/%m/%d", gmtime())
-      }
+    
+    # updateItem = {
+    #     'file_name': getFileName(bucketKey),
+    #     'status' : 'Not started'
+    #   }
+    # lambda_client.invoke_async(FunctionName='dean-dev-protocol-job', InvokeArgs=json.dumps({'method':'update', 'body':updateItem}))
+    
+    # Add call meddra process
+    new_content = processMedDRA(new_content, hash_value)
+    print('processing handler_aws_attr_summary')
+    
+    new_content_s = handler_aws_attr_summary(new_content, hash_value)
+    print(new_content_s)
+    
+    new_content_s[hash_value]['scheduleActivities'][0]['table'] = soaProcessedContent
+    # with open('./StandardizedActivitiesMapping.csv', mode='r') as infile:
+    #     reader = csv.reader(infile)
+    #     soaDic = {removeSpecialChars(rows[0]):rows[1] for rows in reader}
+    # print(len(soaDic))
+    # soaRes = []
+    # for row in soaProcessedContent:
+    #     if(removeSpecialChars(row[0]) in soaDic):
+    #         soaRes.append({
+    #             'key' : row[0],
+    #             'value' : soaDic[removeSpecialChars(row[0])]
+    #         })
+    soaRes, soaSummary, soaDic = processSoaProcessedContent(soaProcessedContent)
+    
+    costDic = getCostDic()
+    itemCost = {}
+    totalCost = 0
+    for row in soaProcessedContent:
+        keyname = removeSpecialChars(row[0])
+        if(keyname in soaDic):
+            value = soaDic[keyname]['value']
+            if(value in costDic):
+                cost = int(costDic[value][0])
+                x = 0
+                for column in row:
+                    if(column == 'X'):
+                        x += 1
+                itemCost[row[0]] = {
+                    'base' : cost,
+                    'amount' : x,
+                    'total' : cost * x
+                }
+                totalCost += cost * x
+    
+    pbTotalAmount = 0
+    pbTotalList = []
+    pbDimensionalList = []
+    pbExcessList = []
+    for column in range(1, len(soaProcessedContent[xPos])):
+        pbCount = {}
+        pbCount[1] = 0
+        pbCount[2] = 0
+        pbCount[3] = 0
+        pbCount[4] = 0
+        pbCount[5] = 0
+        pbCount[6] = 0
+        pbCount[7] = 0
+        pbCount[8] = 0
+        pbCount[9] = 0
+        pbCount[10] = 0
+        for row in soaProcessedContent[xPos-1:]:
+            keyname = removeSpecialChars(row[0])
+            if(keyname in soaDic):
+                value = soaDic[keyname]['value']
+                if(value in costDic):
+                    if(row[column] == 'X'):
+                        for x in range (1,11):
+                            pbCount[x] += int(costDic[value][x])
+        pbTotal = 0
+        pbDimensional = {}
+        pbExcess = {}
+        for x in range(1, 11):
+            if(pbCount[x] == 1):
+                pbTotal += matchingPB[x]
+                pbDimensional[x] = matchingPB[x]
+                pbExcess[x] = 0
+            elif(pbCount[x] > 1):
+                pbTotal += matchingPB[x]
+                pbTotal += pbCount[x] - 1
+                pbDimensional[x] = matchingPB[x]
+                pbExcess[x] = pbCount[x] - 1
+            else:
+                pbDimensional[x] = 0
+                pbExcess[x] = 0
+        pbTotalList.append(pbTotal)
+        pbDimensionalList.append(pbDimensional)
+        pbExcessList.append(pbExcess)
+        pbTotalAmount += pbTotal
+    
+                
+    
+    new_content_s[hash_value]['scheduleActivities'][0]['soaResult'] = soaRes
+    new_content_s[hash_value]['scheduleActivities'][0]['soaSummary'] = soaSummary
+    new_content_s[hash_value]['scheduleActivities'][0]['xPos'] = xPos
+    new_content_s[hash_value]['scheduleActivities'][0]['pageNo'] = pageNo
+    new_content_s[hash_value]['scheduleActivities'][0]['totalCost'] = totalCost
+    new_content_s[hash_value]['scheduleActivities'][0]['itemCost'] = itemCost
+    new_content_s[hash_value]['scheduleActivities'][0]['pbInfo'] = {
+        'total' : pbTotalAmount,
+        'dimensional' : pbDimensionalList,
+        'excess' : pbExcessList,
+        'byDay' : pbTotalList
+    }
+    
     # Save to db
     # save_to_dynamodb(table, t_item)
-    lambda_client.invoke_async(FunctionName='dean-dev-protocol-job', InvokeArgs=json.dumps({'method':'save', 'body':t_item}))
+    # lambda_client.invoke_async(FunctionName='dean-dev-protocol-job', InvokeArgs=json.dumps({'method':'save', 'body':t_item}))
     
-    new_content = handler_aws_attr_summary(new_content, hash_value)
-    response = s3.put_object(Bucket=bucketName, Key=prefixName+'/input/data/'+getFileName(bucketKey)+'.json', Body=json.dumps(new_content))
+    
+    response = s3.put_object(Bucket=bucketName, Key=prefixName+'/input/data/'+getFileName(bucketKey)+'.json', Body=json.dumps(new_content_s))
     print("save result success!")
+    
+    
+    soaSummaryObj = s3.get_object(Bucket=bucketName, Key=prefixName + '/summary/soaSummary.json')['Body']
+    soaSummaryObj = json.loads(soaSummaryObj.read())
+    nctCostPbMap = soaSummaryObj['nctCostPbMap']
+    actIndex = soaSummaryObj['actIndex']
+    nctCostPbMap[nct_id] = {
+        'cost' : totalCost,
+        'pb' : pbTotalAmount
+    }
+    for item in soaRes:
+        standardized = item['value']
+        if(standardized in actIndex):
+            #existing activity
+            nctList = actIndex[standardized]['nctList']
+            rawMap = actIndex[standardized]['raw']
+            if(nct_id in nctList):
+                pass
+            else:
+                nctList.append(nct_id)
+                actIndex[standardized]['nctList'] = nctList
+                rawMap[nct_id] = item['key']
+                actIndex[standardized]['raw'] = rawMap
+            
+        else:
+            #new activity
+            nctList = []
+            nctList.append(nct_id)
+            actIndex[standardized] = {}
+            actIndex[standardized]['nctList'] = nctList
+            actIndex[standardized]['category'] = item['category']
+            actIndex[standardized]['raw'] = {
+                nct_id : item['key']
+            }
+            
+    soaSummaryObj['actIndex'] = actIndex
+    soaSummaryObj['nctCostPbMap'] = nctCostPbMap
+    
+    s3.put_object(Bucket=bucketName, Key=prefixName + '/summary/soaSummary.json', Body=json.dumps(soaSummaryObj))
+    
+    
+    ##IE
+    ieSummaryObj = s3.get_object(Bucket=bucketName, Key=prefixName + '/summary/ieSummary.json')['Body']
+    ieSummaryObj = json.loads(ieSummaryObj.read())
+    iHistory = ieSummaryObj['inclusion']
+    eHistory = ieSummaryObj['exclusion']
+    eList = new_content_s[hash_value]['exclusionCriteria'][0]['comprehendMedical']['Entities']['Entities']
+    iList = new_content_s[hash_value]['inclusionCriteria'][0]['comprehendMedical']['Entities']['Entities']
+    iNew = []
+    eNew = []
+    for item in eList:
+        eNew.append({
+            'category' : item['Category'],
+            'raw' : item['Text']
+        })
+    eHistory[nct_id] = eNew 
+    for item in iList:
+        iNew.append({
+            'category' : item['Category'],
+            'raw' : item['Text']
+        })
+    iHistory[nct_id] = iNew 
+    ieSummaryObj['inclusion'] = iHistory
+    ieSummaryObj['exclusion'] = eHistory
+    
+    s3.put_object(Bucket=bucketName, Key=prefixName + '/summary/ieSummary.json', Body=json.dumps(ieSummaryObj))
+    
+    
+    
     # lambda_client.invoke_async(FunctionName='iso-service-dev-aws-summary', InvokeArgs=json.dumps({'bucket':bucketName, 'key':prefixName+'/input/data/'+getFileName(bucketKey)+'.json'}))
     lambda_client.invoke_async(FunctionName='iso-service-dev-aws-label', InvokeArgs=json.dumps({'bucket':bucketName, 'key':prefixName+'/input/data/'+getFileName(bucketKey)+'.json'}))
     
