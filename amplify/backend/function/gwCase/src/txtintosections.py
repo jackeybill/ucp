@@ -611,7 +611,7 @@ def load_title_from_ctti(nct_id):
     else:
         return '', ''
     cur.close()
-       
+
 def load_brief_from_ctti(nct_id):
     # return ''
     import psycopg2
@@ -687,7 +687,7 @@ def getCostDic():
         reader = csv.reader(infile, delimiter=',')
         costDic = {rows[0]:[rows[2],rows[3],rows[4],rows[5],rows[6],rows[7],rows[8],rows[9],rows[10],rows[11],rows[12]] for rows in reader}
     return costDic
-    
+
 def processEndpoints(bucketName, bucketKey):
     # NCT02133742, NCT03023826, 
     #bucketName = "iso-data-zone"
@@ -725,7 +725,7 @@ def testMe():
     #  test for uddateTitle() NCT04255433,NCT04864977,NCT04867785
     nctId = 'NCT02133742'
     #updateTitle('study_protocol', nctId, load_title_from_ctti(nctId))
-    processEndpoints()
+    processEndpoints("iso-data-zone", "iso-service-dev/comprehend-input/NCT03023826.pdf.txt")
     return
 
     item = fetchNCTDetails(nctId)
@@ -830,7 +830,7 @@ def lambda_handler(event, context):
     # del demo_data[0]['comprehendMedical']['Mosaic-ner']
     nct_id = getNctId(bucketKey)
     
-    incItem = {}    
+    incItem = {}     
     title = 'Protocol I7T-MC-RMAA Disposition of [14C]-LY2623091 following Oral Administration in Healthy Subjects'
         
     awsUtils:AwsUtils = AwsUtils()
@@ -839,7 +839,7 @@ def lambda_handler(event, context):
         #TODO update the 'study_protocol'
         updateTitle('study_protocol', nct_id, briefTitle)
         incItem['briefTitle'] = briefTitle
-        
+
     incItem['title'] = title
     incItem['content'] = title
     incItem['comprehendMedical'] = awsUtils.detectComprehendMedical(title)
@@ -849,11 +849,10 @@ def lambda_handler(event, context):
     incItem['comprehendMedical']['RxNorm']['Summary'] = rx_re
     protocol[hash_value]['protocolTitle']  = [incItem]
     
-    
     brief = 'The information contained in this protocol is confidential and is intended for the use of clinical investigators. It is the property of Eli Lilly and Company or its subsidiaries and should not be copied by or distributed to persons not involved in the clinical investigation of LY2623091, unless such persons are bound by a confidentiality agreement with Eli Lilly and Company or its subsidiaries. This document and its associated attachments are subject to United States Freedom of Information Act (FOIA) Exemption 4.'
     
     if len(nct_id) > 0 and len(load_brief_from_ctti(nct_id)) > 0:
-        brief = load_brief_from_ctti(nct_id) # 'Protocol I7T-MC-RMAA Disposition of [14C]-LY2623091 following Oral Administration in Healthy Subjects'
+        brief = load_brief_from_ctti(nct_id)
     print(brief)
     incItem = {}
     incItem['title'] = brief
@@ -1079,40 +1078,63 @@ def lambda_handler(event, context):
     print("save result success!")
     
     
+    
+    
+    
     soaSummaryObj = s3.get_object(Bucket=bucketName, Key=prefixName + '/summary/soaSummary.json')['Body']
     soaSummaryObj = json.loads(soaSummaryObj.read())
     nctCostPbMap = soaSummaryObj['nctCostPbMap']
-    actIndex = soaSummaryObj['actIndex']
     nctCostPbMap[nct_id] = {
         'cost' : totalCost,
         'pb' : pbTotalAmount
     }
-    for item in soaRes:
-        standardized = item['value']
-        if(standardized in actIndex):
-            #existing activity
-            nctList = actIndex[standardized]['nctList']
-            rawMap = actIndex[standardized]['raw']
-            if(nct_id in nctList):
-                pass
-            else:
-                nctList.append(nct_id)
-                actIndex[standardized]['nctList'] = nctList
-                rawMap[nct_id] = item['key']
-                actIndex[standardized]['raw'] = rawMap
-            
+    
+    soaResultList = []
+    for row in soaProcessedContent[xPos-1:]:
+        rawEvent = row[0]
+        if(removeSpecialChars(rawEvent) in soaDic):
+            soaResultList.append({
+                'raw' : rawEvent,
+                'standardized' : soaDic[removeSpecialChars(rawEvent)]['value'],
+                'category' : soaDic[removeSpecialChars(rawEvent)]['category']
+            })
         else:
-            #new activity
-            nctList = []
-            nctList.append(nct_id)
-            actIndex[standardized] = {}
-            actIndex[standardized]['nctList'] = nctList
-            actIndex[standardized]['category'] = item['category']
-            actIndex[standardized]['raw'] = {
-                nct_id : item['key']
-            }
+            soaResultList.append({
+                'raw' : rawEvent,
+                'standardized' : "",
+                'category' : ""
+            })
+    s3.put_object(Bucket=bucketName, Key=prefixName + '/summary/nct_soa_result/' + nct_id + '.json', Body=json.dumps({
+        'result' : soaResultList
+    }))
+    # for item in soaRes:
+    #     standardized = item['value']
+    #     if(standardized in actIndex):
+    #         #existing activity
+    #         nctList = actIndex[standardized]['nctList']
+    #         rawMap = actIndex[standardized]['raw']
+    #         if(nct_id in nctList):
+    #             pass
+    #         else:
+    #             nctList.append(nct_id)
+    #             actIndex[standardized]['nctList'] = nctList
+    #             rawMap[nct_id] = item['key']
+    #             actIndex[standardized]['raw'] = rawMap
             
-    soaSummaryObj['actIndex'] = actIndex
+    #     else:
+    #         #new activity
+    #         nctList = []
+    #         nctList.append(nct_id)
+    #         actIndex[standardized] = {}
+    #         actIndex[standardized]['nctList'] = nctList
+    #         actIndex[standardized]['category'] = item['category']
+    #         actIndex[standardized]['raw'] = {
+    #             nct_id : item['key']
+    #         }
+            
+    # soaSummaryObj['actIndex'] = actIndex
+    
+    soaSummaryObj['actIndex'][nct_id] = soaResultList
     soaSummaryObj['nctCostPbMap'] = nctCostPbMap
     
     s3.put_object(Bucket=bucketName, Key=prefixName + '/summary/soaSummary.json', Body=json.dumps(soaSummaryObj))
