@@ -35,7 +35,7 @@ export const sectionOptions = [
   { label: "EXCLUSION CRITERIA", value: "exclusionCriteria" },
   { label: "SCHEDULE OF ACTIVITIES", value: "scheduleActivities" },
   {
-    label: "OBJECTIVES, ENDPOINTS, ESTIMANDS",
+    label: "OBJECTIVES & ESTIMANDS",
     value: "objectivesEndpointsEstimands",
   },
 ];
