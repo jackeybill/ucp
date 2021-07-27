@@ -34,10 +34,10 @@ export const sectionOptions = [
   { label: "INCLUSION CRITERIA", value: "inclusionCriteria" },
   { label: "EXCLUSION CRITERIA", value: "exclusionCriteria" },
   { label: "SCHEDULE OF ACTIVITIES", value: "scheduleActivities" },
-  // {
-  //   label: "OBJECTIVES, ENDPOINTS, ESTIMANDS",
-  //   value: "objectivesEndpointsEstimands",
-  // },
+  {
+    label: "OBJECTIVES, ENDPOINTS, ESTIMANDS",
+    value: "objectivesEndpointsEstimands",
+  },
 ];
 export const initSelectedSections = sectionOptions.map((s) => {
   return s.value;
