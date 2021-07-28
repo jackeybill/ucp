@@ -16,10 +16,15 @@ from soaFromResponse import SOAfromResponseUsingPA
 from updateDynamoDB import updateTitle
 from clinical_trial_api import fetchNCTDetails
 import csv
+from rdsUtils import rdsUtils
+from criteriaSummary import process_frequency
 
 lambda_client = boto3.client('lambda')
 runtime = boto3.client('runtime.sagemaker')
 s3 = boto3.client('s3')
+
+rdsDB:rdsUtils = rdsUtils()
+
 matchingPB = {}
 matchingPB[1] = 5
 matchingPB[2] = 25
@@ -68,7 +73,7 @@ def getExistResult(s3BucketName, documentName):
     # logger.info(f"getExistResult({s3BucketName},{documentName})")
     results = None
     try:
-        response = s3.get_object(Bucket=s3BucketName, Key=outputName)
+        response = s3.get_object(Bucket=s3BucketName, Key=documentName)
         results = json.loads(response['Body'].read().decode('utf-8'))
     except Exception as e:
         print(e)
@@ -76,7 +81,7 @@ def getExistResult(s3BucketName, documentName):
     return results
 
 def process_result_summary(content):
-    print('content', content)
+    #print('content', content)
     util:ExtractUtils = ExtractUtils()
     #return ('md5:', util.md5_hash(content))
     # s3://iso-data-zone/iso-service-dev/comprehendOutput/content/725e06607cc32e3f4a0cfddd14459cfb.json
@@ -227,7 +232,7 @@ def AddKeyForValue(keyvalue,Category,result,model):
             value = []
             value.append(item)
             mydict=dict(zip(base_key,value))
-            print(mydict)
+            #print(mydict)
             keyvalue.append(mydict)
         return keyvalue
     if model in ['bc5cdr', 'bionlp13cg', 'craft', 'jnlpba']:
@@ -277,6 +282,7 @@ def parseTxt(bucketName, bucketKey, fileContent):
     #Inferance call
     sectionNames = ['Inclusion Criteria','Exclusion Criteria']
     result = infn_sect_extra.extractSections(fileContent,sectionNames, False)
+    #print('txtintosections.parseTxt() result:', result)
     #return result
     #infn_sect_extra.nctExtractSections(s3BucketName,documentPath,filename,sectionNames)
     util:ExtractUtils = ExtractUtils()
@@ -287,9 +293,16 @@ def parseTxt(bucketName, bucketKey, fileContent):
     events_body = util.getItemStartEnd(fileContent, 'Events')
     # title_body = util.getItemStartEnd(fileContent, 'Title')
     
-    # use inference_section_extraction to parse the inclusion/exclusion
-    inclusion_body = result['Inclusion Criteria'][0]['text']
-    exclusion_body = result['Exclusion Criteria'][0]['text']
+    #use inference_section_extraction to parse the inclusion/exclusion
+    inclusion_body = ''
+    exclusion_body = ''
+    if 'Inclusion Criteria' in result:
+        inclusion_body = result['Inclusion Criteria'][0]['text']
+        exclusion_body = result['Exclusion Criteria'][0]['text']
+    else:
+        nctID = getNctId(bucketKey)
+        inclusion_body, exclusion_body = rdsDB.getCriteria(nctID)
+        
     #print('parseTxt: Inclusion Criteria - ' + inclusion_body)
     #print('parseTxt: Exclusion Criteria - ' + exclusion_body)
     #return
@@ -450,7 +463,7 @@ def using_new_format_for_label_edit_aws(data, hashcode):
                                 children = list(li['children'])
                                 children.append(items_dict)
                                 li['children'] = children
-                                print(li)
+                                #print(li)
                                 flag = True
                                 all_result.append(li)
                                 index += 1
@@ -524,7 +537,7 @@ def using_new_format_for_label_edit(data, hashcode):
                             children = list(li['children'])
                             children.append(items_dict)
                             li['children'] = children
-                            print(li)
+                            #print(li)
                             flag = True
                             all_result.append(li)
                             index += 1
@@ -588,58 +601,15 @@ def processMedDRA(data, hashcode):
             data[hashcode][path_name][0]['comprehendMedical']['MedDRA'] = {}
     return data
 
-
 def load_title_from_ctti(nct_id):
-    import psycopg2
-    conn = psycopg2.connect(
-        host="aact-db.ctti-clinicaltrials.org",
-        database="aact",
-        user="mi608",
-        password=urllib.parse.unquote_plus('Training@123'))
-    #
-    # nct_id = 'NCT00613574' 
-    #sql = "select s.brief_title from studies s where s.nct_id = '%s' limit 1;" % nct_id
     sql = "select s.official_title, s.brief_title from studies s where s.nct_id = '%s' limit 1;" % nct_id
-    print(sql)
-    cur = conn.cursor()
-    cur.execute(sql)
-    rows = cur.fetchmany(1)
-    if len(rows) > 0 and len(rows[0]) > 0:
-        print('rows:', rows)
-        title = rows[0][1]
-        return rows[0][0], title 
-    else:
-        return '', ''
-    cur.close()
+    rows = rdsDB.getRowfromDB(sql)
+    return rows[0][0], rows[0][1]
 
 def load_brief_from_ctti(nct_id):
-    # return ''
-    import psycopg2
-    conn = psycopg2.connect(
-        host="aact-db.ctti-clinicaltrials.org",
-        database="aact",
-        user="mi608",
-        password=urllib.parse.unquote_plus('Training@123'))
-    #
-    # nct_id = 'NCT00613574'
     sql = "select bs.description from brief_summaries bs where bs.nct_id ='%s' limit 1;" % nct_id
-    print(sql)
-    cur = conn.cursor()
-    cur.execute(sql)
-    rows = cur.fetchmany(1)
-    if len(rows) > 0 and len(rows[0]) > 0:
-        value = rows[0][0]
-        
-        value = ' '.join(str(value).strip().replace('\r\n', '\n').replace('\n', '').split())
-        
-        print(value)
-
-        cur.close()
-        print(value)
-        return value
-    else:
-        return ''
-    
+    value = rdsDB.getValuefromDB(sql) 
+    return ' '.join(str(value).strip().replace('\r\n', '\n').replace('\n', '').split())
        
 def getNctId(fileName):
     import os
@@ -702,7 +672,7 @@ def processEndpoints(bucketName, bucketKey):
     #print(text)
     tabletype = 'html'
     output = infn_ep_extra.nctExtractObjectivesEndpoints(response,text,tabletype)
-    print(output)
+    #print(output)
     result = ''
     if output['type'] == 'table':
         result = output['content']['table']
@@ -713,7 +683,7 @@ def processEndpoints(bucketName, bucketKey):
             text = output['content'][item]['text']
             for txt in text.split('. '):
                 result += '\t . ' + txt +'\n'
-    print(result)
+    #print(result)
     return result
     #tabletype = 'list' #'html' 'csv'
     #soaRawContent = SOAfromResponseUsingPA(get_json_format(bucketName, bucketKey),jsontype=True,pretty=False,tabletype=tabletype)
@@ -727,7 +697,10 @@ def testMe():
     nctId = 'NCT02133742'
     #updateTitle('study_protocol', nctId, load_title_from_ctti(nctId))
     # NCT02133742 , NCT03023826
-    processEndpoints("iso-data-zone", "iso-service-dev/comprehend-input/NCT02133742.pdf.txt")
+    #processEndpoints("iso-data-zone", "iso-service-dev/comprehend-input/NCT02133742.pdf.txt")
+    #print( load_brief_from_ctti(nctId))
+    #print( load_title_from_ctti(nctId))
+    #print( rdsDB.getCriteria('NCT00613574'))
     return
 
     item = fetchNCTDetails(nctId)
@@ -777,7 +750,158 @@ def processSoaProcessedContent(soaProcessedContent):
     #new_content_s[hash_value]['scheduleActivities'][0]['soaResult'] = soaRes
     #print(soaDic)
     return soaRes,soaSummary, soaDic
+
+def call_meddra(text):
+    """
+    Call meddra for category is MEDICAL_CONDITION
+    :param text:
+    :return:
+    """
+    n_ranks = 1
+    ENDPOINT_NAME = 'mosaic-meddra-coding'
+    payload = json.dumps({'text': [text], 'n_ranks': n_ranks})
+    response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
+                                       ContentType='application/json',
+                                       Body=payload)
+    result = json.loads(response['Body'].read().decode())
+    print(result)
+    if result and len(result['results']) > 0:
+        r = result['results'][0]['preds']
+
+        return r[0]['LLT']
+    else:
+        return text
+        
+def process_frequency(data, total):
+    """
+    Process certeria frequency
+    :param data:
+    :param total:
+    :return:
+    """
+    print(data)
+
+    inclusionCriterias = []
+    exclusionCriterias = []
+
+    for i in data:
+        for j in i:
+            if 'inclusionCriteria' in j:
+                inclusionCriterias.append(j['inclusionCriteria'])
+            if 'exclusionCriteria' in j:
+                exclusionCriterias.append(j['exclusionCriteria'])
+
+    criterias_dict = {'inclusionCriteria': inclusionCriterias, 'exclusionCriteria': exclusionCriterias}
+    allCriteriaResult = []
+    for criteria_name in ['inclusionCriteria', 'exclusionCriteria']:
+        criteria_value = criterias_dict[criteria_name]
+        criteriaChildsText = []
+        criteriaChildsCategory = []
+        criteriaChilds = []
+
+        for i in criteria_value:
+            for c in i:
+                childs = i[c]
+                for child in childs:
+                    child_item = {'Category': child['Category'], 'Text': child['Text']}
+                    criteriaChilds.append(child_item)
+                    criteriaChildsCategory.append(child['Category'])
+                    criteriaChildsText.append(child['Text'])
+        criteriaChildsCategorySet = set(criteriaChildsCategory)
+        result_items = []
+        for c in criteriaChildsCategorySet:
+            result_item_child_text = []
+            result_item_child = []
+            for child in criteriaChilds:
+                result_item_child_text.append(child['Text'])
+            for ite in set(result_item_child_text):
+                result_item_child.append({'Text': ite, 'Count': result_item_child_text.count(ite),
+                                          'Frequency': result_item_child_text.count(ite) / total})
+            result_item = {c: result_item_child}
+            result_items.append(result_item)
+        allCriteriaResult.append({criteria_name: result_items})
+        # print({criteria_name: result_item})
+    # print(allCriteriaResult)
+    allCriteriaResult.append({'total': total})
+    print('Done')
+    return allCriteriaResult
     
+def process_category(data):
+    category = []
+    result = {}
+    for d in data:
+        if len(category) > 0 and d['Category'] in category:
+            result[d['Category']].append(d)
+            continue
+        else:
+            # i = {d['Category']: [d]}
+            category.append(d['Category'])
+            result[d['Category']] = [d]
+    # print(result)
+    process_frequency(result, len(data))
+    return result
+    
+def process(data):
+    """
+    Process aws's comprehend result
+    :param data:
+    :return:
+    """
+    criteriaSummary = []
+    for t in ['inclusionCriteria', 'exclusionCriteria']:
+        summary = {}
+        comprehendMedical = data[t][0]['comprehendMedical']
+        category_text_items = []
+        names = []
+        en_items = []
+        for name in ['ICD-10-CM', 'RxNorm', 'Entities']:
+            names.append(name)
+            # label = process_label(comprehendMedical[name], data[t])
+            for en in comprehendMedical[name]['Entities']:
+                # split into diff group
+                en_item = {'Category': en['Category'], 'Text': en['Text'], 'Type': en['Type'], 'Score': en['Score'],
+                           'Group': name}
+                # print(en_item)
+                category_text_item = {'Category': en['Category'], 'Text': en['Text']}
+                # Process those entities which have 'Attributes‘
+                if 'Attributes' in en and len(en['Attributes']) > 0:
+                    # print('Attrs')
+                    # print(en['Attributes'])
+                    a = []
+                    for att in en['Attributes']:
+                        at = {}
+                        if att['Type'] == 'TEST_VALUE':
+                            at['TEST_VALUE'] = att['Text']
+                            en_item['value'] = att['Text']
+                        if att['Type'] == 'TEST_UNIT':
+                            at['TEST_UNIT'] = att['Text']
+                            en_item['unit'] = att['Text']
+                        print(at)
+                # call meddra model to get 'LLT' name if the category is MEDICAL_CONDITION
+                if en_item['Category'] == 'MEDICAL_CONDITION':
+                    en_item['Text'] = call_meddra(en_item['Text'])
+                    
+                if name == 'RxNorm' and 'RxNormConcepts' in en:
+                    if len(en['RxNormConcepts']) >=2:
+                        rows = en['RxNormConcepts']
+                        rows_by_fname = sorted(rows, key=itemgetter('Score'))
+                        en_item['Text'] = rows_by_fname[:1]
+                    else:
+                        en_item['Text'] = en['RxNormConcepts']
+                
+                # print(en_item)
+                # filter out the duplicated items
+                if category_text_item not in category_text_items:
+                    category_text_items.append(category_text_item)
+                    en_items.append(en_item)
+            # data[t]['comprehendMedical'][name]['label'] = label
+        print(en_items)
+        # calculate the summary by each category
+        summary = process_category(en_items)
+        data[t][0]['comprehendMedical']['summary'] = summary
+        criteriaSummary.append({t: summary})
+    return data, criteriaSummary
+
 def lambda_handler(event, context):
     print("event: {}".format(event))
     if 'testMe' in event:
@@ -821,7 +945,7 @@ def lambda_handler(event, context):
     
     del protocol[hash_value]['allText']
     protocol[hash_value]['includeAllText'][0]['content'] = get_txt_format(bucketName, bucketKey)
-    print(protocol)
+    #print(protocol)
     
     # Mock for testing
     # demo_data = protocol[hash_value]['includeAllText']
@@ -836,7 +960,7 @@ def lambda_handler(event, context):
     title = 'Protocol I7T-MC-RMAA Disposition of [14C]-LY2623091 following Oral Administration in Healthy Subjects'
         
     awsUtils:AwsUtils = AwsUtils()
-    if len(nct_id) > 0 and len(load_title_from_ctti(nct_id)) > 0:
+    if len(nct_id) > 0:
         title, briefTitle = load_title_from_ctti(nct_id)
         # update the 'study_protocol'
         updateTitle('study_protocol', nct_id, briefTitle)
@@ -853,9 +977,9 @@ def lambda_handler(event, context):
     
     brief = 'The information contained in this protocol is confidential and is intended for the use of clinical investigators. It is the property of Eli Lilly and Company or its subsidiaries and should not be copied by or distributed to persons not involved in the clinical investigation of LY2623091, unless such persons are bound by a confidentiality agreement with Eli Lilly and Company or its subsidiaries. This document and its associated attachments are subject to United States Freedom of Information Act (FOIA) Exemption 4.'
     
-    if len(nct_id) > 0 and len(load_brief_from_ctti(nct_id)) > 0:
+    if len(nct_id) > 0:
         brief = load_brief_from_ctti(nct_id)
-    print(brief)
+    #print(brief)
     incItem = {}
     incItem['title'] = brief
     incItem['content'] = brief
@@ -908,9 +1032,7 @@ def lambda_handler(event, context):
         for column in row:
             if(column == 'X'):
                 xPos = rowNum
-    
-            
-        
+
     soaObj = {
         'title' : 'Schedule of Activities',
         'content' : sumText,
@@ -975,7 +1097,7 @@ def lambda_handler(event, context):
     print('processing handler_aws_attr_summary')
     
     new_content_s = handler_aws_attr_summary(new_content, hash_value)
-    print(new_content_s)
+    #print(new_content_s)
     
     new_content_s[hash_value]['scheduleActivities'][0]['table'] = soaProcessedContent
     # with open('./StandardizedActivitiesMapping.csv', mode='r') as infile:
@@ -1015,49 +1137,48 @@ def lambda_handler(event, context):
     pbTotalList = []
     pbDimensionalList = []
     pbExcessList = []
-    for column in range(1, len(soaProcessedContent[xPos])):
-        pbCount = {}
-        pbCount[1] = 0
-        pbCount[2] = 0
-        pbCount[3] = 0
-        pbCount[4] = 0
-        pbCount[5] = 0
-        pbCount[6] = 0
-        pbCount[7] = 0
-        pbCount[8] = 0
-        pbCount[9] = 0
-        pbCount[10] = 0
-        for row in soaProcessedContent[xPos-1:]:
-            keyname = removeSpecialChars(row[0])
-            if(keyname in soaDic):
-                value = soaDic[keyname]['value']
-                if(value in costDic):
-                    if(row[column] == 'X'):
-                        for x in range (1,11):
-                            pbCount[x] += int(costDic[value][x])
-        pbTotal = 0
-        pbDimensional = {}
-        pbExcess = {}
-        for x in range(1, 11):
-            if(pbCount[x] == 1):
-                pbTotal += matchingPB[x]
-                pbDimensional[x] = matchingPB[x]
-                pbExcess[x] = 0
-            elif(pbCount[x] > 1):
-                pbTotal += matchingPB[x]
-                pbTotal += pbCount[x] - 1
-                pbDimensional[x] = matchingPB[x]
-                pbExcess[x] = pbCount[x] - 1
-            else:
-                pbDimensional[x] = 0
-                pbExcess[x] = 0
-        pbTotalList.append(pbTotal)
-        pbDimensionalList.append(pbDimensional)
-        pbExcessList.append(pbExcess)
-        pbTotalAmount += pbTotal
-    
-                
-    
+    if(xPos != -1):
+        for column in range(1, len(soaProcessedContent[xPos])):
+            pbCount = {}
+            pbCount[1] = 0
+            pbCount[2] = 0
+            pbCount[3] = 0
+            pbCount[4] = 0
+            pbCount[5] = 0
+            pbCount[6] = 0
+            pbCount[7] = 0
+            pbCount[8] = 0
+            pbCount[9] = 0
+            pbCount[10] = 0
+            for row in soaProcessedContent[xPos-1:]:
+                keyname = removeSpecialChars(row[0])
+                if(keyname in soaDic):
+                    value = soaDic[keyname]['value']
+                    if(value in costDic):
+                        if(row[column] == 'X'):
+                            for x in range (1,11):
+                                pbCount[x] += int(costDic[value][x])
+            pbTotal = 0
+            pbDimensional = {}
+            pbExcess = {}
+            for x in range(1, 11):
+                if(pbCount[x] == 1):
+                    pbTotal += matchingPB[x]
+                    pbDimensional[x] = matchingPB[x]
+                    pbExcess[x] = 0
+                elif(pbCount[x] > 1):
+                    pbTotal += matchingPB[x]
+                    pbTotal += pbCount[x] - 1
+                    pbDimensional[x] = matchingPB[x]
+                    pbExcess[x] = pbCount[x] - 1
+                else:
+                    pbDimensional[x] = 0
+                    pbExcess[x] = 0
+            pbTotalList.append(pbTotal)
+            pbDimensionalList.append(pbDimensional)
+            pbExcessList.append(pbExcess)
+            pbTotalAmount += pbTotal
+
     new_content_s[hash_value]['scheduleActivities'][0]['soaResult'] = soaRes
     new_content_s[hash_value]['scheduleActivities'][0]['soaSummary'] = soaSummary
     new_content_s[hash_value]['scheduleActivities'][0]['xPos'] = xPos
@@ -1074,15 +1195,9 @@ def lambda_handler(event, context):
     # Save to db
     # save_to_dynamodb(table, t_item)
     # lambda_client.invoke_async(FunctionName='dean-dev-protocol-job', InvokeArgs=json.dumps({'method':'save', 'body':t_item}))
-    
-    
     response = s3.put_object(Bucket=bucketName, Key=prefixName+'/input/data/'+getFileName(bucketKey)+'.json', Body=json.dumps(new_content_s))
     print("save result success!")
-    
-    
-    
-    
-    
+
     soaSummaryObj = s3.get_object(Bucket=bucketName, Key=prefixName + '/summary/soaSummary.json')['Body']
     soaSummaryObj = json.loads(soaSummaryObj.read())
     nctCostPbMap = soaSummaryObj['nctCostPbMap']
@@ -1092,20 +1207,21 @@ def lambda_handler(event, context):
     }
     
     soaResultList = []
-    for row in soaProcessedContent[xPos-1:]:
-        rawEvent = row[0]
-        if(removeSpecialChars(rawEvent) in soaDic):
-            soaResultList.append({
-                'raw' : rawEvent,
-                'standardized' : soaDic[removeSpecialChars(rawEvent)]['value'],
-                'category' : soaDic[removeSpecialChars(rawEvent)]['category']
-            })
-        else:
-            soaResultList.append({
-                'raw' : rawEvent,
-                'standardized' : "",
-                'category' : ""
-            })
+    if(xPos != -1):
+        for row in soaProcessedContent[xPos-1:]:
+            rawEvent = row[0]
+            if(removeSpecialChars(rawEvent) in soaDic):
+                soaResultList.append({
+                    'raw' : rawEvent,
+                    'standardized' : soaDic[removeSpecialChars(rawEvent)]['value'],
+                    'category' : soaDic[removeSpecialChars(rawEvent)]['category']
+                })
+            else:
+                soaResultList.append({
+                    'raw' : rawEvent,
+                    'standardized' : "",
+                    'category' : ""
+                })
     s3.put_object(Bucket=bucketName, Key=prefixName + '/summary/nct_soa_result/' + nct_id + '.json', Body=json.dumps({
         'result' : soaResultList
     }))
@@ -1143,32 +1259,41 @@ def lambda_handler(event, context):
     
     
     ##IE
-    ieSummaryObj = s3.get_object(Bucket=bucketName, Key=prefixName + '/summary/ieSummary.json')['Body']
-    ieSummaryObj = json.loads(ieSummaryObj.read())
-    iHistory = ieSummaryObj['inclusion']
-    eHistory = ieSummaryObj['exclusion']
-    eList = new_content_s[hash_value]['exclusionCriteria'][0]['comprehendMedical']['Entities']['Entities']
-    iList = new_content_s[hash_value]['inclusionCriteria'][0]['comprehendMedical']['Entities']['Entities']
-    iNew = []
-    eNew = []
-    for item in eList:
-        eNew.append({
-            'category' : item['Category'],
-            'raw' : item['Text']
-        })
-    eHistory[nct_id] = eNew 
-    for item in iList:
-        iNew.append({
-            'category' : item['Category'],
-            'raw' : item['Text']
-        })
-    iHistory[nct_id] = iNew 
-    ieSummaryObj['inclusion'] = iHistory
-    ieSummaryObj['exclusion'] = eHistory
+    ieData, criteriaSummary = process(new_content_s[hash_value])
     
-    s3.put_object(Bucket=bucketName, Key=prefixName + '/summary/ieSummary.json', Body=json.dumps(ieSummaryObj))
+    print(ieData)
+    print(criteriaSummary)
+    
+    sumList = []
+    sumList.append(criteriaSummary)
+    frequencyData = process_frequency(sumList,1)
+    print(frequencyData)
     
     
+    # ieSummaryObj = s3.get_object(Bucket=bucketName, Key=prefixName + '/summary/ieSummary.json')['Body']
+    # ieSummaryObj = json.loads(ieSummaryObj.read())
+    # iHistory = ieSummaryObj['inclusion']
+    # eHistory = ieSummaryObj['exclusion']
+    # eList = new_content_s[hash_value]['exclusionCriteria'][0]['comprehendMedical']['Entities']['Entities']
+    # iList = new_content_s[hash_value]['inclusionCriteria'][0]['comprehendMedical']['Entities']['Entities']
+    # iNew = []
+    # eNew = []
+    # for item in eList:
+    #     eNew.append({
+    #         'category' : item['Category'],
+    #         'raw' : item['Text']
+    #     })
+    # eHistory[nct_id] = eNew 
+    # for item in iList:
+    #     iNew.append({
+    #         'category' : item['Category'],
+    #         'raw' : item['Text']
+    #     })
+    # iHistory[nct_id] = iNew 
+    # ieSummaryObj['inclusion'] = iHistory
+    # ieSummaryObj['exclusion'] = eHistory
+    
+    s3.put_object(Bucket=bucketName, Key=prefixName + '/summary/ieSummary.json', Body=json.dumps(criteriaSummary))
     
     # lambda_client.invoke_async(FunctionName='iso-service-dev-aws-summary', InvokeArgs=json.dumps({'bucket':bucketName, 'key':prefixName+'/input/data/'+getFileName(bucketKey)+'.json'}))
     lambda_client.invoke_async(FunctionName='iso-service-dev-aws-label', InvokeArgs=json.dumps({'bucket':bucketName, 'key':prefixName+'/input/data/'+getFileName(bucketKey)+'.json'}))
