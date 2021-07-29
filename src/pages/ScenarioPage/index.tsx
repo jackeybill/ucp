@@ -1897,11 +1897,12 @@ const ScenarioPage = (props) => {
 
     //export
     let str = 'INDIVIDUAL PROTOCOL'
-    str += '\n' + 'I/E' + ',' + 'NCT ID' + ',' + 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ','
+    str += '\n' + 'I/E' + ',' + 'NCT ID' + ',' + 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Value' + ','
                 + 'Modifier (If Applicable)' + ',' + 'Lower Limit' + ',' + 'Upper Limit' + ',' + 'Units' + ',' + 'Time'
     for(const id in tempInclusionResource){
       str += '\n' + 'INCLUSION' + ',' + tempInclusionResource[id].nct + ',"' + tempInclusionResource[id].category +  '","'
                   + tempInclusionResource[id].raw + '","' + tempInclusionResource[id].standardized + '","' 
+                  + tempInclusionResource[id].value + '","'
                   + tempInclusionResource[id].modifier +  '","' + tempInclusionResource[id].lower + '","' 
                   + tempInclusionResource[id].upper + '","' + tempInclusionResource[id].units +  '","'
                   + tempInclusionResource[id].time +  '"'
@@ -1909,6 +1910,7 @@ const ScenarioPage = (props) => {
     for(const idx in tempExclusionResource){
       str += '\n' + 'EXCLUSION' + ',' + tempExclusionResource[idx].nct + ',"' + tempExclusionResource[idx].category +  '","'
                   + tempExclusionResource[idx].raw + '","' + tempExclusionResource[idx].standardized + '","' 
+                  + tempExclusionResource[idx].value + '","'
                   + tempExclusionResource[idx].modifier +  '","' + tempExclusionResource[idx].lower + '","' 
                   + tempExclusionResource[idx].upper + '","' + tempExclusionResource[idx].units +  '","'
                   + tempExclusionResource[idx].time +  '"'
