@@ -39,6 +39,7 @@ export const sectionOptions = [
     value: "objectivesEndpointsEstimands",
   },
 ];
+export const ENDPOINT_SECTION="objectivesEndpointsEstimands"
 export const initSelectedSections = sectionOptions.map((s) => {
   return s.value;
 });
@@ -78,12 +79,13 @@ const ProtocolSection = (props: any) => {
   const [sections, setSections] = useState(initSelectedSections);
   const [activeSection, setActiveSection] = useState("");
   const [format, setFormat] = useState("Export as");
-  const [entity, setEntity] = useState("");
+  const [entity, setEntity] = useState("Entities");
   const [formatOptions, setFormatOptions] = useState(defaultExportOptions);
   const [checkedSections, setCheckSections] = useState(initSelectedSections);
   const [pageNum, setPageNum] = useState(1)
   const [filePath, setFilePath] = useState("")
-  const[isModalVisible,setIsModalVisible] = useState(false)
+  const [isModalVisible,setIsModalVisible] = useState(false)
+  
   
   useEffect(() => {
     if (props.fileReader.activeTabKey == "ENTITY RELATIONSHIPS") {
@@ -111,9 +113,10 @@ const ProtocolSection = (props: any) => {
       } else if (entity && activeSection && file[key][activeSection][0] && file[key][activeSection][0].table) {
         setEntities(file[key][activeSection][0] && file[key][activeSection][0].table)
       }
-      setPageNum(file[key][activeSection][0].pageNo )
-    }
-    
+      if(activeSection=="scheduleActivities"){
+        file[key][activeSection][0].pageNo && setPageNum(file[key][activeSection][0].pageNo)
+      } 
+    }    
   }, [activeSection]);
 
   useEffect( ()=>{
@@ -458,8 +461,9 @@ const ProtocolSection = (props: any) => {
           </div>
         </div>
         <div className="main-content">
-          {props.location.pathname == "/protocol-sections" && (
+          {props.location.pathname == "/protocol-sections" && activeSection!=ENDPOINT_SECTION && (
             <SectionText
+              file={file}
               protocolSection={protocolSection}
               sections={
                 protocolSection != completeDocument
@@ -467,6 +471,7 @@ const ProtocolSection = (props: any) => {
                   : [completeDocument]
               }
               fileReader={props.fileReader}
+              entity={entity}
             />
           )}
           {props.location.pathname === "/extraction" && activeSection !== "scheduleActivities"&& checkedSections[0]!== "scheduleActivities" &&(
@@ -485,6 +490,7 @@ const ProtocolSection = (props: any) => {
               />
             </>
           )}
+         
         </div>
       </div>
       <div className="section-footer">

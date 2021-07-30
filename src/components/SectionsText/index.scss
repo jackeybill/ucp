@@ -46,3 +46,16 @@
     color: #ffffff;
   }
 }
+
+
+.html-section{
+  tr{
+    padding:10px;
+    border: 1px solid #cccccc;
+
+    th, td{
+      padding:10px 15px;
+      border-right: 1px solid #cccccc;
+    }
+  }
+}

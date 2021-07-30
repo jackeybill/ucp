@@ -149,6 +149,23 @@
 .ant-select-dropdown {
   z-index: 1100 !important;
 }
+
+
+.html-section{
+  tr{
+    padding:10px;
+    border: 1px solid #cccccc;
+
+    th, td{
+      padding:10px 15px;
+      border-right: 1px solid #cccccc;
+    }
+  }
+}
+
+
+
+
 .entity-types {
   .type-item {
     background-color: #cbcbcb;

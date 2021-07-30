@@ -19,7 +19,10 @@ import SvgComponent from "../../components/analysedSVG";
 import SuccessIcon from "../../assets/success.svg";
 import WarnIcon from "../../assets/warn.svg";
 import TextWithEntity from "../../components/TextWithEntity";
+import TableTextWithEntity from "../../components/TableTextWithEntity";
+import {ENDPOINT_SECTION} from "../../pages/ProtocolSection";
 import "./index.scss";
+import { render } from "@testing-library/react";
 
 interface markIF {
   id: string;
@@ -32,6 +35,12 @@ const { TabPane } = Tabs;
 const { Option } = Select;
 const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA"];
 
+
+
+export function isTable(file,key,activeSection){
+  return file[key][activeSection][0].tableResult&&file[key][activeSection][0].tableResult.length>0?true:false
+}
+
 const Extraction = (props: any, ref) => {
   if (!props.fileReader.file.txt) {
     window.location.href = window.location.origin + "/overview";
@@ -43,8 +52,14 @@ const Extraction = (props: any, ref) => {
 
   const key = file.keyName || Object.keys(file)[0] || [];
   let initContent = file[key][activeSection][0].content;
-
   const path = file["result_url"];
+
+  let tableResult,otherTableResult = []
+  if(activeSection==ENDPOINT_SECTION){
+    tableResult=file[key][activeSection][0].tableResult
+    otherTableResult = file[key][activeSection][0].otherTableResult
+  }
+
   const [entity, setEntity] = useState(initEntity);
   const [currentLabel, setCurrentLabel] = useState("");
   const [activeType, setActiveType] = useState("");
@@ -54,6 +69,8 @@ const Extraction = (props: any, ref) => {
   );
   let [content, setContent] = useState(initContent);
   const [entityTypes, setEntityTypes] = useState([]);
+  const [svgString, setSvgString] = useState("")
+  const [endpointDataSource, setEndpointDataSource] = useState(tableResult)
 
   // const allWordsCollection = file[key][activeSection][0].comprehendMedical["Entities"].label
   // const allSummary = file[key][activeSection][0].comprehendMedical["Entities"].Summary;
@@ -69,7 +86,12 @@ const Extraction = (props: any, ref) => {
   // const entities =
   //   file[key][activeSection][0].comprehendMedical[entity].Entities || {};
   const firstMarkId = initLabels && initLabels.length > 0 && initLabels[0].id;
-  const summary = file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary || {};
+  let summary
+  if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
+    summary=file[key][activeSection][0].totalSummary[entity]
+  }else{
+    summary = file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary || {};  
+  }
 
   useEffect(() => {
     const getAllEntityTypes = (obj, sections, entity) => {
@@ -194,7 +216,10 @@ const Extraction = (props: any, ref) => {
     currentLabel,
     wordsCollection,
     updateWordsCollection,
-    saveParamsObj
+    saveParamsObj,
+    tableBody,   
+    tableBodyColumnIndex,
+    tableBodyRowIndex
   ) => {
     const targetIdx = wordsCollection.findIndex((w) => w.id == id);
     if (targetIdx == -1) return;
@@ -206,34 +231,49 @@ const Extraction = (props: any, ref) => {
 
     const markCollection = tempWordsCollection.filter((w) => w.type == "mark");
     const { hashKey, entity, activeSection, path } = saveParamsObj;
+    let paramBody,updatedData
+    
+    if(activeSection==ENDPOINT_SECTION){
 
-    const paramBody = {
-      [hashKey]: {
-        [activeSection]: [
-          {
-            comprehendMedical: {
-              [entity]: {
-                // label: markCollection,
-                label: tempWordsCollection,
+      updatedData = file[hashKey][activeSection][0].tableResult.slice(0)
+      updatedData[tableBodyRowIndex+1][tableBodyColumnIndex].comprehendMedical[entity].label=tempWordsCollection
+      
+      paramBody = {
+        [hashKey]: {
+          [activeSection]: [
+            {
+              tableResult: updatedData
+            },
+          ],
+        },
+      };
+
+      
+    }else{
+      updatedData = file[hashKey][activeSection].slice(0)
+      updatedData[0].comprehendMedical[entity].label = tempWordsCollection;
+
+      paramBody = {
+        [hashKey]: {
+          [activeSection]: [
+            {
+              comprehendMedical: {
+                [entity]: {
+                  label: tempWordsCollection,
+                },
               },
             },
-          },
-        ],
-      },
-    };
-
+          ],
+        },
+      };
+    }
     const saveRes = await saveText(paramBody, path);
-    const prevFile = props.fileReader.file[hashKey];
-
-    let temFile = props.fileReader.file;
-    temFile[hashKey][activeSection][0].comprehendMedical[entity].label =
-      tempWordsCollection;
 
     if (saveRes.statusCode == "200") {
       message.success("Save successfully");
       props.readFile({
         updatedSection: paramBody,
-        file: temFile,
+        file: updatedData,
       });
     }
   };
@@ -311,14 +351,102 @@ const Extraction = (props: any, ref) => {
                       </div>
                     );
                   })}
+                  {
+
+                  }
               </div>
             </div>
-            {wordsCollection && wordsCollection.length != 0 ? (
+            {(!wordsCollection || wordsCollection.length==0) && activeSection!=ENDPOINT_SECTION&& <div className="raw-content"> {content} </div>}           
+            {/* {
+              wordsCollection && wordsCollection.length != 0 && (
+                <>
+                {
+                  (activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection))?(
+                    <TableTextWithEntity
+                    dataSource={file[key][activeSection][0].tableResult}
+                    key="1"
+                    summary={summary}
+                    wordsCollection={wordsCollection}
+                    activeType={activeType}
+                    activeSection={activeSection}
+                    searchTxt={searchTxt}
+                    onChangeActiveType={onChangeActiveType}
+                    currentLabel={currentLabel}
+                    handleChange={handleChange}
+                    entityTypes={entityTypes}
+                    firstMarkId={firstMarkId}
+                    path={path}
+                    showConfidence={false}
+                    entity={entity}
+                  />
+
+                  ):(
+                    <TextWithEntity
+                    key="1"
+                    summary={summary}
+                    wordsCollection={wordsCollection}
+                    activeType={activeType}
+                    activeSection={activeSection}
+                    searchTxt={searchTxt}
+                    onChangeActiveType={onChangeActiveType}
+                    currentLabel={currentLabel}
+                    handleChange={handleChange}
+                    entityTypes={entityTypes}
+                    firstMarkId={firstMarkId}
+                    path={path}
+                    showConfidence={false}
+                    entity={entity}
+                  />
+                  )
+                }
+                </>
+              )
+            }*/}
+            {
+            (activeSection!=ENDPOINT_SECTION || (activeSection==ENDPOINT_SECTION&&!isTable(file,key,activeSection))) && (
+               <TextWithEntity
+               key="1"
+               summary={summary}
+               wordsCollection={wordsCollection}
+               activeType={activeType}
+               activeSection={activeSection}
+               searchTxt={searchTxt}
+               onChangeActiveType={onChangeActiveType}
+               currentLabel={currentLabel}
+               handleChange={handleChange}
+               entityTypes={entityTypes}
+               firstMarkId={firstMarkId}
+               path={path}
+               showConfidence={false}
+               entity={entity}
+             />
+            )} 
+           {  activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)&& (
+              <TableTextWithEntity
+              dataSource={file[key][activeSection][0].tableResult}
+               key="1"
+               summary={summary}
+               wordsCollection={wordsCollection}
+               activeType={activeType}
+               activeSection={activeSection}
+               searchTxt={searchTxt}
+               onChangeActiveType={onChangeActiveType}
+               currentLabel={currentLabel}
+               handleChange={handleChange}
+               entityTypes={entityTypes}
+               firstMarkId={firstMarkId}
+               path={path}
+               showConfidence={false}
+               entity={entity}
+             />
+            )}
+            {/* {wordsCollection && wordsCollection.length != 0 ?  (    
               <TextWithEntity
                 key="1"
                 summary={summary}
                 wordsCollection={wordsCollection}
                 activeType={activeType}
+                activeSection={activeSection}
                 searchTxt={searchTxt}
                 onChangeActiveType={onChangeActiveType}
                 currentLabel={currentLabel}
@@ -331,10 +459,12 @@ const Extraction = (props: any, ref) => {
               />
             ) : (
               <div className="raw-content"> {content} </div>
-            )}
+            )} */}
             
           </div>
         </TabPane>
+        {
+          !(activeSection==ENDPOINT_SECTION&&isTable(file,key,activeSection))&&(
         <TabPane
           tab={
             <span>
@@ -388,6 +518,9 @@ const Extraction = (props: any, ref) => {
             </div>
           </div>
         </TabPane>
+          )
+        }
+        
         <TabPane
           tab={
             <span>
@@ -422,28 +555,49 @@ const Extraction = (props: any, ref) => {
                 &lt; 80% confidence
               </span>
             </div>
-            {wordsCollection && wordsCollection.length != 0 ? (
-              <TextWithEntity
-                key="2"
-                hashKey={key}
-                entity={allEntity}
-                summary={summary}
-                wordsCollection={wordsCollection}
-                activeType=""
-                searchTxt={searchTxt}
-                onChangeActiveType={onChangeActiveType}
-                currentLabel={currentLabel}
-                handleChange={handleChange}
-                entityTypes={entityTypes}
-                showTooltip={true}
-                showConfidence={true}
-                handleSaveContent={handleSaveContent}
-                updateWordsCollection={updateWordsCollection}
-                activeSection={activeSection}
-                path={path}
-              />
-            ) : (
-              <div className="raw-content"> {content} </div>
+            {(!wordsCollection || wordsCollection.length==0) && activeSection!=ENDPOINT_SECTION &&  <div className="raw-content"> {content} </div>}           
+            {(activeSection!=ENDPOINT_SECTION || (activeSection==ENDPOINT_SECTION&&!isTable(file,key,activeSection))) && (
+               <TextWithEntity
+               key="2"
+               hashKey={key}
+               entity={allEntity}
+               summary={summary}
+               wordsCollection={wordsCollection}
+               activeType=""
+               searchTxt={searchTxt}
+               onChangeActiveType={onChangeActiveType}
+               currentLabel={currentLabel}
+               handleChange={handleChange}
+               entityTypes={entityTypes}
+               showTooltip={true}
+               showConfidence={true}
+               handleSaveContent={handleSaveContent}
+               updateWordsCollection={updateWordsCollection}
+               activeSection={activeSection}
+               path={path}
+             />
+            )}
+           {activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)&&(
+              <TableTextWithEntity
+              key="2"
+              dataSource={file[key][activeSection][0].tableResult}
+              hashKey={key}
+              entity={allEntity}
+              summary={summary}
+              wordsCollection={wordsCollection}
+              activeType=""
+              searchTxt={searchTxt}
+              onChangeActiveType={onChangeActiveType}
+              currentLabel={currentLabel}
+              handleChange={handleChange}
+              entityTypes={entityTypes}
+              showTooltip={true}
+              showConfidence={true}
+              handleSaveContent={handleSaveContent}
+              updateWordsCollection={updateWordsCollection}
+              activeSection={activeSection}
+              path={path}
+             />
             )}
           </div>
         </TabPane>

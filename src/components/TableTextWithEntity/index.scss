@@ -1,0 +1,62 @@
+.table-text-with-entity-container{
+    display: flex;
+    padding: 50px 40px;
+    .text-table{
+        flex:1;
+        border: 1px solid #cccccc; 
+        border-right: 1px solid transparent;
+        &:last-child{
+            border-right: 1px solid #cccccc;
+        }   
+        .t-head{
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: 600;
+            border-bottom: 1px solid #cccccc;
+        }   
+        .t-body{
+            .t-row{
+                padding: 10px 15px;
+                border-bottom: 1px solid #cccccc;
+                &:last-child{
+                    border-bottom:1px solid transparent;
+                }
+            }
+        }
+        .t-cell{
+            padding:10px 15px;
+            border-bottom: 1px solid #cccccc;
+            &:last-child{
+                border-bottom:1px solid transparent;
+            }
+        }
+    }
+
+    table{
+        border:1px solid #cccccc; 
+    }
+
+    tr{
+        display: flex;
+        border-bottom: 1px solid #cccccc;
+        
+        td{
+            flex:1;
+            border-right: 1px solid #cccccc;
+            &:last-child{
+                border-right: 1px solid transparent;
+            }
+
+        }
+        .td-wrapper{
+            padding:10px 15px;
+            &.title{
+                font-size: 16px;
+                font-weight: 600;
+            }
+        }
+    }
+    tbody tr:last-child{
+        border-bottom: 1px solid transparent;
+    }
+}
