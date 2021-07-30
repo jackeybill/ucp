@@ -29,7 +29,7 @@ const TableTextWithEntity = (props) => {
 
   const updateTableDatasource = (newData, columnIndex, rowIndex) => {
     const currentBody = body.slice(0);
-    currentBody[rowIndex + 1][columnIndex].comprehendMedical[entity].label =
+    currentBody[rowIndex][columnIndex].comprehendMedical[entity].label =
       newData;
     setBody(currentBody);
   };
