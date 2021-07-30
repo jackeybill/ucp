@@ -10,6 +10,7 @@ const initialState = {
 }
 
 const fileReducer = (state = initialState, action) => {
+    console.log('=====',action.data)
 	switch(action.type){	
 		case FILE_READER:
             state = {

@@ -16,6 +16,7 @@ const TableTextWithEntity = (props) => {
     path,
     entity,
     showTooltip,
+    showConfidence,
     hashKey,
     handleSaveContent,
     updateWordsCollection,
@@ -80,7 +81,7 @@ const TableTextWithEntity = (props) => {
                               entityTypes={entityTypes}
                               firstMarkId={firstMarkId}
                               path={path}
-                              showConfidence={false}
+                              showConfidence={showConfidence}
                               entity={entity}
                               showTooltip={showTooltip}
                               handleSaveContent={handleSaveContent}

@@ -357,51 +357,6 @@ const Extraction = (props: any, ref) => {
               </div>
             </div>
             {(!wordsCollection || wordsCollection.length==0) && activeSection!=ENDPOINT_SECTION&& <div className="raw-content"> {content} </div>}           
-            {/* {
-              wordsCollection && wordsCollection.length != 0 && (
-                <>
-                {
-                  (activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection))?(
-                    <TableTextWithEntity
-                    dataSource={file[key][activeSection][0].tableResult}
-                    key="1"
-                    summary={summary}
-                    wordsCollection={wordsCollection}
-                    activeType={activeType}
-                    activeSection={activeSection}
-                    searchTxt={searchTxt}
-                    onChangeActiveType={onChangeActiveType}
-                    currentLabel={currentLabel}
-                    handleChange={handleChange}
-                    entityTypes={entityTypes}
-                    firstMarkId={firstMarkId}
-                    path={path}
-                    showConfidence={false}
-                    entity={entity}
-                  />
-
-                  ):(
-                    <TextWithEntity
-                    key="1"
-                    summary={summary}
-                    wordsCollection={wordsCollection}
-                    activeType={activeType}
-                    activeSection={activeSection}
-                    searchTxt={searchTxt}
-                    onChangeActiveType={onChangeActiveType}
-                    currentLabel={currentLabel}
-                    handleChange={handleChange}
-                    entityTypes={entityTypes}
-                    firstMarkId={firstMarkId}
-                    path={path}
-                    showConfidence={false}
-                    entity={entity}
-                  />
-                  )
-                }
-                </>
-              )
-            }*/}
             {
             (activeSection!=ENDPOINT_SECTION || (activeSection==ENDPOINT_SECTION&&!isTable(file,key,activeSection))) && (
                <TextWithEntity
@@ -423,7 +378,7 @@ const Extraction = (props: any, ref) => {
             )} 
            {  activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)&& (
               <TableTextWithEntity
-              dataSource={file[key][activeSection][0].tableResult}
+               dataSource={file[key][activeSection][0].tableResult}
                key="1"
                summary={summary}
                wordsCollection={wordsCollection}
@@ -440,27 +395,6 @@ const Extraction = (props: any, ref) => {
                entity={entity}
              />
             )}
-            {/* {wordsCollection && wordsCollection.length != 0 ?  (    
-              <TextWithEntity
-                key="1"
-                summary={summary}
-                wordsCollection={wordsCollection}
-                activeType={activeType}
-                activeSection={activeSection}
-                searchTxt={searchTxt}
-                onChangeActiveType={onChangeActiveType}
-                currentLabel={currentLabel}
-                handleChange={handleChange}
-                entityTypes={entityTypes}
-                firstMarkId={firstMarkId}
-                path={path}
-                showConfidence={false}
-                entity={entity}
-              />
-            ) : (
-              <div className="raw-content"> {content} </div>
-            )} */}
-            
           </div>
         </TabPane>
         {

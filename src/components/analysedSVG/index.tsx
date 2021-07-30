@@ -45,6 +45,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
   }
   componentDidMount() {
     this.refresh()
+    console.log( this.props.activeSection)
   }
   
   componentDidUpdate(prevProps: SvgComponentProps, newProps: any) {
@@ -308,6 +309,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
           gList.push(
             <g className="svg_text_chunk gap" data-start-offset={cur} data-end-offset={nextEntity.BeginOffset} style={{display:'inline-block',padding:'0 2px'}}>
               <text startOffset={cur-pos}>&nbsp;&nbsp;&nbsp;{content.slice(cur, nextEntity.BeginOffset)}&nbsp;&nbsp;&nbsp;</text>
+              
             </g>
           )
           cur = nextEntity.BeginOffset
@@ -326,6 +328,15 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
                gList.push(
                 <g key={nextEntity.Id} className="svg_text_chunk entity"  style={{paddingLeft:2}}>
                   <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text> 
+                  {/* <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;<div style={{'display':'inline-block'}} dangerouslySetInnerHTML={{__html:nextEntity.Text}} />&nbsp;&nbsp;&nbsp;</text>  */}
+                  
+                  {/* <foreignObject xmlns="http://www.w3.org/1999/xhtml" x1={2} y1={6} x2={3} y2={6} id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>
+                    <body>
+                     <div> sssssssss</div>
+                    </body>
+                &nbsp;&nbsp;&nbsp;<div dangerouslySetInnerHTML={{__html:nextEntity.Text}} />&nbsp;&nbsp;&nbsp;    
+                  </foreignObject> */}
+
                   <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}/>               
                    {
                      nextEntity.SubChild.map((c, idx) => {
@@ -339,22 +350,32 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
                           <g key={c.Id} data-start-offset={c.BeginOffset} data-end-offset={c.EndOffset}>
                            <line strokeWidth="3" strokeLinecap="round" x1={`${(Math.abs(c.BeginOffset - nextEntity.BeginOffset-1))*pxRatio}px`} y1={10} x2={`${(c.EndOffset - nextEntity.BeginOffset)*pxRatio}px`}y2={10} style={{ stroke: subColor }} />                   
                            <circle fill={subColor} cx="3" cy={20 + 10 * (idx + 1)} r="3"></circle>
-                           <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={20+10*(idx+1)} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(c.Type)} (${c.Text})` }&nbsp;&nbsp;&nbsp;</text>                  
+                           <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={20+10*(idx+1)} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(c.Type)} (${c.Text})` }&nbsp;&nbsp;&nbsp;</text> 
+                           {/* <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={20+10*(idx+1)} dy="0.35em" >&nbsp;&nbsp;&nbsp; <div style={{'display':'inline-block'}} dangerouslySetInnerHTML={{__html:`${formatStr(c.Type)} (${c.Text})`}} />&nbsp;&nbsp;&nbsp;</text>  */}
+                                             
                         </g>
                        )
                      })
                   }
                   <circle fill={color} cx="3" cy="20" r="3"></circle>             
                   <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={20} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>         
+                  {/* <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={20} dy="0.35em" >&nbsp;&nbsp;&nbsp;<div style={{'display':'inline-block'}} dangerouslySetInnerHTML={{__html:`${formatStr(nextEntity.Type)} (${nextEntity.Text})`}} />&nbsp;&nbsp;&nbsp;</text>          */}
+                
                 </g>
             )            
             } else {
                gList.push(
                 <g key={nextEntity.Id} className="svg_text_chunk entity" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset} style={{paddingLeft:2}}>
                   <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text>              
+                  {/* <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;<div style={{'display':'inline-block'}} dangerouslySetInnerHTML={{__html:nextEntity.Text}} />&nbsp;&nbsp;&nbsp;</text>               */}
+                 
                   <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} />              
                   <circle fill={color} cx="3" cy="15" r="3"></circle>
-                  <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={15} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>         
+                 
+                  <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={15} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>  
+                  {/* <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={15} dy="0.35em" >&nbsp;&nbsp;&nbsp; <div style={{'display':'inline-block'}} dangerouslySetInnerHTML={{__html:`${formatStr(nextEntity.Type)} (${nextEntity.Text})`}} /> &nbsp;&nbsp;&nbsp;</text>   */}
+                  
+                       
                 </g>
             )           
             }         
@@ -372,6 +393,8 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
         gList.push(
           <g className={`svg_text_chunk gap`} data-start-offset={cur} data-end-offset={last} style={{display:'inline-block',padding:'0 2px'}}>
             <text>&nbsp;&nbsp;&nbsp;{content.slice(cur, last)}&nbsp;&nbsp;&nbsp;</text>
+            {/* <text>&nbsp;&nbsp;&nbsp;<div style={{'display':'inline-block'}}  dangerouslySetInnerHTML={{__html:content.slice(cur, last)}}></div> &nbsp;&nbsp;&nbsp;</text> */}
+            
           </g>
         )
         cur = last
