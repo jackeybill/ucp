@@ -3,7 +3,9 @@ import TextWithEntity from "../TextWithEntity";
 import "./index.scss";
 
 const TableTextWithEntity = (props) => {
+  console.log('===', props)
   const {
+    secondaryDataSource,
     dataSource,
     activeType,
     activeSection,
@@ -36,7 +38,11 @@ const TableTextWithEntity = (props) => {
   };
 
   return (
-    <div className="table-text-with-entity-container">
+    <div className="table-text-with-entity-container" id="pdf-table-content">
+      {/* {
+        secondaryDataSource && secondaryDataSource.length>0 && secondaryDataSource.map( table =>{
+          console.log('======', table)
+          return(      */}
       <table>
         <thead>
           <tr>
@@ -101,6 +107,9 @@ const TableTextWithEntity = (props) => {
             })}
         </tbody>
       </table>
+        {/* )
+      })
+    } */}
     </div>
   );
 };

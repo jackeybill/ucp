@@ -1,5 +1,6 @@
 import React from 'react'
 // import { testEntities } from './temp.js';
+import {ENDPOINT_SECTION} from '../../pages/ProtocolSection'
 import './styles.scss'
 
 

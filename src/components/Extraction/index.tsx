@@ -55,7 +55,7 @@ const Extraction = (props: any, ref) => {
   const path = file["result_url"];
 
   let tableResult,otherTableResult = []
-  if(activeSection==ENDPOINT_SECTION){
+  if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
     tableResult=file[key][activeSection][0].tableResult
     otherTableResult = file[key][activeSection][0].otherTableResult
   }
@@ -233,7 +233,7 @@ const Extraction = (props: any, ref) => {
     const { hashKey, entity, activeSection, path } = saveParamsObj;
     let paramBody,updatedData
     
-    if(activeSection==ENDPOINT_SECTION){
+    if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
 
       updatedData = file[hashKey][activeSection][0].tableResult.slice(0)
       updatedData[tableBodyRowIndex+1][tableBodyColumnIndex].comprehendMedical[entity].label=tempWordsCollection
@@ -378,6 +378,7 @@ const Extraction = (props: any, ref) => {
             )} 
            {  activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)&& (
               <TableTextWithEntity
+               secondaryDataSource = {file[key][activeSection][0].otherTableResult||[]}
                dataSource={file[key][activeSection][0].tableResult}
                key="1"
                summary={summary}
@@ -489,6 +490,7 @@ const Extraction = (props: any, ref) => {
                 &lt; 80% confidence
               </span>
             </div>
+            <div id="validation-content">          
             {(!wordsCollection || wordsCollection.length==0) && activeSection!=ENDPOINT_SECTION &&  <div className="raw-content"> {content} </div>}           
             {(activeSection!=ENDPOINT_SECTION || (activeSection==ENDPOINT_SECTION&&!isTable(file,key,activeSection))) && (
                <TextWithEntity
@@ -514,6 +516,7 @@ const Extraction = (props: any, ref) => {
            {activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)&&(
               <TableTextWithEntity
               key="2"
+              secondaryDataSource = {file[key][activeSection][0].otherTableResult||[]}
               dataSource={file[key][activeSection][0].tableResult}
               hashKey={key}
               entity={allEntity}
@@ -533,6 +536,7 @@ const Extraction = (props: any, ref) => {
               path={path}
              />
             )}
+          </div>
           </div>
         </TabPane>
       </Tabs>

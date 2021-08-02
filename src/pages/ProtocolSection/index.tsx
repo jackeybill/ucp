@@ -18,7 +18,7 @@ import { connect } from "react-redux";
 import { saveSvgAsPng } from "save-svg-as-png";
 import { submitText } from "../../utils/ajax-proxy";
 import SectionText from "../../components/SectionsText";
-import Extraction from "../../components/Extraction";
+import Extraction, { isTable } from "../../components/Extraction";
 import ExtractionTable from "../../components/ExtractionTable";
 import * as fileActions from "../../actions/file.js";
 import "./index.scss";
@@ -85,6 +85,10 @@ const ProtocolSection = (props: any) => {
   const [pageNum, setPageNum] = useState(1)
   const [filePath, setFilePath] = useState("")
   const [isModalVisible,setIsModalVisible] = useState(false)
+
+  useEffect(()=>{
+    setFormat("Export as")
+  },[activeSection])
   
   
   useEffect(() => {
@@ -133,8 +137,8 @@ const ProtocolSection = (props: any) => {
   };
 
   const pdfExport = (e, fileName, sourceElement) => {
-    // const width = sourceElement.clientWidth
-    // const height = sourceElement.clientHeight
+    const width = sourceElement.clientWidth
+    const height = sourceElement.clientHeight
     // const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [height, width] });
     // pdf.autoPrint();
     // pdf.html(sourceElement, { html2canvas: { scale: 1,backgroundColor:'#ffffff', width,height}}).then(() => {
@@ -143,7 +147,7 @@ const ProtocolSection = (props: any) => {
 
     var node = sourceElement;
     domtoimage
-      .toPng(node)
+      .toPng(node,{quality: 1,  height:height, width:width})
       .then(function (dataUrl) {
         var img = new Image();
         img.src = dataUrl;
@@ -180,7 +184,14 @@ const ProtocolSection = (props: any) => {
   const changeFormat = (e) => {
     setFormat(e.key);
     if (e.key == "PNG" && activeTabKey != "ENTITY RELATIONSHIPS") {
-      const source = document.getElementById("pdf-content");
+      let source 
+      // = document.getElementById("validation-content");
+      if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
+        source = document.getElementById("pdf-table-content");
+      }else{
+        source = document.getElementById("pdf-content");
+      }
+    
       pdfExport(e, fname, source);
     }
     if (e.key == "PNG" && activeTabKey == "ENTITY RELATIONSHIPS") {
@@ -190,10 +201,17 @@ const ProtocolSection = (props: any) => {
     if (e.key == "JSON") {
       const file = props.fileReader.file;
       const key = file.keyName || Object.keys(file)[0] || [];
-      const jsonData = activeSection
-        ? (activeSection === "scheduleActivities"&&file[key][activeSection][0]? file[key][activeSection][0].table : file[key][activeSection][0].comprehendMedical[entity].Entities)
-        : file[key]["includeAllText"][0].comprehendMedical[entity].Entities;
-      jsonExport(jsonData, fname);
+      let jsonData
+      if(!activeSection){
+        jsonData = file[key]["includeAllText"][0].comprehendMedical[entity].Entities;
+      } else{
+
+        if(activeSection === "scheduleActivities"|| (activeSection === ENDPOINT_SECTION&& isTable(file,key,activeSection))){
+          jsonData=file[key][activeSection][0].table
+        }else{
+          jsonData=file[key][activeSection][0].comprehendMedical[entity].Entities
+        }
+      }
     }
   };
 
@@ -204,7 +222,7 @@ const ProtocolSection = (props: any) => {
           return e == "CSV" ? (
             <Menu.Item key={e}>
               <CSVLink
-                data={entities ? entities : []}
+                data={ entities ? entities : []}
                 filename={fname + ".csv"}
               >
                 CSV
@@ -277,16 +295,30 @@ const ProtocolSection = (props: any) => {
         const source = document.getElementById("svg-viewport");
         svgExport();
       } else {
-        const source = document.getElementById("pdf-content");
+        let source
+        if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
+          source = document.getElementById("pdf-table-content");
+        }else{
+          source = document.getElementById("pdf-content");
+        }
         pdfExport(e, fname, source);
       }
     }
     if (format == "JSON") {
       const file = props.fileReader.file;
       const key = file.keyName || Object.keys(file)[0] || [];
-      const jsonData = activeSection
-      ? (activeSection === "scheduleActivities"? file[key][activeSection][0].table : file[key][activeSection][0].comprehendMedical[entity].Entities)
-      : file[key]["includeAllText"][0].comprehendMedical[entity].Entities;
+      let jsonData
+      if(!activeSection){
+        jsonData = file[key]["includeAllText"][0].comprehendMedical[entity].Entities;
+      } else{
+
+        if(activeSection === "scheduleActivities"|| (activeSection === ENDPOINT_SECTION && isTable(file,key,activeSection))){
+          jsonData=file[key][activeSection][0].table
+        }else{
+          jsonData=file[key][activeSection][0].comprehendMedical[entity].Entities
+        }
+      }
+
       jsonExport(jsonData, fileName);
     }
   }
