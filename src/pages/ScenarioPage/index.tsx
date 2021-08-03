@@ -67,6 +67,25 @@ let resultdata = [80, 100, 200, 250, 300, 400, 475, 500];
 let femaleFreq = [20, 24, 25, 30, 35, 49, 52, 55];
 let raceFreq = [5, 8, 9, 10, 15, 20, 24, 25];
 
+const CATEGORY_LABS = 'Labs';
+const CATEGORY_PHYSICAL_EXAMINATION = 'Physical Examination';
+const CATEGORY_PROCEDURES = 'Procedures';
+const CATEGORY_QUESTIONNAIRES = 'Questionnaires';
+const CATEGORY_STUDY_PROCEDURES = 'Study Procedures';
+
+const visitDimensionalScore = [
+  {Dimension: 'AnxietyInducing', Value: 5},
+  {Dimension: 'HospitalDependent', Value: 25},
+  {Dimension: 'PhysicallyInvasive', Value: 10},
+  {Dimension: 'BloodDraw', Value: 15},
+  {Dimension: 'Sedation', Value: 35},
+  {Dimension: 'Injection', Value: 15},
+  {Dimension: 'Urine', Value: 5},
+  {Dimension: 'RequireFasting', Value: 7},
+  {Dimension: 'LongerThanTwoHours', Value: 20},
+  {Dimension: 'Questionnaire', Value: 5}
+]
+
 const ScenarioPage = (props) => {
     //Common cons
     const [trialTitle, setTrialTitle] = useState('')
@@ -1568,7 +1587,12 @@ const ScenarioPage = (props) => {
 
       const newScenarioList = trialRecord.scenarios.map((item, id) =>{
         if(item['scenario_id'] == scenarioId){
+          //If go back from SOA and SOA got edited, re-calculate SOA results for save changes
+          if(item['Schedule of Events'].Finished != undefined && !item['Schedule of Events'].Finished){
+            return reCalculateSOA(newScenario, item['Schedule of Events'])
+          } else {
             return newScenario
+          }
         } else {
             return item
         }
@@ -1661,6 +1685,149 @@ const ScenarioPage = (props) => {
         return 0
       } else {
         return Number(str.substr(0, str.lastIndexOf('%')))
+      }
+    }
+
+    const reCalculateSOA = (specificScenario, scheduleOfEvents) =>{
+      let burdenMatrixList = []
+      let tempBurdenXAxis = []
+      for(var i =0; i< scheduleOfEvents.Visits; i ++){
+        burdenMatrixList.push([0,0,0,0,0,0,0,0,0,0])
+        tempBurdenXAxis.push((i+1)+'')
+      }
+
+      let labeTotalCost = 0
+      for(const a in scheduleOfEvents[CATEGORY_LABS].entities) {
+        labeTotalCost += Number(scheduleOfEvents[CATEGORY_LABS].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_LABS].entities[a].totalVisit
+        if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length > 0){
+          for(let b = 0; b < scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length; b ++){
+            if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition[b].checked){
+              let tempBurdenMatrix = []
+              burdenMatrixList[b].map((item, idx) =>{
+                tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_LABS].entities[a].soaWeights[idx])
+              })
+              burdenMatrixList.splice(b, 1, tempBurdenMatrix)
+            }
+          }
+        }
+      }
+
+      let examinationTotalCost = 0
+      for(const a in scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities) {
+        examinationTotalCost += Number(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].totalVisit
+        if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length > 0){
+          for(let b = 0; b < scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length; b ++){
+            if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition[b].checked){
+              let tempBurdenMatrix = []
+              burdenMatrixList[b].map((item, idx) =>{
+                tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].soaWeights[idx])
+              })
+              burdenMatrixList.splice(b, 1, tempBurdenMatrix)
+            }
+          }
+        }
+      }
+
+      let proceduresTotalCost = 0
+      for(const a in scheduleOfEvents[CATEGORY_PROCEDURES].entities) {
+        proceduresTotalCost += Number(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].totalVisit
+        if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length > 0){
+          for(let b = 0; b < scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length; b ++){
+            if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition[b].checked){
+              let tempBurdenMatrix = []
+              burdenMatrixList[b].map((item, idx) =>{
+                tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].soaWeights[idx])
+              })
+              burdenMatrixList.splice(b, 1, tempBurdenMatrix)
+            }
+          }
+        }
+      }
+
+      let questionairesTotalCost = 0
+      for(const a in scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities) {
+        questionairesTotalCost += Number(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].totalVisit
+        if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length > 0){
+          for(let b = 0; b < scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length; b ++){
+            if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition[b].checked){
+              let tempBurdenMatrix = []
+              burdenMatrixList[b].map((item, idx) =>{
+                tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].soaWeights[idx])
+              })
+              burdenMatrixList.splice(b, 1, tempBurdenMatrix)
+            }
+          }
+        }
+      }
+
+      let studyTotalCost = 0
+      for(const a in scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities) {
+        studyTotalCost += Number(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].totalVisit
+        if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length > 0){
+          for(let b = 0; b < scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length; b ++){
+            if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition[b].checked){
+              let tempBurdenMatrix = []
+              burdenMatrixList[b].map((item, idx) =>{
+                tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].soaWeights[idx])
+              })
+              burdenMatrixList.splice(b, 1, tempBurdenMatrix)
+            }
+          }
+        }
+      }
+
+      let tempBurdenData = []
+      for(const m in burdenMatrixList){
+        const visitMatrix = burdenMatrixList[m].map((max) => {
+          return max > 0 ? 1 : 0
+        })
+        const excessMatrix = burdenMatrixList[m].map((max) => {
+          return max - 1 >= 0 ? max - 1 : 0
+        })
+
+        let currentVisitScore = 0
+        for(const c in visitMatrix){
+          currentVisitScore += visitMatrix[c] * visitDimensionalScore[c].Value + excessMatrix[c]
+        }
+        tempBurdenData.push(currentVisitScore)
+      }
+
+      let tempCostData = [
+        {value: labeTotalCost, name: CATEGORY_LABS},
+        {value: examinationTotalCost, name: CATEGORY_PHYSICAL_EXAMINATION},
+        {value: proceduresTotalCost, name: CATEGORY_PROCEDURES},
+        {value: questionairesTotalCost, name: CATEGORY_QUESTIONNAIRES},
+        {value: studyTotalCost, name: CATEGORY_STUDY_PROCEDURES}
+      ]
+
+      let totalCost = labeTotalCost + examinationTotalCost + proceduresTotalCost + questionairesTotalCost + studyTotalCost
+
+      let costBreakdown = ''
+      if(totalCost < 12826){
+        costBreakdown = 'GOOD'
+      } else if(totalCost < 15650){
+        costBreakdown = 'FAIR'
+      } else {
+        costBreakdown = 'POOR'
+      }
+
+      specificScenario['Schedule of Events'] = Object.assign(scheduleOfEvents,{
+        'TotalCost': formatCostAvg(totalCost, 1000),
+        'CostRate': costBreakdown,
+        'CostData': tempCostData,
+        'BurdenData': tempBurdenData,
+        'BurdenXAxis': tempBurdenXAxis,
+        'Finished': true
+      })
+      return specificScenario
+    }
+
+    function formatCostAvg(totalCost, divisor){
+      if(totalCost === 0){
+        return 0
+      } else {
+        let avg = Math.ceil(totalCost/divisor*1000)
+        return avg/1000
       }
     }
 
@@ -1823,10 +1990,6 @@ const ScenarioPage = (props) => {
     }
   }
 
-  const goBack = () =>{
-    setSubmitType(1)
-  }
-
   const handleGoBack = (scheduleOfEvents) =>{
     let newScenario = trialRecord.scenarios.find( i=> i['scenario_id'] == scenarioId)
     newScenario['Schedule of Events'] = scheduleOfEvents
@@ -1985,7 +2148,7 @@ const ScenarioPage = (props) => {
                         <Button type="primary" className="step-btn"  onClick={()=> setSubmitType(2)}>
                             SAVE AND FINISH LATER
                         </Button>
-                        <Button className="view-btn step-btn" onClick={() => goBack()}>
+                        <Button className="view-btn step-btn" onClick={() => setSubmitType(1)}>
                             PREV:ENROLLMENT FEASIBILITY
                         </Button>
                     </>

@@ -180,6 +180,8 @@ const ScheduleEvents = (props) => {
             if(eventsConfigure.CostRate.length > 0){
               setShowTooltip(true)
               setShowPatientLabel(true)
+            }
+            if(eventsConfigure.Finished){
               setPatientChartColor(aChartColors)
               setBurdenChartColor(burdenColors.active)
               setLabelColors(aLabelColors)
@@ -406,6 +408,9 @@ const ScheduleEvents = (props) => {
     setPatientChartColor(iChartColors)
     setBurdenChartColor(burdenColors.inactive)
     setLabelColors(iLabelColors)
+    setEventCriteria({
+      'Finished' : false
+    })
   }
 
   const saveEvents = async (scheduleOfEvents) =>{
@@ -560,7 +565,7 @@ const ScheduleEvents = (props) => {
       'CostData': tempCostData,
       'BurdenData': tempBurdenData,
       'BurdenXAxis': tempBurdenXAxis,
-      'Finished': submitType === 3 ? true : false
+      'Finished': true
     })
     setEventCriteria(newScenario['Schedule of Events'])
     const newScenarioList = props.record.scenarios.map((item, id) =>{
@@ -714,6 +719,7 @@ const ScheduleEvents = (props) => {
         break;
       default: break;
     }
+    handleEventChange()
   }
 
   const showConfigureModal = () =>{
