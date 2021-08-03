@@ -1982,9 +1982,6 @@ const ScenarioPage = (props) => {
                     </>
                 ):(
                     <>
-                        <Button type="primary" className="step-btn"  onClick={()=> setSubmitType(3)}>
-                            SUBMIT
-                        </Button>
                         <Button type="primary" className="step-btn"  onClick={()=> setSubmitType(2)}>
                             SAVE AND FINISH LATER
                         </Button>
