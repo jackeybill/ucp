@@ -330,7 +330,8 @@ const EventList = (props) => {
           "Dummy Cost": 0,          
           "condition":initCodition,
           "nct_id":[],
-          "Custom":true
+          "Custom":true,
+          "totalVisit":0,
         })
         
         setLabs(temp)
@@ -346,7 +347,8 @@ const EventList = (props) => {
           "Dummy Cost": 0,          
           "condition":initCodition,
           "nct_id":[],
-          "Custom":true
+          "Custom":true,
+          "totalVisit":0,
         })
         setExamination(temp)
         break;
@@ -361,7 +363,8 @@ const EventList = (props) => {
           "Dummy Cost": 0,          
           "condition":initCodition,
           "nct_id":[],
-          "Custom":true
+          "Custom":true,
+          "totalVisit":0,
         })
         setProcedures(temp)
         break;
@@ -376,7 +379,8 @@ const EventList = (props) => {
           "Dummy Cost": 0,          
           "condition":initCodition,
           "nct_id":[],
-          "Custom":true
+          "Custom":true,
+          "totalVisit":0,
         })
         setQuestionnaire(temp)
         break;
@@ -391,7 +395,8 @@ const EventList = (props) => {
           "Dummy Cost": 0,          
           "condition":initCodition,
           "nct_id":[],
-          "Custom":true
+          "Custom":true,
+          "totalVisit":0,
         })
         setStudyProcedures(temp)
         break;
