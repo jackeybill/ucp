@@ -532,7 +532,7 @@ export const getIEResource = async (nctids) => {
   return await response.json();
 }
 
-//for test only
+//for test only: Delete All In Progress Trials
 // export const deleteAllStudy = async () => {
 //   const response = await fetch(criteria_url, {
 //     method: 'POST',
@@ -543,6 +543,24 @@ export const getIEResource = async (nctids) => {
 //     body: JSON.stringify({
 //         "module": "criteria",
 //         "method": "delAll"
+//       })
+//   })
+
+//   return await response.json();
+// }
+
+//for test only: Delete Trial By Id
+// export const deleteStudy = async (nctId) => {
+//   const response = await fetch(criteria_url, {
+//     method: 'POST',
+//     headers: {
+//       'Access-Control-Request-Method': 'POST',
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({
+//         "module": "criteria",
+//         "method": "delStudy",
+//         "body":{"id": nctId}      
 //       })
 //   })
 
