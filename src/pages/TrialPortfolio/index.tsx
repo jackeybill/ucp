@@ -102,6 +102,8 @@ const initialStates = {
   pediatric_study: "",
   study_country: "",
   scenarios: [],
+  CostAvg: 0,
+  BurdenAvg: 0
 };
 
 const TrialPortfolio = (props) => {

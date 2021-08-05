@@ -83,9 +83,6 @@ const SceneriosDashbaord = (props: any) => {
         if(response.statusCode === 200){
           tempTrial.CostAvg = JSON.parse(response.body).Cost
           tempTrial.BurdenAvg = JSON.parse(response.body).PB
-        } else {
-          tempTrial.CostAvg = 0
-          tempTrial.BurdenAvg = 0
         }
       }
 
