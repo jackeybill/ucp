@@ -79,10 +79,10 @@ const SceneriosDashbaord = (props: any) => {
       const tempTrial = props.record
       tempTrial.scenarios = tempScenarios
       if(tempTrial.CostAvg === undefined || tempTrial.CostAvg === 0){
-        const resp = await getEventAverageCost(tempTrial.similarHistoricalTrials);
-        if(resp.statusCode === 200){
-          tempTrial.CostAvg = JSON.parse(resp.body).Cost
-          tempTrial.BurdenAvg = JSON.parse(resp.body).PB
+        const response = await getEventAverageCost(tempTrial.similarHistoricalTrials);
+        if(response.statusCode === 200){
+          tempTrial.CostAvg = JSON.parse(response.body).Cost
+          tempTrial.BurdenAvg = JSON.parse(response.body).PB
         } else {
           tempTrial.CostAvg = 0
           tempTrial.BurdenAvg = 0

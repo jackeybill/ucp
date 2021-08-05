@@ -332,6 +332,7 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
+          "soaWeights": [1,1,1,1,1,1,1,1,1,1],
         })
         
         setLabs(temp)
@@ -349,6 +350,7 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
+          "soaWeights": [1,1,1,1,1,1,1,1,1,1],
         })
         setExamination(temp)
         break;
@@ -365,6 +367,7 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
+          "soaWeights": [1,1,1,1,1,1,1,1,1,1],
         })
         setProcedures(temp)
         break;
@@ -381,6 +384,7 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
+          "soaWeights": [1,1,1,1,1,1,1,1,1,1],
         })
         setQuestionnaire(temp)
         break;
@@ -397,6 +401,7 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
+          "soaWeights": [1,1,1,1,1,1,1,1,1,1],
         })
         setStudyProcedures(temp)
         break;
