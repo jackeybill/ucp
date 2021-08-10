@@ -756,10 +756,15 @@ const ScheduleEvents = (props) => {
     handleEventChange()
 
     let tempBurdenXAxis = []
+    let tempBurden = []
     for(var i =0; i< numbers.visitNumber; i ++){
       tempBurdenXAxis.push((i+1)+'')
+      tempBurden.push(0)
     }
     setBurdenXAxis(tempBurdenXAxis)
+    setBurdenData(tempBurden)
+    setShowTooltip(false)
+    setShowPatientLabel(false)
   }
 
   const exportEvent = () =>{
