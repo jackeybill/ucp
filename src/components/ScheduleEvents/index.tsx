@@ -165,11 +165,11 @@ const ScheduleEvents = (props) => {
           if(eventsConfigure != undefined && eventsConfigure.Labs != undefined){
             setNumbers({
               ['visitNumber']: eventsConfigure.Visits,
-              ['weekNumber']: eventsConfigure.Weeks[eventsConfigure.Weeks.length -1]
+              ['weekNumber']: eventsConfigure.WeekNumber? eventsConfigure.WeekNumber : eventsConfigure.Weeks[eventsConfigure.Weeks.length -1]
             });
             setEditNumbers({
               'visitNumber': eventsConfigure.Visits,
-              'weekNumber': eventsConfigure.Weeks[eventsConfigure.Weeks.length -1]
+              'weekNumber': eventsConfigure.WeekNumber? eventsConfigure.WeekNumber : eventsConfigure.Weeks[eventsConfigure.Weeks.length -1]
             })
             setWeeks(eventsConfigure.Weeks)
             
@@ -426,7 +426,8 @@ const ScheduleEvents = (props) => {
         'CostData': costData,
         'BurdenData': burdenData,
         'BurdenXAxis': burdenXAxis,
-        'Finished': eventCriteria.Finished
+        'Finished': eventCriteria.Finished,
+        'WeekNumber': editNumbers.weekNumber
       }))
       return;
     }
@@ -570,7 +571,8 @@ const ScheduleEvents = (props) => {
       'CostData': tempCostData,
       'BurdenData': tempBurdenData,
       'BurdenXAxis': tempBurdenXAxis,
-      'Finished': true
+      'Finished': true,
+      'WeekNumber': editNumbers.weekNumber
     })
     setEventCriteria(newScenario['Schedule of Events'])
     const newScenarioList = props.record.scenarios.map((item, id) =>{

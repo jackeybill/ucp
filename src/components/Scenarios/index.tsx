@@ -391,7 +391,7 @@ const SceneriosDashbaord = (props: any) => {
           >
             CANCEL
           </Button>,
-          <Button
+          <Button key="update"
             type="primary"
             className="submit-complete-btn"
             onClick={handleCompleteModule}
@@ -416,7 +416,7 @@ const SceneriosDashbaord = (props: any) => {
           <div className="scenario-table-body">
             {scenarioList.map((scenario, idx) => {
               return (
-                <div
+                <div key={`scenario_${idx}`}
                   className={`scenario-table-row-wrapper ${
                     scenario.hasOwnProperty("rationale") ? "checked" : ""
                   }`}

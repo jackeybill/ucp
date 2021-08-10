@@ -240,7 +240,7 @@ const EventList = (props) => {
   };
 
   const getWeeks = () => {
-    if (props.weeks && props.weeks.length > 0&& props.weeks.length==visitNumber&&weeks[weeks.length-1]==weekNumber) {
+    if (props.weeks && props.weeks.length > 0&& props.weeks.length==visitNumber) {
       setWeeks(props.weeks)
     }else{
       let weeksArr = [1];
@@ -558,7 +558,7 @@ const EventList = (props) => {
                 <div className="colunm td ">Weeks</div>
                 {
                   weeks.map((week, idx) => {
-                    return viewOnly?<span className="td">{week}</span>: <Input className="td" value={week} onChange={(e)=>onWeekChange(e,idx)} />                  
+                    return viewOnly?<span className="td">{week}</span>: <Input className="td" key={`week_${idx}`} value={week} onChange={(e)=>onWeekChange(e,idx)} />                  
                   })
                 }
               </div>
@@ -589,7 +589,7 @@ const EventList = (props) => {
                 })
                 .map((evt, idx) => {
                 return (
-                  <div className="event-item">
+                  <div className="event-item" key={`labs_${idx}`}>
                     <div className="events-wrapper e-row">
                       <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>                      
                         {
@@ -629,7 +629,7 @@ const EventList = (props) => {
                       {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
                           return (
-                            <div className="td">
+                            <div className="td" key={`labs_event_${idx}`}>
                               <span
                                 className={`${viewOnly?'viewOnly':''} incon-wrapper`}
                                 onClick={!viewOnly?() => toggleChecked(evt, idx):null}
@@ -672,7 +672,7 @@ const EventList = (props) => {
                 })
                 .map((evt, idx) => {
                 return (
-                  <div className="event-item">
+                  <div className="event-item" key={`exam_${idx}`}>
                     <div className="events-wrapper e-row">
                       <div className={`${evt.Custom?"custom-event":""} my-event-td td f-2`}>
                         {
@@ -712,7 +712,7 @@ const EventList = (props) => {
                       {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
                           return (
-                            <div className="td">
+                            <div className="td" key={`exam_event_${idx}`}>
                               <span
                                 className="incon-wrapper"
                                 onClick={!viewOnly?() => toggleChecked(evt, idx):null}
@@ -755,7 +755,7 @@ const EventList = (props) => {
               })
                 .map((evt, idx) => {
                 return (
-                  <div className="event-item">
+                  <div className="event-item" key={`procedure_${idx}`}>
                     <div className="events-wrapper e-row">
                       <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
                       {
@@ -796,7 +796,7 @@ const EventList = (props) => {
                       {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
                           return (
-                            <div className="td">
+                            <div className="td" key={`procedure_event_${idx}`}>
                               <span
                                 className="incon-wrapper"
                                 onClick={!viewOnly?() => toggleChecked(evt, idx):null}
@@ -839,7 +839,7 @@ const EventList = (props) => {
                 })
                 .map((evt, idx) => {
                 return (
-                  <div className="event-item">
+                  <div className="event-item" key={`question_${idx}`}>
                     <div className="events-wrapper e-row">
                       <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
                       {
@@ -880,7 +880,7 @@ const EventList = (props) => {
                       {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
                           return (
-                            <div className="td">
+                            <div className="td" key={`question_event_${idx}`}>
                               <span
                                 className="incon-wrapper"
                                 onClick={!viewOnly?() => toggleChecked(evt, idx):null}
@@ -923,7 +923,7 @@ const EventList = (props) => {
                 })
                 .map((evt, idx) => {
                 return (
-                  <div className="event-item">
+                  <div className="event-item" key={`study_${idx}`}>
                     <div className="events-wrapper e-row">
                       <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
                       {
@@ -964,7 +964,7 @@ const EventList = (props) => {
                       {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
                           return (
-                            <div className="td">
+                            <div className="td" key={`study_event_${idx}`}>
                               <span
                                 className="incon-wrapper"
                                 onClick={!viewOnly?() => toggleChecked(evt, idx):null}
