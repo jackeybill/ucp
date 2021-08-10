@@ -59,7 +59,7 @@ const EventList = (props) => {
     let tmpCategory = [category].slice(0)[0];
 
     tmpCategory.forEach((ele) => {
-      if(!ele.condition || ele.condition.length==0){
+      if(!ele.condition || ele.condition.length==0||ele.condition.length!=visitNumber){
         let condition = [];
         visits.forEach((e, idx) => {
           condition.push({
@@ -240,7 +240,7 @@ const EventList = (props) => {
   };
 
   const getWeeks = () => {
-    if (props.weeks && props.weeks.length > 0) {
+    if (props.weeks && props.weeks.length > 0&& props.weeks.length==visitNumber&&weeks[weeks.length-1]==weekNumber) {
       setWeeks(props.weeks)
     }else{
       let weeksArr = [1];
@@ -332,6 +332,7 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
+          "soaWeights": [0,0,0,0,0,0,0,0,0,0],
         })
         
         setLabs(temp)
@@ -349,6 +350,7 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
+          "soaWeights": [0,0,0,0,0,0,0,0,0,0],
         })
         setExamination(temp)
         break;
@@ -365,6 +367,7 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
+          "soaWeights": [0,0,0,0,0,0,0,0,0,0],
         })
         setProcedures(temp)
         break;
@@ -381,6 +384,7 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
+          "soaWeights": [0,0,0,0,0,0,0,0,0,0],
         })
         setQuestionnaire(temp)
         break;
@@ -397,6 +401,7 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
+          "soaWeights": [0,0,0,0,0,0,0,0,0,0],
         })
         setStudyProcedures(temp)
         break;
