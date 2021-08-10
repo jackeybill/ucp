@@ -734,8 +734,9 @@ const ScheduleEvents = (props) => {
   }
 
   const handleOk = () => {
+    setShowConfigure(false)
+    setHiddeTags(false)
     if(numbers.visitNumber === editNumbers.visitNumber && numbers.weekNumber === editNumbers.weekNumber){
-      setShowConfigure(false)
       return
     }
     
@@ -753,8 +754,6 @@ const ScheduleEvents = (props) => {
     setWeeks(weeksArr)
     setEditNumbers(numbers)
     handleEventChange()
-    setShowConfigure(false)
-    setHiddeTags(false)
 
     let tempBurdenXAxis = []
     for(var i =0; i< numbers.visitNumber; i ++){
