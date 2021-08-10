@@ -90,13 +90,13 @@ const EventList = (props) => {
 
     tmpCategory.forEach((ele) => {
         let condition = [];
-        visits.forEach((e, idx) => {
+        for(let e = 1; e <= visitNumber; e ++){
           condition.push({
             visits: e,
-            weeks:weeks[idx],
+            weeks:weeks[e-1],
             checked:false,
           });
-        });
+        }
         const totalVisit = condition.filter(e=>e.checked).length
         ele.condition = condition;
         ele.totalVisit = totalVisit;
