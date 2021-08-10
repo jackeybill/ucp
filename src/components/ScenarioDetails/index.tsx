@@ -21,7 +21,6 @@ const CATEGORY_STUDY_PROCEDURES = 'Study Procedures';
 const defaultActiveKey = [2, 3, 4, 5, 6, 7, 8, 9]
 
 const ScenarioDetails = (props: any) => {
-  const [record, setRecord] = useState(props.record || {});
   const [scenario, setScenario] = useState({});
 
   // inclusion criteria data for EditTable
@@ -47,12 +46,12 @@ const ScenarioDetails = (props: any) => {
     (state, newState) => ({ ...state, ...newState }),
     { ...initialNumber }
   );
-  const [weeks, setWeeks] = useState([])
+  const [weeks, setWeeks] = useState([1,4,7,10,13,16,19,22,26])
+  const [activeTabKey, setActiveTabKey] = useState('1')
+  const [reloadSOA, setReloadSOA] = useState(true)
 
   useEffect(() => {
     const scenario = props.record.scenarios.find((e) => e['scenario_id'] === props.scenarioId)
-    const eventsConfigure = scenario['Schedule of Events'] === undefined ? {} : scenario['Schedule of Events'] 
-
     if(scenario != undefined){
         setScenario(scenario)
         if(scenario['Inclusion Criteria'].Demographics !== undefined 
@@ -68,21 +67,32 @@ const ScenarioDetails = (props: any) => {
             setExcluLabTestTableData(scenario['Exclusion Criteria']['Lab / Test'].Entities)
         }
     }
-
-    if(eventsConfigure != undefined && eventsConfigure.Labs != undefined){
-        setNumbers({
-          ['visitNumber']: eventsConfigure.Visits,
-          ['weekNumber']: eventsConfigure.Weeks[eventsConfigure.Weeks.length -1]
-        });
-        setWeeks(eventsConfigure.Weeks)
-        
-        setAddedLabs(eventsConfigure[CATEGORY_LABS].entities)
-        setAddedExamination(eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities)
-        setAddedQuestionnaires(eventsConfigure[CATEGORY_QUESTIONNAIRES].entities)
-        setAddedProcedures(eventsConfigure[CATEGORY_PROCEDURES].entities)
-        setAddedStudyProcedures(eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities)
-      } 
   },[props.record, props.scenarioId]);
+
+  const changeActiveTabKey = (activeKey) => {
+    setActiveTabKey(activeKey)
+  }
+
+  useEffect(()=>{
+    if(activeTabKey === '2' && reloadSOA){
+        const scenario = props.record.scenarios.find((e) => e['scenario_id'] === props.scenarioId)
+        const eventsConfigure = scenario['Schedule of Events'] === undefined ? {} : scenario['Schedule of Events'] 
+        if(eventsConfigure != undefined && eventsConfigure.Labs != undefined){
+            setNumbers({
+                ['visitNumber']: eventsConfigure.Visits,
+                ['weekNumber']: eventsConfigure.Weeks[eventsConfigure.Weeks.length -1]
+            });
+            setWeeks(eventsConfigure.Weeks)
+            
+            setAddedLabs(eventsConfigure[CATEGORY_LABS].entities)
+            setAddedExamination(eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities)
+            setAddedQuestionnaires(eventsConfigure[CATEGORY_QUESTIONNAIRES].entities)
+            setAddedProcedures(eventsConfigure[CATEGORY_PROCEDURES].entities)
+            setAddedStudyProcedures(eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities)
+        }
+        setReloadSOA(false)
+    }
+  },[activeTabKey])
 
   return (
     <>
@@ -122,7 +132,7 @@ const ScenarioDetails = (props: any) => {
             <span className="content">{scenario['rationale']}</span>
         </div>
         <div className="scenario-details-tab">
-            <Tabs defaultActiveKey="1" centered>
+            <Tabs onChange={changeActiveTabKey} activeKey={activeTabKey} centered>
                 <TabPane tab="INCLUSION / EXCLUSION CRITERIA" key="1">
                 <div className="criteria-container">
                     <div className="criteria-inner">
@@ -182,6 +192,7 @@ const ScenarioDetails = (props: any) => {
                 </div>
                 </TabPane>
                 <TabPane tab="SCHEDULE OF EVENTS" key="2">
+                    <div className="none-click">
                     <EventList
                       numbers={numbers}
                       labs={addedLabs}
@@ -193,6 +204,7 @@ const ScenarioDetails = (props: any) => {
                       submitType={0}
                       viewOnly={true}
                     />
+                    </div>
                 </TabPane>
             </Tabs>
         </div>

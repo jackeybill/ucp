@@ -172,10 +172,14 @@
           }
         }
       }
-      .criteria-table.none-click{
+      .none-click{
         pointer-events:none;
       }
     }
+  }
+
+  .none-click{
+    pointer-events:none;
   }
 }
   

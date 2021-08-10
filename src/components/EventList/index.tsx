@@ -572,7 +572,7 @@ const EventList = (props) => {
                 <div className="colunm td ">Weeks</div>
                 {
                   weeks.map((week, idx) => {
-                    return viewOnly?<span className="td">{week}</span>: <Input className="td" key={`week_${idx}`} value={week} onChange={(e)=>onWeekChange(e,idx)} />                  
+                    return viewOnly?<span className="td" key={`week_span_${idx}`}>{week}</span>: <Input className="td" key={`week_${idx}`} value={week} onChange={(e)=>onWeekChange(e,idx)} />                  
                   })
                 }
               </div>
