@@ -240,22 +240,22 @@ const EventList = (props) => {
   };
 
   const getWeeks = () => {
-    if (props.weeks && props.weeks.length > 0&& props.weeks.length==visitNumber) {
+    // if (props.weeks && props.weeks.length > 0&& props.weeks.length==visitNumber) {
       setWeeks(props.weeks)
-    }else{
-      let weeksArr = [1];
-      let week = Math.floor((weekNumber-1) / (visitNumber-1));
-      let sum = 1;
-      for (var i = 1; i <= visitNumber-1; i++) {
-        sum = sum + week;
-        if (sum > weekNumber) sum = weekNumber;
-        if (i == visitNumber - 1) {
-          sum=weekNumber
-        }
-        weeksArr.push(sum)
-      }
-      setWeeks(weeksArr)
-    } 
+    // }else{
+      // let weeksArr = [1];
+      // let week = Math.floor((weekNumber-1) / (visitNumber-1));
+      // let sum = 1;
+      // for (var i = 1; i <= visitNumber-1; i++) {
+      //   sum = sum + week;
+      //   if (sum > weekNumber) sum = weekNumber;
+      //   if (i == visitNumber - 1) {
+      //     sum=weekNumber
+      //   }
+      //   weeksArr.push(sum)
+      // }
+      // setWeeks(weeksArr)
+    // } 
   };
 
 

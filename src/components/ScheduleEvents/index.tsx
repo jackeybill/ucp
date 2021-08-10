@@ -69,7 +69,7 @@ const ScheduleEvents = (props) => {
     { ...initialNumber }
   );
   const [editNumbers, setEditNumbers] = useState({visitNumber: 9, weekNumber: 26});
-  const [weeks, setWeeks] = useState([])
+  const [weeks, setWeeks] = useState([1,4,7,10,13,16,19,22,26])
   const [minV, setMinV] = useState(80)
   const [maxV, setMaxV] = useState(100)
   const [visibleSlider, setVisibleSlider] = useState(false)
@@ -738,6 +738,19 @@ const ScheduleEvents = (props) => {
       setShowConfigure(false)
       return
     }
+    
+    let weeksArr = [1];
+    let week = Math.floor((numbers.weekNumber-1) / (numbers.visitNumber-1));
+    let sum = 1;
+    for (var i = 1; i <= numbers.visitNumber-1; i++) {
+      sum = sum + week;
+      if (sum > numbers.weekNumber) sum = numbers.weekNumber;
+      if (i == numbers.visitNumber - 1) {
+        sum=numbers.weekNumber
+      }
+      weeksArr.push(sum)
+    }
+    setWeeks(weeksArr)
     setEditNumbers(numbers)
     handleEventChange()
     setShowConfigure(false)
