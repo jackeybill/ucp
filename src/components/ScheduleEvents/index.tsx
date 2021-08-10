@@ -68,6 +68,7 @@ const ScheduleEvents = (props) => {
     (state, newState) => ({ ...state, ...newState }),
     { ...initialNumber }
   );
+  const [editNumbers, setEditNumbers] = useState({visitNumber: 9, weekNumber: 26});
   const [weeks, setWeeks] = useState([])
   const [minV, setMinV] = useState(80)
   const [maxV, setMaxV] = useState(100)
@@ -166,6 +167,10 @@ const ScheduleEvents = (props) => {
               ['visitNumber']: eventsConfigure.Visits,
               ['weekNumber']: eventsConfigure.Weeks[eventsConfigure.Weeks.length -1]
             });
+            setEditNumbers({
+              'visitNumber': eventsConfigure.Visits,
+              'weekNumber': eventsConfigure.Weeks[eventsConfigure.Weeks.length -1]
+            })
             setWeeks(eventsConfigure.Weeks)
             
             setAddedLabs(eventsConfigure[CATEGORY_LABS].entities)
@@ -727,6 +732,12 @@ const ScheduleEvents = (props) => {
   }
 
   const handleOk = () => {
+    if(numbers.visitNumber === editNumbers.visitNumber && numbers.weekNumber === editNumbers.weekNumber){
+      setShowConfigure(false)
+      return
+    }
+    setEditNumbers(numbers)
+    handleEventChange()
     setShowConfigure(false)
     setHiddeTags(false)
 
@@ -1021,7 +1032,7 @@ const ScheduleEvents = (props) => {
                     <EventList
                       saveEvents={saveEvents}
                       handleEventChange={handleEventChange}
-                      numbers={numbers}
+                      numbers={editNumbers}
                       labs={addedLabs}
                       examination={addedExamination}
                       procedures={addedProcedures}

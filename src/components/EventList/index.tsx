@@ -300,6 +300,7 @@ const EventList = (props) => {
     tmpWeeks[idx] = Number(e.target.value)
 
     setWeeks(tmpWeeks)
+    props.handleEventChange()
   }
 
   const getTotalCost = (array) => {
