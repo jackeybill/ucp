@@ -46,13 +46,8 @@ const EventList = (props) => {
   }, [visitNumber,weekNumber])
 
   useEffect(()=>{
-    updateCondition()
-  },[weeks])
-
-  
-  useEffect(()=>{
     getWeeks()
-
+    updateCondition()
   },[props.weeks])
 
   const getCondition = (category) =>{
@@ -77,17 +72,36 @@ const EventList = (props) => {
   }
 
   const updateCondition = () =>{
-    let tmpLabs = getCondition(labs)
-    let tmpExamination =getCondition(examination)
-    let tmpProcedures = getCondition(procedures)
-    let tmpQuestionnaire =getCondition(questionnaire)
-    let tmpStudyProcedures =  getCondition(studyProcedures)
+    let tmpLabs = resetCondition(labs)
+    let tmpExamination =resetCondition(examination)
+    let tmpProcedures = resetCondition(procedures)
+    let tmpQuestionnaire =resetCondition(questionnaire)
+    let tmpStudyProcedures =  resetCondition(studyProcedures)
 
     setLabs(tmpLabs);
     setExamination(tmpExamination);
     setProcedures(tmpProcedures);
     setQuestionnaire(tmpQuestionnaire);
     setStudyProcedures(tmpStudyProcedures);
+  }
+
+  const resetCondition = (category) =>{
+    let tmpCategory = [category].slice(0)[0];
+
+    tmpCategory.forEach((ele) => {
+        let condition = [];
+        visits.forEach((e, idx) => {
+          condition.push({
+            visits: e,
+            weeks:weeks[idx],
+            checked:false,
+          });
+        });
+        const totalVisit = condition.filter(e=>e.checked).length
+        ele.condition = condition;
+        ele.totalVisit = totalVisit;
+    });
+    return tmpCategory
   }
 
 
@@ -240,7 +254,7 @@ const EventList = (props) => {
   };
 
   const getWeeks = () => {
-    // if (props.weeks && props.weeks.length > 0&& props.weeks.length==visitNumber) {
+    // if (props.weeks && props.weeks.length > 0&& props.weeks.length==visitNumber&&weeks[weeks.length-1]==weekNumber) {
       setWeeks(props.weeks)
     // }else{
       // let weeksArr = [1];
