@@ -49,7 +49,7 @@ const EventList = (props) => {
     updateCondition()
   },[weeks])
 
-
+  
   useEffect(()=>{
     getWeeks()
 
@@ -59,7 +59,7 @@ const EventList = (props) => {
     let tmpCategory = [category].slice(0)[0];
 
     tmpCategory.forEach((ele) => {
-      if(!ele.condition || ele.condition.length==0||ele.condition.length!=weekNumber){
+      if(!ele.condition || ele.condition.length==0){
         let condition = [];
         visits.forEach((e, idx) => {
           condition.push({
@@ -240,7 +240,9 @@ const EventList = (props) => {
   };
 
   const getWeeks = () => {
-
+    if (props.weeks && props.weeks.length > 0) {
+      setWeeks(props.weeks)
+    }else{
       let weeksArr = [1];
       let week = Math.floor((weekNumber-1) / (visitNumber-1));
       let sum = 1;
@@ -253,7 +255,7 @@ const EventList = (props) => {
         weeksArr.push(sum)
       }
       setWeeks(weeksArr)
-
+    } 
   };
 
 
@@ -330,7 +332,6 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
-          "soaWeights": [0,0,0,0,0,0,0,0,0,0],
         })
         
         setLabs(temp)
@@ -348,7 +349,6 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
-          "soaWeights": [0,0,0,0,0,0,0,0,0,0],
         })
         setExamination(temp)
         break;
@@ -365,7 +365,6 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
-          "soaWeights": [0,0,0,0,0,0,0,0,0,0],
         })
         setProcedures(temp)
         break;
@@ -382,7 +381,6 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
-          "soaWeights": [0,0,0,0,0,0,0,0,0,0],
         })
         setQuestionnaire(temp)
         break;
@@ -399,7 +397,6 @@ const EventList = (props) => {
           "nct_id":[],
           "Custom":true,
           "totalVisit":0,
-          "soaWeights": [0,0,0,0,0,0,0,0,0,0],
         })
         setStudyProcedures(temp)
         break;
