@@ -94,7 +94,7 @@ const EventList = (props) => {
           condition.push({
             visits: e,
             weeks:weeks[e-1],
-            checked:false,
+            checked: ele.condition.length >= e ? ele.condition[e-1].checked : false,
           });
         }
         const totalVisit = condition.filter(e=>e.checked).length
