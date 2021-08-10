@@ -49,7 +49,7 @@ const EventList = (props) => {
     updateCondition()
   },[weeks])
 
-  
+
   useEffect(()=>{
     getWeeks()
 
@@ -59,7 +59,7 @@ const EventList = (props) => {
     let tmpCategory = [category].slice(0)[0];
 
     tmpCategory.forEach((ele) => {
-      if(!ele.condition || ele.condition.length==0){
+      if(!ele.condition || ele.condition.length==0||ele.condition.length!=weekNumber){
         let condition = [];
         visits.forEach((e, idx) => {
           condition.push({
@@ -240,9 +240,7 @@ const EventList = (props) => {
   };
 
   const getWeeks = () => {
-    if (props.weeks && props.weeks.length > 0) {
-      setWeeks(props.weeks)
-    }else{
+
       let weeksArr = [1];
       let week = Math.floor((weekNumber-1) / (visitNumber-1));
       let sum = 1;
@@ -255,7 +253,7 @@ const EventList = (props) => {
         weeksArr.push(sum)
       }
       setWeeks(weeksArr)
-    } 
+
   };
 
 
