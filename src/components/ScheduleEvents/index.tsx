@@ -115,6 +115,7 @@ const ScheduleEvents = (props) => {
   let [addedQuestionnaires, setAddedQuestionnaires] = useState([])
   let [addedProcedures, setAddedProcedures] = useState([])
   let [addedStudyProcedures, setAddedStudyProcedures] = useState([])
+  const [resetWeeks, setResetWeeks] = useState(true)
 
   const onStepVisit = (value: number, info: { offset: number, type: 'up' | 'down' }) => {
     setNumbers({
@@ -172,7 +173,7 @@ const ScheduleEvents = (props) => {
               'weekNumber': eventsConfigure.WeekNumber? eventsConfigure.WeekNumber : eventsConfigure.Weeks[eventsConfigure.Weeks.length -1]
             })
             setWeeks(eventsConfigure.Weeks)
-            
+            setResetWeeks(false)
             setAddedLabs(eventsConfigure[CATEGORY_LABS].entities)
             setAddedExamination(eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities)
             setAddedQuestionnaires(eventsConfigure[CATEGORY_QUESTIONNAIRES].entities)
@@ -410,6 +411,7 @@ const ScheduleEvents = (props) => {
   };
 
   const handleEventChange = () =>{
+    setResetWeeks(false)
     setPatientChartColor(iChartColors)
     setBurdenChartColor(burdenColors.inactive)
     setLabelColors(iLabelColors)
@@ -739,21 +741,44 @@ const ScheduleEvents = (props) => {
     if(numbers.visitNumber === editNumbers.visitNumber && numbers.weekNumber === editNumbers.weekNumber){
       return
     }
-    
-    let weeksArr = [1];
-    let week = Math.floor((numbers.weekNumber-1) / (numbers.visitNumber-1));
-    let sum = 1;
-    for (var i = 1; i <= numbers.visitNumber-1; i++) {
-      sum = sum + week;
-      if (sum > numbers.weekNumber) sum = numbers.weekNumber;
-      if (i == numbers.visitNumber - 1) {
-        sum=numbers.weekNumber
+    let weeksArr = [];
+    if(resetWeeks){
+      //Re-generate whole weeks when no change in SOA
+      weeksArr.push(1)
+      let week = Math.floor((numbers.weekNumber-1) / (numbers.visitNumber-1));
+      let sum = 1;
+      for (var i = 1; i <= numbers.visitNumber-1; i++) {
+        sum = sum + week;
+        if (sum > numbers.weekNumber || i === numbers.visitNumber - 1) sum = numbers.weekNumber;
+        weeksArr.push(sum)
       }
-      weeksArr.push(sum)
+    } else {
+      //Keep weeks options as much as possiable after SOA changed
+      let week = 0;
+      if(numbers.visitNumber > editNumbers.visitNumber && numbers.weekNumber > weeks[weeks.length - 1]){
+        week = Math.floor((numbers.weekNumber - weeks[weeks.length - 1]) / (numbers.visitNumber - editNumbers.visitNumber));
+      }
+      let sum = 0;
+      for (var i = 1; i <= numbers.visitNumber; i++) {
+        if(weeks.length >= i){
+          weeksArr.push(weeks[i-1])
+          sum = weeks[i-1]
+        } else {
+          sum += week;
+          if (sum > numbers.weekNumber || i === numbers.visitNumber) sum = numbers.weekNumber;
+          weeksArr.push(sum)
+        }
+      }
     }
+    
     setWeeks(weeksArr)
     setEditNumbers(numbers)
-    handleEventChange()
+    setPatientChartColor(iChartColors)
+    setBurdenChartColor(burdenColors.inactive)
+    setLabelColors(iLabelColors)
+    setEventCriteria({
+      'Finished' : false
+    })
   }
 
   const exportEvent = () =>{
