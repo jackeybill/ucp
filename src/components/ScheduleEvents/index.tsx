@@ -410,7 +410,10 @@ const ScheduleEvents = (props) => {
     ]
   };
 
-  const handleEventChange = () =>{
+  const handleEventChange = (tmpWeeks) =>{
+    if(tmpWeeks != undefined && tmpWeeks.length > 0){
+      setWeeks(tmpWeeks)
+    }
     setResetWeeks(false)
     setPatientChartColor(iChartColors)
     setBurdenChartColor(burdenColors.inactive)
@@ -728,7 +731,7 @@ const ScheduleEvents = (props) => {
         break;
       default: break;
     }
-    handleEventChange()
+    handleEventChange([])
   }
 
   const showConfigureModal = () =>{
