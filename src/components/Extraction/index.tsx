@@ -22,7 +22,6 @@ import TextWithEntity from "../../components/TextWithEntity";
 import TableTextWithEntity from "../../components/TableTextWithEntity";
 import {ENDPOINT_SECTION} from "../../pages/ProtocolSection";
 import "./index.scss";
-import { render } from "@testing-library/react";
 
 interface markIF {
   id: string;
@@ -33,7 +32,7 @@ interface markIF {
 }
 const { TabPane } = Tabs;
 const { Option } = Select;
-const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA"];
+const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA","Omop","Snomed"];
 
 
 
@@ -69,8 +68,6 @@ const Extraction = (props: any, ref) => {
   );
   let [content, setContent] = useState(initContent);
   const [entityTypes, setEntityTypes] = useState([]);
-  const [svgString, setSvgString] = useState("")
-  const [endpointDataSource, setEndpointDataSource] = useState(tableResult)
 
   // const allWordsCollection = file[key][activeSection][0].comprehendMedical["Entities"].label
   // const allSummary = file[key][activeSection][0].comprehendMedical["Entities"].Summary;
