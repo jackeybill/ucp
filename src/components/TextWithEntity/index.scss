@@ -263,6 +263,25 @@
   .TIME_EXPRESSION {
     background-color: $TIME_EXPRESSION;
   }
+  .TEST_NAME{
+    background-color: $TEST_NAME;
+  }
+  .PROCEDURE_NAME{
+    background-color:$PROCEDURE_NAME;
+  }
+  .TREATMENT_NAME{
+    background-color:$TREATMENT_NAME;
+  }
+  .TIME_TO_DX_NAME{
+    background-color:$TIME_TO_DX_NAME;
+  }
+  .TIME_TO_MEDICATION_NAME{
+    background-color:$TIME_TO_MEDICATION_NAME;
+  }
+  .TIME_TO_TREATMENT_NAME{
+    background-color:$TIME_TO_TREATMENT_NAME;
+  }
+
 }
 
 mark {
@@ -348,6 +367,27 @@ mark {
   .TIME_EXPRESSION {
     border-color: $TIME_EXPRESSION;
   }
+  .TEST_NAME{
+    border-color: $TEST_NAME;
+  }
+  .PROCEDURE_NAME{
+    border-color:$PROCEDURE_NAME;
+  }
+  .TREATMENT_NAME{
+    border-color:$TREATMENT_NAME;
+  }
+  .TIME_TO_DX_NAME{
+    border-color:$TIME_TO_DX_NAME;
+  }
+  .TIME_TO_MEDICATION_NAME{
+    border-color:$TIME_TO_MEDICATION_NAME;
+  }
+  .TIME_TO_TREATMENT_NAME{
+    border-color:$TIME_TO_TREATMENT_NAME;
+  }
+
+
+
 }
 
 mark.warn {
