@@ -11,6 +11,12 @@
   background-color: #ffffff !important;
   color: rgba(0, 0, 0, 0.75);
 }
+.term-content{
+  display: inline-block;
+    max-width: 121px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 .concept-box {
   .concept-item {
@@ -95,7 +101,7 @@
       right: 0;
       transform: translateY(-50%);
     }
-    .cate-label {
+    span.cate-label {
       font-size: 10px;
       display: block;
     }
@@ -107,6 +113,10 @@
     right: -14px;
   }
 }
+.text-with-entity-container .text mark span.cate-label {
+  display: flex;
+}
+
 .mark-tooltip-container {
   .highlighted-text {
     font-weight: 600;

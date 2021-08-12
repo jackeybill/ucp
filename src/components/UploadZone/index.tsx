@@ -95,7 +95,7 @@ const Dropzone = (props: any) => {
               protocolName: protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
             });
             props.readFile({
-              file: result,
+              file: result,          
               protocolName:protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
               fileName:f.name,
             });

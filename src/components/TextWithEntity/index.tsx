@@ -113,12 +113,15 @@ const renderMark = (markParams, entity) => {
     concepts = [],
   } = markParams;
 
+  let term = word.children.map(c => {
+    return c.term||""
+  }).join(' ')
+
   if (showConcepts && concepts.length > 0) {
     let text = word.children.map(c => {
       return c.text
-  }).join(' ')
-    if (text.indexOf(",") > -1) text = text.slice(0, text.length - 1)
-   
+    }).join(' ')  
+    if (text.indexOf(",") > -1) text = text.slice(0, text.length - 1) 
     return (
       <Tooltip key={word.id} placement="right" title={renderConcepts(concepts, text, entity)}>
         <mark
@@ -152,7 +155,14 @@ const renderMark = (markParams, entity) => {
                 : ""
             }`}
           >
-            {formatWord(word.category)}
+            {formatWord(word.category)}&nbsp; 
+            {
+              term.trim().length>0&&(
+                <Tooltip title={term}>
+                <span><i className="term-content">{`(${term})`}</i> </span>
+              </Tooltip>
+              )
+            }             
           </span>
         </mark>
       </Tooltip>
@@ -197,7 +207,14 @@ const renderMark = (markParams, entity) => {
             : ""
         }`}
       >
-        {formatWord(word.category)}
+        {formatWord(word.category)}&nbsp;
+         {
+              term.trim().length>0&&(
+                <Tooltip title={term}>
+                <span><i className="term-content">{`(${term})`}</i> </span>
+              </Tooltip>
+              )
+            }   
       </span>
       </mark>
       
