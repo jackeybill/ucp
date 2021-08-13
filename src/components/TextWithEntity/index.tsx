@@ -81,25 +81,26 @@ const renderConcepts = (concepts = [], text = "", entity = "") => {
   return (
     <div className="concept-box">
       {concepts.length > 0 &&
-        concepts.map((c) => {
-          return (
-            <div className="concept-item">
-              <div className="item-title">      
-               {text}
-              </div>
-              <div className="item-desc">
-                <p className="desc-title">Top inferred concepts</p>
+        <div className="concept-item">
+          <div className="item-title">      
+            {text}
+          </div>
+          <div className="item-desc">
+            <p className="desc-title">Top inferred concepts</p>
+            { concepts.map((c) => {
+              return (
                 <div className="code">
                   <span>{c.Code}</span>
                   <div className="desc-box" >
                     <p className="desc">{c.Description}</p>
                     <p className="score">{ c.Score?c.Score.toFixed(2):'-' } score</p>
                   </div>
-                </div>          
-              </div>
-            </div>
-          );
-        })}
+                </div>  
+              )
+            })}                   
+          </div>
+        </div>
+        }
     </div>
   );
 };
@@ -156,13 +157,6 @@ const renderMark = (markParams, entity) => {
             }`}
           >
             {formatWord(word.category)}&nbsp; 
-            {
-              term.trim().length>0&&(
-                <Tooltip title={term}>
-                <span><i className="term-content">{`(${term})`}</i> </span>
-              </Tooltip>
-              )
-            }             
           </span>
         </mark>
       </Tooltip>
@@ -208,16 +202,8 @@ const renderMark = (markParams, entity) => {
         }`}
       >
         {formatWord(word.category)}&nbsp;
-         {
-              term.trim().length>0&&(
-                <Tooltip title={term}>
-                <span><i className="term-content">{`(${term})`}</i> </span>
-              </Tooltip>
-              )
-            }   
       </span>
       </mark>
-      
   );
 };
 

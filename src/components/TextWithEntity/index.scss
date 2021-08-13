@@ -31,6 +31,10 @@
     }
     .code {
       display: flex;
+      border-bottom: 1px solid #bfbfbf;
+      &:last-child{
+        border-bottom: 1px solid transparent;
+      }
     }
     .desc-box {
       padding-left: 10px;
@@ -281,6 +285,13 @@
   .TIME_TO_TREATMENT_NAME{
     background-color:$TIME_TO_TREATMENT_NAME;
   }
+  .TEST_VALUE{
+    background-color:$TEST_VALUE;
+  }
+  .TEST_UNIT{
+    background-color: $TEST_UNIT;
+  }
+
 
 }
 
@@ -384,6 +395,12 @@ mark {
   }
   .TIME_TO_TREATMENT_NAME{
     border-color:$TIME_TO_TREATMENT_NAME;
+  }
+  .TEST_VALUE{
+    border-color:$TEST_VALUE
+  }
+  .TEST_UNIT{
+    border-color: $TEST_UNIT;
   }
 
 
