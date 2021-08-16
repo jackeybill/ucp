@@ -90,10 +90,10 @@ const renderConcepts = (concepts = [], text = "", entity = "") => {
             { concepts.map((c) => {
               return (
                 <div className="code">
-                  <span>{c.Code}</span>
+                  {c.Code?<span>{c.Code}</span>:''}
                   <div className="desc-box" >
-                    <p className="desc">{c.Description}</p>
-                    <p className="score">{ c.Score?c.Score.toFixed(2):'-' } score</p>
+                    {c.Description?<p className="desc">{c.Description}</p>:''}
+                    {c.Score?<p className="score">{ c.Score?c.Score.toFixed(2):'-' } score</p>:''}         
                   </div>
                 </div>  
               )
@@ -157,6 +157,13 @@ const renderMark = (markParams, entity) => {
             }`}
           >
             {formatWord(word.category)}&nbsp; 
+            {/* {
+              term.trim().length>0&&(
+                <Tooltip title={term}>
+                <span><i className="term-content">{`(${term})`}</i> </span>
+              </Tooltip>
+              )
+            }              */}
           </span>
         </mark>
       </Tooltip>
@@ -202,8 +209,16 @@ const renderMark = (markParams, entity) => {
         }`}
       >
         {formatWord(word.category)}&nbsp;
+         {/* {
+              term.trim().length>0&&(
+                <Tooltip title={term}>
+                <span><i className="term-content">{`(${term})`}</i> </span>
+              </Tooltip>
+              )
+            }    */}
       </span>
       </mark>
+      
   );
 };
 
