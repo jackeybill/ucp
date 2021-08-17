@@ -82,9 +82,6 @@ const renderConcepts = (concepts = [], text = "", entity = "") => {
     <div className="concept-box">
       {concepts.length > 0 &&
         <div className="concept-item">
-          <div className="item-title">      
-            {text}
-          </div>
           <div className="item-desc">
             <p className="desc-title">Top inferred concepts</p>
             { concepts.map((c) => {
@@ -157,13 +154,6 @@ const renderMark = (markParams, entity) => {
             }`}
           >
             {formatWord(word.category)}&nbsp; 
-            {/* {
-              term.trim().length>0&&(
-                <Tooltip title={term}>
-                <span><i className="term-content">{`(${term})`}</i> </span>
-              </Tooltip>
-              )
-            }              */}
           </span>
         </mark>
       </Tooltip>
@@ -209,13 +199,6 @@ const renderMark = (markParams, entity) => {
         }`}
       >
         {formatWord(word.category)}&nbsp;
-         {/* {
-              term.trim().length>0&&(
-                <Tooltip title={term}>
-                <span><i className="term-content">{`(${term})`}</i> </span>
-              </Tooltip>
-              )
-            }    */}
       </span>
       </mark>
       
@@ -598,4 +581,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(TextWithEntity);
-// export default TextWithEntity;

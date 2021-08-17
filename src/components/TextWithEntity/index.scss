@@ -35,9 +35,11 @@
       &:last-child{
         border-bottom: 1px solid transparent;
       }
+      span{
+        padding-right: 6px;
+      }
     }
     .desc-box {
-      padding-left: 10px;
       p {
         padding: 0 5px;
       }
