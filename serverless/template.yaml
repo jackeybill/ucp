@@ -1,0 +1,306 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >
+  ucp-app
+  SAM Template for ucp-app
+
+Parameters:
+  AppIdentity:
+    Type: String
+    Description: unique word to identity this application
+    Default: ucp
+  AvailabilityZone: 
+    Type: String
+    Default: us-west-2
+  CodeCommitRepository:
+    Type: String
+    Description: CodeCommit repository URL
+    Default: "https://git-codecommit.us-west-2.amazonaws.com/v1/repos/UCP"
+  GitBranchName:
+    Type: String
+    Description: CodeCommit repository Branch
+    Default: master
+  Stage:
+    Type: String
+    Description: Deployment stage
+    Default: Dev
+  CognitoUserPoolName:
+    Type: String
+    Description: CognitoUserPool Name
+    Default: ucp-sam-cognito-demo
+  CognitoUserPoolClientName:
+    Type: String
+    Description: CognitoUser Pool Client Name
+    Default: ucp-sam-cognito-client-demo
+  FileBucketName:
+    Type: String
+    Description: file bucket Name
+    Default: ucp-sam-s3-demo
+  WebBucketName:
+    Type: String
+    Description: Web bucket Name
+    Default: ucp-web-s3-demo
+
+Globals:
+  Function:
+    Timeout: 800
+    Runtime: python3.8
+    
+
+Resources:
+# create subnet sg vpc secretsmanager sagemaker endpoint sns
+# functuins section
+  MyLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: main/
+      Handler: app.lambda_handler
+      Policies:
+        - AWSLambdaExecute
+      VpcConfig:
+        SecurityGroupIds: 
+          - !Ref MySecurityGroup
+        SubnetIds: 
+          - !Ref MySubnet
+      Events:
+        TestEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: /
+            Method: Get
+
+  MyCaseLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: main/
+      Handler: app.lambda_handler
+      Policies:
+        - arn:aws:iam::aws:policy/AWSLambdaExecute
+      VpcConfig:
+        SecurityGroupIds: 
+          - !Ref MySecurityGroup
+        SubnetIds: 
+          - !Ref MySubnet
+      Events:
+        CreateCasesEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref MyFileBucket
+            Events: s3:ObjectCreated:*
+
+#vpc
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: 'false'
+      EnableDnsHostnames: 'false'
+      InstanceTenancy: default
+      Tags:
+      - Key: Name
+        Value: Vpc for UCP project
+
+#subnet 
+  MySubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: MyVPC
+      CidrBlock: 10.0.0.0/24 
+      AvailabilityZone: us-west-1b
+      Tags:
+      - Key: Name
+        Value: Subnet for UCP project
+
+#SG
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SG for UCP project
+      VpcId:
+        Ref: MyVPC
+      SecurityGroupIngress:
+      - IpProtocol: -1
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+        Description: allow all the traffic to lambda
+      SecurityGroupEgress:
+      - IpProtocol: -1
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+        Description: allow all the traffic from lambda
+      
+
+# #API section
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Stage
+      Cors: 
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+      Auth:
+        DefaultAuthorizer: MyCognitoAuthorizer
+        Authorizers:
+          MyCognitoAuthorizer:
+            UserPoolArn: !GetAtt MyCognitoUserPool.Arn
+
+#Congnito User Pool        
+  MyCognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Ref CognitoUserPoolName
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      UsernameAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: false
+  
+  MyCognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref MyCognitoUserPool
+      ClientName: !Ref CognitoUserPoolClientName
+      GenerateSecret: false
+#S3 
+  MyFileBucket:
+    Type: "AWS::S3::Bucket"
+    # DeletionPolicy: Retain
+    Properties:
+      BucketName: !Ref FileBucketName
+      # NotificationConfiguration:
+      #   LambdaConfigurations:
+      #     -
+      #       Function: !Ref MyLambdaFunction
+      #       Event: "s3:ObjectCreated:*"
+      #       Filter:
+      #         S3Key:
+      #           Rules:
+      #             -
+      #               Name: suffix
+      #               Value: pdf
+  WebBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Ref WebBucketName
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: 404.html
+    # DeletionPolicy: Retain
+
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebBucket
+      PolicyDocument:
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: s3:GetObject
+            Resource: !Join ['', ['arn:aws:s3:::', !Ref WebBucket, /*]]
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  OrderApi:
+    Description: "API Gateway endpoint URL for Prod stage for Order function"
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello/"
+  S3WebBucket:
+    Description: Arn for S3 web host
+    Value: !Ref WebBucket
+  # WebsiteCloudfront:
+  #   Type: AWS::CloudFront::Distribution
+  #   DependsOn:
+  #     - WebsiteBucket
+  #   Properties:
+  #     DistributionConfig:
+  #       Comment: Cloudfront Distribution pointing to S3 bucket
+  #       Origins:
+  #         - DomainName: !Select [2, !Split ["/", !GetAtt WebsiteBucket.WebsiteURL]]
+  #           Id: S3Origin
+  #           CustomOriginConfig:
+  #             HTTPPort: '80'
+  #             HTTPSPort: '443'
+  #             OriginProtocolPolicy: http-only
+  #       Enabled: true
+  #       HttpVersion: 'http2'
+  #       DefaultRootObject: index.html
+  #       Aliases:
+  #         - !Ref 'DomainName'
+  #       DefaultCacheBehavior:
+  #         AllowedMethods:
+  #           - GET
+  #           - HEAD
+  #         Compress: true
+  #         TargetOriginId: S3Origin
+  #         ForwardedValues:
+  #           QueryString: true
+  #           Cookies:
+  #             Forward: none
+  #         ViewerProtocolPolicy: redirect-to-https
+  #       PriceClass: PriceClass_All
+  #       ViewerCertificate:
+  #         AcmCertificateArn: arn:aws:acm:us-east-1:123456789012:certificate/1bf2c345--6789-0b1b-a123-a4bb5a6fa44c
+  #         SslSupportMethod: sni-only
+  # WebsiteDNSName:
+  #   Type: AWS::Route53::RecordSetGroup
+  #   Properties:
+  #     HostedZoneName: !Join ['', [!Ref 'DomainName', .]]
+  #     RecordSets:
+  #       - Name: !Ref 'DomainName'
+  #         Type: A
+  #         AliasTarget:
+  #           HostedZoneId: Z2FDTNDATAQYW2
+  #           DNSName: !GetAtt [WebsiteCloudfront, DomainName]
+
+
+
+
+    #amplify section
+#   AmplifyApp:
+#     Type: AWS::Amplify::App
+#     Properties:
+#       Name: amplify-sam-demo-app
+#       Repository: !Ref CodeCommitRepository
+#       IAMServiceRole: !GetAtt AmplifyRole.Arn
+#       EnvironmentVariables:
+#         - Name: ENDPOINT
+#           Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
+
+#   AmplifyBranch:
+#     Type: AWS::Amplify::Branch
+#     Properties:
+#       BranchName: !Ref GitBranchName
+#       AppId: !GetAtt AmplifyApp.AppId
+#       EnableAutoBuild: true
+
+#   AmplifyRole:
+#     Type: AWS::IAM::Role
+#     Properties:
+#       AssumeRolePolicyDocument:
+#         Version: 2012-10-17
+#         Statement:
+#           - Effect: Allow
+#             Principal:
+#               Service:
+#                 - amplify.amazonaws.com
+#             Action:
+#               - sts:AssumeRole
+#       Policies:
+#         - PolicyName: Amplify
+#           PolicyDocument:
+#             Version: 2012-10-17
+#             Statement:
+#               - Effect: Allow
+#                 Action: "amplify:*"
+#                 Resource: "*"

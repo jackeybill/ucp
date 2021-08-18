@@ -1,0 +1,38 @@
+  version: 0.2.
+  phases:
+    install:
+      runtime-versions:
+        java: 3.8
+
+    pre_build:
+      on-failure: ABORT
+      commands:
+        - npm ci
+
+    build:
+      on-failure: ABORT
+      commands:
+        - echo "Starting SAM packaging `date` in `pwd`"
+        - aws cloudformation package --template-file template.yaml --s3-bucket $BUILD_OUTPUT_BUCKET --output-template-file packaged.yaml
+        - echo "Starting React build `date` in `pwd`"
+        - npm run build
+
+    post_build:
+      on-failure: ABORT
+      commands:
+        - echo "SAM Deploy completed on `date`"
+        - aws s3 sync frontend/dist s3://<insert s3 bucket url here>/ --delete
+
+  artifacts:
+    baseDirectory: build
+    files:
+      - '**/*'
+    files:
+      - packaged.yaml
+      # - location
+    name: artifact-name
+    discard-paths: yes
+
+    cache:
+      paths:
+        - node_modules/**/*
