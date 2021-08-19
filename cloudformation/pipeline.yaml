@@ -8,32 +8,48 @@ Parameters:
     Type: String
     Description: unique word to identity this application
     Default: ucp
+  GithubRepo:
+    Description: Gitub Repository name
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /services/github/repo
+  GithubToken:
+    Description: Github OAuth Token with full permissions on admin:repo_hook and repo
+    Type: AWS::SSM::Parameter::Value<String>
+    NoEcho: true
+    Default: /services/github/token
+  GithubUser:
+    Description: Github user where the repository lives
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /services/github/user
   BranchName:
-    Description: CodeCommit branch name
+    Description: Repo branch name
     Type: String
-    Default: master
-  MyRepoName:
-    Description: CodeComit repository name
-    Type: String
-    Default: ucp-code-test-001
+    Default: pipeline-demo
   ApplicationName:
     Description: CodeDeploy application name
     Type: String
     Default: UCPApplication
+  Stage:
+    Type: String
+    Default: dev
   BetaFleet:
     Description: Fleet configured in CodeDeploy
     Type: String
     Default: DemoFleet
+  DeployStackName:
+    Description: The stack name for the deploy stage
+    Type: String
+    Default: ''
 
 Resources:
 ## --------------        Source   -------------------- ##
-  #github 
+ #github 
   #codecommit 
-  MyRepo:
-    Type: AWS::CodeCommit::Repository
-    Properties:
-      RepositoryName: !Ref MyRepoName
-      RepositoryDescription: !Sub '${AppIdentity} repository'
+  # MyRepo:
+  #   Type: AWS::CodeCommit::Repository
+  #   Properties:
+  #     RepositoryName: !Ref MyRepoName
+  #     RepositoryDescription: !Sub '${AppIdentity} repository'
       # Triggers:
       # - Name: MyTrigger
       #   CustomData: Project ID 12345
@@ -43,14 +59,23 @@ Resources:
       #   - development
       #   Events:
       #   - all
+## --------------        Bucket   -------------------- ##
+  WebBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: 404.html
+
   #S3 Bucket for aretifact
   CodePipelineArtifactStoreBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: 30
+            Status: Enabled
       Tags: 
         - 
           Key: "Stack"
@@ -58,8 +83,6 @@ Resources:
         -
           Key: "Project"
           Value: !Ref AppIdentity
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
 
 ## --------------   CodeBuild -------------------- ## 
   CodeBuildProject:
@@ -77,6 +100,9 @@ Resources:
               - 
                 Name: BUILD_OUTPUT_BUCKET
                 Value: !Ref CodePipelineArtifactStoreBucket
+              - 
+                Name: WEB_BUCKET
+                Value: !Ref WebBucket
         Cache:
           Type: S3
           Location: !Sub ${CodePipelineArtifactStoreBucket}/  -cache
@@ -98,7 +124,6 @@ Resources:
       ArtifactStore:
         Type: S3
         Location: !Ref CodePipelineArtifactStoreBucket
-      Name: codecommit-events-pipeline
       RoleArn: !GetAtt 
         - CodePipelineServiceRole
         - Arn
@@ -108,15 +133,16 @@ Resources:
             - Name: SourceAction
               ActionTypeId:
                 Category: Source
-                Owner: AWS
-                Version: 1
-                Provider: CodeCommit
+                Owner: ThirdParty
+                Provider: GitHub
+                Version: "1"
               OutputArtifacts:
                 - Name: SourceCodeAsZip
               Configuration:
-                BranchName: !Ref BranchName
-                RepositoryName: !Ref MyRepoName
-                PollForSourceChanges: false
+                Owner: !Ref GithubUser
+                Repo: !Ref GithubRepo
+                Branch: !Ref BranchName
+                OAuthToken: !Ref GithubToken
               RunOrder: 1
         - Name: Build
           Actions:
@@ -132,84 +158,69 @@ Resources:
                 - Name: SourceCodeAsZip
               OutputArtifacts:
                 - Name: BuildArtifactAsZip
-        - Name: Beta
+        - Name: Deploy
           Actions:
             - Name: CreateChangeSet
-              InputArtifacts:
-                - Name: SourceOutput
-              ActionTypeId:
-                Category: Deploy
-                Owner: AWS
-                Version: 1
-                Provider: CodeDeploy
-              Configuration:
-                ApplicationName: !Ref ApplicationName
-                DeploymentGroupName: !Ref BetaFleet
-                ActionMode: CHANGE_SET_REPLACE
-                RoleArn: !GetAtt CloudFormationExecutionRole.Arn
-                StackName: !Sub '${AppIdentity}-pipeline-Beta'
-                ChangeSetName: !Sub '${AppIdentity}-pipeline-ChangeSet-Beta'
-                TemplatePath: "BuildArtifactAsZip::ucp-infra/template.yaml"
-                Capabilities: CAPABILITY_IAM
-              InputArtifacts:
-                - Name: BuildArtifactAsZip
-              RunOrder: 1
-            - Name: ExecuteChangeSet
               ActionTypeId:
                 Category: Deploy
                 Owner: AWS
                 Provider: CloudFormation
-                Version: 1
+                Version: '1'
+              InputArtifacts:
+                - Name: BuildArtifactAsZip
               Configuration:
-                ActionMode: CHANGE_SET_EXECUTE
+                ActionMode: CREATE_UPDATE
+                Capabilities: CAPABILITY_NAMED_IAM
+                # Pass parameter values to Fargate-Cluster.yml for deployment
+                ParameterOverrides: !Sub |
+                  {
+                    "Stage":  "${Stage}"
+                  }
                 RoleArn: !GetAtt CloudFormationExecutionRole.Arn
-                StackName: !Sub '${AppIdentity}-pipeline-Beta'
-                ChangeSetName: !Sub '${AppIdentity}-pipeline-ChangeSet-Beta'
-              OutputArtifacts:
-                - Name: !Sub '${AppIdentity}-pipeline-BetaChangeSet'
-              RunOrder: 2
-
+                StackName: !Join ['-', [!Ref Stage, !Ref 'AWS::AccountId', 'FargateECSCluster']]
+                TemplatePath: source-output-artifacts::Cloudformation/Fargate-Cluster.yml
+              RunOrder: 1
 
 ## --------------   CloudWatch    -------------------- ##     
 #CloudWatch Rule
-  AmazonCloudWatchEventRule:
-    Type: 'AWS::Events::Rule'
-    Properties:
-      EventPattern:
-        source:
-          - aws.codecommit
-        detail-type:
-          - CodeCommit Repository State Change
-        resources:
-          - !Join 
-            - ''
-            - - 'arn:aws:codecommit:'
-              - !Ref 'AWS::Region'
-              - ':'
-              - !Ref 'AWS::AccountId'
-              - ':'
-              - !Ref MyRepoName
-        detail:
-          event:
-            - referenceCreated
-            - referenceUpdated
-          referenceType:
-            - branch
-          referenceName:
-            - master
-      Targets:
-        - Arn: !Join 
-            - ''
-            - - 'arn:aws:codepipeline:'
-              - !Ref 'AWS::Region'
-              - ':'
-              - !Ref 'AWS::AccountId'
-              - ':'
-              - !Ref AppPipeline
-          RoleArn: !GetAtt 
-            - AmazonCloudWatchEventRole
-            - Arn
-          Id: codepipeline-AppPipeline
+  # AmazonCloudWatchEventRule:
+  #   Type: 'AWS::Events::Rule'
+  #   Properties:
+  #     EventPattern:
+  #       source:
+  #         - aws.codecommit
+  #       detail-type:
+  #         - CodeCommit Repository State Change
+  #       resources:
+  #         - !Join 
+  #           - ''
+  #           - - 'arn:aws:codecommit:'
+  #             - !Ref 'AWS::Region'
+  #             - ':'
+  #             - !Ref 'AWS::AccountId'
+  #             - ':'
+  #             - !Ref MyRepoName
+  #       detail:
+  #         event:
+  #           - referenceCreated
+  #           - referenceUpdated
+  #         referenceType:
+  #           - branch
+  #         referenceName:
+  #           - master
+  #     Targets:
+  #       - Arn: !Join 
+  #           - ''
+  #           - - 'arn:aws:codepipeline:'
+  #             - !Ref 'AWS::Region'
+  #             - ':'
+  #             - !Ref 'AWS::AccountId'
+  #             - ':'
+  #             - !Ref AppPipeline
+  #         RoleArn: !GetAtt 
+  #           - AmazonCloudWatchEventRole
+  #           - Arn
+  #         Id: codepipeline-AppPipeline
           
 ## --------------   IAM    -------------------- ##         
 #S3 Bucket Policy
@@ -320,10 +331,6 @@ Resources:
                   Effect: Allow
                   Action: 'ssm:GetParameters'
                   Resource: '*'
-
-
-
-
   CloudFormationExecutionRole:
     Type: AWS::IAM::Role
     Properties:

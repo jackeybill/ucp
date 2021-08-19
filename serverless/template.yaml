@@ -12,14 +12,6 @@ Parameters:
   AvailabilityZone: 
     Type: String
     Default: us-west-2
-  CodeCommitRepository:
-    Type: String
-    Description: CodeCommit repository URL
-    Default: "https://git-codecommit.us-west-2.amazonaws.com/v1/repos/UCP"
-  GitBranchName:
-    Type: String
-    Description: CodeCommit repository Branch
-    Default: master
   Stage:
     Type: String
     Description: Deployment stage
@@ -46,7 +38,10 @@ Globals:
     Timeout: 800
     Runtime: python3.8
     
-
+  # CodeCommitRepository:
+  #   Type: String
+  #   Description: CodeCommit repository URL
+  #   Default: "https://git-codecommit.us-west-2.amazonaws.com/v1/repos/UCP"
 Resources:
 # create subnet sg vpc secretsmanager sagemaker endpoint sns
 # functuins section
