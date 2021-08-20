@@ -29,14 +29,14 @@ Parameters:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /services/github/user
   BranchName:
-    Description: Repo branch name
+    Description: Repo Branch Name
     Type: String
     Default: pipeline-demo
   Stage:
     Type: String
     Default: dev
   BetaFleet:
-    Description: Fleet configured in CodeDeploy
+    Description: Fleet Configured in CodeDeploy
     Type: String
     Default: DemoFleet
   CloudFormationStateBucket:
@@ -115,11 +115,11 @@ Resources:
                 Name: WEB_BUCKET
                 Value: !Ref WebBucket  
               - 
-                Name: State_Bucket
+                Name: STATE_BUCKET
                 Value: !Ref CloudFormationStateBucket
         Cache:
           Type: S3
-          Location: !Sub ${CodePipelineArtifactStoreBucket}/  -cache
+          Location: !Sub ${CodePipelineArtifactStoreBucket}/ -cache
         ServiceRole: !GetAtt CodeBuildServiceRole.Arn
         Source: 
             Type: CODEPIPELINE
@@ -337,6 +337,7 @@ Resources:
                     - 's3:PutObject'
                   Resource:
                     - !Sub 'arn:aws:s3:::${CodePipelineArtifactStoreBucket}/*'
+                    - !Sub 'arn:aws:s3:::${CloudFormationStateBucket}/*'
                     - !Sub 'arn:aws:s3:::${WebBucket}/*'
           - PolicyName: CodeBuildParameterStore
             PolicyDocument:
