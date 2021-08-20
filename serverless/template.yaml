@@ -25,21 +25,12 @@ Parameters:
     Type: String
     Description: file bucket Name
     Default: ucp-sam-s3-demo
-  WebBucketName:
-    Type: String
-    Description: Web bucket Name
-    Default: ucp-web-s3-demo
-
 
 Globals:
   Function:
     Timeout: 800
     Runtime: python3.8
     
-  # CodeCommitRepository:
-  #   Type: String
-  #   Description: CodeCommit repository URL
-  #   Default: "https://git-codecommit.us-west-2.amazonaws.com/v1/repos/UCP"
 Resources:
 # create subnet sg vpc secretsmanager sagemaker endpoint sns
 # functuins section
@@ -180,34 +171,14 @@ Resources:
       #             -
       #               Name: suffix
       #               Value: pdf
-  WebBucket:
-    Type: "AWS::S3::Bucket"
-    Properties:
-      BucketName: !Ref WebBucketName
-      AccessControl: PublicRead
-      WebsiteConfiguration:
-        IndexDocument: index.html
-        ErrorDocument: 404.html
-    # DeletionPolicy: Retain
 
-  WebsiteBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref WebBucket
-      PolicyDocument:
-        Statement:
-          - Sid: PublicReadForGetBucketObjects
-            Effect: Allow
-            Principal: '*'
-            Action: s3:GetObject
-            Resource: !Join ['', ['arn:aws:s3:::', !Ref WebBucket, /*]]
+
+
 Outputs:
   OrderApi:
     Description: "API Gateway endpoint URL for Prod stage for Order function"
     Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello/"
-  S3WebBucket:
-    Description: Arn for S3 web host
-    Value: !Ref WebBucket
+
   # WebsiteCloudfront:
   #   Type: AWS::CloudFront::Distribution
   #   DependsOn:
