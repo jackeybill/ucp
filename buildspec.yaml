@@ -25,10 +25,7 @@
         - echo "SAM Deploy completed on `date`"
         - aws s3 sync build/ s3://${WEB_BUCKET}/ --delete
 
-  artifacts:
-    baseDirectory: build
-    files:
-      - '**/*'
+  artifacts:  
     files:
       - packaged-template.yaml
       # - location

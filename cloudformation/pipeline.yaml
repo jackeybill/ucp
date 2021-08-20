@@ -193,7 +193,7 @@ Resources:
                   }
                 RoleArn: !GetAtt CloudFormationExecutionRole.Arn
                 StackName: !Join ['-', [!Ref Stage, !Ref Stage, 'Stack']]
-                TemplatePath: BuildArtifactAsZip::serverless/packaged-template.yaml
+                TemplatePath: BuildArtifactAsZip::packaged-template.yaml
               RunOrder: 1
 
 ## --------------   CloudWatch    -------------------- ##     
