@@ -39,23 +39,27 @@ Parameters:
     Description: Fleet configured in CodeDeploy
     Type: String
     Default: DemoFleet
+  CloudFormationStateBucket:
+    Type: String
+    Description: Bucket to store CF State info 
+    Default: aws-sam-cli-managed-default-samclisourcebucket-lepoic0s00k5
+
 # --------------        Source   -------------------- #
 Conditions:
-  HasTestStage:
-    !Not [!Equals [!Ref IntegTestRoleName, '']]
-  HasDeployStage:
-    !Not [!Equals [!Ref DeployRoleName, '']]
   UseCodeCommit:
     !Equals [!Ref SourceCodeProvider, 'CodeCommit']
   UseGitHub:
     !Equals [!Ref SourceCodeProvider, 'GitHub']
+
+
 Resources:
 ## --------------        Source   -------------------- ##
   #codecommit 
   MyRepo:
+    Condition: UseCodeCommit
     Type: AWS::CodeCommit::Repository
     Properties:
-      RepositoryName: !Ref MyRepoName
+      RepositoryName: !Join ['-', [!Ref Stage, !Ref Stage, 'repo']]
       RepositoryDescription: !Sub '${AppIdentity} repository'
       # Triggers:
       # - Name: MyTrigger
@@ -184,7 +188,7 @@ Resources:
                     "Stage":  "${Stage}"
                   }
                 RoleArn: !GetAtt CloudFormationExecutionRole.Arn
-                StackName: !Join ['-', [!Ref Stage, !Ref Stage, !Ref 'AWS::AccountId']]
+                StackName: !Join ['-', [!Ref Stage, !Ref Stage, 'Stack']]
                 TemplatePath: SourceCodeAsZip::serverless/template.yaml
               RunOrder: 1
 

@@ -11,7 +11,7 @@
         - npm ci
         # - npm install react-app-rewired
     build:
-      on-failure: ABORT
+      # on-failure: ABORT
       commands:
         - echo "Starting React build `date` in `pwd`"
         - npm run build
@@ -23,7 +23,7 @@
       on-failure: ABORT
       commands:
         - echo "SAM Deploy completed on `date`"
-        - aws s3 sync build/ s3://${}/ --delete
+        - aws s3 sync build/ s3://${WEB_BUCKET}/ --delete
 
   artifacts:
     baseDirectory: build
