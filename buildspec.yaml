@@ -7,7 +7,7 @@
     pre_build:
       on-failure: ABORT
       commands:
-        - pip install cfn-lint
+        # - pip install cfn-lint
         - npm ci
         # - npm install react-app-rewired
     build:
@@ -16,11 +16,11 @@
         - echo "Starting React build `date` in `pwd`"
         - npm run build
         - echo "Starting cloudformation lint `date` in `pwd`"
-        - cfn-lint -t serverless/template.yaml
+        # - cfn-lint -t serverless/template.yaml
         - echo "Starting cloudformation package `date` in `pwd`"
         - aws cloudformation package --template-file serverless/template.yaml --s3-bucket ${State_Bucket} --output-template-file packaged-template.yaml
     post_build:
-      on-failure: ABORT
+      # on-failure: ABORT
       commands:
         - echo "SAM Deploy completed on `date`"
         - aws s3 sync build/ s3://${WEB_BUCKET}/ --delete
