@@ -186,7 +186,6 @@ Resources:
               Configuration:
                 ActionMode: CREATE_UPDATE
                 Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
-                # Pass parameter values to Fargate-Cluster.yml for deployment
                 ParameterOverrides: !Sub |
                   {
                     "Stage":  "${Stage}"
