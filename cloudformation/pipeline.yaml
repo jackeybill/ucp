@@ -335,6 +335,7 @@ Resources:
                     - 's3:GetObject'
                     - 's3:GetObjectVersion'
                     - 's3:PutObject'
+                    - 's3:DeleteObject'
                   Resource:
                     - !Sub 'arn:aws:s3:::${CodePipelineArtifactStoreBucket}/*'
                     - !Sub 'arn:aws:s3:::${CloudFormationStateBucket}/*'
