@@ -192,7 +192,7 @@ Resources:
                   }
                 RoleArn: !GetAtt CloudFormationExecutionRole.Arn
                 StackName: !Join ['-', [!Ref Stage, !Ref Stage, 'Stack']]
-                TemplatePath: SourceCodeAsZip::serverless/template.yaml
+                TemplatePath: BuildArtifactAsZip::serverless/template.yaml
               RunOrder: 1
 
 ## --------------   CloudWatch    -------------------- ##     
@@ -361,8 +361,6 @@ Resources:
       Path: /
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/AdministratorAccess'
-
-
 
 #Pipeline Role
   CodePipelineServiceRole:
