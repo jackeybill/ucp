@@ -29,10 +29,7 @@ Parameters:
     Type: String
     Description: Web bucket Name
     Default: ucp-web-s3-demo
-  CFStatusBucky:
-    type: String
-    Description: Bucket to store CF status info 
-    Default: aws-sam-cli-managed-default-samclisourcebucket-lepoic0s00k5
+
 
 Globals:
   Function:

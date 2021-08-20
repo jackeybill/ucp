@@ -18,7 +18,7 @@
         - echo "Starting cloudformation lint `date` in `pwd`"
         - cfn-lint -t serverless/template.yaml
         - echo "Starting cloudformation package `date` in `pwd`"
-        - aws cloudformation package --template-file serverless/template.yaml --s3-bucket ${PACKAGE_BUCKET} --output-template-file packaged-template.yaml
+        - aws cloudformation package --template-file serverless/template.yaml --s3-bucket ${State_Bucket} --output-template-file packaged-template.yaml
     post_build:
       on-failure: ABORT
       commands:

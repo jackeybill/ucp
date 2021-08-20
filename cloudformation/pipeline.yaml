@@ -113,7 +113,10 @@ Resources:
                 Value: !Ref CodePipelineArtifactStoreBucket
               - 
                 Name: WEB_BUCKET
-                Value: !Ref WebBucket
+                Value: !Ref WebBucket  
+              - 
+                Name: State_Bucket
+                Value: !Ref CloudFormationStateBucket
         Cache:
           Type: S3
           Location: !Sub ${CodePipelineArtifactStoreBucket}/  -cache
@@ -334,6 +337,7 @@ Resources:
                     - 's3:PutObject'
                   Resource:
                     - !Sub 'arn:aws:s3:::${CodePipelineArtifactStoreBucket}/*'
+                    - !Sub 'arn:aws:s3:::${WebBucket}/*'
           - PolicyName: CodeBuildParameterStore
             PolicyDocument:
               Version: '2012-10-17'
