@@ -8,6 +8,13 @@ Parameters:
     Type: String
     Description: unique word to identity this application
     Default: ucp
+  SourceCodeProvider:
+    Type: String
+    Description: Location of your source code repository
+    Default: GitHub
+    AllowedValues:
+      - GitHub
+      - CodeCommit
   GithubRepo:
     Description: Gitub Repository name
     Type: AWS::SSM::Parameter::Value<String>
@@ -25,10 +32,6 @@ Parameters:
     Description: Repo branch name
     Type: String
     Default: pipeline-demo
-  ApplicationName:
-    Description: CodeDeploy application name
-    Type: String
-    Default: UCPApplication
   Stage:
     Type: String
     Default: dev
@@ -36,20 +39,24 @@ Parameters:
     Description: Fleet configured in CodeDeploy
     Type: String
     Default: DemoFleet
-  DeployStackName:
-    Description: The stack name for the deploy stage
-    Type: String
-    Default: ''
-
+# --------------        Source   -------------------- #
+Conditions:
+  HasTestStage:
+    !Not [!Equals [!Ref IntegTestRoleName, '']]
+  HasDeployStage:
+    !Not [!Equals [!Ref DeployRoleName, '']]
+  UseCodeCommit:
+    !Equals [!Ref SourceCodeProvider, 'CodeCommit']
+  UseGitHub:
+    !Equals [!Ref SourceCodeProvider, 'GitHub']
 Resources:
 ## --------------        Source   -------------------- ##
- #github 
   #codecommit 
-  # MyRepo:
-  #   Type: AWS::CodeCommit::Repository
-  #   Properties:
-  #     RepositoryName: !Ref MyRepoName
-  #     RepositoryDescription: !Sub '${AppIdentity} repository'
+  MyRepo:
+    Type: AWS::CodeCommit::Repository
+    Properties:
+      RepositoryName: !Ref MyRepoName
+      RepositoryDescription: !Sub '${AppIdentity} repository'
       # Triggers:
       # - Name: MyTrigger
       #   CustomData: Project ID 12345
@@ -177,8 +184,8 @@ Resources:
                     "Stage":  "${Stage}"
                   }
                 RoleArn: !GetAtt CloudFormationExecutionRole.Arn
-                StackName: !Join ['-', [!Ref Stage, !Ref 'AWS::AccountId', 'FargateECSCluster']]
-                TemplatePath: source-output-artifacts::Cloudformation/Fargate-Cluster.yml
+                StackName: !Join ['-', [!Ref Stage, !Ref Stage, !Ref 'AWS::AccountId']]
+                TemplatePath: SourceCodeAsZip::serverless/template.yaml
               RunOrder: 1
 
 ## --------------   CloudWatch    -------------------- ##     
