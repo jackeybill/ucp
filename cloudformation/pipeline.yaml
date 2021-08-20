@@ -45,6 +45,7 @@ Parameters:
     Default: aws-sam-cli-managed-default-samclisourcebucket-lepoic0s00k5
 
 # --------------        Source   -------------------- #
+
 Conditions:
   UseCodeCommit:
     !Equals [!Ref SourceCodeProvider, 'CodeCommit']
