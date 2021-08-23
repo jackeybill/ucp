@@ -1,0 +1,1 @@
+aws cloudformation create-stack --stack-name test-sagemaker-3 --template-body file://./sagemaker-cloudformation-template.yml --capabilities CAPABILITY_IAM
