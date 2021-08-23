@@ -20,7 +20,7 @@ Resources:
     Type: "AWS::SageMaker::Model"
     Properties:
       PrimaryContainer:
-        Image: 608494368293.dkr.ecr.us-east-2.amazonaws.com/mosaic-meddra-coding:latest
+        Image: 608494368293.dkr.ecr.ap-southeast-1.amazonaws.com/mosaic-meddra-coding:latest
       ExecutionRoleArn: !GetAtt ExecutionRole.Arn
 
   ExecutionRole: 
