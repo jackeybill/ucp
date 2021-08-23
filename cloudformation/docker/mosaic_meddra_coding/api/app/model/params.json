@@ -1,0 +1,1 @@
+{"emb_size": [42, 32], "n_filters": [64, 128], "kernel_sizes": [7, 5], "dense_layer_sizes": [256], "dropout_prob": 0.25, "num_classes": 20772}

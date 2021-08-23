@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+
+def train():
+    
+    print("Do training...")
+    with open("/opt/ml/model/model", "w") as fh:
+        fh.write("...model parameters here...")
+
+if __name__ == "__main__":
+    train()

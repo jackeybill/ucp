@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+tqdm = "*"
+pip = "*"
+joblib = "*"
+#torch = {file = "https://download.pytorch.org/whl/cpu/torch-1.0.0-cp36-none-macosx_10_7_x86_64.whl"}
+scikit-learn = "*"
+nltk = "*"
+requests = "*"
+plac = "*"
+
+[dev-packages]
+jupyterlab = "*"
+pylint = "*"
+
+[requires]
+python_version = "3.6"
