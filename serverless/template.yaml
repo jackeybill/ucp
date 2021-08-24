@@ -24,7 +24,7 @@ Parameters:
   FileBucketName:
     Type: String
     Description: file bucket Name
-    Default: ucp-sam-s3-demo
+    Default: ucp-sam-s3-demo-sg
 
 Globals:
   Function:
