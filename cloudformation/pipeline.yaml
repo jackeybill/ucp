@@ -31,7 +31,7 @@ Parameters:
   BranchName:
     Description: Repo Branch Name
     Type: String
-    Default: pipeline-demo
+    Default: pipeline-demo-sg
   Stage:
     Type: String
     Default: dev
@@ -42,7 +42,7 @@ Parameters:
   CloudFormationStateBucket:
     Type: String
     Description: Bucket to store CF State info 
-    Default: aws-sam-cli-managed-default-samclisourcebucket-lepoic0s00k5
+    Default: aws-sam-cli-managed-default-samclisourcebucket-lepoic0s00k5-sg
 
 # --------------        Source   -------------------- #
 
