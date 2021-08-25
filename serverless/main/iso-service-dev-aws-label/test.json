@@ -1,0 +1,82 @@
+{
+    "Text": "Participants will be excluded from study enrollment if they meet any of the following criteria at screening and/or enrollment: All participants (Trained Users, PWDs and Untrained Users):[9] are study site staff directly affiliated with this study and their immediate families. Immediate family is defined as a spouse, biological or legal guardian, child or sibling[10] are Lilly employees or employees of High Point Clinical Trials Center[11] in the opinion of the investigator or sponsor, are unsuitable for inclusion in the study Trained Users and Untrained Users only (i.e. the participants involved in the simulations):[12] are currently enrolled in a clinical study involving any type of medical research judged not to be scientifically or medically compatible with this study[13] have a history of pheochromocytoma insulinoma or glucagonoma[14] are judged by the investigator as being likely to have difficulty performing the administration due to physical, cognitive and/or severe psychiatric disorder, etc.[15] are judged by the investigator as being trained or experienced in performing rescue drug administration",
+    "Entities": [
+        {
+            "Id": 3,
+            "BeginOffset": 377,
+            "EndOffset": 382,
+            "Score": 0.13523687422275543,
+            "Text": "Lilly",
+            "Category": "PROTECTED_HEALTH_INFORMATION",
+            "Type": "NAME",
+            "Traits": []
+        },
+        {
+            "Id": 4,
+            "BeginOffset": 445,
+            "EndOffset": 447,
+            "Score": 0.3314359188079834,
+            "Text": "11",
+            "Category": "PROTECTED_HEALTH_INFORMATION",
+            "Type": "AGE",
+            "Traits": []
+        },
+        {
+            "Id": 5,
+            "BeginOffset": 792,
+            "EndOffset": 794,
+            "Score": 0.3010455369949341,
+            "Text": "13",
+            "Category": "PROTECTED_HEALTH_INFORMATION",
+            "Type": "AGE",
+            "Traits": []
+        },
+        {
+            "Id": 0,
+            "BeginOffset": 814,
+            "EndOffset": 841,
+            "Score": 0.8994771838188171,
+            "Text": "pheochromocytoma insulinoma",
+            "Category": "MEDICAL_CONDITION",
+            "Type": "DX_NAME",
+            "Traits": [
+                {
+                    "Name": "DIAGNOSIS",
+                    "Score": 0.9546585083007812
+                }
+            ]
+        },
+        {
+            "Id": 1,
+            "BeginOffset": 845,
+            "EndOffset": 856,
+            "Score": 0.9724149107933044,
+            "Text": "glucagonoma",
+            "Category": "MEDICAL_CONDITION",
+            "Type": "DX_NAME",
+            "Traits": [
+                {
+                    "Name": "DIAGNOSIS",
+                    "Score": 0.9591708183288574
+                }
+            ]
+        },
+        {
+            "Id": 2,
+            "BeginOffset": 1000,
+            "EndOffset": 1020,
+            "Score": 0.9162774682044983,
+            "Text": "psychiatric disorder",
+            "Category": "MEDICAL_CONDITION",
+            "Type": "DX_NAME",
+            "Traits": [
+                {
+                    "Name": "DIAGNOSIS",
+                    "Score": 0.9064542651176453
+                }
+            ]
+        }
+    ],
+    "UnmappedAttributes": [],
+    "ModelVersion": "1.0.0"
+}

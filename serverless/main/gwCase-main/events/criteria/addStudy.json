@@ -1,0 +1,16 @@
+{
+    "module": "criteria",
+    "method": "addStudy",
+    "body": {
+      "nct_id": "NCT00000123",
+      "study_type": "Interventional",
+      "trial_title": "The Berkeley Orthokeratology Study",
+      "study_phase": "Phase 3",
+      "prediatric_study": "Yes",
+      "indication": "Astigmatism",
+      "description": "The Berkeley Orthokeratology Study",
+      "therapeutic_Area": "National Eye Institute (NEI)",
+      "trial_alias": null,
+      "molecule_name": null
+    }
+  }

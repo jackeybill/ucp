@@ -22,44 +22,65 @@ Globals:
 Resources:
 # create subnet sg vpc secretsmanager sagemaker endpoint sns
 # functuins section
-  MyLambdaFunction:
-    Type: AWS::Serverless::Function
+  # MyLambdaFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     CodeUri: main/
+  #     Handler: app.lambda_handler
+  #     Policies:
+  #       - AWSLambdaExecute
+  #     VpcConfig:
+  #       SecurityGroupIds: 
+  #         - !Ref MySecurityGroup
+  #       SubnetIds: 
+  #         - !Ref MySubnet
+  #     Events:
+  #       TestEvent:
+  #         Type: Api
+  #         Properties:
+  #           RestApiId: !Ref MyApi
+  #           Path: /
+  #           Method: Get
+
+  # MyCaseLambdaFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     CodeUri: main/
+  #     Handler: app.lambda_handler
+  #     Policies:
+  #       - arn:aws:iam::aws:policy/AWSLambdaExecute
+  #     VpcConfig:
+  #       SecurityGroupIds: 
+  #         - !Ref MySecurityGroup
+  #       SubnetIds: 
+  #         - !Ref MySubnet
+  #     Events:
+  #       CreateCasesEvent:
+  #         Type: S3
+  #         Properties:
+  #           Bucket: !Ref MyFileBucket
+  #           Events: s3:ObjectCreated:*
+
+  gwCasemain:
+    Type: 'AWS::Serverless::Function'
     Properties:
-      CodeUri: main/
-      Handler: app.lambda_handler
-      Policies:
-        - AWSLambdaExecute
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds: 
-          - !Ref MySubnet
+      Handler: index.handler
+      CodeUri: main/gwCase-main/
+      Role: 'arn:aws:iam::608494368293:role/iso-service-dev-us-east-2-lambdaRole'
       Events:
-        TestEvent:
+        Api1:
           Type: Api
           Properties:
-            RestApiId: !Ref MyApi
-            Path: /
-            Method: Get
-
-  MyCaseLambdaFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: main/
-      Handler: app.lambda_handler
-      Policies:
-        - arn:aws:iam::aws:policy/AWSLambdaExecute
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds: 
-          - !Ref MySubnet
-      Events:
-        CreateCasesEvent:
-          Type: S3
+            Path: /cases
+            Method: ANY
+        Api2:
+          Type: Api
           Properties:
-            Bucket: !Ref MyFileBucket
-            Events: s3:ObjectCreated:*
+            Path: /cases
+            Method: OPTIONS
+      Layers:
+        - 'arn:aws:lambda:us-west-2:608494368293:layer:Jose:1'
+        - 'arn:aws:lambda:us-west-2:608494368293:layer:postgresqlClient-master:3'
             
 #vpc
   MyVPC:

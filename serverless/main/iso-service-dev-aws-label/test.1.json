@@ -1,0 +1,194 @@
+{
+    "Text": "[22] show evidence of human immunodeficiency virus (HIV) infection and/or positive human HIV antibodies[24] show evidence of hepatitis B and/or positive hepatitis B surface antigen[25] are women who are lactating, nursing, or have a positive pregnancy test",
+    "Entities": [
+        {
+            "Id": 0,
+            "BeginOffset": 22,
+            "EndOffset": 50,
+            "Score": 0.9768983721733093,
+            "Text": "human immunodeficiency virus",
+            "Category": "MEDICAL_CONDITION",
+            "Type": "DX_NAME",
+            "Traits": [
+                {
+                    "Name": "DIAGNOSIS",
+                    "Score": 0.9347406029701233
+                }
+            ]
+        },
+        {
+            "Id": 1,
+            "BeginOffset": 52,
+            "EndOffset": 55,
+            "Score": 0.9567566514015198,
+            "Text": "HIV",
+            "Category": "MEDICAL_CONDITION",
+            "Type": "DX_NAME",
+            "Traits": [
+                {
+                    "Name": "DIAGNOSIS",
+                    "Score": 0.9435793161392212
+                }
+            ]
+        },
+        {
+            "Id": 7,
+            "BeginOffset": 52,
+            "EndOffset": 55,
+            "Score": 0.3259040117263794,
+            "Text": "HIV",
+            "Category": "TEST_TREATMENT_PROCEDURE",
+            "Type": "TEST_NAME",
+            "Traits": []
+        },
+        {
+            "Id": 2,
+            "BeginOffset": 57,
+            "EndOffset": 66,
+            "Score": 0.9796844720840454,
+            "Text": "infection",
+            "Category": "MEDICAL_CONDITION",
+            "Type": "DX_NAME",
+            "Traits": [
+                {
+                    "Name": "DIAGNOSIS",
+                    "Score": 0.9071819186210632
+                }
+            ]
+        },
+        {
+            "Id": 3,
+            "BeginOffset": 74,
+            "EndOffset": 103,
+            "Score": 0.7052401304244995,
+            "Text": "positive human HIV antibodies",
+            "Category": "MEDICAL_CONDITION",
+            "Type": "DX_NAME",
+            "Traits": [
+                {
+                    "Name": "DIAGNOSIS",
+                    "Score": 0.8884780406951904
+                }
+            ]
+        },
+        {
+            "Id": 9,
+            "BeginOffset": 83,
+            "EndOffset": 103,
+            "Score": 0.5311091542243958,
+            "Text": "human HIV antibodies",
+            "Category": "TEST_TREATMENT_PROCEDURE",
+            "Type": "TEST_NAME",
+            "Traits": [],
+            "Attributes": [
+                {
+                    "Type": "TEST_VALUE",
+                    "Score": 0.3412036895751953,
+                    "RelationshipScore": 0.9999427795410156,
+                    "RelationshipType": "TEST_VALUE",
+                    "Id": 8,
+                    "BeginOffset": 57,
+                    "EndOffset": 82,
+                    "Text": "infection and/or positive",
+                    "Category": "TEST_TREATMENT_PROCEDURE",
+                    "Traits": []
+                }
+            ]
+        },
+        {
+            "Id": 4,
+            "BeginOffset": 126,
+            "EndOffset": 137,
+            "Score": 0.9820104241371155,
+            "Text": "hepatitis B",
+            "Category": "MEDICAL_CONDITION",
+            "Type": "DX_NAME",
+            "Traits": [
+                {
+                    "Name": "DIAGNOSIS",
+                    "Score": 0.9230621457099915
+                }
+            ]
+        },
+        {
+            "Id": 5,
+            "BeginOffset": 154,
+            "EndOffset": 165,
+            "Score": 0.9257238507270813,
+            "Text": "hepatitis B",
+            "Category": "MEDICAL_CONDITION",
+            "Type": "DX_NAME",
+            "Traits": [
+                {
+                    "Name": "DIAGNOSIS",
+                    "Score": 0.8656228184700012
+                }
+            ]
+        },
+        {
+            "Id": 11,
+            "BeginOffset": 154,
+            "EndOffset": 181,
+            "Score": 0.9114673733711243,
+            "Text": "hepatitis B surface antigen",
+            "Category": "TEST_TREATMENT_PROCEDURE",
+            "Type": "TEST_NAME",
+            "Traits": [],
+            "Attributes": [
+                {
+                    "Type": "TEST_VALUE",
+                    "Score": 0.3795950710773468,
+                    "RelationshipScore": 0.9999920129776001,
+                    "RelationshipType": "TEST_VALUE",
+                    "Id": 10,
+                    "BeginOffset": 114,
+                    "EndOffset": 153,
+                    "Text": "evidence of hepatitis B and/or positive",
+                    "Category": "TEST_TREATMENT_PROCEDURE",
+                    "Traits": []
+                }
+            ]
+        },
+        {
+            "Id": 6,
+            "BeginOffset": 244,
+            "EndOffset": 253,
+            "Score": 0.7547729015350342,
+            "Text": "pregnancy",
+            "Category": "MEDICAL_CONDITION",
+            "Type": "DX_NAME",
+            "Traits": [
+                {
+                    "Name": "DIAGNOSIS",
+                    "Score": 0.7028601169586182
+                }
+            ]
+        },
+        {
+            "Id": 13,
+            "BeginOffset": 244,
+            "EndOffset": 258,
+            "Score": 0.998472273349762,
+            "Text": "pregnancy test",
+            "Category": "TEST_TREATMENT_PROCEDURE",
+            "Type": "TEST_NAME",
+            "Traits": [],
+            "Attributes": [
+                {
+                    "Type": "TEST_VALUE",
+                    "Score": 0.9860763549804688,
+                    "RelationshipScore": 0.9996826648712158,
+                    "RelationshipType": "TEST_VALUE",
+                    "Id": 12,
+                    "BeginOffset": 235,
+                    "EndOffset": 243,
+                    "Text": "positive",
+                    "Category": "TEST_TREATMENT_PROCEDURE",
+                    "Traits": []
+                }
+            ]
+        }
+    ],
+    "UnmappedAttributes": [],
+    "ModelVersion": "1.0.0"
+}

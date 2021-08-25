@@ -1,0 +1,7 @@
+{
+    "module": "criteria",
+    "method": "getStudy",
+    "body": {
+      "id": "609bee879a121984d254c19b"
+    }
+  }

@@ -1,0 +1,2560 @@
+SoA Element - Raw Text Extract,Standard Activity - Display in UI
+Height,Height
+HbA1c,Hemoglobin A1c (HbA1c)
+Informed consent,Informed Consent
+Physical examination,Physical examination
+Concomitant medication,Concomitant medications
+ECG,12-lead ECG (central or local)
+Urinalysis,Urinalysis
+Demographics,Demographics
+Randomization,Randomization/IWRS
+Vital signs,Vital Signs
+Body weight,Weight
+Adverse events,Adverse events (AEs)
+Demography,Demographics
+Fasting plasma glucose,Glucose
+Haematology,Hematology
+Pregnancy test,Urine pregnancy (local)
+Waist circumference,Waist circumference
+Randomisation,Randomization/IWRS
+Weight,Weight
+BMI,Vital Signs
+Informed Consent,Informed Consent
+Lipids,Lipid panel
+Drug accountability,Assess study drug compliance
+Hematology,Hematology
+Hypoglycaemic episodes,Hypoglycemic events review
+EFFICACY,
+Medical history,Prespecified medical history (indication and history of interest)
+SAFETY,
+Calcitonin,Calcitonin
+Biochemistry,Comprehensive Metabolic Panel (Clinical Chemistry)
+TRIAL MATERIAL,
+REMINDERS,
+Technical complaints,Adverse Events (AEs)
+FPG,Glucose
+Tobacco use,"Substance use (alcohol, caffeine, tobacco use)"
+Attend visit fasting,
+Concomitant medications,Concomitant medications
+Dispensing visit,Dispense Study Drug
+Medical History,Prespecified medical history (indication and history of interest)
+In/exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/Exclusion Criteria,"Inclusion and exclusion criteria, review and confirm"
+Physical Examination,Physical examination
+Eye examination,Dilated fundoscopic examination
+Inclusion/exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+PRO questionnaires,Patient-Reported Outcomes (Paper)
+12-lead ECG,12-lead ECG (central or local)
+Diagnosis of diabetes,
+Fasting C-peptide,C-Peptide
+Handout ID card,Patient Identification Card
+Vital Signs,Vital Signs
+Withdrawal criteria,
+Concomitant illness,Adverse Events (AEs)
+End of trial,
+Glucose metabolism,Glucose
+IWRS call,Randomization/IWRS
+OTHER ASSESSMENTS,
+HbAlc,Hemoglobin A1c (HbA1c)
+Exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+Fasting glucagon,Glucagon
+History of cardiovascular disease,Prespecified medical history (indication and history of interest)
+Inclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+7-point profile,SMBG Profile
+Adverse event and concomitant medication,Adverse events (AEs)
+Blood draw for clinical lab tests,Blood Draw
+Body measurements,Vital Signs
+Diabetes complications,Prespecified medical history (indication and history of interest)
+Diet & exercise instruction,Patient Education
+Fasting insulin,Insulin
+Lipid panel,Lipid panel
+Antibodies,Anti-Drug Antibodies
+CCI,
+Clinical Procedures/Assessments,
+Collect/review diary,Diary return
+Complete,
+Criteria for premature discontinuation of trial product,
+Dispense diary,Patient diary dispensed
+Fasting lipids,Lipid Panel
+Handout and instruct in BG meter use,Dispense and train on use of blood glucose meter
+History of gallbladder disease,Prespecified medical history (indication and history of interest)
+ICF,Informed Consent
+Medical/Surgical History,Prespecified medical history (indication and history of interest)
+Medication History,Prespecified medical history (indication and history of interest)
+Study completion,
+Verify eligibility criteria,"Inclusion and exclusion criteria, review and confirm"
+9-point profile,SMBG Profile
+Abbreviated,Physical Examination
+Chemistry panel,Comprehensive Metabolic Panel (Clinical Chemistry)
+Collect blood for:,Blood Draw
+Concomitant illness and medical history,Prespecified medical history (indication and history of interest)
+Concomitant therapy,Concomitant medications
+CRF,
+Diabetes treatment history,Prespecified medical history (indication and history of interest)
+Diet and Exercise Counseling,Patient Education
+Dispense glucose meter,Dispense blood glucose meter
+Dispense IMP,Dispense Study Drug
+End of treatment,
+Family history of diabetes,Prespecified medical history (indication and history of interest)
+Fasting Fingerstick Glucose in Clinic,Glucose
+Fasting Plasma Glucose,Glucose
+Hand out and instruct in diary,Patient diary dispensed
+HbA,Hemoglobin A1c (HbA1c)
+History of gastrointestinal disease,Prespecified medical history (indication and history of interest)
+Hypoglycaemia unawareness,Hypoglycemic events review
+ICH,
+IWRS session,Randomization/IWRS
+Laboratory Procedures/Assessments,Blood Draw
+Medical history and ICF,Prespecified medical history (indication and history of interest)
+Study termination,
+TSH,Thyroid Stimulating Hormone (TSH)
+Vital signsÂ³,Vital Signs
+6.4.,
+6.6.,
+7,
+Admission and discharge,Admission to Unit
+Assignment of Randomization Number,Randomization and Dosing
+Blood sample for PK,Pharmacokinetic (PK) samples
+Body Weight,Weight
+Brief Physical Examination,Physical Examination
+C-peptide,C-Peptide
+CFR,
+CGM,"Continuous Glucose Monitoring, Review and/or Download"
+Chemistry,Comprehensive Metabolic Panel (Clinical Chemistry)
+Clinical Assessments,Clinician-Administered Assessments (Paper)
+Collect and review diary,Diary compliance check
+Complete Physical Examination,Physical Examination
+Concomitant Medication,Concomitant medications
+Diabetes history,Prespecified medical history (indication and history of interest)
+Discharge from clinic,Discharge from Unit
+eCRF,
+eGFR,eGFR (CKD-EPI)
+Fasting glucose,Glucose
+FDA,
+GCP,
+IMP accounting & compliance,Assess study drug compliance
+Informed Consent for Future Biomedical Research,Informed Consent
+Interactive response technology (IRT) contact,Randomization/IWRS
+IV/WRS call,Randomization/IWRS
+IWRS,Randomization/IWRS
+Medical history and demographics,Prespecified medical history (indication and history of interest)
+Medical/surgical history,Prespecified medical history (indication and history of interest)
+Physical examÂ²,Physical Examination
+Rescue criteria,Study Drug Dose Adjustment
+SAE,Adverse Events (AEs)
+Screening for I/E criteria,"Inclusion and exclusion criteria, review and confirm"
+Subject Identification Card,Patient Identification Card
+Training in trial product and pen handling,Patient Education
+Urine collection,Urine Collection (Spot or 24-Hour)
+Urine pregnancy test,Urine pregnancy (local)
+Abbreviated Physical Examination,Physical Examination
+Admission,Admission to Unit
+Adverse Events Monitoring,Adverse events (AEs)
+AEs/SAEs,Adverse events (AEs)
+Age,Demographics
+Assignment of Screening Number,Randomization/IWRS
+Blood sampling,Blood Draw
+"Body weight, height",Weight
+CBC,CBC
+Chemistry Panel,Comprehensive Metabolic Panel (Clinical Chemistry)
+Collect urine for:,Urine Collection (Spot or 24-Hour)
+Concomitant Medication Assessments,Concomitant medications
+Contact IVRS,Randomization/IWRS
+CRO,
+Demographics and Medical History,Prespecified medical history (indication and history of interest)
+Diabetes history and diabetes complications,Prespecified medical history (indication and history of interest)
+Diary and Glucometer Record Review,Diary compliance check
+Diet and exercise counselling,Patient Education
+Discharge,Discharge from Unit
+Dispense Hypoglycemia Assessment Log (HAL) and Instruct on Hypoglycemia Symptoms and Management,Patient Education
+Dispensing Investigational Product,Dispense Study Drug
+Dispensing Run-in Drug,Dispense Study Drug
+DKA,
+Drug,Dispense Study Drug
+Electrocardiography,12-lead ECG (central or local)
+Fasting Triglycerides,Lipid Panel
+Full Physical Examination,Physical examination
+GLP-,
+Hip and waist circumference,Waist Circumference
+Immunogenicity sample,PK sample for immunogenicity
+In-/Exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+Inclusion / exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/Exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+Instruction on diabetic ketoacidosis symptoms and glucose testing,Patient Education
+"Instruction on diabetic ketoacidosis symptoms, glucose testing",Patient Education
+Laboratory Assessments,Blood Draw
+Laboratory tests,Blood Draw
+Physical exam,Physical examination
+Physical Exam,Physical examination
+Physical Examination:,Physical examination
+Plasma concentration,
+Pregnancy Test,Urine pregnancy (local)
+Pregnancy testÂ¹,Urine pregnancy (local)
+Prior/Concomitant Medication Review,Concomitant Medications
+"Pulse, sitting",Vital Signs
+Serum chemistry,Comprehensive Metabolic Panel (Clinical Chemistry)
+Sign off Casebook,
+Study Drug,Assess study drug compliance
+Targeted physical examination,Physical Examination
+TRIM-D,Patient-Reported Outcomes (Paper)
+Urine Pregnancy Test,Urine pregnancy (local)
+12-Lead ECGÂ¹,12-lead ECG (central or local)
+12-lead ECGe,12-lead ECG (central or local)
+6.5.,
+8,
+a Body weight,Weight
+A1C,Hemoglobin A1c (HbA1c)
+Admission to CRU,Admission to Unit
+Admit to clinic,Admission to Unit
+Adverse Event Monitoring,Adverse events (AEs)
+Adverse Events,Adverse events (AEs)
+AE Monitoring,Adverse events (AEs)
+Ambulatory,
+Amylase and lipase (predose),Pancreatic Amylase
+Anti-hyperglycemic agents,Concomitant medications
+Assess Eligibility,"Inclusion and exclusion criteria, review and confirm"
+Assessment (revised per Amendment 01),
+Blood chemistry,Comprehensive Metabolic Panel (Clinical Chemistry)
+Body height,Height
+Brief physical examination,Physical Examination
+Categorical Assessment of Injection Site Pain Intensity,
+CEC,
+CGMS,"Continuous Glucose Monitoring, Review and/or Download"
+Changes in lab tests,
+CHF,Prespecified medical history (indication and history of interest)
+CI,
+CIP,
+Clinical laboratory tests,Blood Draw
+Clinical Laboratory Tests,Blood Draw
+Clinical Laboratoryd,Blood Draw
+Collect glucose meter,Patient returns study drugs and injection supplies
+Collect urine sample for:,Urine Collection (Spot or 24-Hour)
+Company Confidential Information,
+Comparative Pain Assessment,Clinician-Administered Assessments (Electronic)
+Contact IVRS System,Randomization/IWRS
+d Drug and alcohol screen,"Substance use (alcohol, caffeine, tobacco use)"
+DAE,
+Date of Diagnosis of Diabetes,Prespecified medical history (indication and history of interest)
+Diabetes mellitus complications,Prespecified medical history (indication and history of interest)
+Diagnosis,
+Dispense and/or collect diary,Patient diary dispensed
+Dispense double-blind medication,Dispense Study Drug
+Dispense double-blind study medication,Dispense Study Drug
+Dispense investigational study drug bexagliflozin,Dispense Study Drug
+Dispense single-blind placebo,Dispense Study Drug
+Dispense Single-Blind Placebo Run-in,Dispense Study Drug
+Dose of trial insulin,Administer Study Drug
+Drug Accountability,Assess study drug compliance
+ECG e,12-lead ECG (central or local)
+EDC,
+Effectiveness endpoints,
+Electrocardiogram,12-lead ECG (central or local)
+Eligibility Check,"Inclusion and exclusion criteria, review and confirm"
+EOS,
+Fasting C-peptideÂ°,C-Peptide
+Fasting lipid profile,Lipid panel
+Fasting Triglycerides/TSH,Lipid Panel
+Fasting visit,
+Full Physical Exam,Physical Examination
+GIP,
+Hand out and instruct in BG meter,Dispense and train on use of blood glucose meter
+Hand out and instruct in BG meter use,Dispense and train on use of blood glucose meter
+Hand out directions for use,Patient Education
+Hand out ID card,Patient Identification Card
+HbA 1c,Hemoglobin A1c (HbA1c)
+Hematology panel (predose as applicable),Hematology
+Hemoglobin Alc,Hemoglobin A1c (HbA1c)
+Hepatitis serology,Hepatitis B Virus (HBV) screening tests
+Hormones (calcitonin),Calcitonin
+IEC,
+Immunogenicity,Immunogencity (ADA) samples
+Inclusion and exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/ exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+Injection site assessment,Injection Training
+Instruction on basic genitourinary hygiene & hydration,Patient Education
+Instruction on basic GU hygiene & hydration,Patient Education
+Intensity of Injection Site Pain VAS,Clinician-Administered Assessments (Paper)
+IRT contact,Randomization/IWRS
+IV,
+k ADA,
+Lactate (predose as applicable),
+Lipid Panel,Lipid panel
+Lipid PanelP,Lipid Panel
+Medical and disease history,Prespecified medical history (indication and history of interest)
+Medical and surgical history,"Preexisting conditions and medical history, including relevant surgical history"
+Medical assessment,Prespecified medical history (indication and history of interest)
+Medical history / concomitant diagnoses,Prespecified medical history (indication and history of interest)
+Medical history and physical examination,Prespecified medical history (indication and history of interest)
+Medication compliance check,Assess study drug compliance
+mg/dL,
+MMTT,Meal Tolerance Test (MTT)
+MRI,
+NYHA classification,Patient Identification Card
+Other,
+Overnight fast,
+PD samples for glucose J,Pharmacokinetic (PK) samples
+Phone Visit,Telephone Call
+Physical,Physical examination
+Physical Exam:,Physical examination
+PK for metformin (prior to MEDI0382 dose as applicable),Pharmacokinetic (PK) samples
+PK Sampling,Pharmacokinetic (PK) samples
+Preexisting conditions,Prespecified medical history (indication and history of interest)
+Pregnancy test (WOCBP),Urine pregnancy (local)
+Pregnancy Test (women of childbearing potential only),Urine pregnancy (local)
+Previous and Concomitant Medication,Concomitant medications
+Procedures,
+Provide Subject with Study Contact Card,Patient Identification Card
+Race/Ethnicity,Demographics
+Renal function,Creatinine
+Review of SMBG Measurements and HAL,Diary compliance check
+Review study diary,Diary return
+Safety,
+Screening for I/E Criteria,"Inclusion and exclusion criteria, review and confirm"
+Screening for I/E criteriaÂ¹,"Inclusion and exclusion criteria, review and confirm"
+"Serology (HBsAg, anti-HCV, anti-HIV-1 and -2)",Hepatitis B Virus (HBV) screening tests
+Serum chemistry panel (predose as applicable),Comprehensive Metabolic Panel (Clinical Chemistry)
+Smoking habits,"Substance use (alcohol, caffeine, tobacco use)"
+Study drug administration,Administer Study Drug
+Subcutaneous injection training,Injection Training
+Urinalysis (dipstick and microscopy),Urinalysis
+Urinalysis (dipstick; predose as applicable),Urinalysis
+Urine dipstick,Urinalysis
+Urine Drug and Alcohol Screen,Urine Collection (Spot or 24-Hour)
+Urine drug screen,Urine Collection (Spot or 24-Hour)
+Urine Drug Screen,Urine Collection (Spot or 24-Hour)
+Urine Pregnancy Test (Females of Childbearing Potential Only),Urine pregnancy (local)
+"Vital signs (BP, pulse, body temperature, RR) g",Vital signs
+Vital signs d,Vital Signs
+Vital signsd,Vital Signs
+"(Dipstick): U-albumin, U-glucose, U-blood",Urinalysis
+12-Lead ECG,12-lead ECG (central or local)
+12-lead ECGÂ³,12-lead ECG (central or local)
+12-lead electrocardiogram,12-lead ECG (central or local)
+24-hr blood pressureÂ°,Ambulatory Blood Pressure Monitoring (ABPM)
+6,
+6.4.8.,
+7-point SMBG,SMBG Profile
+Administration of Trazenta R Tablets,Administer Study Drug
+Admission to the Unit,Admission to Unit
+Admission/discharge,Admission to Unit
+Adverse event,Adverse events (AEs)
+Adverse Event,Adverse events (AEs)
+Adverse event monitoring,Adverse events (AEs)
+Adverse Events & DKA Assessments,Adverse events (AEs)
+Adverse Events Assessments,Adverse events (AEs)
+Adverse eventsÂ¹,Adverse events (AEs)
+Advice on diet and exercise,Patient Education
+AE,Adverse events (AEs)
+AEs,Adverse events (AEs)
+ALT,Hepatic Panel (Liver Tests)
+"Amylase, Lipase",Pancreatic Amylase
+Antidiabetic medication,Concomitant medications
+Assess FPG for Rescue,Study Drug Dose Adjustment
+Assessment of AEs/SAEs,Adverse events (AEs)
+Assign E-code,Randomization/IWRS
+"BG meter, instructions",Dispense and train on use of blood glucose meter
+"BG meter/supplies, if needed",Dispense blood glucose meter
+Blood for Serum C-peptide,C-Peptide
+Blood pressure,Vital Signs
+Blood pressure pulse rate and ECG,Vital Signs
+Blood sample for PKÂ¹,Pharmacokinetic (PK) samples
+"Body Height, Body Weight and BMI Calculation",Height
+"Body weight, heightC",Weight
+Bone markers,
+Brief Physical ExaminationÂ¹,Physical Examination
+Briefing of patients by the study dietician regarding food boxes,Patient Education
+c Optional future genetic research,Stored Samples
+c Optional future non-genetic research,Stored Samples
+Calcitonin c,Calcitonin
+Cancer Indicator,
+Central Laboratory,
+Childbearing potential,Prespecified medical history (indication and history of interest)
+Clinic Procedures/Assessments,Clinician-Administered Assessments (Paper)
+"Clinical chemistry, coagulation, hematology, urinalysis (f)",Comprehensive Metabolic Panel (Clinical Chemistry)
+Clinical chemistry/hematology,Comprehensive Metabolic Panel (Clinical Chemistry)
+Clinical Variables,
+Coagulation,"Coagulation Panel (PT/INR, PTT, aPTT)"
+Collect first date and dose of trial product,Diary compliance check
+Collect last date and dose of trial product,Diary compliance check
+Collect medical history,Prespecified medical history (indication and history of interest)
+Collection and Review of Patient's Log,Diary compliance check
+complete,
+Complete Blood Count (CBC)/Differential,CBC
+Complete physical examination,Physical Examination
+Compliance,Assess study drug compliance
+Compliance and fasting condition,Assess study drug compliance
+Compliance check,Assess study drug compliance
+Concomitant drug(s) and antidiabetic therapy,Concomitant medications
+Concomitant illness and Medical history,Prespecified medical history (indication and history of interest)
+Concomitant medication review,Concomitant medications
+Concomitant Medication Review,Concomitant medications
+Concomitant Medications,Concomitant medications
+Concomitant Therapy,Concomitant medications
+Confined to clinic,
+Confirm final eligibility,"Inclusion and exclusion criteria, review and confirm"
+Confirmation of unchanged metformin,Concomitant medications
+Consumption of food from food boxes,
+Contact IXRS,Randomization/IWRS
+Creatinine (including eGFR),Creatinine
+CRP,"C-Reactive Protein, high-sensitivity  (hsCRP)"
+CV,Prespecified medical history (indication and history of interest)
+Cystatin C,Cystatin C
+Demographic data,Demographics
+Demographic information,Demographics
+Demography and medical history,Prespecified medical history (indication and history of interest)
+"Demography, Height (measured in duplicate), & Medical History including smoking status",Prespecified medical history (indication and history of interest)
+Determine BMI Percentile,Vital Signs
+Diabetes Distress Questionnaire,Patient-Reported Outcomes (Paper)
+Diagnosis of diabetes/diabetes complications,Prespecified medical history (indication and history of interest)
+Diagnostics (Efficacy),
+Diagnostics (Safety),
+Diary and Glucometer Dispensation,Dispense blood glucose meter
+Diet and exercise counseling,Patient Education
+Diet and exercise counselling C,Patient Education
+Diet and exercise instruction,Patient Education
+Diet and lifestyle counseling,Patient Education
+"Diet, exercise, BG counseling",Patient Education
+Diet/exercise counseling,Patient Education
+Dietary advicee,Patient Education
+Discharge from CRU,Discharge from Unit
+Discharge from the Unit,Discharge from Unit
+Dispense double-blind IMP,Dispense Study Drug
+Dispense Double-Blind Investigational Product,Dispense Study Drug
+Dispense Glucose Meter and Provide SMBG Instruction,Dispense and train on use of blood glucose meter
+Dispense Hypoglycemia Assessment and Self- Monitoring Blood Glucose logs and instruct on hypoglycemia (symptoms and management) and hyperglycemia symptoms,Patient Education
+Dispense patient diary,Patient diary dispensed
+Dispense patient identification card,Patient Identification Card
+Dispense PG meter/supplies,Dispense ancillary supplies to patient
+Dispense single-blind placebo medication,Dispense Study Drug
+"Dispense study diary, instruct in use",Patient diary dispensed
+Dispense study drugs and/or injection supplies,Dispense Study Drug
+Dispense study drugt,Dispense Study Drug
+Dispense study medication,Dispense Study Drug
+Dispensing of trial product,Dispense Study Drug
+Dispensing trial product,Dispense Study Drug
+DMC,
+DMR,
+DPP-,
+DTSQ,DTSQs
+DTSQc,DTSQc
+DTSQs,DTSQs
+Duration of Pain,
+E Pregnancy test,Urine pregnancy (local)
+Efficacy,
+EIS,
+End of trial (subject completion),
+End treatment,
+Enrollment,Randomization/IWRS
+ER,
+Evaluate Inclusion/Exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+Eye Examination,Dilated fundoscopic examination
+F Safety lab tests (urine and blood),Blood Draw
+Fasting insulin and proinsulin,Insulin
+Fasting plasma glucose (FPG),Glucose
+Fasting Plasma Glucose (FPG),Glucose
+Fasting Safety Lab Tests (chemistry),Comprehensive Metabolic Panel (Clinical Chemistry)
+FFA and Ketone bodies,
+"Food intake questionnaire""",Patient-Reported Outcomes (Paper)
+Fructosamine,
+FSH and/or estradiol as needed,Follicle Stimulating Hormone (FSH)
+FST,
+Gender,Demographics
+GI,
+Glycemic Control,Hypoglycemic events review
+GST,
+h PK for MEDI,Pharmacokinetic (PK) samples
+Hand-out and instruct in diary,Patient diary dispensed
+Hand-out ID card,Patient Identification Card
+Hand out of subject ID card,Patient Identification Card
+Handout and instruct in diary,Patient diary dispensed
+HbA1c and fasting plasma glucose,Hemoglobin A1c (HbA1c)
+"HbA1c6,",Hemoglobin A1c (HbA1c)
+HBsAg,Hepatitis B Virus (HBV) screening tests
+Heart Failure Indicator,Prespecified medical history (indication and history of interest)
+"Hematology""",Hematology
+Hemoglobin A1c,Hemoglobin A1c (HbA1c)
+Hemoglobin A1C,Hemoglobin A1c (HbA1c)
+HIPAA,
+HIV/Hepatitis Screen (per site SOP),HIV screening tests
+Hormones,
+hsCRP,"C-Reactive Protein, high-sensitivity  (hsCRP)"
+In-/exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+Informed consent d,Informed Consent
+Informed Consent for Future Biomedical Researchd,Informed Consent
+Informed consent form,Informed Consent
+Instruct on hypoglycemia symptoms and management,Patient Education
+Insulin dose,Administer Study Drug
+Interactive Response Technology (IRT) contact,Randomization/IWRS
+IP administration,Administer Study Drug
+IRB,
+Item :,
+IV/IWRS call,Randomization/IWRS
+LDH,
+Lipase and amylase,Lipase
+Lipid lab panel,Lipid panel
+Make appointment for eye examination,Dilated fundoscopic examination
+Measure height (measured 3 times),Height
+"Measure vital signs (HR, BP measured twice)",Vital Signs
+Measure waist circumference (measured twice),Waist Circumference
+Measure weight (measured twice),Weight
+Medical history/ Concomitant disease,Prespecified medical history (indication and history of interest)
+Monitor for Adverse Events,Adverse Events (AEs)
+Monitoring and Central Laboratory Procedures,Blood Draw
+ng/mL,
+Nonpharmacogenetic stored samples,Exploratory biomarker samples
+NPO,
+NT-proBNP,
+OAD,
+Ongoing Review,
+Optional informed consent for sample for future genetic research,Informed Consent
+Other assessments,
+Other medical history,Prespecified medical history (indication and history of interest)
+"Pancreatic amylase, lipase",Pancreatic Amylase
+Patient demographics,Demographics
+Patient Demographics,Demographics
+Patient enrolment,Randomization/IWRS
+Patient summary,
+Perform 12-lead ECG (locally read),12-lead ECG (central or local)
+Perform physical exam,Physical Examination
+Pharmacodynamic Evaluations,Pharmacokinetic (PK) samples
+Pharmacokinetics Evaluations,Pharmacokinetic (PK) samples
+Phone visit,Telephone Call
+Physical examination (abbreviated),Physical Examination
+Physical examination:,Physical Examination
+Physical examinationÂ²,Physical Examination
+PK Sample for ertugliflozin',Pharmacokinetic (PK) samples
+PK samples,PK sample for immunogenicity
+PK sampling,PK sample for immunogenicity
+PK Specific Visita,Pharmacokinetic (PK) samples
+Plasma and serum for Future Biomedical Research,Stored Samples
+Plasma and Serum for Future Biomedical Researchd,Stored Samples
+Pre-discontinuation of trial product,
+Pregnancy status,Urine pregnancy (local)
+Pregnancy test (WOCBP only),Urine pregnancy (local)
+Pretreatment drug,Prior treatments for indication
+Pretreatment Procedures,
+Previous Injection Experiencea,Injection Training
+Prior/Concomitant medication review,Concomitant medications
+Procedure,
+QA,
+Quality of Pain Modified SF-MPQ-2 Inventory,
+Randomisation (via IRT),Randomization/IWRS
+Randomization and Stratification,Randomization/IWRS
+Randomize,Randomization/IWRS
+"Record start time of breakfast, mid-day, and evening meals",
+Remind patients about 6-point SMPG,Patient Education
+Renal impairment history,Prespecified medical history (indication and history of interest)
+Return study diary,Diary return
+Review of concomitant medications,Concomitant Medications
+"Review patient diaries for BG values, AEs, hypoglycemic or hyperglycemic events",Diary compliance check
+Review prior/concomitant medication,Concomitant Medications
+Review SMPG values,Diary compliance check
+"Review use of any prohibited medications, including AHAs; counsel patients on importance of not taking other AHAs",Patient Education
+Review/dispense Hypoglycemia Assessment and Self-Monitoring Blood Glucose logs,Diary compliance check
+Review/record hypoglycemic events,Hypoglycemic events review
+Run-in compliance assessment,
+Safety laboratory,
+Self-measured plasma glucose,SMBG Profile
+Self-measured plasma glucose (SMPG),SMBG Profile
+Self-monitoring of blood glucose,SMBG Profile
+Self measured plasma glucose,SMBG Profile
+Serology,
+Serum calcitonin,Calcitonin
+Serum Chemistry and Electrolytes,Comprehensive Metabolic Panel (Clinical Chemistry)
+Serum chemistry panel,Comprehensive Metabolic Panel (Clinical Chemistry)
+Serum creatinine,Creatinine
+Serum Lipids,Lipid Panel
+SF-36v,SF-36
+Site Fingerstick A1C Measurement,Hemoglobin A1c (HbA1c)
+SMBGÂ¹,SMBG Profile
+Smoking status,"Substance use (alcohol, caffeine, tobacco use)"
+Spot urine sample for urinary albumin and creatinine,Urinary albumin/creatinine ratio (UACR)
+"Study diary, dispense",Patient diary dispensed
+Study Drug Administration,Administer Study Drug
+"Study drug and injection supplies, dispense",Dispense Study Drug
+Study drug dispensing,Dispense Study Drug
+"Study drug, assess compliance",Assess study drug compliance
+Study Medication,Assess study drug compliance
+"Technical Complaints""",Adverse Events (AEs)
+Telemetry,
+Time since diabetes diagnosis,Prespecified medical history (indication and history of interest)
+Total and active GLP-1/GIP,PK sample for immunogenicity
+Training in dosing instructions,Patient Education
+Training in trial product and pen handling.,Patient Education
+Trial Compliance,Assess study drug compliance
+Triglycerides,Lipid Panel
+Urinalysis (albumin:creatinine ratio),Urinalysis
+Urinalysis (dipstick),Urinalysis
+Urine collection for PD,Urine Collection (Spot or 24-Hour)
+Urine Pregnancy test (for all females,Urine pregnancy (local)
+Urine Pregnancy Test (WOCBP),Urine pregnancy (local)
+"Vital Sign (body weight, blood pressure, and pulse rate)",Vital Signs
+Vital Sign (height),Vital Signs
+Vital signs (BP and PR),Vital Signs
+"Vital signs (BP, pulse)",Vital Signs
+Vital signsÂ²,Vital Signs
+Vital signse,Vital Signs
+Waist Circumference,Waist circumference
+Waist/hip circumference,Waist circumference
+Weight c,Weight
+WHO,
+Withdrawal of consent,
+Witness Dose,Observe patient administer study drug
+Witnessed dose of Investigational Product in Clinic,Observe patient administer study drug
+Written informed consent,Informed Consent
+"- FSH"", HIV, HepBsAg, HepBcAb, HCVAb",
+- PF-06882961 PK',Pharmacokinetic (PK) samples
+(Prothrombin time),
+1-point SMPG profile,SMBG Profile
+"1,5-AG",
+"1,5-anhydroglucitol",
+12- lead ECG (triplicate),12-lead ECG (central or local)
+12-lead-ECG,12-lead ECG (central or local)
+"12-lead-ECG10,",12-lead ECG (central or local)
+"12-lead-ECG4,",12-lead ECG (central or local)
+12-lead-ECGH,12-lead ECG (central or local)
+12-lead digital ECG,12-lead ECG (central or local)
+12-lead digital ECG (also printed on paper),12-lead ECG (central or local)
+12-lead ECG (central reading),12-lead ECG (central or local)
+12-lead ECG (d),12-lead ECG (central or local)
+12-lead ECG (local),12-lead ECG (central or local)
+12-Lead ECG C,12-lead ECG (central or local)
+12-lead ECG d,12-lead ECG (central or local)
+12-lead ECG f,12-lead ECG (central or local)
+12-lead ECG Locally,12-lead ECG (central or local)
+"12-Lead ECG""",12-lead ECG (central or local)
+12-Lead ECG*,12-lead ECG (central or local)
+12-Lead ECGÂ°,12-lead ECG (central or local)
+12-Lead ECGb,12-lead ECG (central or local)
+12-lead ECGD,12-lead ECG (central or local)
+12-lead ECGg,12-lead ECG (central or local)
+12-lead ECGh,12-lead ECG (central or local)
+12-lead ECGI,12-lead ECG (central or local)
+12-lead ECGK,12-lead ECG (central or local)
+12-lead ECGm,12-lead ECG (central or local)
+12-lead ECGP,12-lead ECG (central or local)
+12-lead electrocardiogram (d),12-lead ECG (central or local)
+12-lead electrocardiogram (ECG) Locally,12-lead ECG (central or local)
+12-Lead Electrocardiogram (read locally),12-lead ECG (central or local)
+12-Lead Electrocardiogram (Read Locally),12-lead ECG (central or local)
+12-Lead Electrocardiogram d,12-lead ECG (central or local)
+12-Lead ElectrocardiogramÂ² d,12-lead ECG (central or local)
+1Record weight and BMI at study visit wound,Weight
+2-h standardized meal test,
+2-hour PPG test,Glucose
+2-point FSBG (pre-breakfast FBG and post- breakfast PPG) k,Glucose
+2-point profile,SMBG Profile
+24-h HR measurement,Vital Signs
+24-hour protein estimation,
+24-hour recall dietary assessment,
+24-Hour Urine for Creatinine Clearance and Protein,Urine Collection (Spot or 24-Hour)
+"24-hr urine collection instructions/dispensing of containers""",Urine Collection (Spot or 24-Hour)
+24-hr urine collection instructions/dispensing of containers?,Urine Collection (Spot or 24-Hour)
+24-hr urineÂ°,Urine Collection (Spot or 24-Hour)
+24-hr urinem,Urine Collection (Spot or 24-Hour)
+24h urine free-cortisol and creatinine*,Urine Collection (Spot or 24-Hour)
+25-Hydroxy Vitamin D,
+25-hydroxyvitamin D,
+4-point profile (SMPG),SMBG Profile
+4-point SMPGF,SMBG Profile
+4-pt SMBGÂ°,SMBG Profile
+7-9-7-point profile (SMPG),SMBG Profile
+7-point profileÂ³,SMBG Profile
+7-point SMPG j,SMBG Profile
+7-point SMPG measurementk,SMBG Profile
+7-point SMPG profile,SMBG Profile
+7-point SMPG profiles (on 2 different days in the week prior to the visit)h,SMBG Profile
+7-pt SMBGe,SMBG Profile
+8-point SMPG,SMBG Profile
+9-p glucose profile,SMBG Profile
+9-point SMBG profile,SMBG Profile
+9-point SMPG profile,SMBG Profile
+"A1C""",Hemoglobin A1c (HbA1c)
+"A1C1,X",Hemoglobin A1c (HbA1c)
+A1Câ„¢,Hemoglobin A1c (HbA1c)
+abbreviated,Physical Examination
+abbreviated d,Physical Examination
+Abbreviated physical exam,Physical Examination
+Abbreviated physical examination,Physical Examination
+Abbreviatede,Physical Examination
+Abbreviation or special term,Physical Examination
+ABI EvalÂ²,
+ABPM,Ambulatory Blood Pressure Monitoring (ABPM)
+ABPM (Cohort 1 only),Ambulatory Blood Pressure Monitoring (ABPM)
+ABPM device attachment and removal I,Ambulatory Blood Pressure Monitoring (ABPM)
+ABPM k,Ambulatory Blood Pressure Monitoring (ABPM)
+ABPM placementÂ°,Ambulatory Blood Pressure Monitoring (ABPM)
+ABPM removal and assessment,Ambulatory Blood Pressure Monitoring (ABPM)
+Activity monitoring device battery check/ charging (as required) u,
+Ad libitum lunch (Meal Type C),
+ADAd,
+ADDQoL Questionnaire,
+Adherence/Lifestyle reinforcement,Patient Education
+Adjust CGM alert settings,"Continuous Glucose Monitoring, Review and/or Download"
+Adjust Insulin Dose (if Applicable),Study Drug Dose Adjustment
+Administer bexagliflozin,Administer Study Drug
+Administer digoxin,Administer Study Drug
+Administer IMP(s),Administer Study Drug
+"Administer ITSQ m,n",IT-SQ
+Administer/dispense double- blind study drug m,Administer Study Drug
+Administer/dispense double-blind study drug,Administer Study Drug
+Administer/dispense double-blind study drugÂ¹,Administer Study Drug
+Administration of first dose of IMP at the Unit,Administer Study Drug
+Administration of trial product,Administer Study Drug
+Administrative,
+Admission or dischargeÂ³,Admission to Unit
+Admission to/Discharge from CRU,Admission to Unit
+Admit to clinical unit,Admission to Unit
+Admit to Hosp.,Admission to Unit
+Adult Low Blood Sugar Survey,Patient-Reported Outcomes (Paper)
+Adverse event collection (AEs and SAEs),Adverse events (AEs)
+Adverse event evaluations,Adverse events (AEs)
+"Adverse Event Monitoring""",Adverse events (AEs)
+Adverse event recording,Adverse events (AEs)
+Adverse event reporting,Adverse events (AEs)
+Adverse event review (AEs and SAEs)n,Adverse events (AEs)
+Adverse events (AEs),Adverse events (AEs)
+Adverse Events Assessment,Adverse events (AEs)
+"Adverse Events B,J",Adverse events (AEs)
+Adverse events g,Adverse events (AEs)
+Adverse events monitoring,Adverse events (AEs)
+Adverse Events Monitoring g,Adverse events (AEs)
+Adverse events u,Adverse events (AEs)
+Adverse events/outcome events M,Adverse events (AEs)
+Adverse events/Pre-existing conditions,Adverse events (AEs)
+Adverse experience monitoring,Adverse events (AEs)
+Advice on diet prior to whole room calorimetry (remote contact or during visit),Patient Education
+AE's,Adverse events (AEs)
+AE / SAE,Adverse events (AEs)
+AE Evaluations,Adverse events (AEs)
+AE ISAE recording,Adverse events (AEs)
+AE monitoring i,Adverse events (AEs)
+AE/SAE review,Adverse events (AEs)
+AE/SAE/Symptomatic HypoglycemiaÂ¹,Adverse events (AEs)
+"AEs, SAEs, AEs of special interest review",Adverse events (AEs)
+AEs/SAE Eval,Adverse events (AEs)
+Affirmation statement,
+Albumin Draw,
+Albumin/creatinine ratio (urine) n,Urinary albumin/creatinine ratio (UACR)
+Alcohol breath and urinary illicit drug test,"Substance use (alcohol, caffeine, tobacco use)"
+Alcohol Test and Drug Screen,"Substance use (alcohol, caffeine, tobacco use)"
+Allocation of E-code via IVRS/IWRS,Randomization/IWRS
+"Alogliptin or alogliptin FDCs status: dose, end date (if applicable",
+Alogliptin or alogliptin FDCs status: start date,
+Ambulatory blood pressure monitoring (ABPM),Ambulatory Blood Pressure Monitoring (ABPM)
+"Amylase, lipase and lactate (predose) a",Pancreatic Amylase
+Amylase/lipase,Pancreatic Amylase
+"Anti-GAD, Anti-ICA",Anti-GAD antibodies
+Anti-hyperglycemic medications(Non-insulin),Concomitant medications
+Anti-insulin antibody /,Anti-Drug Antibodies
+Anti-insulin lispro antibodies,Anti-Drug Antibodies
+Anti-lixisenatide and anti-insulin antibodies (only in FRC group),Anti-Drug Antibodies
+Anti-SAR425899 antibodies,Anti-Drug Antibodies
+Anti-semaglutide antibodies,Anti-Drug Antibodies
+Antibody sampling,Anti-Drug Antibodies
+"ApoA1, ApoB, Lp(a)",
+APPADL and IW-SP questionnaires,APP ADL
+"Archived samples (plasma, serum, and urine samples) for exploratory analysis'",Stored Samples
+Assess Adverse Events/Serious Adverse Events,Adverse events (AEs)
+Assess Compliance,Assess study drug compliance
+Assess Compliance to Investigational Product,Assess study drug compliance
+Assess Compliance with Blinded Investigational Product,Assess study drug compliance
+Assess Compliance with Blinded Study DrugÂ¹,Assess study drug compliance
+Assess compliance with double-blind study medication and,Assess study drug compliance
+Assess Compliance with Investigational Product,Assess study drug compliance
+Assess compliance with single-blind placebo run-in,Assess study drug compliance
+Assess Compliance with Study Medication,Assess study drug compliance
+Assess for double-blind medication compliance,Assess study drug compliance
+Assess for single-blind medication compliance,Assess study drug compliance
+Assess study drug compliance i,Assess study drug compliance
+"Assess Subjects for Potential Rescue or Discontinuation from Blinded Investigational Product, Based on Central Laboratory FPG/A1C",Study Drug Dose Adjustment
+Assess Trial Medication Compliance. Collect Unused and Used Investigational Product / Open Label Liraglutide,Assess study drug compliance
+Assessment for necessity of rescue treatment (up- titration of insulin agents),Study Drug Dose Adjustment
+Assessment of AEs / SAEs,Adverse events (AEs)
+Assessment of AEs and SAEsd,Adverse events (AEs)
+Assessment of AEs/SAEs c,Adverse events (AEs)
+Assessment of investigational product compliance,Assess study drug compliance
+Assessment of need for rescue therapy,Study Drug Dose Adjustment
+Assessment of signs and symptoms of hypoglycemia episodes,Hypoglycemic events review
+Assign Subject ID,Randomization/IWRS
+Assignment of Treatment Number,Randomization/IWRS
+Assignment of Treatment/Randomization Number,Randomization/IWRS
+AST,Hepatic Panel (Liver Tests)
+Attend blood sampling fasting,
+Attend visit fasting h,
+"Attend visit fasting""",
+AUC,
+ÃŸ-hCG (pregnancy test),Urine Collection (Spot or 24-Hour)
+b Full physical examination assessment,Physical Examination
+Barriers in Diabetes Treatment,Patient-Reported Outcomes (Paper)
+Barriers in Diabetes Treatment questionnaire,Patient-Reported Outcomes (Paper)
+Basal insulin dose information,Study Drug Dose Calculation - Initial
+Basal insulin dose titration,Study Drug Dose Adjustment
+Basal insulin dosed,Study Drug Dose Adjustment
+Basal insulin indicator,Study Drug Dose Adjustment
+Baseline Hypo Questionnaire,Clinician-Administered Assessments (Paper)
+Basic fasting lipid panel,Lipid Panel
+BHB,
+"BHI 30, date and dose",
+Biochemical Markers of Bone Turnover and calcitonin,
+Biochemistry f,Comprehensive Metabolic Panel (Clinical Chemistry)
+"Biochemistry parameters 6,",Comprehensive Metabolic Panel (Clinical Chemistry)
+Biochemistryb,Comprehensive Metabolic Panel (Clinical Chemistry)
+"Bioimpedance spectroscopy"", S",
+Bioimpedance spectroscopyP q,
+Biomarker sample collection,Exploratory biomarker samples
+Biomarkers (blood),Exploratory biomarker samples
+Biopsy,
+Blinded investigational product administration,Administer study drug
+"Blood (deoxyribonucleic acid, DNA) for FBR",Stored Samples
+Blood (DNA) for Future Biomedical Research,Stored Samples
+Blood (DNA) for Future Biomedical ResearchÂ°,Stored Samples
+Blood (DNA) for Future Biomedical Researche,Stored Samples
+Blood (DNA) for Genetic Analysis,Stored Samples
+Blood and Urine analyses (except Safety analyses),Blood Draw
+Blood Chemistry (fasting),Comprehensive Metabolic Panel (Clinical Chemistry)
+Blood draw for clinical lab test,Blood Draw
+Blood electrolytesp,Blood Draw
+Blood for Future Biomedical Research (for DNA,Stored Samples
+Blood for Genetic Analysis,Stored Samples
+Blood for Genetic Analysis*,Stored Samples
+"Blood for Glucose Analysis""",Blood Draw
+Blood for Glucose Bedside Analysis o,Blood Draw
+Blood for Glucose Bedside AnalysisÂ°,Blood Draw
+Blood for Glycerol,Blood Draw
+Blood for Non-Esterified Fatty Acids (NEFA),Blood Draw
+"Blood for Plasma MK-1092 and/or Metabolites assay and Glargine1,m",Stored Samples
+"Blood for Plasma MK-5160 and/or Metabolites assay or Glargine k,",Stored Samples
+Blood for Serum Anti-glargine (Insulin) Antibody//Immunogenicity Assay,PK sample for immunogenicity
+Blood for Serum Anti-MK-1092 and Anti-Glargine (Anti-Insulin) Antibody/ /Immunogenicity Assay,PK sample for immunogenicity
+Blood for Serum Anti-MK-5160 Antibody/Immunogenicity Assay,PK sample for immunogenicity
+Blood for Serum Insulin,Insulin
+Blood for triglycerides,Blood Draw
+Blood glucose meter dispensing and training,Dispense and train on use of blood glucose meter
+Blood pregnancy test c,Serum pregnancy
+Blood pressure (systolic and diastolic),Vital Signs
+Blood Pressure and Pulse B,Vital Signs
+Blood pressure and pulse ratea,Vital Signs
+"Blood Pressure, Heart Rate and Body Weight",Vital Signs
+"Blood pressure, sitting",Vital Signs
+Blood sample,Stored Samples
+Blood sample (for genetics) for FBR,Stored Samples
+Blood sample (plasma) for Future Biomedical Research,Stored Samples
+Blood sample (serum and plasma) for FBRÂ²,Stored Samples
+Blood sample (serum) for Future Biomedical Research,Stored Samples
+Blood samples for FPG,Glucose
+"Blood samples for GLP-1, i glucagon, GIP",Glucagon
+"Blood samples for glucose, i insulin, pro-insulin, c-peptide",Glucose
+Blood samples for haematology and clinical chemistry,Blood Draw
+Blood samples for HbA1c,Hemoglobin A1c (HbA1c)
+Blood samples for hematology and additional clinical chemistry,Hematology
+Blood samples for PK,Pharmacokinetic (PK) samples
+Blood samples for S-Creatinine (eGFR calculation),Creatinine
+Blood samples for Safety Laboratory Panel,Blood Draw
+Blood sampling for limited PK,Pharmacokinetic (PK) samples
+"Blood Sampling for serum chemistry, hematology, FPG, HbA1c, hCG, TSH, T3, and T4 2)",Comprehensive Metabolic Panel (Clinical Chemistry)
+"Blood Sampling for zinc, insulin, adiponectin, C-peptide, leptin, glucagon, (CHP in a subset of subjects 3)",Blood Draw
+Blood Sampling for:,Blood Draw
+BMDP,
+BMS,
+Body Height,Height
+"Body Height, Body Weight, and BMI Calculation",Height
+Body mass index,Vital Signs
+Body Weight (measured in,Weight
+Body Weight (measured in duplicate),Weight
+Body Weight and Height c,Weight
+"Body weight,",Weight
+"Body weight, BMI",Weight
+"Body weight, height C",Weight
+"Body weight, height(d",Weight
+"Body weight, heightc",Weight
+"Body weight, heighte",Weight
+"Body weight, waist",Weight
+Body weighta,Weight
+Bolus insulin indicator,
+Bone Age,
+Bone metabolism markers,
+BP,Vital Signs
+BP measurement,Vital Signs
+bpm,Vital Signs
+Breath Alcohol Assessment,
+Breathalyzer,
+Brief Physical ExamÂ³,Physical Examination
+Brief Physical examination f,Physical Examination
+Brief Physical ExaminationÂ°,Physical Examination
+Brief Physical Examk,Physical Examination
+"Brief Visit w/vitals, weight, foot examinationÂ°",Vital Signs
+BUN,
+C-peptide (fasting),C-Peptide
+C-PeptideÂ¹,C-Peptide
+Calcitonin Blood Sample,Calcitonin
+Calculate eGFR,eGFR (CKD-EPI)
+Calculate eGFR to confirm eligibility,eGFR (CKD-EPI)
+Cardiovascular history,Prespecified medical history (indication and history of interest)
+Case book sign off,
+CC,
+Ccr,
+CD26 assay,
+CDC,
+Central laboratory,Blood Draw
+Central laboratory testing,Blood Draw
+Central Laboratory testing/,Blood Draw
+CEP,
+cGDR,
+CGM and glucose meter training,Dispense and train on use of blood glucose meter
+CGM and pen data download,"Continuous Glucose Monitoring, Review and/or Download"
+CGM device demonstration,"Continuous Glucose Monitoring, Dispense, Train, and/or Insert"
+CGM device inserted for 6-day CGM glucose measurements (patient calibrates device using glucometerd),"Continuous Glucose Monitoring, Dispense, Train, and/or Insert"
+CGM device removed and data downloaded from CGM device and Glucometer,"Continuous Glucose Monitoring, Remove and/or Return"
+CGM Informed Consent,Informed Consent
+CGM measurement,"Continuous Glucose Monitoring, Review and/or Download"
+CGM Monitoring,"Continuous Glucose Monitoring, Review and/or Download"
+Check ability to self-administer investigational product d,Injection Training
+Check CGM readings,"Continuous Glucose Monitoring, Review and/or Download"
+Check SMPG technique (training as needed throughout the study),Patient Education
+"Check subject's ability to self-administer SC injection""",Injection Training
+Chemistry & Hematology,Comprehensive Metabolic Panel (Clinical Chemistry)
+Chemistry (including amylase and lipase),Comprehensive Metabolic Panel (Clinical Chemistry)
+Chemistry Group,Comprehensive Metabolic Panel (Clinical Chemistry)
+"Chemistry laboratory tests e,f",Comprehensive Metabolic Panel (Clinical Chemistry)
+"Chemistry Panel j, k",Comprehensive Metabolic Panel (Clinical Chemistry)
+"Chemistry, hematology, urinalysis, lipids",Comprehensive Metabolic Panel (Clinical Chemistry)
+Child-bearing potential,Prespecified medical history (indication and history of interest)
+Child bearing potential,Prespecified medical history (indication and history of interest)
+circumference,Waist Circumference
+CK,
+CK-MB,
+CKD,
+Clamped euglycaemia including assessment of GFR,
+Clinic Visit,
+Clinical and SAE Event Assessment,Adverse Events (AEs)
+Clinical assessments:,
+Clinical chemistry,Comprehensive Metabolic Panel (Clinical Chemistry)
+Clinical Chemistry,Comprehensive Metabolic Panel (Clinical Chemistry)
+Clinical Chemistry /,Comprehensive Metabolic Panel (Clinical Chemistry)
+Clinical chemistry and haematology,Comprehensive Metabolic Panel (Clinical Chemistry)
+Clinical chemistry*,Comprehensive Metabolic Panel (Clinical Chemistry)
+"Clinical chemistry, hematology",Comprehensive Metabolic Panel (Clinical Chemistry)
+Clinical chemistry/hematology samples,Comprehensive Metabolic Panel (Clinical Chemistry)
+Clinical laboratory assessments,Blood Draw
+Clinical Laboratory Assessments,Blood Draw
+Clinical laboratory testsb,Blood Draw
+Clinical Procedures,
+Clinical safety laboratories*,Blood Draw
+Clinical safety laboratory tests,Blood Draw
+Closure Assessment,
+CNS,
+Coagulation panel,"Coagulation Panel (PT/INR, PTT, aPTT)"
+Coagulation panel',"Coagulation Panel (PT/INR, PTT, aPTT)"
+Coagulation studiesk,"Coagulation Panel (PT/INR, PTT, aPTT)"
+Cognitive function (DSST),
+Cognitive function (MoCA),
+Collect (unused) study drug,Patient returns study drugs and injection supplies
+Collect AEs,Adverse events (AEs)
+"Collect and review available information including most recent HbA1c, serum creatinine and lipid profile",Hemoglobin A1c (HbA1c)
+Collect blood for,Blood Draw
+Collect Blood for,Blood Draw
+Collect injection pen,Patient returns study drugs and injection supplies
+Collect instructions for user,Patient Education
+Collect study diaries/food and exercise worksheets,Diary return
+Collect study drug,Patient returns study drugs and injection supplies
+Collect study medication,Patient returns study drugs and injection supplies
+Collect unused study medication/supplies,Patient returns study drugs and injection supplies
+Collect urine for,Urine Collection (Spot or 24-Hour)
+Collect used/unused IPr,Patient returns study drugs and injection supplies
+"Collect, review and transcribe diaries",Diary compliance check
+Collection and Review of HAL,Diary return
+Collection of AE/SAE,Adverse events (AEs)
+Collection of AE/SAEY,Adverse events (AEs)
+Collection of diary,Diary return
+Collection of glucose meter (if mandatory by local regulation),Patient returns study drugs and injection supplies
+"Collection of home overnight urine for albumin, protein, creatinine, calcium, phosphorus, magnesium, glucose, and albumin- creatinine ratio",Urine Collection (Spot or 24-Hour)
+"Collection of home overnight urine for albumin, total protein, creatinine, calcium, phosphorus, magnesium, and glucosepp",Urine Collection (Spot or 24-Hour)
+"Collection of home urine for albumin, creatinine, calcium, phosphorus, magnesium, glucose, and albumin-creatinine ratio",Urinalysis
+Collection/Reporting,
+Comp. Phy. Exam,Physical Examination
+Complete physical examination (including screening for diabetic neuropathy),Physical Examination
+Compliance Check (Review of diary),Diary compliance check
+"Compliance check (Review of diary, returned IMP)",Assess study drug compliance
+Compliance: count returned IMPs,Assess study drug compliance
+Con Med,Concomitant medications
+Con Meds Log,Concomitant medications
+Conclusion of Patient Participation M,
+Concom Meds,Concomitant medications
+Concomitant,Concomitant medications
+Concomitant ill/ medical history,Prespecified medical history (indication and history of interest)
+Concomitant illness and Medical,Prespecified medical history (indication and history of interest)
+"Concomitant illness, medical history",Prespecified medical history (indication and history of interest)
+Concomitant illness/Medical history,Prespecified medical history (indication and history of interest)
+Concomitant illness/Medical History,Prespecified medical history (indication and history of interest)
+Concomitant medication (diabetes),Concomitant medications
+Concomitant medication (including OAMs),Concomitant medications
+Concomitant medication including antihypergycemic medication,Concomitant medications
+Concomitant medication recording,Concomitant medications
+Concomitant medication review (including any dose changes to medications for diabetes)e,Concomitant medications
+Concomitant medications (a),Concomitant medications
+Concomitant medications review,Concomitant medications
+Concomitant medicationsÂ²,Concomitant medications
+Concomitant therapies,Concomitant medications
+Concomitant therapy (drug classes of interest) J,Concomitant medications
+Concomitant Therapy B,Concomitant medications
+Concurrent,
+Concurrent medical condition,Prespecified medical history (indication and history of interest)
+Confirm competency with injections [3],Injection Training
+Confirm eligibility,"Inclusion and exclusion criteria, review and confirm"
+Confirm pen operation,Injection Training
+Confirmation of Diet and exercise therapy,Patient Education
+Confirmation of liraglutide dose,Assess study drug compliance
+Confirmation of metformin dose,Assess study drug compliance
+Confirmation of unchanged dose of metformin,Assess study drug compliance
+Confirmation of unchanged metformin dose,Assess study drug compliance
+Confirmation of unchanged OADs,Assess study drug compliance
+Conmed Assessment,Concomitant medications
+ConMeds,Concomitant medications
+Contact IVRS system,Randomization/IWRS
+Contact IVRS/IWRS,Randomization/IWRS
+Contact IWRS,Randomization/IWRS
+Continuous Glucose,"Continuous Glucose Monitoring, Review and/or Download"
+Continuous Glucose Monitoring,"Continuous Glucose Monitoring, Review and/or Download"
+Continuous Glucose Monitoring (CGM),"Continuous Glucose Monitoring, Review and/or Download"
+"Continuous glucose monitoring, fitting and training","Continuous Glucose Monitoring, Dispense, Train, and/or Insert"
+"Continuous glucose monitoring, sensor check","Continuous Glucose Monitoring, Review and/or Download"
+"Continuous glucose monitoring, upload","Continuous Glucose Monitoring, Review and/or Download"
+Counsel subject to switch current AHA or adjust background metformin (if applicable),
+Counseling for diet & exercise and for hypoglycemia recognition & treatment,Patient Education
+Count returned pens,Assess study drug compliance
+Counting / collecting used and unused study medication d,Assess study drug compliance
+"Counting / collecting used, unused and in use pens",Assess study drug compliance
+"Country-relevant information: alogliptin or alogliptin FDCs market status, T2DM standard of care",
+CPK,
+CPMP,
+CRAT,
+CRC,
+Creatinine,Creatinine
+Creatinine (to calculate CrCl and eGFR),Creatinine
+Criteria for premature discontinuation of trial products,
+Cross-over,
+CRU Admission,Admission to Unit
+CRU Discharge,Discharge from Unit
+CS,
+CSA,
+CSR,
+CT,
+CT-PET/MRI-PET (fasting),
+CTCAE,Adverse events (AEs)
+"CTX, P1NP, PTHV",
+Current diabetes treatment,Concomitant medications
+Current medical conditions,Prespecified medical history (indication and history of interest)
+CV events,Prespecified medical history (indication and history of interest)
+CV risk factor history,Prespecified medical history (indication and history of interest)
+CVA,
+d Pregnancy test (if WOCBP),Urine pregnancy (local)
+Daily basal insulin dose,
+Daily fasting SMPG measurement.,SMBG Profile
+Dapagliflozin PKb,Pharmacokinetic (PK) samples
+Dapagliflozin PKj,Pharmacokinetic (PK) samples
+Data from Glucometer readings downloaded to system or entered manually,
+Data from patient log sheets entered manually into the system,
+Date of final dose of study drug recorded,
+Date of first dose of study drug recorded,
+DC,
+DDS,
+Demographic (including height),Demographics
+Demographic Data,Demographics
+"Demographic data2,",Demographics
+"Demographic information, medical/surgical history",Prespecified medical history (indication and history of interest)
+Demographics & Medical History,Prespecified medical history (indication and history of interest)
+Demographics and medical history,Prespecified medical history (indication and history of interest)
+Demographics and medication history,Demographics
+Demographics B,Demographics
+"Demography, Height in Duplicate & Medical History including Smoking",Prespecified medical history (indication and history of interest)
+"Demography, medical history, diabetes history",Prespecified medical history (indication and history of interest)
+"Demography, medical history; diabetes history, prior medications",Prespecified medical history (indication and history of interest)
+"Demography, medical/disease history",Prespecified medical history (indication and history of interest)
+"Demography, tobacco use",Demographics
+Demography/medica history,Prespecified medical history (indication and history of interest)
+DemographyÂ³,Demographics
+DEXA,"Bone Density Scan (DEXA,DXA)"
+DFS-SF Admin,
+Diabetes Autoantibody Panel,
+Diabetes history/ Diabetes complications,Prespecified medical history (indication and history of interest)
+Diabetes history/diabetes,Prespecified medical history (indication and history of interest)
+Diabetes history/Diabetes complications,Prespecified medical history (indication and history of interest)
+Diabetes management education g,Patient Education
+Diabetes management educationh,Patient Education
+Diabetes medical history/therapy,Prespecified medical history (indication and history of interest)
+Diabetes medication indicator,Anti-Drug Antibodies
+Diabetes Pen Experience Measure,Injection Training
+Diabetes treatment,Concomitant medications
+Diabetes/medical history/therapy,Prespecified medical history (indication and history of interest)
+"Diabetes: diagnosis, complications and treatment history",Prespecified medical history (indication and history of interest)
+Diabetic ketoacidosis events,
+Diagnosis of diabetes and Diabetes complications,Prespecified medical history (indication and history of interest)
+Diagnosis of diabetes/ diabetes complications,Prespecified medical history (indication and history of interest)
+Diary & glucometer record review,Diary compliance check
+Diary and Glucometer Dispensation and Review,Dispense blood glucose meter
+"Diary collect, review, transcribe",Diary return
+Diary collection/review,Diary return
+Diary dispensation / collection (reviewed at each on-site visit),Patient diary dispensed
+Diary dispense and instruct,Patient diary dispensed
+Diary Reviews at visits,Diary compliance check
+Diary training and dispensed,Patient diary dispensed
+Diary Use Trainingb,Patient Education
+Diastolic blood pressure,Vital Signs
+"Diastolic blood pressure, sitting",Vital Signs
+Diet & exercise counseling,Patient Education
+Diet / Exercise Counseling I,Patient Education
+Diet and Activity Counseling/ Monitoring,Patient Education
+"Diet and Activity Counseling/Monitoring""",Patient Education
+Diet and Activity Counseling/Monitoring*,Patient Education
+Diet and Exercise Counseling ($2)/Monitoring,Patient Education
+"Diet and Exercise Counseling (S2)/Monitoring""",Patient Education
+"Diet and Exercise Counseling/Monitoring""",Patient Education
+Diet and exercise counselingad,Patient Education
+Diet and exercise counsellingÂ¹,Patient Education
+Diet and exercise therapy monitoring,Patient Education
+Diet and lifestyle advice,Patient Education
+Diet and lifestyle counselling,Patient Education
+"Diet, exercise, SMBG counseling",Patient Education
+Diet/Exercise Counseling (V2)/Monitoring (other visits),Patient Education
+Diet/exercise monitoring,Patient Education
+Diet/exercise monitoring and re-inforcement,Patient Education
+Diet/exercise therapy counseling,Patient Education
+Diet/Exercise/SMBG advice/reinforcementÂ³,Patient Education
+Dietary and life- style advice,Patient Education
+Dietary and life-style advice,Patient Education
+Dietary Counseling,Patient Education
+Dietary Evaluation,Patient Education
+Digital 12-lead ECG,12-lead ECG (central or local)
+Dipstick urinalysis,Urinalysis
+Dipstick Urinalysis,Urinalysis
+Dipstick Urinalysis',Urinalysis
+Dipstick UrinalysisÂ²,Urinalysis
+Direction for use (DFU),Patient Education
+Discharge from clinical unit,Discharge from Unit
+Discharge from unit,Discharge from Unit
+Discontinuation/Withdrawal criteria,
+Discontinue DPP4i,
+Discontinue non-metformin OHA,
+Discuss individual targets for glucose control (FPG and HbA1c),Patient Education
+Dispensation diary,Patient diary dispensed
+Dispensation of glucometer,Dispense blood glucose meter
+Dispensation of IMP,Dispense Study Drug
+Dispensation of study glucometer and e-diary,Dispense and train on use of blood glucose meter
+Dispensation of Study medication,Dispense Study Drug
+Dispensation of Study Medication,Dispense Study Drug
+Dispensation of Study Medication via IVRS/IWRS,Dispense Study Drug
+Dispensation of study medicationg,Dispense Study Drug
+Dispense 2 glucose meters and provide instructions for Self- Monitoring of Blood Glucose (SMBG),Dispense and train on use of blood glucose meter
+Dispense 2 glucose meters and provide instructions for Self Monitoring of Blood Glucose (SMBG) and screening kit for ketones,Dispense and train on use of blood glucose meter
+Dispense and Review Daily Log,Patient diary dispensed
+Dispense and Review Medications,Dispense Study Drug
+Dispense and/ or collect diary,Patient diary dispensed
+Dispense bexagliflozin,Dispense Study Drug
+Dispense Blinded glimepiride/placebo for non- rescued subjects OR continued Open-Label Glimepiride for subjects rescued in Phase A,Dispense Study Drug
+Dispense blood Glucose Meter / provide Self- Monitoring Blood Glucose (SMBG) Instruction,Dispense and train on use of blood glucose meter
+Dispense Blood Glucose Meter / Provide Self- Monitoring Blood Glucose (SMBG) Instruction,Dispense and train on use of blood glucose meter
+Dispense blood glucose meter and study diary,Dispense and train on use of blood glucose meter
+Dispense containers for urine sample collection,
+Dispense diary & glucometer,Dispense blood glucose meter
+Dispense direction for use/package leaflet,Patient Education
+Dispense directions for use,Patient Education
+Dispense Double- Blind Study Drug,Dispense Study Drug
+Dispense Double-Blind ertugliflozin/placebo,Dispense Study Drug
+Dispense double-blind I study medication,Dispense Study Drug
+Dispense Double-Blind Investigational Product / Open-Label Liraglutide,Dispense Study Drug
+Dispense Double-Blind Study Drugh,Dispense Study Drug
+Dispense empagliflozin/ placebo,Dispense Study Drug
+Dispense glimepiride,Dispense Study Drug
+Dispense glimepiride glycemic rescue medication as appropriate,Dispense Study Drug
+Dispense glucometer and/or supplies/instructions,Dispense and train on use of blood glucose meter
+Dispense glucometer and/or supplies; provide instructions,Dispense and train on use of blood glucose meter
+Dispense Glucose Meter and Supplies,Dispense blood glucose meter
+Dispense Glucose Meter and Supplies/Provide Instructions,Dispense and train on use of blood glucose meter
+Dispense Glucose Meter and/or Supplies (including diaries) /Provide Instructions,Dispense and train on use of blood glucose meter
+Dispense glucose meter for self-monitoring of blood glucose,Dispense blood glucose meter
+"Dispense glucose meter, Beta-hydroxybutyrate (BHB) meter",Dispense blood glucose meter
+"Dispense Glucose Meter, Fingerstick Glucose Logs, and Provide SMBG Instruction",Dispense and train on use of blood glucose meter
+Dispense glucose meter/supplies,Dispense blood glucose meter
+Dispense glucose monitoring and ancillary supplies,Dispense blood glucose meter
+Dispense glucose test strips and BHB strips,Dispense ancillary supplies to patient
+Dispense glucose testing supplies (optional per country/region),Dispense ancillary supplies to patient
+Dispense glucose testing supplies and first study diarybb cc,Dispense blood glucose meter
+Dispense glucose testing supplies and first subject diary,Dispense blood glucose meter
+Dispense glycemic rescue medication as appropriate,Dispense Study Drug
+Dispense Glycemic Rescue Medication as Appropriate,Dispense Study Drug
+Dispense Hypoglycemia Assessment Log (HAL) and instruct on Hypoglycemia Symptoms and Management,Patient diary dispensed
+Dispense hypoglycemia assessment tool(s),
+Dispense Hypoglycemia Assessment Tool(s),
+Dispense IMP and Lantus,Dispense Study Drug
+Dispense interaction drug probenecid,Dispense Study Drug
+Dispense interaction drug rifampin,Dispense Study Drug
+Dispense interaction drug verapamil,Dispense Study Drug
+Dispense investigational medicinal product (IMP),Dispense Study Drug
+Dispense Investigational Product,Dispense Study Drug
+Dispense ketone testing kit and provide instructions,
+Dispense lithium tabletÂ¹,Dispense Study Drug
+Dispense of Tactipen f,Dispense Study Drug
+Dispense Open-Label Study Drug,Dispense Study Drug
+Dispense open label rescue medication (if necessary),Dispense Study Drug
+Dispense placebo run- in medication I,Dispense Study Drug
+Dispense placebo run-in medication,Dispense Study Drug
+Dispense placebo run-in medication (via IXRS),Dispense Study Drug
+Dispense Pre-filled Pens,Dispense Study Drug
+Dispense ramipril,Dispense Study Drug
+Dispense run-in medication,Dispense Study Drug
+Dispense Run-in Medication,Dispense Study Drug
+Dispense single- blind placebo,Dispense Study Drug
+Dispense single-blind IMP,Dispense Study Drug
+Dispense Single-Blind Placebo Run-In,Dispense Study Drug
+Dispense Single-Blind Placebo Run-in Investigational Product,Dispense Study Drug
+Dispense single-blind run-in medication,Dispense Study Drug
+Dispense study diary and instruct to use,Patient diary dispensed
+Dispense Study Drug,Dispense Study Drug
+Dispense study drug diary,Patient diary dispensed
+Dispense study drug i,Dispense Study Drug
+Dispense study drug/injection pen,Patient diary dispensed
+Dispense study medication (IRT)N,Dispense Study Drug
+Dispense Study Medication L,Dispense Study Drug
+Dispense subject ID card,
+Dispense subject identification card,
+Dispense Subject Identification Card,Patient Identification Card
+Dispense trial product. Instruct and hand out Directions for Use.,Patient Identification Card
+Dispense/administer drug,Dispense Study Drug
+Dispense/Review self monitoring blood glucose and Hypoglycemia Assessment Log,Dispense and train on use of blood glucose meter
+Dispensing HAL,Patient diary dispensed
+Dispensing of investigational product and injection supplies,Dispense Study Drug
+Dispensing of SMPG meter/supplies,Dispense and train on use of blood glucose meter
+Dispensing study diary and instruct in use,Patient diary dispensed
+Distribute glucose meter (S2 only) and glucose meter supplies (other visits as designated),Dispense blood glucose meter
+Distribute glucose meter (S2) and glucose meter supplies,Dispense blood glucose meter
+Distribute Sponsor-provided Glucose meter (V2) and Glucose meter Supplies,Dispense blood glucose meter
+Distribute study diaries/food and exercise worksheets,Patient diary dispensed
+DLW administration h,
+DLW assessment g,
+DNA,Stored Samples
+Documentation of the IMP dose,Administer Study Drug
+Dose-finding,Study Drug Dose Adjustment
+Dose adjustment criteriad,Study Drug Dose Adjustment
+Dose of current diabetes treatment,Administer Study Drug
+Dose of trial insulin8,Administer Study Drug
+Dose of trial product to be,Administer Study Drug
+Dosing dates,
+DRL,
+drug,
+Drug -taking,"Substance use (alcohol, caffeine, tobacco use)"
+Drug & alcohol screen (a),"Substance use (alcohol, caffeine, tobacco use)"
+Drug & Alcohol Screen (a),"Substance use (alcohol, caffeine, tobacco use)"
+Drug accountability (IWRS),Assess study drug compliance
+Drug accountability (pill count),Assess study drug compliance
+Drug accounting & compliance e,Assess study drug compliance
+Drug adherence check,Assess study drug compliance
+Drug and alcohol screen b,"Substance use (alcohol, caffeine, tobacco use)"
+Drug Dispensation,Dispense Study Drug
+Drug return and accountability,Dispense Study Drug
+DS&E,
+"DTR-QOL, DTSQs",DTSQs
+DTSQc (change version)S,DTSQc
+DTSQs (status version)9 HABS,DTSQs
+"Duplicate first morning void urines for urine albumin/creatinine (provide collection containers at previous visit) g, h",Urinary albumin/creatinine ratio (UACR)
+duplicate),
+Duration of diabetes,Prespecified medical history (indication and history of interest)
+Duration of PainÂ¹,Prespecified medical history (indication and history of interest)
+DXA,"Bone Density Scan (DEXA,DXA)"
+DXA scan,"Bone Density Scan (DEXA,DXA)"
+DXA scan r,"Bone Density Scan (DEXA,DXA)"
+DXAk,"Bone Density Scan (DEXA,DXA)"
+E-diary dispensing and training,Patient diary dispensed
+e TSH and serum FSH screening,Follicle Stimulating Hormone (FSH)
+EC,
+ECG (12-lead),12-lead ECG (central or local)
+ECG (local),12-lead ECG (central or local)
+ECG (standard 12- lead),12-lead ECG (central or local)
+ECG 12 lead,12-lead ECG (central or local)
+ECG b,12-lead ECG (central or local)
+ECG evaluation,12-lead ECG (central or local)
+ECGÂ³,12-lead ECG (central or local)
+ECGe,12-lead ECG (central or local)
+ECGs b,12-lead ECG (central or local)
+Echocardiogram,
+Echocardiogram for assessment of left ventricular function c,
+Echocardiogramd,
+eDiary collection,Diary return
+Efficacy measurements,
+Efficacy parameters,
+EGA,
+eGFR (CKD-EPI) o,eGFR (CKD-EPI)
+eGFR (MDRD),eGFR (MDRD)
+eGFRÂ°,eGFR (CKD-EPI)
+eGFRÂ¹,eGFR (CKD-EPI)
+EGG /water load / VASÂ³,
+EGP,
+EHC,
+Electrocardiogram d,12-lead ECG (central or local)
+Electrocardiogram(s) (12-lead),12-lead ECG (central or local)
+EMEA,
+Employment/ Disability/Ambulatory,Demographics
+End Of Treatment,
+End of trial and sign off case book,
+End of trial and sign off on case book,
+End of trial form,
+EndocrinologicalÂ³,
+Endocrinologist consultation,
+EndoPAT (h),
+Endpoints and Adverse Events Assessment,Adverse Events (AEs)
+Enrolment into Treatment Phase,Randomization/IWRS
+"Ensure breakfast drink""",
+Entry criteria reviewed,"Inclusion and exclusion criteria, review and confirm"
+EQ-5D-3L,EQ-5D-5L
+EQ-5D Completion,EQ-5D-5L
+"Erectile function (IIEF), men only",
+Estimated glomerular filtration rate (eGFR),eGFR (CKD-EPI)
+Estradiol and FSH (females only: if required),Estradiol
+"Estradiol, FSH, LHÂ¹",Estradiol
+Ethics Committee,
+"Euglycemic Clamp/ Infusion of Glucose""",
+Euglycemic Clamp/Infusion of Glucose m,
+Evaluation of injection site reactions,Adverse events (AEs)
+Evaluation of Injection Site Reactions,Adverse events (AEs)
+Events c,Adverse events (AEs)
+Events in CV composite endpoint,Adverse events (AEs)
+EW,
+Exenatide indicator,Anti-Drug Antibodies
+Exercise sessions P,
+Exploratory biomarkers,Exploratory biomarker samples
+Extended Urinalysis e,Urinalysis
+Eye examination d,Dilated fundoscopic examination
+Eye examination h,Dilated fundoscopic examination
+Eye examination10 (fundoscopy/fundus photography),Dilated fundoscopic examination
+f Screening laboratory tests,Blood Draw
+f Telemetry,
+FA,
+Family history of T2DM,Prespecified medical history (indication and history of interest)
+FAS,
+Fasted home blood glucose monitoring',Glucose
+Fasted Home Blood Glucose Monitoring (HBGM) G,Glucose
+Fasting,
+Fasting blood glucose & serum insulin (g),Glucose
+Fasting Blood Glucose d,Glucose
+Fasting blood glucose levels,Glucose
+"Fasting blood sample for C-peptide and insulin, GLP-1 and glucagon",C-Peptide
+Fasting C-Peptide,C-Peptide
+Fasting capillary glucose at clinic,Glucose
+Fasting condition visite,
+Fasting Fingerstick Glucose,Glucose
+Fasting fingerstick glucose in clinic,Glucose
+"Fasting fingerstick glucose l,m",Glucose
+"Fasting fingerstick glucose"" m",Glucose
+Fasting human insulin,Insulin
+"Fasting Insulin (potential analysis, for archive) and C-peptide",Insulin
+Fasting insulin and c-peptide,Insulin
+Fasting insulin and glucose,Insulin
+Fasting insulin and pro-insulin,Insulin
+Fasting Insulin and Proinsulin,Insulin
+"Fasting insulin for calculation of HOMA-ÃŸ, HOMA-IR",Insulin
+Fasting insulin levelt,Insulin
+Fasting level of adiponectin,
+Fasting lipid profilew,Lipid panel
+Fasting lipids',Lipid panel
+Fasting on the night before required a,
+Fasting plasma glucose & serum insulin (f),Glucose
+Fasting plasma glucose (central lab),Glucose
+Fasting plasma glucose (FPG,Glucose
+Fasting plasma glucose (FPG)K,Glucose
+"Fasting plasma glucose""",Glucose
+Fasting plasma glucoseÂ¹,Glucose
+Fasting pro- insulin,
+Fasting proinsulin,
+"Fasting Safety Lab Tests (chemistry, hematology)",Comprehensive Metabolic Panel (Clinical Chemistry)
+Fasting Safety Lab Tests (hematology),Hematology
+"Fasting serum C-peptide, insulin, (subset of subjects at sites that elect to participate)",C-Peptide
+Fasting serum glucose,Glucose
+Fasting serum lipid profile,Lipid panel
+Fasting serum lipid profile g,Lipid panel
+"Fasting Serum Lipids (Total-C, LDL-C, HDL-C, TG, FFA)",Lipid panel
+Fasting serumc chemistries,Comprehensive Metabolic Panel (Clinical Chemistry)
+Fasting SMPG measured at least three times per week before breakfast,SMBG Profile
+Fasting SMPG measured every day before breakfast,SMBG Profile
+Fasting Triglycerides/TSH/PTh,Lipid panel
+Fasting visits,
+Fasting Weight a,Weight
+"Fasting weightc, height",Weight
+FBG,Glucose
+FDAAA,
+FFA,
+FGF,
+fGM,"Continuous Glucose Monitoring, Dispense, Train, and/or Insert"
+FGM fitting,"Continuous Glucose Monitoring, Dispense, Train, and/or Insert"
+FGM Sensor Data,"Continuous Glucose Monitoring, Review and/or Download"
+FIB-,
+Fibrinogen,
+Fingerstick Glucose Testing,Glucose
+First date on trial product,
+First day of most recent menstrual period,Prespecified medical history (indication and history of interest)
+First dose on trial product,
+First morning void for albumin/creatinine ratiosx,Urinary albumin/creatinine ratio (UACR)
+"First morning void urine for albumin/creatinine ratiom,",Urinary albumin/creatinine ratio (UACR)
+Fixed standardised breakfast (Meal Type A)j,
+Fixed standardised meals (Meal Type B) n,
+"Flash glucose monitoring, fitting",Dispense and train on use of blood glucose meter
+"Flash glucose monitoring, removal and upload",
+Follicle-stimulating hormone test,Follicle Stimulating Hormone (FSH)
+Follicle stimulating hormone (if necessary per inclusion criteria),Follicle Stimulating Hormone (FSH)
+"Follicle stimulating hormone, if necessary per inclusion criteria)",Follicle Stimulating Hormone (FSH)
+"Follow-Up /Vitals, foot examination",Vital Signs
+Food diary provision and completion m,Patient diary dispensed
+Food intake booklet completion,Patient diary dispensed
+For clinical chemistry and haematologyÂ¹,Comprehensive Metabolic Panel (Clinical Chemistry)
+For clinical chemistry and haematologyb,Comprehensive Metabolic Panel (Clinical Chemistry)
+For liraglutide arm: Confirmation of unchanged dose 8 of liraglutide,Assess study drug compliance
+FPG (central laboratory),Glucose
+FPG (central laboratory) (A 1-time repeat measurement before Visit 2 is permitted),Glucose
+FPG (local laboratory),Glucose
+FPG D,Glucose
+FPG sample,Glucose
+FPGK,Glucose
+Free Fatty Acids,Free Fatty Acids
+FSH (postmenopausal females only) m,Follicle Stimulating Hormone (FSH)
+FSH and/or estradiol (menopausal women only) j,Follicle Stimulating Hormone (FSH)
+FSH and/or estradiol as neededm,Follicle Stimulating Hormone (FSH)
+FSH h,Follicle Stimulating Hormone (FSH)
+FSH LH,Follicle Stimulating Hormone (FSH)
+FSH/LH or estradiolh,Follicle Stimulating Hormone (FSH)
+Full (F) or brief (B) physical,Physical Examination
+Full (F) or brief (B) physical examÂ²,Physical Examination
+Full physical examination,Physical Examination
+Full Physical Examination (excluding rectal and urogenital examination),Physical Examination
+Full physical examination (including structured neurological examination) a,Physical Examination
+Full physical examinationh,Physical Examination
+GAD/IA2 Autoantibodies,Anti-GAD antibodies
+Gallbladder disease history,Prespecified medical history (indication and history of interest)
+GCSI-DD,
+GDR,
+GEBTÂ³,
+General,
+General blood test*,Blood Draw
+General medical history and prior medicationsÂ²,Prespecified medical history (indication and history of interest)
+General Procedures:,
+Genetic Informed Consent,Informed Consent
+Genetic sample,Genetics sample
+Genetics sample,Genetics sample
+GFR,
+GGT,
+Glipzide indicator,
+Glomerular filtration rate M,eGFR (CKD-EPI)
+Glomerular filtration rateK,eGFR (CKD-EPI)
+Glucagon,Glucagon
+"Glucagon receptor activation biomarkers (including ketones, Glucagon, FGF-21 and Kisspeptin) (potential analysis, for archive)",
+Glucometer (One Touch Ultra) and strips distributed,Dispense and train on use of blood glucose meter
+Glucometer and diary dispensed,Dispense and train on use of blood glucose meter
+Glucometer dispensation & training (including training on glucose measurements),Dispense and train on use of blood glucose meter
+Glucometer measurement,SMBG Profile
+Glucometer provision/training,Dispense and train on use of blood glucose meter
+Glucometer training and dispense,Dispense and train on use of blood glucose meter
+"Glucometers, SMPG, hypoglycemia, insulin dose titration, diary training and re-training",Dispense and train on use of blood glucose meter
+Glucose,Glucose
+Glucose (fasting) m,Glucose
+Glucose meter and diary provision,Dispense blood glucose meter
+Glucose meter dispense and instruct,Dispense and train on use of blood glucose meter
+Glyburide indicator,
+Glycated hemoglobin (HbA1c,Hemoglobin A1c (HbA1c)
+Glycated Hemoglobin (HbA1c,Hemoglobin A1c (HbA1c)
+Glycerol,
+GMP,
+h Pharmacokinetics sampling,Pharmacokinetic (PK) samples
+h Pregnancy test,Urine pregnancy (local)
+Haemoglobin,CBC
+Hand-out and /or collect diary,Patient diary dispensed
+Hand-out and instruct in BG meter,Dispense and train on use of blood glucose meter
+Hand-out and instruct on BG meter use,Dispense and train on use of blood glucose meter
+Hand-out BG meter,Dispense blood glucose meter
+Hand-out directions for use,Patient Education
+Hand-out/instruction/collect diary,Patient diary dispensed
+Hand out and instruct in BG-meter,Dispense and train on use of blood glucose meter
+Hand out and instruct in Pro device,Dispense and train on use of blood glucose meter
+Hand out direction for use,Patient Education
+Handling/training of product/device,Dispense and train on use of blood glucose meter
+Handout and instruct in BG-meter use,Dispense and train on use of blood glucose meter
+Handout and instruct in blood glucose meter use,Dispense and train on use of blood glucose meter
+Handout and instruct in/collect diary,Patient diary dispensed
+Handout and/or collect diary,Patient diary dispensed
+Hb,Hemoglobin A1c (HbA1c)
+HbA c,Hemoglobin A1c (HbA1c)
+HbA1 e,Hemoglobin A1c (HbA1c)
+HbA1c,Hemoglobin A1c (HbA1c)
+HbA1c & FPG,Hemoglobin A1c (HbA1c)
+HbA1c (central lab),Hemoglobin A1c (HbA1c)
+HbA1c (central laboratory),Hemoglobin A1c (HbA1c)
+HbA1C (predose) a,Hemoglobin A1c (HbA1c)
+HbA1C Draw,Hemoglobin A1c (HbA1c)
+HbA1c sampling,Hemoglobin A1c (HbA1c)
+HbA1C/C peptide,Hemoglobin A1c (HbA1c)
+HbAL,Hemoglobin A1c (HbA1c)
+HbAlc (screening),Hemoglobin A1c (HbA1c)
+"HbAlc and fasting blood glucose levels6,",Hemoglobin A1c (HbA1c)
+HbAlc blood draw a,Hemoglobin A1c (HbA1c)
+HbAlc f,Hemoglobin A1c (HbA1c)
+HBGM and eDiary,Glucose
+"HBsAg, HCV & HIV screen",Hepatitis B Virus (HBV) screening tests
+hCG,Labs
+HCV,Hepatitis C Virus (HCV) screening tests
+HCV antibody testing,Hepatitis C Virus (HCV) screening tests
+HCV viral load,Hepatitis C Virus (HCV) screening tests
+HDL,Lipid panel
+HE supply form,
+Health Care Utilization,
+Health Economic Assessment,
+"Health habits (alcohol use yes/no, tobacco use current/past)","Substance use (alcohol, caffeine, tobacco use)"
+"Health habits (alcohol use, tobacco use current/past)","Substance use (alcohol, caffeine, tobacco use)"
+"Health habits (alcohol, tobacco)","Substance use (alcohol, caffeine, tobacco use)"
+Health Outcome Questionnaires/Other Evaluation,Patient-Reported Outcomes (Paper)
+Health status (general and T2DM related),Prespecified medical history (indication and history of interest)
+Healthcare resource utilization,Prespecified medical history (indication and history of interest)
+"Healthcare resources utilization: number of hospitalizations (including length of stay during each hospitalization, reason, and urgency [urgent/not urgent]), ER visits, and physician office visits",Prespecified medical history (indication and history of interest)
+Heart rate and Blood pressure a,Vital Signs
+heart rate),Vital Signs
+"Height (H), Weigh (W), BMI",Vital Signs
+Height (measured in duplicate),Height
+Height (Measured in Duplicate),Height
+Height / weight / BMI,Height
+Height a,Height
+Height and BMI A,Height
+Height and weight,Height
+Height and weightd,Height
+Height and weighte,Height
+Height Vital signs and weight,Height
+Height without shoes,Height
+"Height, Weight, BMI",Height
+"Height, WeightÂ¹, BMI",Height
+Heightd,Height
+Hematology (predose) a,Hematology
+Hematology and coagulation panels,Hematology
+Hematology Clinical Chemistry(centra lab),Hematology
+Hematology g,Hematology
+"Hematology j, k",Hematology
+Hematology laboratory testse,Hematology
+Hematology Panel,Hematology
+"Hematology(1, Clinical chemistryn",Hematology
+"Hematology, Blood Chemistry, Serum Lipids, and Glycemic Control Assessments",Hematology
+"Hematology, Chemistry panel",Hematology
+"Hematology, Clinical Chemistry, Endocrinology, HbA1c d",Hematology
+Hematology/Chemistry/UrinalysisÂ²,Hematology
+Hematuria Dipstick Urinalysis,Urinalysis
+Hematuria Microscopic Urinalysis*,Urinalysis
+"Hemodynamic markers""",Hematology
+Hemoglobin A1c (A1C),Hemoglobin A1c (HbA1c)
+Hemoglobin A1C (A1C),Hemoglobin A1c (HbA1c)
+HemoglobinA1c e,Hemoglobin A1c (HbA1c)
+Hemogram (CBC) w/ Plate & Auto Diff,CBC
+"Hepatitis (HBsAg, HCV) & HIV Screen",Hepatitis B Virus (HBV) screening tests
+Hepatitis and HIV Screen,Hepatitis B Virus (HBV) screening tests
+Hepatitis B and C serology b,Hepatitis B Virus (HBV) screening tests
+Hepatitis B and hepatitis C,Hepatitis B Virus (HBV) screening tests
+Hepatitis B surface antigen and hepatitis C antibody,Hepatitis B Virus (HBV) screening tests
+"Hepatitis B, C, HIV",Hepatitis B Virus (HBV) screening tests
+Hepatitis screen,Hepatitis B Virus (HBV) screening tests
+Hepatitis Screen,Hepatitis B Virus (HBV) screening tests
+Hepatitis Screen Panel,Hepatitis B Virus (HBV) screening tests
+Hepatitis Screening Panel,Hepatitis B Virus (HBV) screening tests
+"Hepatitis Screening Panel, TSH",Hepatitis B Virus (HBV) screening tests
+Hepatitis screening panelÂ¹,Hepatitis B Virus (HBV) screening tests
+Hip measurement,Waist Circumference
+History of diabetes,Prespecified medical history (indication and history of interest)
+HIV,HIV screening tests
+HIV-1 and -2 antibodies; hepatitis B and C serology,HIV screening tests
+HIV-1 and HIV-2 antibodies,HIV screening tests
+HIV-antibodies?,HIV screening tests
+"HIV, hepatitis B and C, amylase, alcohol and drug screen, TSH",HIV screening tests
+Holter monitor,
+Home Blood Glucose Monitoring H,SMBG Profile
+Home monitoring,SMBG Profile
+Hood-based indirect calorimetry t,
+"Hormones, calcitonin",
+hour urine collection,Urine Collection (Spot or 24-Hour)
+hs-CRP,"C-Reactive Protein, high-sensitivity  (hsCRP)"
+hsCRP (highly sensitive CRP),"C-Reactive Protein, high-sensitivity  (hsCRP)"
+Hunger/satiety questionnaires q,Patient-Reported Outcomes (Paper)
+Hyperglycemia,Hypoglycemic events review
+Hypersensitivity reactions,
+Hypoglycaemi events,Hypoglycemic events review
+Hypoglycaemia,Hypoglycemic events review
+Hypoglycaemia resource use questionnaire,Patient-Reported Outcomes (Paper)
+Hypoglycaemic events,Hypoglycemic events review
+Hypoglycemia,Hypoglycemic events review
+Hypoglycemia events,Hypoglycemic events review
+Hypoglycemia Patient Questionaire,
+Hypoglycemia recording,Hypoglycemic events review
+Hypoglycemia review of electronic sourcea,Hypoglycemic events review
+Hypoglycemic Confidence Scale,
+Hypoglycemic Episodes c,Hypoglycemic events review
+Hypoglycemic episodes h,Hypoglycemic events review
+Hypoglycemic events,Hypoglycemic events review
+Hypoglycemic events review,Hypoglycemic events review
+Hypoglycemic therapy,
+i MMT,Meal Tolerance Test (MTT)
+i Review glucose meter reading and study diary,Diary compliance check
+i.v.,
+I/E Criteria,"Inclusion and exclusion criteria, review and confirm"
+IB,
+ICF Signed,Informed Consent
+ID,
+IDD,
+IDSRQ,
+"If consent obtained, blood sample (serum and plasma) and urine sample for archive",Blood Draw
+"If consent obtained, collect blood sample for genetic and genomic analysis",Blood Draw
+IFU,Patient Education
+IGF-1 and IGF-BP,
+IHF,
+Ilistory of gallbladder disease,Prespecified medical history (indication and history of interest)
+IM,
+IMCL,
+Immunogenicity Assay (Anti-drug AB),PK sample for immunogenicity
+Immunogenicity blood sample,PK sample for immunogenicity
+Immunogenicity testing,PK sample for immunogenicity
+IMP (SAR341402 or NovoLog/NovoRapid),Administer Study Drug
+IMP accounting and compliance,Assess study drug compliance
+IMP administration,Administer Study Drug
+IMP and Lantus accounting & compliance,Assess study drug compliance
+IMPs dispensation,Dispense Study Drug
+In- and exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+In/Exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+Inc/Exc Criteria,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/exclusio n criteria,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/exclusion,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/Exclusion,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/exclusion criteria b,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/Exclusion Criteria Checks B,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/Exclusion Criteria evaluation,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/exclusion criteria reviewÂ¹,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/Exclusion criteriab,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/exclusion evaluation,"Inclusion and exclusion criteria, review and confirm"
+Inclusion/Exclusion Evaluation,"Inclusion and exclusion criteria, review and confirm"
+Increase dose if subject requires additional glycemic control (see Section 3.1),Study Drug Dose Adjustment
+Infectious Disease Testing,
+Infectious serology,
+Information about trial product handling,Patient Education
+Informed consent (before procedures/tests),Informed Consent
+"Informed consent (written, general)",Informed Consent
+Informed Consent A,Informed Consent
+Informed Consent for FBR,Informed Consent
+Informed Consent for Future Biomedical Researche,Informed Consent
+Informed Consent for optional samples,Informed Consent
+Informed consent for Study,Informed Consent
+Informed consent Form (ICF),Informed Consent
+Informed consent signed,Informed Consent
+Informed consent/assent**,Informed Consent
+Informed Consent/HIPAA [2] and Stored Blood Sample Authorization,Informed Consent
+Informed ConsentÂ¹,Informed Consent
+Informed Consentd,Informed Consent
+"Initial physical examination/Vitals and weight, foot examination",Physical Examination
+Initiate insulin glargine,Dispense Study Drug
+Injectable therapy dose (day prior to visit)i,Administer Study Drug
+Injection-site assessments,
+Injection at study site f,Observe patient administer study drug
+Injection NKA,Injection Training
+Injection site local tolerability assessment,Injection Training
+Injection site local tolerability assessment f,Injection Training
+Injection site reactions,Injection Training
+Injection training g,Injection Training
+Injection training/instruction (to be repeated as needed throughout the study),Injection Training
+Injection trainingh,Injection Training
+Injection/pen training,Injection Training
+INR,"Coagulation Panel (PT/INR, PTT, aPTT)"
+Instruct in BG meter use,Dispense and train on use of blood glucose meter
+Instruct on glucose meter,Dispense and train on use of blood glucose meter
+Instruct on hypoglycemia,Patient Education
+Instruct on/reinforce lifestyle modification plana,Patient Education
+Instruct Self- Administration Of Medication,Injection Training
+Instruct subjects to switch current DPP-4i and/or discontinue or switch SU (as applicable f.g,Patient Education
+Instruct/review injection h,Injection Training
+Instruction for recording of patient's log and dispensing,Patient Education
+Instruction on basic genito- urinary hygiene & hydration,Patient Education
+Instruction on basic genito-urinary hygiene & hydration,Patient Education
+Instruction on basic genitourinary (GU) hygiene and hydration,Patient Education
+Instruction to discontinue oral AHA (except for insulin agents),Patient Education
+"Instructions on hypoglycemic symptoms, management, and recording of hypoglycemic assessment log (HAL)",Patient Education
+"Instructions on Hypoglycemic Symptoms, Management, and Recording of Hypoglycemic Assessment Log (HAL)",Patient Education
+Insulin & glucagon,Insulin
+Insulin antibodies,Anti-Drug Antibodies
+Insulin Antibodies,Anti-Drug Antibodies
+Insulin dose collected i,Insulin
+Insulin dose d,Administer Study Drug
+Insulin lispro PK sampling,Pharmacokinetic (PK) samples
+Insulin Pen Instruction,Injection Training
+Insulin Therapy Dose (day prior to visit),Administer Study Drug
+Insulin treatment c,Administer Study Drug
+Interactive response technology (IRT) contacte,Randomization/IWRS
+Interactive Response Technology Use K,Randomization/IWRS
+Interim Phy Exam,Physical Examination
+Interstitial glucose levels,"Continuous Glucose Monitoring, Review and/or Download"
+Investigational Product,Administer Study Drug
+Investigational Product Administration h,Administer Study Drug
+Investigational Product/Rescue,Administer Study Drug
+Ipragliflozin for the study Dispensing,Dispense Study Drug
+IRB/EC,
+IRT call,Randomization/IWRS
+IS,
+ITSQ,IT-SQ
+ITT,
+IV infusion of dextrose,Administer Study Drug
+IV infusion of insulin,Administer Study Drug
+IVRS call,Randomization/IWRS
+IVRS contact,Randomization/IWRS
+IVRS/IWRS call,Randomization/IWRS
+IWRS log-in,Randomization/IWRS
+IxRSe,Randomization/IWRS
+j,
+JAPIC-CTI,
+JARDIANCE DUOÂ® administration status,
+JDS,
+k PK,Pharmacokinetic (PK) samples
+KATZ-ADL Admin,Patient-Reported Outcomes (Paper)
+KDQoL Survey,Patient-Reported Outcomes (Paper)
+Ketone bodies,
+Ketone measurement at the siteÂ³,
+Ketones (B-hydroxybutyrate),
+Lab Assessments,Blood Draw
+Lab Procedures/Assessments,Blood Draw
+Laboratory,
+Laboratory Assessments k,Blood Draw
+Laboratory assessmentsk:,Blood Draw
+Laboratory testing,Blood Draw
+Laboratory testing (central lab),Blood Draw
+Laboratory testing g,Blood Draw
+Laboratory testing h,Blood Draw
+Laboratory Testing:,Blood Draw
+Laboratory testingh,Blood Draw
+Laboratory testingK,Blood Draw
+Laboratory Tests,Blood Draw
+"Laboratory Tests (urine and blood) B,",Blood Draw
+LactateÂ¹,
+Last date on trial product,
+"Last date, dose and time point on trial insulin",
+Last dose on trial product,
+LDL,Lipid panel
+lead-ECG,12-lead ECG (central or local)
+Lifestyle advice,
+Limited Physical Exam,Physical Examination
+Linagliptin indicator,
+Lipid panel (fasting) m,Lipid panel
+Lipid panel (including free fatty acid),Lipid panel
+Lipid Panel and Apolipoproteins,Lipid panel
+Lipid panel and FPG,Lipid panel
+Lipid panel i,Lipid panel
+Lipid PanelÂ¹,Lipid panel
+Lipid profile,Lipid panel
+Lipids (fasting),Lipid panel
+Lipids (fasting)Â°,Lipid panel
+"Lipids (including total cholesterol, HDL C, triglycerides, FFAs)",Lipid panel
+"Lipids (including total cholesterol, LDL-C, HDL C, triglycerides, FFAs)",Lipid panel
+"lipids, insulin",Lipid panel
+LipidsÂ³,Lipid panel
+Lipidsh,Lipid panel
+Liraglutide antibodies,Anti-Drug Antibodies
+Liraglutide indicator,Anti-Drug Antibodies
+Liver function test,Hepatic Panel (Liver Tests)
+Local urine pregnancy,Urine pregnancy (local)
+Local urine pregnancy test b,Urine pregnancy (local)
+LOCF,
+Lower limb examination,Physical Examination
+LUMT,
+LY3209590 PK,Pharmacokinetic (PK) samples
+Main Informed Consent,Informed Consent
+Markers of bone & calcium metabolism n,Blood Draw
+Markers of bone & calcium metabolism(,Blood Draw
+Markers of bone & calcium metabolismo,Blood Draw
+Markers of calcium metabolism' o,Blood Draw
+Markers of intestinal transit & absorption,Blood Draw
+Markers of intestinal transit & absorption m,Blood Draw
+MDI,
+Meal test,Meal Tolerance Test (MTT)
+"Meal Tolerance Test (MTT) 9 point: -10, 0, 10, 20, 30, 60, 90,120,",Meal Tolerance Test (MTT)
+Measure Weight,Weight
+Measurement of capillary BHB at the site,
+Med. Hist.,Prespecified medical history (indication and history of interest)
+Med/Surg/Social History,Prespecified medical history (indication and history of interest)
+MedDRA,
+MEDI0382 ADA d,
+Medical and disease history (including smoking and alcohol history),Prespecified medical history (indication and history of interest)
+"Medical and disease history (including smoking, drug, and alcohol history)",Prespecified medical history (indication and history of interest)
+Medical and Surgical History,Prespecified medical history (indication and history of interest)
+Medical history & demographics,Prespecified medical history (indication and history of interest)
+Medical History (General),Prespecified medical history (indication and history of interest)
+Medical history (includes substance usage and history of CV disease),Prespecified medical history (indication and history of interest)
+Medical history (including smoking and alcohol history),Prespecified medical history (indication and history of interest)
+Medical history /Concomitant illness,Prespecified medical history (indication and history of interest)
+Medical history and comorbid conditions,Prespecified medical history (indication and history of interest)
+Medical History B,Prespecified medical history (indication and history of interest)
+Medical History evaluation,Prespecified medical history (indication and history of interest)
+"Medical history, including smoking and alcohol history",Prespecified medical history (indication and history of interest)
+Medical history/ concomitant diagnoses,Prespecified medical history (indication and history of interest)
+Medical History/ Concomitant diagnoses,Prespecified medical history (indication and history of interest)
+Medical history/ Concomitant illness,Prespecified medical history (indication and history of interest)
+Medical history/current medical conditions,Prespecified medical history (indication and history of interest)
+Medical pre-treatment,Prior treatments for indication
+Medical resource utilization,Prespecified medical history (indication and history of interest)
+Medical/Medication History,Prespecified medical history (indication and history of interest)
+Medical/Surgica History,Prespecified medical history (indication and history of interest)
+Medication accountability,Assess study drug compliance
+Medication compliance monitoring (Study medication and insulin),Assess study drug compliance
+Medication dispensed,Dispense Study Drug
+Medication Error,
+Medication history,Concomitant Medications
+Mental Status Examination B,
+Metformin indicator,Anti-Drug Antibodies
+MHRA,
+Mixed Meal Tolerance Test,Meal Tolerance Test (MTT)
+Mixed meal tolerance test (MMTT),Meal Tolerance Test (MTT)
+MK-1092/Glargine Administration,Administer Study Drug
+MK-5160 or Glargine Administration,Administer Study Drug
+mL,
+mm,
+Mmol,
+mmol/L,
+MMT and blood samples for glucose metabolism i panel,Meal Tolerance Test (MTT)
+MMT and blood samples for glucose metabolism panel i,Meal Tolerance Test (MTT)
+MMTT Extended,Meal Tolerance Test (MTT)
+MMTT/Postprandial glucose,Meal Tolerance Test (MTT)
+MMTTÂ°,Meal Tolerance Test (MTT)
+Modified diet',
+Monitoring g,
+MR-PDFF,
+MRI (fasting),
+MRS (liver fat) b,
+MTT e,Meal Tolerance Test (MTT)
+MTT test,Meal Tolerance Test (MTT)
+NEFA,
+New dose of trial insulin,Administer Study Drug
+NGSP,
+NIMP (Lantus),
+Nitroglycerin administration (p),
+Non-study therapy (establish metformin at stable dose and continue it on trial),Concomitant medications
+Nonpharmacogenetic biomarker (plasma and serum),Exploratory biomarker samples
+"Nonpharmacogenetic biomarkers sample storage (plasma, serum, urine)",Exploratory biomarker samples
+Nonpharmacogenetic samples,Stored Samples
+Notes made if change in metformin dose or treatment,Study Drug Dose Adjustment
+OAD dose (day prior to visit),
+OAM washout,
+Observe patient inject study drug h,Observe patient administer study drug
+Obtain informed consent and assent,Informed Consent
+Obtain informed consent and assent for Future Biomedical Research,Informed Consent
+Obtain informed consent and assent for Future Biomedical Research (FBR),Informed Consent
+"Obtain informed consent and assent3,",Informed Consent
+Obtain written Assent (If applicable),Informed Consent
+OD,
+Off-site phone visit,Telephone Call
+Offer to Enroll in PSP,
+Office or home visit,
+Offloading Instruction and Documentation,Patient Education
+OGTT 4),
+Once daily,
+Once dailyÂ¹,
+Optional for genetic testing,Exploratory biomarker samples
+Optional future genetic research,Exploratory biomarker samples
+Optional future non-genetic research c,Exploratory biomarker samples
+Optional informed consent for sample for future non-genetic research,Informed Consent
+Optional muscle biopsy S,
+Orthostatic blood pressure,Vital Signs
+Orthostatic BP and Pulse,Vital Signs
+"Orthostatic Vital Signs (heart rate, blood pressure)",Vital Signs
+OS,
+"Osteopontin, FGF-21 (active), Adiponectin, ÃŸ-hydroxy butyrate, glycerol, free fatty acids, MCP-1, CTX-1, P1NP, osteocalcin",
+Other - Transfer Data to eCRF (InForm),
+Other biomarker sampling (where applicable),Exploratory biomarker samples
+Other categories of hypoglycemia events (if available) g,Hypoglycemic events review
+Other prescription drug use,Prespecified medical history (indication and history of interest)
+"Other T2DM treatment4,",Prior treatments for indication
+Outpatient visit,
+Outpatient Visit,
+Outpatient visit to clinical unit,
+Outpatient visit to the clinic,
+PAGI-SYM,
+PAM,
+Pancreatic amylase and lipase,Pancreatic Amylase
+"Pancreatic amylase, lipase, calcitonin, and TSH",Pancreatic Amylase
+Pancreatic Enzymes,Pancreatic Amylase
+Pancreatic lipase and amylase,Lipase
+Parathyroid hormone (PTH),
+Patient admission to CRU,Admission to Unit
+Patient consultation with the Investigator with respect to food boxes introduction,Patient Education
+Patient Data,
+Patient demography,Demographics
+Patient Demography,Demographics
+Patient diary review for glucometer values and/or,Hypoglycemic events review
+Patient diary review for glucometer values/ hypoglycaemic events,Hypoglycemic events review
+"Patient Education, Supplies, and SMPG",Patient Education
+Patient Health Questionnaire (9 item) B,Patient-Reported Outcomes (Paper)
+Patient Log Sheets distributed,Patient diary dispensed
+Patient number assigned,Randomization/IWRS
+Patient Registration,Randomization/IWRS
+Patient returns study drug vials,Patient returns study drugs and injection supplies
+Patient returns study drugs and/or injection supplies,Patient returns study drugs and injection supplies
+Patient returns unused study drug supplies,Patient returns study drugs and injection supplies
+Patient Telephone Contact (PTC) to Assess Insulin Titration,Telephone Call
+Patient to come fasting to study site,
+Patient training,Patient Education
+Patient: Global Effectiveness Scale,
+PCSK,
+Pediatric Quality of Life Questionnaire (PedsQLTM),Patient-Reported Outcomes (Paper)
+Pedometer distribution,Dispense ancillary supplies to patient
+Pen-injector and self-injection training,Injection Training
+Pen collection/return,Patient returns study drugs and injection supplies
+Pen dispensing,Dispense Study Drug
+Pen training and start pen,Injection Training
+Perform Hypoglycaemia Fear Survey-Worry Scale,
+Perform IWQOL-Lite,IWQOL
+Perform SF-36 survey,SF-36
+Perform Tanner staging,
+Perform Tanner Staging,
+"PG meter, SMPG training g",Dispense and train on use of blood glucose meter
+"PG meter, SMPG trainingh",Dispense and train on use of blood glucose meter
+PG sampling E,SMBG Profile
+PGx,
+PGx sampling (where applicable),
+Pharmacodynamic Samples,Pharmacokinetic (PK) samples
+Pharmacogenetic,PK sample for immunogenicity
+Pharmacogenetic sample,Pharmacokinetic (PK) samples
+Pharmacogenetic sample for storage,PK sample for immunogenicity
+Pharmacogenetic samples g,Pharmacokinetic (PK) samples
+Pharmacogenetic sampling,Pharmacokinetic (PK) samples
+Pharmacogenetic stored samples,Pharmacokinetic (PK) samples
+Pharmacogenomic consent,Informed Consent
+Pharmacogenomic specimen,Pharmacokinetic (PK) samples
+Pharmacogenomic specimenÂ°,Pharmacokinetic (PK) samples
+Pharmacogenomics sample (Stored),PK sample for immunogenicity
+Pharmacokinetic measurements,Pharmacokinetic (PK) samples
+Pharmacokinetic samples (I),Pharmacokinetic (PK) samples
+Phase A (Double-blinded) study medication dispensing,Dispense Study Drug
+Phase B (Open-label) study medication dispensing,Dispense Study Drug
+PHI,
+Phone Calls,Telephone Call
+"Physical exam (F, Full; B, Brief)",Physical examination
+Physical examination (full) b,Physical examination
+Physical examination (height at Screen only),Physical examination
+Physical Examination b,Physical examination
+Physical Examination B,Physical examination
+Physical examination h,Physical examination
+"Physical examination, height, and weight",Physical examination
+Physical examination/ Medical assessment,Physical examination
+Physical examinationÂ°,Physical examination
+PI,
+Pioglitazone indicator,
+PK blood collection,Pharmacokinetic (PK) samples
+PK for dapagliflozin,Pharmacokinetic (PK) samples
+PK for MEDI0382e,Pharmacokinetic (PK) samples
+PK sample,Pharmacokinetic (PK) samples
+"PK sample for Immunogenicity""",PK sample for immunogenicity
+Placebo Administration,Dispense Study Drug
+Placebo injection demonstration under staff supervisionb,Observe patient administer study drug
+Placebo kit dispensation (for run-in),
+Plasma and Serum for Future Biomedical Researche,Exploratory biomarker samples
+Plasma and serum sample for FBRÂ¹,Exploratory biomarker samples
+Plasma for Future Biomedical Research,Exploratory biomarker samples
+Plasma for Future Biomedical Research u,Exploratory biomarker samples
+"Plasma glucagon (fasting) m,p",Glucagon
+Plasma glucose g,Glucose
+"Plasma PK Sample for Liraglutide (potential analysis, for archive), bb",Exploratory biomarker samples
+Plasma PK Sample for MK-8521 bb,Pharmacokinetic (PK) samples
+Plasma volume,
+Plasma volumep,
+"Plasma, serum, and urine samples for exploratory analysis"" m",Exploratory biomarker samples
+PMDA,
+pmol/l,
+point- MMTT at selected sites: Blood samples at 0 and 120 minutes sent for glucose,Meal Tolerance Test (MTT)
+"point- MMTT at selected sites: Blood samples at 0, 60, and 120 minutes sent for glucose, insulin, and glucagon",Meal Tolerance Test (MTT)
+point profile,SMBG Profile
+Population PK sampling,Pharmacokinetic (PK) samples
+Population PK Sampling,Pharmacokinetic (PK) samples
+Post-dose fasting routines,
+Postural (Orthostatic) Blood Pressure/Pulse Rate,Vital Signs
+Postural (orthostatic) Blood Pressure/Pulse Rate (measured in duplicate)i,Vital Signs
+Postural (Orthostatic) Blood Pressure/Pulse Rate in Duplicate,Vital Signs
+Postural (orthostatic) Blood Pressure/Pulse RateÂ¹,Vital Signs
+Postural (Orthostatic)Blood Pressure and Pulse Rate,Vital Signs
+Postural Blood Pressure/HRK,Vital Signs
+Potential Cardiovascular Event Assessment,Prespecified medical history (indication and history of interest)
+PP,
+"PPG glucose sample"" n",Glucose
+PQAT /,
+Pre- and 2-hr post-prandial glucoseg,Glucose
+Pre-Albumin Draw,Blood Draw
+Pre-breakfast SMBG,SMBG Profile
+Pre-breakfast SMPG (3 days prior to next contact),SMBG Profile
+Pre-dose blood sample,Blood Draw
+Pre-dose pharmacokinetics for MEDI,Pharmacokinetic (PK) samples
+Pre-filled disposable pen (SoloStarR or FlexTouchÂ®) and self-injection trainingC,Injection Training
+Preexisting conditions and Adverse Events,Prespecified medical history (indication and history of interest)
+Preexisting conditions/Adverse events e,Prespecified medical history (indication and history of interest)
+Pregnancy Screen,Urine pregnancy (local)
+Pregnancy test (b),Urine pregnancy (local)
+Pregnancy Test (b),Urine pregnancy (local)
+Pregnancy test (blood sample),Serum pregnancy
+Pregnancy test (for women of childbearing potential)b,Urine pregnancy (local)
+Pregnancy test (serum or urine),Serum pregnancy
+"Pregnancy test (urine, WOCBP only)",Urine pregnancy (local)
+"Pregnancy test (urine, WOCBP only)h",Urine pregnancy (local)
+Pregnancy Test (WOCBP only),Urine pregnancy (local)
+Pregnancy test (WOCBP only)p,Urine pregnancy (local)
+Pregnancy test (WOCBP) h,Urine pregnancy (local)
+Pregnancy test (WOCBP) k,Urine pregnancy (local)
+Pregnancy test (WOCBP)(1),Urine pregnancy (local)
+Pregnancy test (WOCBP)K,Urine pregnancy (local)
+Pregnancy test (women of childbearing potential only),Urine pregnancy (local)
+Pregnancy test b,Urine pregnancy (local)
+Pregnancy Test c,Urine pregnancy (local)
+Pregnancy test d,Urine pregnancy (local)
+Pregnancy test e,Urine pregnancy (local)
+"Pregnancy test, urine dipsticksÂ³",Urine pregnancy (local)
+Pregnancy test/urine drug screen/alcohol breath test,Urine pregnancy (local)
+"Pregnancy test7,",Urine pregnancy (local)
+Pregnancy testÂ³,Urine pregnancy (local)
+Pregnancy testd,Urine pregnancy (local)
+Pregnancy teste,Urine pregnancy (local)
+Pregnancy TestF,Urine pregnancy (local)
+Pregnancy testing,Urine pregnancy (local)
+Pregnancy testP,Urine pregnancy (local)
+Pregnancy urine test,Urine pregnancy (local)
+Premature discontinuation criteria,
+Premature discontinuation/withdrawal,
+Prescribed insulin regimen,
+Prescribing physician-relevant information: general/specialized practitioner,
+Prescription of study drug,Dispense Study Drug
+Prescription of therapy and therapy and of compliance,
+Prescription of trial product,Dispense Study Drug
+Prestudy therapy,Concomitant medications
+Prestudy therapy (drug classes of interest) e,Prior treatments for indication
+Previous diabetes therapy,"Preexisting conditions and medical history, including relevant surgical history"
+Previous Injection ExperienceÂ³,Prior treatments for indication
+Previous insulin exposure,Prespecified medical history (indication and history of interest)
+Prior & concomitant meds,Concomitant medications
+Prior and concomitant medication,Concomitant medications
+Prior and/or Concomitant medications,Concomitant medications
+Prior medication history,Prespecified medical history (indication and history of interest)
+Prior Medication History,Prespecified medical history (indication and history of interest)
+Prior therapy reporting and review e,Prespecified medical history (indication and history of interest)
+Prior/concomitant medications,Concomitant medications
+Prior/Concomitant Medications Assessment,Concomitant medications
+Prior/concomitant treatments,Concomitant medications
+Pro-insulin,
+PRO qualitative questionst,Patient-Reported Outcomes (Paper)
+"PRO questionnaires (WRSM, APPADL, IW- SP)",Patient-Reported Outcomes (Paper)
+PRO questionnaires*,Patient-Reported Outcomes (Paper)
+PRO questionnairesÂ¹,Patient-Reported Outcomes (Paper)
+Product Application,
+ProinsulinÂ°,
+Provide container for urine collection for first morning void,Urine Collection (Spot or 24-Hour)
+Provide Dietary and Exercise Counseling,Patient Education
+Provide education on diet and exercise,Patient Education
+Provide glucose meter and supplies / instructions,Dispense and train on use of blood glucose meter
+Provide instructions for user,Patient Education
+Provide logs / instructions,Patient diary dispensed
+Provide subject diary/instructions,Patient diary dispensed
+Provider: Global Effectiveness Scale,
+Providing SMBG devise and instruction,Dispense and train on use of blood glucose meter
+Providing Subject Identification Card,Patient Identification Card
+Provision of activity monitor and device training,Patient Education
+Provision of paper diary or digital device for collection of capillary glucose and weight measurements,Patient diary dispensed
+PTE,
+Pubertal Assessments,
+Pulse,Vital Signs
+Pulse rate and blood pressure (alone),Vital Signs
+QD,
+QTcF,
+Quality of Pain Modified SF-MPQ-2 Inventory*,
+Questionnaire for device,Patient-Reported Outcomes (Paper)
+Questionnaire for patient background,Patient-Reported Outcomes (Paper)
+Questionnaire for patient preference,Patient-Reported Outcomes (Paper)
+R Trajenta Duo administration status,Assess study drug compliance
+Race/ethnicity,Demographics
+RAMOS registration,Randomization/IWRS
+Random (non-fasting) glucose,Glucose
+Randomisation (via IXRS),Randomization/IWRS
+Randomisation and Stratification,Randomization/IWRS
+Randomisation criteria,Randomization/IWRS
+Randomisation to study treatment,Randomization/IWRS
+RandomisationÂ³,Randomization/IWRS
+Randomization (IRT)N,Randomization/IWRS
+Randomization c,Randomization/IWRS
+Randomization to study treatment,Randomization/IWRS
+Randomization to study treatment via IVRS/IWRS,Randomization/IWRS
+Randomization/Crossoveri,Randomization/IWRS
+Re-training on the BG meter use,Patient Education
+Reactive hyperemia,
+Record 6-point SMPG values e,SMBG Profile
+Record 6-point SMPG valuesf,SMBG Profile
+Record body weight,Weight
+Record height,Height
+Record pre-study serum creatinine,Creatinine
+Record results of a 7-point SMBGh,SMBG Profile
+"Record start time of breakfast, mid-day and evening meals",
+Recording of FRC dose (U),Concomitant medications
+Recording of GLP-1 receptor agonist daily/weekly dose (mg or g ) (control arm),Concomitant medications
+Recurrence Assessment,
+Register actual glimepiride dosage in IWRS,Randomization/IWRS
+Register visit into IVRS,Randomization/IWRS
+Release,
+Relevant medical history / current medical condition,Prespecified medical history (indication and history of interest)
+Remind patient to fast prior to next clinic visit,
+Remind Patients about 7-point SMBG,Patient Education
+Removal of CGM sensor,"Continuous Glucose Monitoring, Remove and/or Return"
+Remove CGM and Download Data,"Continuous Glucose Monitoring, Remove and/or Return"
+Renal Biomarkers g,Renal Panel (Renal Tests)
+Renal function testÂ°,Renal Panel (Renal Tests)
+Renal panel,Renal Panel (Renal Tests)
+Renal Scint.,Renal Panel (Renal Tests)
+Rescue Criteria,
+Respiratory rate & oral temp (e),Vital Signs
+Respiratory rate (R) & oral temperature (T),Vital Signs
+Retinal assessment,Dilated fundoscopic examination
+Return double-blind IMP and assess dosing adherence,Assess study drug compliance
+Return of Study Medication and accountability,Assess study drug compliance
+Return of unused diabetes medications and study supplies if required by local regulations,Patient returns study drugs and injection supplies
+"Return of used investigational product containers, unused study medication and study diary",Patient returns study drugs and injection supplies
+Return single-blind IMP and assess dosing adherence,Assess study drug compliance
+Return study medication/ medication compliance check,Assess study drug compliance
+Return study medicationk,Patient returns study drugs and injection supplies
+"Review AE/SAE, concomitant and hypoglycemia events",Adverse events (AEs)
+"Review AE/SAE, concomitant medication and hypoglycemia events",Adverse events (AEs)
+Review Concomitant Medication,Concomitant Medications
+Review Concomitant medications,Concomitant Medications
+Review Concomitant Medications ee,Concomitant Medications
+"Review Food log, completed for 3 days'",Diary compliance check
+"Review Food log, completed for 3 daysÂ¹",Diary compliance check
+Review for I/E criteriaÂ¹,"Inclusion and exclusion criteria, review and confirm"
+Review in/exclusion criteria,"Inclusion and exclusion criteria, review and confirm"
+Review Inclusion/Exclusion Criteria,"Inclusion and exclusion criteria, review and confirm"
+Review Medical History,Prespecified medical history (indication and history of interest)
+Review medical history requirements,Prespecified medical history (indication and history of interest)
+Review of Adverse Event and Concomitant Medication 5),Adverse events (AEs)
+Review of diaries,Diary compliance check
+Review of HAL and assessment of hypoglycemia,Hypoglycemic events review
+Review of hypoglycemia assessment tool(s),Hypoglycemic events review
+Review of SMBG measurements and HAL,Hypoglycemic events review
+"Review of SMBG Measurements and HAL""",Hypoglycemic events review
+Review Prior/Concomitant Medication,Concomitant Medications
+Review Prior/Concomitant MedicationÂ°,Concomitant Medications
+Review rescue criteria,
+Review results of SMBG and recommend Lantus dose adjustments as necessary,Diary compliance check
+Review SMBG measurements,Diary compliance check
+Review study drug diary,Diary compliance check
+Review subject's diary and blood glucose measurements,Diary compliance check
+Review the Hypoglycemia Assessment Tool (s),Hypoglycemic events review
+Review thresholds for rescue (Phase A) and initiating insulin glargine (Phase B),
+"Review use of any prohibited medications, including AHAs; counsel patients on importance of not taking other AHAsÂ¹",Patient Education
+"Review use of any prohibited medications, including AHAs; counsel subjects on importance of not taking other AHAs",Patient Education
+Review/discuss subject diary and SMBG results,Diary compliance check
+Review/discuss subject diary and SMBG resultsdd,Diary compliance check
+Review/Reinforce SMBG measurements,Patient Education
+Rosiglitazone indicator,
+Routine clinical procedures,
+Routine safety measurements,
+Routine UrinalysisÂ¹ m,Urinalysis
+S-creatinine for eGFR calculation,Creatinine
+Safety Assessment,
+Safety Assessments,
+Safety Data,
+Safety lab Tests (Urine and Blood),Blood Draw
+Safety lab Tests (Urine and Blood)H,Blood Draw
+"Safety laboratory' hematology, serum chemistry",Blood Draw
+"Safety laboratory (Chemistry, Hematology )",Blood Draw
+"Safety laboratory, i",Blood Draw
+"Safety Labs4,",Blood Draw
+SAFETY REPORT(ADR/SAE/SADR/AESI),Adverse Events (AEs)
+Samples for,
+Satiety Evaluation (VAS) f,
+Saxagliptin indicator,
+SC,
+Schedule of eye examination for next visit,
+Screening Laboratory Tests d,Blood Draw
+Screening Labs,
+Screening or Confirmation for I/E Criteria,"Inclusion and exclusion criteria, review and confirm"
+Screening/administrativ e,"Inclusion and exclusion criteria, review and confirm"
+SD,
+Seated BP and Pulse,Vital Signs
+SEITQ,
+Self-measured blood glucose: 7-point profileÂ³,SMBG Profile
+Self-measured plasma glucose (7-point profile),SMBG Profile
+Self-measurement blood glucose,SMBG Profile
+Self-monitored blood glucose f,SMBG Profile
+Self-monitored blood glucoseÂ¹,SMBG Profile
+Self-monitoring blood glucose (SMBG) instruction,SMBG Profile
+Self-monitoring of blood glucose e,SMBG Profile
+Self measured plasma,SMBG Profile
+Self measured plasma glucose (SMPG),SMBG Profile
+Semaglutide PK sampling,Pharmacokinetic (PK) samples
+Semaglutide PK samplingd,Pharmacokinetic (PK) samples
+Semaglutide PKe,Pharmacokinetic (PK) samples
+"Semi-Recumbent Vital Signs (heart rate (HR), blood pressure (BP)),",Vital Signs
+Serious Adverse Events Assessment,Adverse Events (AEs)
+"Serious adverse events, and AEs causing discontinuation; vital status; AEs of interest",Adverse Events (AEs)
+"Serology (Hep B, Hep C)",Hepatitis B Virus (HBV) screening tests
+Serum (S)/Urine (U) pregnancy (WCBP),Serum pregnancy
+Serum (S)/Urine (U) pregnancy test (WCBP),Serum pregnancy
+"Serum b-HCG (pregnancy test, females only)",Serum pregnancy
+Serum Calcitonin,Calcitonin
+Serum Calcitonin Level,Calcitonin
+Serum calcitoning,Calcitonin
+Serum chemistry (including eGFR calculation),Comprehensive Metabolic Panel (Clinical Chemistry)
+Serum chemistry (predose)a,Comprehensive Metabolic Panel (Clinical Chemistry)
+Serum chemistry electrolytes,Comprehensive Metabolic Panel (Clinical Chemistry)
+Serum chemistry hematology,Comprehensive Metabolic Panel (Clinical Chemistry)
+Serum chemistry panel g,Comprehensive Metabolic Panel (Clinical Chemistry)
+"Serum chemistry""",Comprehensive Metabolic Panel (Clinical Chemistry)
+Serum chemistrym,Comprehensive Metabolic Panel (Clinical Chemistry)
+Serum chemistrySt,Comprehensive Metabolic Panel (Clinical Chemistry)
+Serum Creatinine,Creatinine
+Serum Creatinine and Cys-C,Creatinine
+"Serum cystatin C/serum creatinine f,g",Cystatin C
+Serum follicle-stimulating hormone and estradiol (menopausal women only) h,Follicle Stimulating Hormone (FSH)
+Serum Follicle Stimulating Hormone (FSH),Follicle Stimulating Hormone (FSH)
+Serum Follicle Stimulating Hormone (FSH) - if applicable h,Follicle Stimulating Hormone (FSH)
+Serum follicle stimulating hormone and estradiol (menopausal women only),Follicle Stimulating Hormone (FSH)
+Serum follicle stimulating hormone and estradiol (menopausal women onlyK,Follicle Stimulating Hormone (FSH)
+Serum for Future Biomedical Research,Exploratory biomarker samples
+Serum for Future Biomedical Research u,Exploratory biomarker samples
+Serum FSH and estradiol (Menopausal women only(central lab),Follicle Stimulating Hormone (FSH)
+Serum FSH and estradiol (menopausal women only),Follicle Stimulating Hormone (FSH)
+Serum insulin (fasting) m,Insulin
+Serum Ketones (B-hydroxybutyrate),
+"Serum LFTs (AST, ALT, total bilirubin, alkaline phosphatase)",Hepatic Panel (Liver Tests)
+Serum Lipase,Lipase
+Serum pregnancy test,Serum pregnancy
+Serum pregnancy test (WCBP only),Serum pregnancy
+Serum Pregnancy test h,Serum pregnancy
+Serum pregnancy test j,Serum pregnancy
+Serum pregnancy test/FSHÂ¹,Serum pregnancy
+Serum Pregnancy TestÂ³,Serum pregnancy
+Serum pregnancy/FSHÂ¹,Serum pregnancy
+Serum pregnancy9;,Serum pregnancy
+Serum/Urine pregnancy test (FRP only),Serum pregnancy
+"Severe, nocturnal and total hypoglycemia events f",Hypoglycemic events review
+SF-20 Admin,
+SF-36v28 Standard,SF-36
+SF36v,SF-36
+SGLT,Concomitant medications
+Show and/or describe injection device,Injection Training
+Sign-off case-book,
+Signed and Dated Informed consent,Informed Consent
+Signed informed consent,Informed Consent
+Single-blinded study medication dispensing,Dispense Study Drug
+Single 12-lead ECG:,12-lead ECG (central or local)
+Single Supine 12-lead ECG,12-lead ECG (central or local)
+Single Supine Vital Signsb,Vital Signs
+Sitagliptin for the study Dispensing,Dispense Study Drug
+Sitagliptin indicator,
+Site A1C Fingerstick Measurement,Hemoglobin A1c (HbA1c)
+Site Assessment of Swallowability,
+Site finger stick A1C,Hemoglobin A1c (HbA1c)
+Site finger stick glucose,Glucose
+Site fingerstick A1C,Hemoglobin A1c (HbA1c)
+Site fingerstick glucose,Glucose
+"Site fingerstick HbA1c""",Hemoglobin A1c (HbA1c)
+Site Fingerstick HbA1cÂ¹,Hemoglobin A1c (HbA1c)
+site reaction,
+Site visit,
+Sitting Blood Pressure and Pulse Rate d,Vital Signs
+Sitting blood pressure/pulse rate,Vital Signs
+SMBG at each visits,SMBG Profile
+"SMBG measurement and check logs15,",SMBG Profile
+SMBGg,SMBG Profile
+Smoking Habits,"Substance use (alcohol, caffeine, tobacco use)"
+SMPG measurements,SMBG Profile
+SMPG meter training,Patient Education
+SMPG to support insulin dose titrationk,SMBG Profile
+SMPG values review,Diary compliance check
+SMPG/,SMBG Profile
+SMPGf,SMBG Profile
+SMPGs for titrationd,SMBG Profile
+SNAC PK sampling,Pharmacokinetic (PK) samples
+"SNAC PKe,f",Pharmacokinetic (PK) samples
+SNS / arterial stiffness / non- invasive cardiac output monitoring,
+SOP,
+Sotagliflozin plasma concentration,Pharmacokinetic (PK) samples
+Sotagliflozin Plasma concentration k,Pharmacokinetic (PK) samples
+Special lipids and other biomarkers,
+Standard dinner,
+Standard Meals,
+Standard mixed meal tolerance test/,Meal Tolerance Test (MTT)
+Standard Safety Laboratory Panel (Blood/Urine),Blood Draw
+Standardized Diabetic Meals,
+Standardized meal test with Visual Analog Scale for Appetite/Satiety (VAS),Meal Tolerance Test (MTT)
+Standardized meals/snacks,
+Start date of current diabetes treatment,
+Start wash-out,
+Stop date of current diabetes treatment,Prespecified medical history (indication and history of interest)
+Stored Sample,Stored Samples
+Stored Samples,Stored Samples
+Study administration (1),
+Study and Rescue Medication,Dispense Study Drug
+Study consent and assent,Informed Consent
+Study diary review,Diary compliance check
+Study Disposition,
+Study drug accountability & compliance assessment,Assess study drug compliance
+Study drug administration (o),Administer Study Drug
+Study Drug Administration^,Assess study drug compliance
+Study drug and adherence,Assess study drug compliance
+Study drug compliance,Assess study drug compliance
+Study Drug dispensing,Dispense Study Drug
+Study Drug/Device,Assess study drug compliance
+Study Drug/IWRS,Dispense Study Drug
+Study medication compliance,Assess study drug compliance
+Study Medication Compliance Check,Assess study drug compliance
+Study Medication Compliance Review,Assess study drug compliance
+Study Medications (sitagliptin and/or ipragliflozin) Compliance Monitoring,Assess study drug compliance
+Study participants may resume pre- study insulin,
+Study Treatment,Dispense Study Drug
+Study Treatment Administration,Administer Study Drug
+Study treatment compliance,Assess study drug compliance
+Study treatment dispensed,Dispense Study Drug
+Study treatment dispensed (daily dosing),Dispense Study Drug
+Study treatment return,Patient returns study drugs and injection supplies
+Subcutaneous injection training/injection site inspection/review of technique,Injection Training
+Subject administration of oral dapagliflozin 10 mg,Observe patient administer study drug
+Subject compliance,Assess study drug compliance
+Subject Education / Monitoring,Patient Education
+Subject Education/Monitoring,Patient Education
+Subject enters whole room calorimeter o,
+Subject Experience / Satisfaction Exit Questionairre,Patient-Reported Outcomes (Paper)
+Subject finger-prick testing of ketones using test strips,
+"Subject telephone contact (TC) to assess titration of metformin to 2,000mg",Telephone Call
+Subjects domiciledÂ³,
+Subjects fast prior to visit,
+Supine 12-lead ECGÂ°,12-lead ECG (central or local)
+supine only,
+Supine vital signs,Vital Signs
+Supine/standing BP & pulse (e) 3 indicates triplicate supine BPs,Vital Signs
+Supine/standing BP & pulse supine only (i),Vital Signs
+Survey on hypoglycemia,Patient-Reported Outcomes (Paper)
+Survey on self-administration of study drug g,Patient-Reported Outcomes (Paper)
+SUSARs,Adverse events (AEs)
+Swallowing Ability Questionnaire,Patient-Reported Outcomes (Paper)
+Switch Subjects on Fixed Dose Combination Product to Single Entity Tablets,
+Symptom-driven physical exam,Physical Examination
+Systolic blood pressure,Vital Signs
+"Systolic blood pressure, sitting",Vital Signs
+T2DM diagnosis and previous T2DM treatmentsÂ²,Prior treatments for indication
+taken after titration,
+Tanner Stage,
+Tanner staging,
+Tanner Staging (Investigator determined/Self-reported),
+Targeted Physical Examination,Symptom-directed physical examination
+Targeted physical examination assessment,Symptom-directed physical examination
+TEAE,
+Technical Complaints,Adverse events (AEs)
+Technical ComplaintsÂ¹,Adverse events (AEs)
+Telephone call by dietician,Telephone Call
+Telephone call by dieticiane,Telephone Call
+Telephone call for visit reminder or informing patient of completion in the study,Telephone Call
+Telephone contact,Telephone Call
+Telephone contact 1 day after dosing visit during treatment up-titration,Telephone Call
+Telephone Contact Between Clinic Visits,Telephone Call
+Telephone follow- up,Telephone Call
+"Temperature, supine pulse & triplicate supine blood pressureb",Vital Signs
+Testosterone,
+TG,
+Three times daily,
+Thyroid-stimulating hormone (TSH) /Total triiodothyronine (T3) /Free Thyroxine (FT4),Thyroid Stimulating Hormone (TSH)
+Thyroid Panel,Thyroid Stimulating Hormone (TSH)
+Thyroid stimulating hormone (TSH),Thyroid Stimulating Hormone (TSH)
+Thyroid Stimulating Hormone (TSH),Thyroid Stimulating Hormone (TSH)
+Time of visit (weeks),
+Timed urine sample collection (24- hours),Urine Collection (Spot or 24-Hour)
+Timepoints d,
+Titration phone calls (FRC arm only) e,Telephone Call
+Tobacco history/use,"Substance use (alcohol, caffeine, tobacco use)"
+Tobacco use (smoking status),"Substance use (alcohol, caffeine, tobacco use)"
+"Total-; LDL-; HDL-Cholesterol, triglycerides*",Lipid Panel
+Total daily basal insulin dose,Study Drug Dose Calculation - Initial
+"Total daily insulin dose""",Study Drug Dose Calculation - Initial
+Total daily prandial insulin dose,Study Drug Dose Calculation - Initial
+Total Ig and subsets (Ig A/E/G/M),
+Total plasma lixisenatide concentration (only in FRC group)p,Pharmacokinetic (PK) samples
+"Training (glucometer, SMPG profiles, hypoglycemia reporting e-diary)",Patient Education
+Training in trial product and dosing instructions,Patient Education
+Training in trial product and pen,Patient Education
+Training in trial product and pen handlingÂ¹,Patient Education
+Training in trial product dosing instructions,Patient Education
+Training in trial product handling and titration,Patient Education
+"Training in trial product, and pen handling",Patient Education
+"Training in trial product, pen-handling",Patient Education
+"Training in trial product, pen handling",Patient Education
+Training in trial products and pen handling,Patient Education
+"Training in trial products, dosing instructions and pen handling",Patient Education
+Training of glucometer and diary and SMPG profileC,Patient Education
+Training of subject on glucose and ketone monitoring,Patient Education
+Training on signs/symptoms of hypo/hyperglycemia',Patient Education
+Training or refresher instructions on glucose meter use and routine review of diet and lifestyle counseling along with instructions on dosage self-adjustment including carbohydrate intakeÂ¹,Patient Education
+Trajenta administration status,Assess study drug compliance
+Transfer Diary Data to eCRF (InFormâ„¢,
+Transfer diary information to eCRF:,
+Treatment,Dispense Study Drug
+Treatment Administration,Administer Study Drug
+Treatment compliance,Assess study drug compliance
+Treatment dispensed,Dispense Study Drug
+Treatment returned and compliance checked,Patient returns study drugs and injection supplies
+Treatment:,Dispense Study Drug
+Trial Conduct,
+Trial Drug Administration,Administer Study Drug
+Trial termination,
+TRIM-diabetes device,
+Triplicate 12-Lead ECG,12-lead ECG (central or local)
+Triplicate Sitting Blood Pressure/Pulse Rate,Vital Signs
+Triplicate Waist Circumference,Waist Circumference
+"TSH, (reflex to FT4)",Thyroid Stimulating Hormone (TSH)
+"TSH, Amylase and lipase",Thyroid Stimulating Hormone (TSH)
+Two-hour standardized meal test (a sub-set of patients only),
+UACR,Urinary albumin/creatinine ratio (UACR)
+UACR Q,Urinary albumin/creatinine ratio (UACR)
+"UACR, eGFR, sUA and Serum cystatin-C",Urinary albumin/creatinine ratio (UACR)
+"UACR, spot uriner",Urinary albumin/creatinine ratio (UACR)
+UADE,
+Ultrasound/CT,
+UltrasoundP,
+Urinalysis (dipstick and microscopy) !,Urinalysis
+Urinalysis (dipstick),Urinalysis
+Urinalysis /,Urinalysis
+Urinalysis by stick,Urinalysis
+Urinalysis g,Urinalysis
+Urinalysis incl. ACRÂ¹,Urinalysis
+"Urinalysis k,",Urinalysis
+Urinalysis w/microscopyP,Urinalysis
+Urinalysis with microscopy,Urinalysis
+"Urinalysis""",Urinalysis
+Urinalysis*,Urinalysis
+"Urinalysis, UACR d",Urinalysis
+Urinalysis: dipstick and microscopy,Urinalysis
+Urinalysish,Urinalysis
+Urinary Albumin/Creatinine Ratio,Urinary albumin/creatinine ratio (UACR)
+Urinary Albumin/Creatinine Ratio m,Urinary albumin/creatinine ratio (UACR)
+Urinary Albumin/Creatinine ratiok,Urinary albumin/creatinine ratio (UACR)
+Urinary albumin:creatinine ratiom,Urinary albumin/creatinine ratio (UACR)
+Urine 'drug' screen,Urine Collection (Spot or 24-Hour)
+Urine albumin & creatinine (g),Urinary albumin/creatinine ratio (UACR)
+Urine albumin / creatinine ratio f,Urinary albumin/creatinine ratio (UACR)
+"Urine albumin, calcium, glucose & creatinine",Urinary albumin/creatinine ratio (UACR)
+"Urine albumin, creatinine, UACR",Urinary albumin/creatinine ratio (UACR)
+Urine albumin/creatinine ratio (ACR) f,Urinary albumin/creatinine ratio (UACR)
+Urine albumin/creatinine ratio (urinalysis),Urinary albumin/creatinine ratio (UACR)
+Urine albumin/creatinine ratio assessment (to be done on first morning urine sample),Urinary albumin/creatinine ratio (UACR)
+Urine analysis(central lab) k,Urinalysis
+"Urine ÃŸhCG Test (pregnancy test)""",Urine pregnancy (local)
+Urine Collection,Urinalysis
+Urine Collection (Urinalysis and UrineAlbumin/Creatinine Ratio),Urinalysis
+Urine Collection for Dipstick/UrinalysisÂ¹,Urine Collection (Spot or 24-Hour)
+Urine container dispense,Urine Collection (Spot or 24-Hour)
+Urine drug and alcohol screen h,"Substance use (alcohol, caffeine, tobacco use)"
+Urine Drug Screen (UDS),"Substance use (alcohol, caffeine, tobacco use)"
+Urine drug screening,"Substance use (alcohol, caffeine, tobacco use)"
+Urine microalbumin/creatinine ratio,Urinary albumin/creatinine ratio (UACR)
+Urine microalbumin/creatinine ratioÂ¹,Urinary albumin/creatinine ratio (UACR)
+Urine Pregnancy Test - if applicable,Urine pregnancy (local)
+Urine Pregnancy Test (as applicable,Urine pregnancy (local)
+"Urine Pregnancy Test (as applicable)""",Urine pregnancy (local)
+Urine pregnancy test (for females only),Urine pregnancy (local)
+"Urine Pregnancy Test (local, WOCBP only)",Urine pregnancy (local)
+Urine pregnancy test (UPT),Urine pregnancy (local)
+Urine Pregnancy Test (Women of childbearing potential only ),Urine pregnancy (local)
+Urine Pregnancy Test (women of childbearing potential only),Urine pregnancy (local)
+"Urine Pregnancy Test (women of childbearing potential only)""",Urine pregnancy (local)
+Urine pregnancy test k,Urine pregnancy (local)
+"Urine Pregnancy Test, Qualitative",Urine pregnancy (local)
+Urine Pregnancy TestÂ³,Urine pregnancy (local)
+Urine pregnancy testh,Urine pregnancy (local)
+Urine pregnancy testing in Central laboratory,Urine pregnancy (local)
+Urine sample,Urine Collection (Spot or 24-Hour)
+"Urine Sampling for glucose, microalbumin, copper, and zinc",Urine Collection (Spot or 24-Hour)
+Urine Sampling for:,Urine Collection (Spot or 24-Hour)
+Used/Unused Vial Assessment,Assess study drug compliance
+VAS Admin,
+Venous FPG j,
+Verify drug intake and drug accountability,Assess study drug compliance
+"Verify drug intake and drug accountability""",Assess study drug compliance
+Verify eligibility criteriaP,"Inclusion and exclusion criteria, review and confirm"
+Verify subject has fasted 8 hours,
+Viral Serology (hepatitis),Hepatitis B Virus (HBV) screening tests
+Visit date confirmation in e-diary web portal,
+Visit window,
+Visit window (days),
+Visual oral examination (including inspection of teeth),
+"Vital sign measurements,",Vital Signs
+Vital signs' d,Vital Signs
+Vital Signs (3 sitting BP and PR measurements),Vital Signs
+Vital Signs (3 sitting BP and PR measurements)d,Vital Signs
+"Vital signs (blood pressure [sitting], heart rate [supine])",Vital Signs
+"Vital signs (Blood Pressure, Heart Rate)",Vital Signs
+Vital Signs (BP and,Vital Signs
+"Vital signs (BP, heart rate, body temperature, RR) a",Vital Signs
+"Vital signs (BP, pulse, body temperature, respiration rate) d",Vital Signs
+"Vital signs (BP, pulse, body temperature, RR) e",Vital Signs
+"Vital Signs (heart rate, blood pressure) e",Vital Signs
+Vital Signs (HR and Blood Pressure),Vital Signs
+Vital Signs (including body weight),Vital Signs
+"Vital signs (PR and BP, in triplicate) i",Vital Signs
+Vital Signs (Pulse Rate and Blood pressure),Vital Signs
+"Vital signs (pulse rate, blood pressure, respiration rate, body temperature)",Vital Signs
+"Vital Signs (respiratory rate, oral/temporal/tympanic temperature)",Vital Signs
+"Vital Signs (respiratory rate, oral/tympanic temperature)",Vital Signs
+Vital Signs (Seated BP & Heart Rate),Vital Signs
+Vital Signs (sitting) b,Vital Signs
+Vital signs (supine): blood pressure and pulse rate,Vital Signs
+Vital signs (supine): blood pressure and pulse rateb,Vital Signs
+"Vital signs (supine): body temperature, blood pressure and pulse rate",Vital Signs
+Vital Signs and Body Weight,Vital Signs
+Vital signs e,Vital Signs
+Vital Signs in Triplicate (Pulse Rate and Blood Pressure),Vital Signs
+"Vital Signs measured in duplicate (heart rate, blood pressure)",Vital Signs
+"Vital Signs Measured in Duplicate (Heart Rate, Blood PressureÂ¹)",Vital Signs
+"Vital signs, height, and weight",Vital Signs
+"Vital signs, weight, foot examination",Vital Signs
+"Vital signs,Â¹ weight, foot examination",Vital Signs
+Vital signs: blood pressure and pulse rate,Vital Signs
+Vital SignsÂ¹,Vital Signs
+Vital signsc,Vital Signs
+Vital signsC,Vital Signs
+Vital signsf,Vital Signs
+Vital signsh,Vital Signs
+Vitamin D,
+Wagner Ulcer Classification,
+Waist and hip circumference,Waist circumference
+Waist and hip measurements,Waist circumference
+Waist circumference -,Waist circumference
+Waist circumferencelWHR,Waist circumference
+Waist/Hip circumferencee,Waist circumference
+Waist/hip ratio,Waist circumference
+Wash-out of existing RAAS therapy,
+Washout LMT,
+Washout Second AHAW Continue Metformin Monotherapy. Do Not Change Metformin Dose,
+WC,
+Weekly Phone Contact number (P) (For details see Table 2-2 below),
+Weight (measured in duplicate),Weight
+Weight (Measured in Duplicate),Weight
+Weight (W) & height (H) (c),Weight
+Weight (W) & Height (H) (c),Weight
+Weight a,Weight
+Weight A,Weight
+Weight and heightÂ¹,Weight
+Weight and waist circumferenceÂ³,Weight
+"Weight c, height, and BMI calculation",Weight
+Weight in Duplicate,Weight
+Weight j,Weight
+"Weight, waist circumference",Weight
+Weight/BMI c,Weight
+Weight/SBP/DBP/HR,Weight
+Whole blood (DNA) for Future Biomedical Research,Exploratory biomarker samples
+Whole Blood (DNA) for Future Biomedical Research u,Exploratory biomarker samples
+Withdrawal criterion,
+Witness Blinded Dose of Study Drug in Clinic,Observe patient administer study drug
+Witness Dose of Blinded Investigational Product / Open-Label Liraglutide in ClinicÂ¹,Observe patient administer study drug
+Witness Dose of Blinded Investigational Product in Clinic,Observe patient administer study drug
+Witness Dose of Blinded Study Drug in Clinich,Observe patient administer study drug
+Witness dose of blinded study medication and Met- IR in clinic,Observe patient administer study drug
+Witnessed Dose,Observe patient administer study drug
+Women only : Estradiol and FSH test (if necessary to confirm postmenopausal status),Estradiol
+Women only : pregnancy test,Urine pregnancy (local)
+Women only: FSH (if necessary to define menopausal status),Follicle Stimulating Hormone (FSH)
+Women only: serum pregnancy test (if childbearing potential),Serum pregnancy
+Written general informed consent/assignment of SID number (E code),Randomization/IWRS
+Written informed consent/assignment of SID number #,Informed Consent
+X,
+Y-GT,
+y-GTP,

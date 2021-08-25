@@ -1,0 +1,30 @@
+{
+  "7": {
+    "table": "Protocol Activity,Screen/,,,,,Treatment,Period,,,Post,Treatment\n,Baselinel (<28 days),,Cycle 1,Only,(Days 1,-21),Cycle 2,and Subsequent (Days 1-21),Cycles,End of Treatment,Follow-Up23\n,,Day 1,Day 2,Day 4,Day 8,Day 15,Day 1,Day 8,Day 15,,\nVisit Window (Days),,,,1,1,+2,2,+2,+2,,\nInformed consent,X,,,,,,,,,,\nTumor history,X,,,,,,,,,,\nMedical history,X,,,,,,,,,,\nComplete Physical Examination 5 including skin examination,X,X,,,,,,,,X,\nAbbreviated Physical Examination including skin examination,,,,X,,X,X,X,X,,\nBaseline signs and symptoms,,,,,,,,,,,\nHeight,X,,,,,,,,,,\nWeight,X,X,,,,,,,,X,\nVital signs,X,X,,X,,X,X,X,X,X,X\nECOG Performance status,X,X,,,,,X,,,X,X\n12-Lead ECG,X,X,,,,,X,X,,X,\nLaboratory,,,,,,,,,,,\nHematology,X,,,X,,X,X,X,X,X,\nBlood Chemistry,X,,,X,,,X,X,X,X,\nCoagulation,X,,,,,,X,,,X,\nUrinalysis¹,X,,,,,,X,,,X,\nPregnancy test,X,X,,,,,X,,,X,\nRegistration,,,,,,,,,,,\nStudy treatment,,,,,,,X,,,,\nCT or MRI scan or equivalent,X,,,,,,X (every 6 weeks),,,X,\nCCI,,,,,,,,,,,\nCCI,,,,,,,,,,,\nCC,,,,,,,,,,,\nAdverse Events,X,X,X,X,X,X,X,X,X,X,X\nConcomitant medications and non drug supportive interventions²,X,X,X,X,X,X,X,X,X,X,X\n",
+    "pages": [
+      7,
+      8
+    ],
+    "protocol_matched": [
+      "weight",
+      "height",
+      "hematology",
+      "ct or mri scan or equivalent",
+      "pregnancy test",
+      "laboratory",
+      "study treatment",
+      "ecog performance status",
+      "baseline signs and symptoms",
+      "coagulation",
+      "informed consent",
+      "medical history",
+      "protocol activity",
+      "tumor history",
+      "blood chemistry",
+      "vital signs",
+      "registration",
+      "visit window (days)",
+      "adverse events"
+    ]
+  }
+}

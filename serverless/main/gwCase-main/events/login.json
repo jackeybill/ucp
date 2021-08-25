@@ -1,0 +1,8 @@
+{
+  "method": "login",
+  "body": {
+    "username": "wang.dean@pwc.com",
+    "password": "!QAZ2wsx#EDC4rfv",
+    "role": "Registered Nurse"
+  }
+}

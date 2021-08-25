@@ -1,0 +1,102 @@
+Standard Event,Categories,Dummy Cost,Anxiety Inducing,Hospital dependent,Physically Invasiveness,Blood Draw,Sedation,Injection,Urine,Requires Fasting,Longer than 2 hours,Questionnaire
+12-lead ECG (central or local),Procedures,140,1,0,1,0,0,0,0,0,0,0
+Administer Study Drug,Study Procedures,60,1,0,0,0,0,0,0,0,0,0
+Adverse events (AEs),Physical Examination,120,0,0,0,0,0,0,0,0,0,0
+Anti-Drug Antibodies,Labs,42,0,0,0,1,0,0,0,0,0,0
+Anti-GAD antibodies,Labs,24,0,0,0,1,0,0,0,0,0,0
+APP ADL,Questionnaires,54,0,0,0,0,0,0,0,0,0,1
+Assess study drug compliance,Study Procedures,60,1,0,0,0,0,0,0,0,0,1
+Blood Draw,Labs,36,0,0,0,1,0,0,0,0,0,0
+C-Peptide,Labs,30,0,0,0,1,0,0,0,0,0,0
+"C-Reactive Protein, high-sensitivity  (hsCRP)",Questionnaires,63,0,0,0,1,0,0,0,0,0,0
+C-SSRS Screening/Baseline,Questionnaires,81,1,0,0,0,0,0,0,0,0,1
+C-SSRS Since Last Visit,Questionnaires,63,1,0,0,0,0,0,0,0,0,1
+Calcitonin,Labs,18,0,0,0,1,0,0,0,0,0,0
+CBC,Labs,12,0,0,0,1,0,0,0,0,0,0
+Chest x-ray (posterior-anterior and lateral view) (local),Procedures,60,1,0,1,0,0,1,0,0,0,0
+Clinician-Administered Assessments (Electronic),Questionnaires,72,1,0,0,0,0,0,0,0,0,1
+Clinician-Administered Assessments (Paper),Questionnaires,90,1,0,0,0,0,0,0,0,0,1
+Comprehensive Metabolic Panel (Clinical Chemistry),Labs,24,0,0,0,1,0,0,0,0,0,0
+Concomitant medications,Physical Examination,60,0,0,0,0,0,0,0,0,0,0
+Creatinine,Labs,36,0,0,0,1,0,0,0,0,0,0
+Crystatin-C,Labs,12,0,0,0,1,0,0,0,0,0,0
+Cytokine Panel,Labs,18,0,0,0,1,0,0,0,0,0,0
+Demographics,Physical Examination,48,0,0,0,0,0,0,0,0,0,0
+Diary compliance check,Study Procedures,50,0,0,0,0,0,0,0,0,0,0
+Diary return,Study Procedures,60,0,0,0,0,0,0,0,0,0,0
+Dilated fundoscopic examination,Procedures,100,1,0,1,0,0,0,0,0,0,0
+Dispense ancillary supplies to patient,Study Procedures,90,0,0,0,0,0,0,0,0,0,0
+Dispense and train on use of blood glucose meter,Study Procedures,60,0,0,0,0,0,0,0,0,0,0
+Dispense blood glucose meter,Study Procedures,20,0,0,0,0,0,0,0,0,0,0
+Dispense Study Drug,Study Procedures,20,0,0,0,0,0,0,0,0,0,0
+DTSQc,Questionnaires,54,0,0,0,0,0,0,0,0,0,1
+DTSQs,Questionnaires,54,0,0,0,0,0,0,0,0,0,1
+eGFR (CKD-EPI),Labs,36,0,0,0,1,0,0,0,0,0,0
+eGFR (MDRD),Labs,12,0,0,0,1,0,0,0,0,0,0
+EQ-5D-5L,Questionnaires,54,0,0,0,0,0,0,0,0,0,1
+Estradiol,Labs,12,0,0,0,1,0,0,0,0,0,0
+Exploratory biomarker samples,Labs,6,0,0,0,1,0,0,0,0,0,0
+Flow Cytometry Panel,Labs,48,0,0,0,1,0,0,0,0,0,0
+Follicle Stimulating Hormone (FSH),Labs,6,0,0,0,1,0,0,0,0,0,0
+Free Fatty Acids,Labs,36,0,0,0,1,0,0,0,0,0,0
+Genetics sample,Labs,30,0,0,0,1,0,0,0,0,0,0
+Glucagon,Labs,24,0,0,0,1,0,0,0,0,0,0
+Glucose,Labs,24,0,0,0,1,0,0,0,0,0,0
+HBV DNA,Labs,48,1,0,0,1,0,0,0,0,0,0
+Height,Physical Examination,36,0,0,0,0,0,0,0,0,0,0
+Hematology,Labs,18,0,0,0,1,0,0,0,0,0,0
+Hemoglobin A1c (HbA1c),Labs,12,0,0,0,1,0,0,0,0,0,0
+Hepatic Panel (Liver Tests),Labs,6,0,0,0,1,0,0,0,0,0,0
+Hepatitis B Virus (HBV) screening tests,Labs,48,1,0,0,1,0,0,0,0,0,0
+Hepatitis C Virus (HCV) screening tests,Labs,60,1,0,0,1,0,0,0,0,0,0
+HIV screening tests,Labs,54,1,0,0,1,0,0,0,0,0,0
+Hypoglycemic events review,Study Procedures,90,0,0,0,0,0,0,0,0,0,0
+Immunogencity (ADA) samples,Labs,6,0,0,0,1,0,0,0,0,0,0
+Immunoglobulin Panel,Labs,54,0,0,0,1,0,0,0,0,0,0
+"Inclusion and exclusion criteria, review and confirm",Study Procedures ,80,0,0,0,0,0,0,0,0,0,0
+Informed Assent,Study Procedures ,10,1,0,0,0,0,0,0,0,0,0
+Informed consent (assent for pediatrics),Study Procedures ,40,1,0,0,0,0,0,0,0,0,0
+Injection Training,Study Procedures ,60,1,0,0,0,0,0,0,0,0,0
+Insulin,Labs,12,0,0,0,1,0,0,0,0,0,0
+IT-SQ,Questionnaires,81,0,0,0,0,0,0,0,0,0,1
+IW-SP,Questionnaires,27,0,0,0,0,0,0,0,0,0,1
+IWQOL,Questionnaires,18,0,0,0,0,0,0,0,0,0,1
+Lipase,Labs,30,0,0,0,1,0,0,0,0,0,0
+Lipid panel,Labs,60,0,0,0,1,0,0,0,1,0,0
+Observe patient administer study drug,Study Procedures ,60,1,0,0,0,0,0,0,0,0,0
+Pancreatic Amylase,Labs,36,0,0,0,1,0,0,0,0,0,0
+Patient Diary (Electronic),Study Procedures ,60,0,0,0,0,0,0,0,0,0,1
+Patient Diary (Paper),Study Procedures ,80,0,0,0,0,0,0,0,0,0,1
+Patient diary dispensed,Study Procedures ,10,0,0,0,0,0,0,0,0,0,0
+Patient Education,Study Procedures ,50,0,0,0,0,0,0,0,0,0,0
+Patient Reported Ouctomes (Electronic),Study Procedures,30,1,0,0,0,0,0,0,0,0,1
+Patient returns study drugs and injection supplies,Study Procedures,90,0,0,0,0,0,0,0,0,0,0
+Patient-Reported Outcomes (Paper),Study Procedures,90,1,0,0,0,0,0,0,0,0,1
+Pharmacokinetic (PK) samples,Labs,42,0,0,0,1,0,0,0,0,0,0
+PHQ-9,Questionnaires,54,0,0,0,0,0,0,0,0,0,1
+Physical examination,Physical Examination,48,1,0,0,0,0,0,0,0,0,0
+PK sample for immunogenicity,Labs,42,0,0,0,1,0,0,0,0,0,0
+"Preexisting conditions and medical history, including relevant surgical history",Physical Examination,12,0,0,0,0,0,0,0,0,0,0
+Prespecified medical history (indication and history of interest),Physical Examination,36,0,0,0,0,0,0,0,0,0,0
+Prior treatments for indication,Physical Examination,12,0,0,0,0,0,0,0,0,0,0
+Randomization and Dosing,Study Procedures,40,0,0,0,0,0,0,0,0,0,0
+Randomization/IWRS,Study Procedures,90,0,0,0,0,0,0,0,0,0,0
+Self-Harm Follow-Up Form,Questionnaires,27,1,0,0,0,0,0,0,0,0,1
+Self-harm Supplement Form,Questionnaires,9,1,0,0,0,0,0,0,0,0,1
+Serum pregnancy,Labs,54,0,0,0,1,0,0,0,0,0,0
+SF-36,Questionnaires,90,0,0,0,0,0,0,0,0,0,1
+SMBG Profile,Study Procedures,80,0,0,0,0,0,0,0,0,0,0
+Stored Samples,Labs,6,0,0,0,1,0,0,0,0,0,0
+Study Drug Dose Adjustment,Study Procedures,50,0,0,0,0,0,0,0,0,0,0
+Study Drug Dose Calculation - Initial,Study Procedures,50,0,0,0,0,0,0,0,0,0,0
+"Substance use (alcohol, caffeine, tobacco use)",Physical Examination,36,1,0,0,0,0,0,0,0,0,0
+Symptom-directed physical examination,Physical Examination,120,0,0,0,0,0,0,0,0,0,0
+Telephone Call,Study Procedures,70,0,0,0,0,0,0,0,0,0,0
+Thyroid Stimulating Hormone (TSH),Labs,54,0,0,0,1,0,0,0,0,0,0
+Tuberculosis (TB) Test,Labs,42,0,0,0,1,0,1,0,0,0,0
+Urinalyis,Labs,18,0,0,0,1,0,0,1,0,0,0
+Urinary albumin/creatinine ratio (UACR),Labs,24,0,0,0,1,0,0,0,0,0,0
+Urine pregnancy (local),Labs,42,0,0,0,1,0,0,0,0,0,0
+Vital Signs,Physical Examination,12,1,0,0,0,0,0,0,0,0,0
+Waist Circumference,Physical Examination,60,0,0,0,0,0,0,0,0,0,0
+Weight,Physical Examination,84,0,0,0,0,0,0,0,0,0,0

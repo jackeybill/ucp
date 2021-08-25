@@ -1,0 +1,39 @@
+{
+    "Records": [
+      {
+        "eventVersion": "2.1",
+        "eventSource": "aws:s3",
+        "awsRegion": "us-west-2",
+        "eventTime": "2021-03-31T05:24:34.059Z",
+        "eventName": "ObjectCreated:Put",
+        "userIdentity": {
+          "principalId": "AWS:AROAY3LIXGYS4KM5HOOVC:gwCase-dev"
+        },
+        "requestParameters": {
+          "sourceIPAddress": "44.234.45.55"
+        },
+        "responseElements": {
+          "x-amz-request-id": "X0THS50ZW8P6T70E",
+          "x-amz-id-2": "JEmxJTOqv3nvFVnsM6Zm2/6RzuvUjQxvLo88lvNqzf/t1b1Z7mgeRr55T8afi1nQn6kSWf44ujyVIgzvlKe9NcpjL2muNp/F"
+        },
+        "s3": {
+          "s3SchemaVersion": "1.0",
+          "configurationId": "new files",
+          "bucket": {
+            "name": "hiapa",
+            "ownerIdentity": {
+              "principalId": "A2RYMNFZ8SOVNI"
+            },
+            "arn": "arn:aws:s3:::hiapa"
+          },
+          "object": {
+            "key": "hiapaDev/RawDocuments/Patient+3_medical+claim+form.pdf",
+            "size": 1221016,
+            "eTag": "336d7065d33f1961dfd09cbb95f66046",
+            "sequencer": "006064079689170BEB"
+          }
+        }
+      }
+    ]
+  }
+  
