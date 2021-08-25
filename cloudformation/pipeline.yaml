@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >
 
-  CI/CD Pipeline for Serverless Apps that use SAM 
+  CI/CD Pipeline for Serverless Apps
 
 Parameters:
   AppIdentity:
@@ -35,16 +35,17 @@ Parameters:
   Stage:
     Type: String
     Default: dev
-  BetaFleet:
-    Description: Fleet Configured in CodeDeploy
-    Type: String
-    Default: DemoFleet
+    AllowedValues:
+      - dev
+      - test
+      - prod
+
   CloudFormationStateBucket:
     Type: String
     Description: Bucket to store CF State info 
     Default: aws-sam-cli-managed-default-samclisourcebucket-lepoic0s00k5-sg
 
-# --------------        Source   -------------------- #
+# --------------     Conditions   -------------------- #
 
 Conditions:
   UseCodeCommit:
@@ -52,15 +53,14 @@ Conditions:
   UseGitHub:
     !Equals [!Ref SourceCodeProvider, 'GitHub']
 
-
 Resources:
-## --------------        Source   -------------------- ##
-  #codecommit 
+## --------------   Source   -------------------- ##
+  # codecommit 
   MyRepo:
     Condition: UseCodeCommit
     Type: AWS::CodeCommit::Repository
     Properties:
-      RepositoryName: !Join ['-', [!Ref Stage, !Ref Stage, 'repo']]
+      RepositoryName: !Join ['-', [!Ref AppIdentity, !Ref Stage, 'repo']]
       RepositoryDescription: !Sub '${AppIdentity} repository'
       # Triggers:
       # - Name: MyTrigger
@@ -71,7 +71,7 @@ Resources:
       #   - development
       #   Events:
       #   - all
-## --------------        Bucket   -------------------- ##
+## --------------     Bucket   -------------------- ##
   WebBucket:
     Type: "AWS::S3::Bucket"
     Properties:
@@ -139,9 +139,7 @@ Resources:
       ArtifactStore:
         Type: S3
         Location: !Ref CodePipelineArtifactStoreBucket
-      RoleArn: !GetAtt 
-        - CodePipelineServiceRole
-        - Arn
+      RoleArn: !GetAtt CodePipelineServiceRole.Arn
       Stages:
         - Name: Source
           Actions:
@@ -188,53 +186,39 @@ Resources:
                 Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
                 ParameterOverrides: !Sub |
                   {
-                    "Stage":  "${Stage}"
+                    "Stage":  "${Stage}",
+                    'AppIdentity': "${AppIdentity}"
                   }
                 RoleArn: !GetAtt CloudFormationExecutionRole.Arn
-                StackName: !Join ['-', [!Ref Stage, !Ref Stage, 'Stack']]
+                StackName: !Join ['-', [!Ref AppIdentity, !Ref Stage, 'Stack']]
                 TemplatePath: BuildArtifactAsZip::packaged-template.yaml
               RunOrder: 1
 
 ## --------------   CloudWatch    -------------------- ##     
 #CloudWatch Rule
-  # AmazonCloudWatchEventRule:
-  #   Type: 'AWS::Events::Rule'
-  #   Properties:
-  #     EventPattern:
-  #       source:
-  #         - aws.codecommit
-  #       detail-type:
-  #         - CodeCommit Repository State Change
-  #       resources:
-  #         - !Join 
-  #           - ''
-  #           - - 'arn:aws:codecommit:'
-  #             - !Ref 'AWS::Region'
-  #             - ':'
-  #             - !Ref 'AWS::AccountId'
-  #             - ':'
-  #             - !Ref MyRepoName
-  #       detail:
-  #         event:
-  #           - referenceCreated
-  #           - referenceUpdated
-  #         referenceType:
-  #           - branch
-  #         referenceName:
-  #           - master
-  #     Targets:
-  #       - Arn: !Join 
-  #           - ''
-  #           - - 'arn:aws:codepipeline:'
-  #             - !Ref 'AWS::Region'
-  #             - ':'
-  #             - !Ref 'AWS::AccountId'
-  #             - ':'
-  #             - !Ref AppPipeline
-  #         RoleArn: !GetAtt 
-  #           - AmazonCloudWatchEventRole
-  #           - Arn
-  #         Id: codepipeline-AppPipeline
+  AmazonCloudWatchEventRule:
+    Condition: UseCodeCommit
+    Type: 'AWS::Events::Rule'
+    Properties:
+      EventPattern:
+        source:
+          - aws.codecommit
+        detail-type:
+          - CodeCommit Repository State Change
+        resources:
+          - !Sub "arn:aws:codecommit:${AWS::Region}:${AWS::AccountId}:${MyRepo}"
+        detail:
+          event:
+            - referenceCreated
+            - referenceUpdated
+          referenceType:
+            - branch
+          referenceName:
+            - !Ref BranchName
+      Targets:
+        - Arn: !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${AppPipeline}"
+          RoleArn: !GetAtt AmazonCloudWatchEventRole.Arn
+          Id: codepipeline-AppPipeline
           
 ## --------------   IAM    -------------------- ##         
 #S3 Bucket Policy
@@ -249,12 +233,7 @@ Resources:
             Effect: Deny
             Principal: '*'
             Action: 's3:PutObject'
-            Resource: !Join 
-              - ''
-              - - !GetAtt 
-                  - CodePipelineArtifactStoreBucket
-                  - Arn
-                - /*
+            Resource: !Join ['',[!GetAtt CodePipelineArtifactStoreBucket.Arn, '/*']]
             Condition:
               StringNotEquals:
                 's3:x-amz-server-side-encryption': 'aws:kms'
@@ -262,18 +241,14 @@ Resources:
             Effect: Deny
             Principal: '*'
             Action: 's3:*'
-            Resource: !Join 
-              - ''
-              - - !GetAtt 
-                  - CodePipelineArtifactStoreBucket
-                  - Arn
-                - /*
+            Resource: !Join ['',[!GetAtt CodePipelineArtifactStoreBucket.Arn, '/*']]
             Condition:
               Bool:
                 'aws:SecureTransport': false
 
 #CloudWatch Role                
   AmazonCloudWatchEventRole:
+    Condition: UseCodeCommit
     Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
@@ -286,20 +261,14 @@ Resources:
             Action: 'sts:AssumeRole'
       Path: /
       Policies:
-        - PolicyName: cwe-pipeline-execution
+        - PolicyName: pipeline-execution
           PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
                 Action: 'codepipeline:StartPipelineExecution'
-                Resource: !Join 
-                  - ''
-                  - - 'arn:aws:codepipeline:'
-                    - !Ref 'AWS::Region'
-                    - ':'
-                    - !Ref 'AWS::AccountId'
-                    - ':'
-                    - !Ref AppPipeline
+                Resource: !Sub 'arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${AppPipeline}'
+
   CodeBuildServiceRole:
     Type: AWS::IAM::Role
     Properties:
@@ -348,6 +317,7 @@ Resources:
                   Effect: Allow
                   Action: 'ssm:GetParameters'
                   Resource: '*'
+
   CloudFormationExecutionRole:
     Type: AWS::IAM::Role
     Properties:
