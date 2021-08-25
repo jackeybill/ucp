@@ -85,10 +85,21 @@ Resources:
       - Key: Stack
         Value: !Ref AWS::StackName
 
+  SecondSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: MyVPC
+      CidrBlock: 10.1.0.0/24 
+      Tags:
+      - Key: Stack
+        Value: Second subnet for UCP project
+
 #SG
   MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
+      GroupDescription: security group
       VpcId:
         Ref: MyVPC
       Tags: 
