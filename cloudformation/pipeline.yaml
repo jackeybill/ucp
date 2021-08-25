@@ -187,7 +187,7 @@ Resources:
                 ParameterOverrides: !Sub |
                   {
                     "Stage":  "${Stage}",
-                    'AppIdentity': "${AppIdentity}"
+                    "AppIdentity": "${AppIdentity}"
                   }
                 RoleArn: !GetAtt CloudFormationExecutionRole.Arn
                 StackName: !Join ['-', [!Ref AppIdentity, !Ref Stage, 'Stack']]
