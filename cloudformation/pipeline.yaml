@@ -186,7 +186,7 @@ Resources:
                 Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
                 ParameterOverrides: !Sub |
                   {
-                    "Stage":  "${Stage}",
+                    "Stage": "${Stage}",
                     "AppIdentity": "${AppIdentity}"
                   }
                 RoleArn: !GetAtt CloudFormationExecutionRole.Arn
