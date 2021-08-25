@@ -184,11 +184,7 @@ Resources:
               Configuration:
                 ActionMode: CREATE_UPDATE
                 Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
-                ParameterOverrides: !Sub |
-                  {
-                    "Stage": "${Stage}",
-                    "AppIdentity": "${AppIdentity}"
-                  }
+                ParameterOverrides: !Sub '{ "Stage": "${Stage}", "AppIdentity": "${AppIdentity}"}'
                 RoleArn: !GetAtt CloudFormationExecutionRole.Arn
                 StackName: !Join ['-', [!Ref AppIdentity, !Ref Stage, 'Stack']]
                 TemplatePath: BuildArtifactAsZip::packaged-template.yaml
