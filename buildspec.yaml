@@ -19,6 +19,8 @@
         # - cfn-lint -t serverless/template.yaml
         - echo "Starting cloudformation package `date` in `pwd`"
         - aws cloudformation package --template-file serverless/template.yaml --s3-bucket ${STATE_BUCKET} --output-template-file packaged-template.yaml
+        - echo "Starting cloudformation package for AWS Sagemaker `date` in `pwd`"
+        - aws cloudformation package --template-file cloudformation/sagemaker-cloudformation-template.yml --s3-bucket ${STATE_BUCKET} --output-template-file sagemaker-packaged-template.yaml
     post_build:
       # on-failure: ABORT
       commands:
@@ -28,6 +30,7 @@
   artifacts:  
     files:
       - packaged-template.yaml
+      - sagemaker-packaged-template.yaml
       # - location
     name: artifact-name
     discard-paths: yes
