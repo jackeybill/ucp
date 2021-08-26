@@ -196,25 +196,25 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds: 
           - !Ref MySubnet
-      Events:
-        BucketEvent1:
-          Type: S3
-          Properties:
-            Bucket: !Ref MyFileBucket
-            Events: s3:ObjectCreated:*
+      # Events:
+      #   BucketEvent1:
+      #     Type: S3
+      #     Properties:
+      #       Bucket: !Ref MyFileBucket
+      #       Events: s3:ObjectCreated:*
 
-  # isoservicedevawslabel:
-  #   Type: 'AWS::Serverless::Function'
-  #   Properties:
-  #     Handler: lambda_function.lambda_handler
-  #     CodeUri: main/iso-service-dev-aws-label/
-  #     Policies:
-  #       - AWSLambdaExecute
-  #     VpcConfig:
-  #       SecurityGroupIds: 
-  #         - !Ref MySecurityGroup
-  #       SubnetIds: 
-  #         - !Ref MySubnet
+  isoservicedevawslabel:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: lambda_function.lambda_handler
+      CodeUri: main/iso-service-dev-aws-label/
+      Policies:
+        - AWSLambdaExecute
+      VpcConfig:
+        SecurityGroupIds: 
+          - !Ref MySecurityGroup
+        SubnetIds: 
+          - !Ref MySubnet
 
   
 
