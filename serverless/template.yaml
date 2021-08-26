@@ -222,9 +222,9 @@ Resources:
   #               Resource: "*"
 
 Outputs:
-  OrderApi:
-    Description: "API Gateway endpoint URL for Prod stage for Order function"
-    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello/"
+  # OrderApi:
+  #   Description: "API Gateway endpoint URL for Prod stage for Order function"
+  #   Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello/"
   # EndpointId:
   #   Value: !Ref Endpoint
   # EndpointName:
