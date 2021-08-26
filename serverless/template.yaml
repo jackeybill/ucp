@@ -164,6 +164,29 @@ Resources:
             Bucket: !Ref MyFileBucket
             Events: s3:ObjectCreated:*
 
+  isoservicedevprocessPdfToTxt:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: processPdfToTxt.lambda_handler
+      CodeUri: main/iso-service-dev-processPdfToTxt/
+      Description: 'Process PDF to txt, and save into S3'  
+      Policies:
+        - AWSLambdaExecute
+      VpcConfig:
+        SecurityGroupIds: 
+          - !Ref MySecurityGroup
+        SubnetIds: 
+          - !Ref MySubnet
+      Events:
+        SQS1:
+          Type: SQS
+          Properties:
+            Queue:
+              'Fn::GetAtt':
+                - SQSQueue1
+                - Arn
+            BatchSize: 3
+
   # isoservicedevawslabel:
   #   Type: 'AWS::Serverless::Function'
   #   Properties:
@@ -179,28 +202,7 @@ Resources:
 
   
 
-  # isoservicedevprocessPdfToTxt:
-  #   Type: 'AWS::Serverless::Function'
-  #   Properties:
-  #     Handler: processPdfToTxt.lambda_handler
-  #     CodeUri: main/iso-service-dev-processPdfToTxt/
-  #     Description: 'Process PDF to txt, and save into S3'  
-  #     Policies:
-  #       - AWSLambdaExecute
-  #     VpcConfig:
-  #       SecurityGroupIds: 
-  #         - !Ref MySecurityGroup
-  #       SubnetIds: 
-  #         - !Ref MySubnet
-  #     Events:
-  #       SQS1:
-  #         Type: SQS
-  #         Properties:
-  #           Queue:
-  #             'Fn::GetAtt':
-  #               - SQSQueue1
-  #               - Arn
-  #           BatchSize: 3
+  
 
   # isoservicedevtxtintosections:
   #   Type: 'AWS::Serverless::Function'
