@@ -9,10 +9,38 @@ Parameters:
     Type: String
     Description: unique word to identity this application
     Default: ucp
-    
   Stage:
     Type: String
     Description: Deployment stage
+  CognitoUserPoolName:
+    Type: String
+    Description: CognitoUserPool Name
+    Default: ucp-sam-cognito-demo
+  CognitoUserPoolClientName:
+    Type: String
+    Description: CognitoUser Pool Client Name
+    Default: ucp-sam-cognito-client-demo
+  FileBucketName:
+    Type: String
+    Description: file bucket Name
+    Default: ucp-sam-s3-demo-sg
+  GithubRepo:
+    Description: Gitub Repository name
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /services/github/repo
+  GithubToken:
+    Description: Github OAuth Token with full permissions on admin:repo_hook and repo
+    Type: AWS::SSM::Parameter::Value<String>
+    NoEcho: true
+    Default: /services/github/token
+  GithubUser:
+    Description: Github user where the repository lives
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /services/github/user
+  GitBranchName:
+    Description: Repo Branch Name
+    Type: String
+    Default: master
 
 Globals:
   Function:
@@ -226,10 +254,53 @@ Resources:
   #               Action: "*"
   #               Resource: "*"
 
+#amplify section
+  AmplifyApp:
+    Type: AWS::Amplify::App
+    Properties:
+      Name: amplify-sam-demo-app
+      Repository: !Ref GithubRepo
+      OauthToken: !Ref GithubToken
+      IAMServiceRole: !GetAtt AmplifyRole.Arn
+      EnvironmentVariables:
+        - Name: ENDPOINT
+          Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
+
+  AmplifyBranch:
+    Type: AWS::Amplify::Branch
+    Properties:
+      BranchName: !Ref GitBranchName
+      AppId: !GetAtt AmplifyApp.AppId
+      EnableAutoBuild: true
+
+  AmplifyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - amplify.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: Amplify
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: "amplify:*"
+                Resource: "*"
+
+
 Outputs:
   OrderApi:
     Description: "API Gateway endpoint URL for Prod stage for Order function"
     Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello/"
+  AmplifyAppID:
+    Value: !Ref AmplifyApp
   # EndpointId:
   #   Value: !Ref Endpoint
   # EndpointName:
