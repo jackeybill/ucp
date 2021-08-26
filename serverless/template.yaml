@@ -177,11 +177,11 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds: 
           - !Ref MySubnet
-      Events:
-        SQS1:
-          Type: SQS
-          Properties:
-            Queue: !GetAtt [SQSQueue1, Arn]
+      # Events:
+      #   SQS1:
+      #     Type: SQS
+      #     Properties:
+      #       Queue: !GetAtt [SQSQueue1, Arn]
 
   # isoservicedevawslabel:
   #   Type: 'AWS::Serverless::Function'
@@ -336,9 +336,9 @@ Resources:
       #               Value: pdf
 
 
-  SQSQueue1:
-    Type: AWS::SQS::Queue
-    Properties: {}
+  # SQSQueue1:
+  #   Type: AWS::SQS::Queue
+  #   Properties: {}
 
 
 
