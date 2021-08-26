@@ -145,6 +145,25 @@ Resources:
             Method: POST
             RestApiId: !Ref MyApi
 
+  isoservicedevextractPDF:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: extractPDF.lambda_handler
+      CodeUri: main/iso-service-dev-extractPDF/
+      Policies:
+        - AWSLambdaExecute
+      VpcConfig:
+        SecurityGroupIds: 
+          - !Ref MySecurityGroup
+        SubnetIds: 
+          - !Ref MySubnet
+      Events:
+        BucketEvent1:
+          Type: S3
+          Properties:
+            Bucket: !Ref MyFileBucket
+            Events: s3:ObjectCreated:*
+
   # isoservicedevawslabel:
   #   Type: 'AWS::Serverless::Function'
   #   Properties:
@@ -158,26 +177,7 @@ Resources:
   #       SubnetIds: 
   #         - !Ref MySubnet
 
-  # isoservicedevextractPDF:
-  #   Type: 'AWS::Serverless::Function'
-  #   Properties:
-  #     Handler: extractPDF.lambda_handler
-  #     CodeUri: main/iso-service-dev-extractPDF/
-  #     Policies:
-  #       - AWSLambdaExecute
-  #     VpcConfig:
-  #       SecurityGroupIds: 
-  #         - !Ref MySecurityGroup
-  #       SubnetIds: 
-  #         - !Ref MySubnet
-  #     Events:
-  #       BucketEvent1:
-  #         Type: S3
-  #         Properties:
-  #           Bucket:
-  #             Ref: Bucket1
-  #           Events:
-  #             - 's3:ObjectCreated:*'
+  
 
   # isoservicedevprocessPdfToTxt:
   #   Type: 'AWS::Serverless::Function'
