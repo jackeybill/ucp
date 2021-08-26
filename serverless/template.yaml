@@ -71,26 +71,26 @@ Resources:
   #           Method: Get
 
 
-  # gwCasemain:
-  #   Type: 'AWS::Serverless::Function'
-  #   Properties:
-  #     Handler: index.handler
-  #     CodeUri: main/gwCase-main/
-  #     Role: 'arn:aws:iam::608494368293:role/iso-service-dev-us-east-2-lambdaRole'
-  #     Events:
-  #       Api1:
-  #         Type: Api
-  #         Properties:
-  #           Path: /cases
-  #           Method: ANY
-  #       Api2:
-  #         Type: Api
-  #         Properties:
-  #           Path: /cases
-  #           Method: OPTIONS
-  #     Layers:
-  #       - 'arn:aws:lambda:us-west-2:608494368293:layer:Jose:1'
-  #       - 'arn:aws:lambda:us-west-2:608494368293:layer:postgresqlClient-master:3'
+  gwCasemain:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      CodeUri: main/gwCase-main/
+      Role: 'arn:aws:iam::608494368293:role/iso-service-dev-us-east-2-lambdaRole'
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /cases
+            Method: ANY
+        Api2:
+          Type: Api
+          Properties:
+            Path: /cases
+            Method: OPTIONS
+      # Layers:
+      #   - 'arn:aws:lambda:us-west-2:608494368293:layer:Jose:1'
+      #   - 'arn:aws:lambda:us-west-2:608494368293:layer:postgresqlClient-master:3'
             
 #vpc
   MyVPC:
@@ -163,12 +163,7 @@ Resources:
         Authorizers:
           MyCognitoAuthorizer:
             UserPoolArn: !GetAtt MyCognitoUserPool.Arn
-      MethodSettings: 
-      #   - ResourcePath: /
-      #   - ResourcePath: /stack
-      #   - ResourcePath: /stack
-        HttpMethod: GET
-
+      
 #Congnito User Pool        
   MyCognitoUserPool:
     Type: AWS::Cognito::UserPool
