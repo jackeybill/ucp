@@ -338,6 +338,7 @@ Resources:
 
   SQSQueue1:
     Type: AWS::SQS::Queue
+    Properties: {}
 
 
 
