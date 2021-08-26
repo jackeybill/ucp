@@ -181,10 +181,10 @@ Resources:
         SQS1:
           Type: SQS
           Properties:
-            Queue:
-              'Fn::GetAtt':
-                - SQSQueue1
-                - Arn
+            Queue: !GetAtt [SQSQueue1, Arn]
+              # 'Fn::GetAtt':
+              #   - SQSQueue1
+              #   - Arn
             BatchSize: 3
 
   # isoservicedevawslabel:
