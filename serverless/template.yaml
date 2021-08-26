@@ -321,8 +321,8 @@ Outputs:
   OrderApi:
     Description: "API Gateway endpoint URL for Prod stage for Order function"
     Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello/"
-  AmplifyAppID:
-    Value: !Ref AmplifyApp
+  # AmplifyAppID:
+  #   Value: !Ref AmplifyApp
   # EndpointId:
   #   Value: !Ref Endpoint
   # EndpointName:
