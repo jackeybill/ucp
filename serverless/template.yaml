@@ -164,9 +164,9 @@ Resources:
           MyCognitoAuthorizer:
             UserPoolArn: !GetAtt MyCognitoUserPool.Arn
       MethodSettings: 
-        - ResourcePath: /
-        - ResourcePath: /stack
-        - ResourcePath: /stack
+      #   - ResourcePath: /
+      #   - ResourcePath: /stack
+      #   - ResourcePath: /stack
         HttpMethod: GET
 
 #Congnito User Pool        
