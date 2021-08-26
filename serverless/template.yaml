@@ -163,6 +163,10 @@ Resources:
           Properties:
             Bucket: !Ref MyFileBucket
             Events: s3:ObjectCreated:*
+      Environment:
+        Variables:
+          STAGE: dev
+          SERVICE: iso-service
 
   isoservicedevprocessPdfToTxt:
     Type: 'AWS::Serverless::Function'
@@ -196,12 +200,6 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds: 
           - !Ref MySubnet
-      # Events:
-      #   BucketEvent1:
-      #     Type: S3
-      #     Properties:
-      #       Bucket: !Ref MyFileBucket
-      #       Events: s3:ObjectCreated:*
 
   isoservicedevawslabel:
     Type: 'AWS::Serverless::Function'
@@ -217,12 +215,6 @@ Resources:
           - !Ref MySubnet
 
   
-
-  
-
-  
-
-
 
 #vpc
   MyVPC:
