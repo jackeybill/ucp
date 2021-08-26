@@ -182,10 +182,6 @@ Resources:
           Type: SQS
           Properties:
             Queue: !GetAtt [SQSQueue1, Arn]
-              # 'Fn::GetAtt':
-              #   - SQSQueue1
-              #   - Arn
-            BatchSize: 3
 
   # isoservicedevawslabel:
   #   Type: 'AWS::Serverless::Function'
@@ -338,6 +334,14 @@ Resources:
       #             -
       #               Name: suffix
       #               Value: pdf
+
+
+  SQSQueue1:
+    Type: AWS::SQS::Queue
+
+
+
+  
 #Sagemaker
   # Endpoint:
   #   Type: "AWS::SageMaker::Endpoint"
