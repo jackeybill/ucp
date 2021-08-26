@@ -124,8 +124,6 @@ Resources:
 # #API section
   MyApi:
     Type: AWS::Serverless::Api
-    DependsOn:
-      - "FailuresMethodGet"
     Properties:
       StageName: !Ref Stage
       Cors: 
@@ -137,6 +135,11 @@ Resources:
         Authorizers:
           MyCognitoAuthorizer:
             UserPoolArn: !GetAtt MyCognitoUserPool.Arn
+      MethodSettings: 
+        - ResourcePath: /
+        - ResourcePath: /stack
+        - ResourcePath: /stack
+        HttpMethod: GET
 
 #Congnito User Pool        
   MyCognitoUserPool:
