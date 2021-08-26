@@ -277,44 +277,44 @@ Resources:
   #               Resource: "*"
 
 #amplify section
-  AmplifyApp:
-    Type: AWS::Amplify::App
-    Properties:
-      Name: amplify-sam-demo-app
-      Repository: !Ref GithubRepo
-      OauthToken: !Ref GithubToken
-      IAMServiceRole: !GetAtt AmplifyRole.Arn
-      EnvironmentVariables:
-        - Name: ENDPOINT
-          Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
+  # AmplifyApp:
+  #   Type: AWS::Amplify::App
+  #   Properties:
+  #     Name: amplify-sam-demo-app
+  #     Repository: !Ref GithubRepo
+  #     OauthToken: !Ref GithubToken
+  #     IAMServiceRole: !GetAtt AmplifyRole.Arn
+  #     EnvironmentVariables:
+  #       - Name: ENDPOINT
+  #         Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
 
-  AmplifyBranch:
-    Type: AWS::Amplify::Branch
-    Properties:
-      BranchName: !Ref GitBranchName
-      AppId: !GetAtt AmplifyApp.AppId
-      EnableAutoBuild: true
+  # AmplifyBranch:
+  #   Type: AWS::Amplify::Branch
+  #   Properties:
+  #     BranchName: !Ref GitBranchName
+  #     AppId: !GetAtt AmplifyApp.AppId
+  #     EnableAutoBuild: true
 
-  AmplifyRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - amplify.amazonaws.com
-            Action:
-              - sts:AssumeRole
-      Policies:
-        - PolicyName: Amplify
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action: "amplify:*"
-                Resource: "*"
+  # AmplifyRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: 2012-10-17
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service:
+  #               - amplify.amazonaws.com
+  #           Action:
+  #             - sts:AssumeRole
+  #     Policies:
+  #       - PolicyName: Amplify
+  #         PolicyDocument:
+  #           Version: 2012-10-17
+  #           Statement:
+  #             - Effect: Allow
+  #               Action: "amplify:*"
+  #               Resource: "*"
 
 
 Outputs:
