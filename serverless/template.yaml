@@ -421,7 +421,7 @@ Resources:
             Action:
               - sts:AssumeRole
       Policies:
-        - PolicyName: AmplifyAdmin
+        - PolicyName: Amplify
           PolicyDocument:
             Version: 2012-10-17
             Statement:
