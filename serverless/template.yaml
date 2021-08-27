@@ -215,7 +215,7 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds: 
           - !Ref MySubnet
-          
+
 ## --------------   API   -------------------- ##
 # #API section
   MyApi:
@@ -394,7 +394,7 @@ Resources:
       Name: !Join ['-', [!Ref AppIdentity, 'amplify', !Ref Stage]]
       Repository: !Ref GithubRepo
       AccessToken: !Ref GithubToken
-      IAMServiceRole: !!GetAtt AmplifyRole.Arn
+      IAMServiceRole: !GetAtt AmplifyRole.Arn
       EnvironmentVariables:
         - Name: ENDPOINT
           Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"

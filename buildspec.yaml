@@ -9,7 +9,6 @@
       commands:
         # - pip install cfn-lint
         - npm ci
-        # - npm install react-app-rewired
     build:
       # on-failure: ABORT
       commands:
@@ -19,21 +18,16 @@
         # - cfn-lint -t serverless/template.yaml
         - echo "Starting cloudformation package `date` in `pwd`"
         - aws cloudformation package --template-file serverless/template.yaml --s3-bucket ${STATE_BUCKET} --output-template-file packaged-template.yaml
-        #- echo "Starting cloudformation package for AWS Sagemaker `date` in `pwd`"
-        #- aws cloudformation package --template-file cloudformation/sagemaker-cloudformation-template.yml --s3-bucket ${STATE_BUCKET} --output-template-file sagemaker-packaged-template.yaml
-        #- echo "Starting cloudformation deploy for AWS Sagemaker `date` in `pwd`"
-        #- aws cloudformation deploy --template-file sagemaker-packaged-template.yaml --stack-name sagemaker-deploy-${Stage}
     post_build:
       # on-failure: ABORT
       commands:
-        - echo "SAM Deploy completed on `date`"
+        - echo "SAM Package completed on `date`"
         - aws s3 sync build/ s3://${WEB_BUCKET}/ --delete
 
   artifacts:  
     files:
       - packaged-template.yaml
       - sagemaker-packaged-template.yaml
-      # - location
     name: artifact-name
     discard-paths: yes
 
