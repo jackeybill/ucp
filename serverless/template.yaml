@@ -48,6 +48,8 @@ Globals:
     Runtime: python3.8
     
 Resources:
+## --------------   Lambda   -------------------- ##
+
 # create subnet sg vpc secretsmanager sagemaker endpoint sns
 # functuins section
   # MyLambdaFunction:
@@ -213,9 +215,24 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds: 
           - !Ref MySubnet
-
-  
-
+          
+## --------------   API   -------------------- ##
+# #API section
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Stage
+      Cors: 
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+      Auth:
+        DefaultAuthorizer: MyCognitoAuthorizer
+        Authorizers:
+          MyCognitoAuthorizer:
+            UserPoolArn: !GetAtt MyCognitoUserPool.Arn
+      
+## --------------   Networks   -------------------- ##
 #vpc
   MyVPC:
     Type: AWS::EC2::VPC
@@ -272,22 +289,8 @@ Resources:
         ToPort: 80
         CidrIp: 0.0.0.0/0
         Description: allow all the traffic from lambda
-    
-# #API section
-  MyApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: !Ref Stage
-      Cors: 
-        AllowMethods: "'*'"
-        AllowHeaders: "'*'"
-        AllowOrigin: "'*'"
-      Auth:
-        DefaultAuthorizer: MyCognitoAuthorizer
-        Authorizers:
-          MyCognitoAuthorizer:
-            UserPoolArn: !GetAtt MyCognitoUserPool.Arn
-      
+
+## --------------   Cognito   -------------------- ##
 #Congnito User Pool        
   MyCognitoUserPool:
     Type: AWS::Cognito::UserPool
@@ -309,6 +312,8 @@ Resources:
       UserPoolId: !Ref MyCognitoUserPool
       ClientName: !Join ['-', [!Ref AppIdentity, 'UserPoolClientName', !Ref Stage]]
       GenerateSecret: false
+
+ ## --------------   S3   -------------------- ##     
 #S3 
   MyFileBucket:
     Type: "AWS::S3::Bucket"
@@ -333,8 +338,7 @@ Resources:
   #   Properties: {}
 
 
-
-  
+## --------------   Sagemaker   -------------------- ##
 #Sagemaker
   # Endpoint:
   #   Type: "AWS::SageMaker::Endpoint"
@@ -382,6 +386,7 @@ Resources:
   #               Action: "*"
   #               Resource: "*"
 
+## --------------   Amplify   -------------------- ##
 #amplify section
   AmplifyApp:
     Type: AWS::Amplify::App
@@ -389,7 +394,7 @@ Resources:
       Name: !Join ['-', [!Ref AppIdentity, 'amplify', !Ref Stage]]
       Repository: !Ref GithubRepo
       AccessToken: !Ref GithubToken
-      IAMServiceRole: !Ref AmplifyRole
+      IAMServiceRole: !!GetAtt AmplifyRole.Arn
       EnvironmentVariables:
         - Name: ENDPOINT
           Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
@@ -401,6 +406,8 @@ Resources:
       AppId: !GetAtt AmplifyApp.AppId
       EnableAutoBuild: true
 
+
+## --------------   IAM Role   -------------------- ##
   AmplifyRole:
     Type: AWS::IAM::Role
     Properties:
