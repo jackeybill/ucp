@@ -50,6 +50,10 @@ Globals:
   Function:
     Timeout: 800
     Runtime: python3.8
+  Environment:
+    Variables:
+      ROLE_ARN: !Ref SQSRole
+  
     
 Resources:
 ## --------------   Lambda   -------------------- ##
@@ -95,6 +99,19 @@ Resources:
   #           Bucket: !Ref MyFileBucket
   #           Events: s3:ObjectCreated:*
 
+  MySNSTopic:
+    Type: AWS::SNS::Topic
+      Properties: 
+        DisplayName: !Join ['-', [!Ref AppIdentity, 'SNSTopic', !Ref Stage]]
+        Subscription:
+          - Endpoint: !GetAtt MySQS.Arn
+            Protocol: "sqs"
+    
+  MySQS:
+    Type: AWS::SQS::Queue
+    Properties: 
+      MaximumMessageSize: 256
+
 
   gwCasemain:
     Type: 'AWS::Serverless::Function'
@@ -122,8 +139,8 @@ Resources:
             Method: OPTIONS
             RestApiId: !Ref MyApi
       # Layers:
-      #   - 'arn:aws:lambda:us-west-2:608494368293:layer:Jose:1'
-      #   - 'arn:aws:lambda:us-west-2:608494368293:layer:postgresqlClient-master:3'
+        # - 'arn:aws:lambda:us-west-2:608494368293:layer:Jose:1'
+        # - 'arn:aws:lambda:us-west-2:608494368293:layer:postgresqlClient-master:3'
 
   deandevsearchkendra:
     Type: 'AWS::Serverless::Function'
@@ -173,6 +190,7 @@ Resources:
         Variables:
           STAGE: dev
           SERVICE: iso-service
+          NOTIFICATION_ARN: !GetAtt MySNSTopic.Arn
 
   isoservicedevprocessPdfToTxt:
     Type: 'AWS::Serverless::Function'
@@ -187,11 +205,11 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds: 
           - !Ref MySubnet
-      # Events:
-      #   SQS1:
-      #     Type: SQS
-      #     Properties:
-      #       Queue: !GetAtt [SQSQueue1, Arn]
+      Events:
+        SQS1:
+          Type: !Ref MySQS
+          Properties:
+            Queue: !GetAtt MySQS.Arn
 
   isoservicedevtxtintosections:
     Type: 'AWS::Serverless::Function'
@@ -432,6 +450,79 @@ Resources:
               - Effect: Allow
                 Action: "amplify:*"
                 Resource: "*"
+
+  SQSRole:
+    Version: '2012-10-17'
+    Statement:
+      - Action:
+        - logs:CreateLogStream
+        - logs:CreateLogGroup
+        Resource:
+        - arn:aws:logs:us-east-2:608494368293:log-group:/aws/lambda/iso-service-dev*:*
+        Effect: Allow
+      - Action:
+        - logs:PutLogEvents
+        Resource:
+        - arn:aws:logs:us-east-2:608494368293:log-group:/aws/lambda/iso-service-dev*:*:*
+        Effect: Allow
+      - Action: s3:*
+        Resource:
+        - arn:aws:s3:::*
+        Effect: Allow
+      - Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+        Resource: arn:aws:logs:us-east-2:608494368293:log-group:/aws/lambda/*:*:*
+        Effect: Allow
+      - Action:
+        - SNS:*
+        Resource:
+        - arn:aws:sns:us-east-2:608494368293:AmazonTextractExtractPDF-iso-service-dev
+        Effect: Allow
+      - Action:
+        - "*"
+        Resource:
+        - "*"
+        Effect: Allow
+      - Action:
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:DescribeStream
+        - dynamodb:ListStreams
+        Resource:
+        - arn:aws:dynamodb:us-east-2:608494368293:table/iso-service-dev-comprehendData/stream/2020-07-29T01:07:35.137
+        Effect: Allow
+      - Action:
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:GetQueueAttributes
+        Resource:
+        - arn:aws:sqs:us-east-2:608494368293:iso-service-dev-extractedQueue
+        Effect: Allow
+      - Action:
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:GetQueueAttributes
+        Resource:
+        - arn:aws:sqs:us-east-2:608494368293:iso-service-dev-batchXMLToJsonQueue
+        Effect: Allow
+      - Action:
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:GetQueueAttributes
+        Resource:
+        - arn:aws:sqs:us-east-2:608494368293:iso-service-dev-batchXMLToJsonRollupQueue
+        Effect: Allow
+
+
+
+
+
+
+
+
+
 
 
 Outputs:
