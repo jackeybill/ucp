@@ -50,9 +50,7 @@ Globals:
   Function:
     Timeout: 800
     Runtime: python3.8
-  Environment:
-    Variables:
-      ROLE_ARN: !Ref SQSRole
+  
   
     
 Resources:
@@ -191,6 +189,7 @@ Resources:
           STAGE: dev
           SERVICE: iso-service
           NOTIFICATION_ARN: !GetAtt MySNSTopic.Arn
+          ROLE_ARN: !Ref SQSRole
 
   isoservicedevprocessPdfToTxt:
     Type: 'AWS::Serverless::Function'
@@ -362,11 +361,11 @@ Resources:
 
 ## --------------   Sagemaker   -------------------- ##
 #Sagemaker
-  Endpoint:
-    Type: "AWS::SageMaker::Endpoint"
-    Properties:
-      EndpointConfigName:
-        !GetAtt EndpointConfig.EndpointConfigName
+  # Endpoint:
+  #   Type: "AWS::SageMaker::Endpoint"
+  #   Properties:
+  #     EndpointConfigName:
+  #       !GetAtt EndpointConfig.EndpointConfigName
   EndpointConfig:
     Type: "AWS::SageMaker::EndpointConfig"
     Properties:
