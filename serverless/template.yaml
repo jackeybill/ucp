@@ -451,53 +451,62 @@ Resources:
                 Resource: "*"
 
   SQSRole:
-    Version: '2012-10-17'
-    Statement:
-      - Action:
-        - logs:CreateLogStream
-        - logs:CreateLogGroup
-        - logs:PutLogEvents
-        - logs:CreateLogGroup
-        - logs:CreateLogStream
-        - logs:PutLogEvents
-        Resource:
-        - arn:aws:logs:*
-        Effect: Allow
-      - Action: s3:*
-        Resource:
-        - arn:aws:s3:::*
-        Effect: Allow
-      - Action:
-        - SNS:*
-        Resource:
-        - arn:aws:sns:*
-        Effect: Allow
-      - Action:
-        - "*"
-        Resource:
-        - "*"
-        Effect: Allow
-      - Action:
-        - dynamodb:GetRecords
-        - dynamodb:GetShardIterator
-        - dynamodb:DescribeStream
-        - dynamodb:ListStreams
-        Resource:
-        - arn:aws:dynamodb:*
-        Effect: Allow
-      - Action:
-        - sqs:ReceiveMessage
-        - sqs:DeleteMessage
-        - sqs:GetQueueAttributes
-        - sqs:ReceiveMessage
-        - sqs:DeleteMessage
-        - sqs:GetQueueAttributes
-        - sqs:ReceiveMessage
-        - sqs:DeleteMessage
-        - sqs:GetQueueAttributes
-        Resource:
-        - arn:aws:sqs:*
-        Effect: Allow
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - sqs.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: sqsExecution
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - arn:aws:logs:*
+                Effect: Allow
+              - Action: s3:*
+                Resource:
+                  - arn:aws:s3:::*
+                Effect: Allow
+              - Action:
+                  - SNS:*
+                Resource:
+                  - arn:aws:sns:*
+                Effect: Allow
+              - Action:
+                  - dynamodb:GetRecords
+                  - dynamodb:GetShardIterator
+                  - dynamodb:DescribeStream
+                  - dynamodb:ListStreams
+                Resource:
+                  - arn:aws:dynamodb:*
+                Effect: Allow
+              - Action:
+                  - sqs:ReceiveMessage
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                  - sqs:ReceiveMessage
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                  - sqs:ReceiveMessage
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                Resource:
+                  - arn:aws:sqs:*
+                Effect: Allow
 
 
 
