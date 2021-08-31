@@ -206,7 +206,7 @@ Resources:
           - !Ref MySubnet
       Events:
         SQS1:
-          Type: MySQS
+          Type: SQS
           Properties:
             Queue: !GetAtt MySQS.Arn
 
