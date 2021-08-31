@@ -109,7 +109,7 @@ Resources:
   MySQS:
     Type: AWS::SQS::Queue
     Properties:
-      MaximumMessageSize: 256
+      MaximumMessageSize: 262144
 
   gwCasemain:
     Type: 'AWS::Serverless::Function'
