@@ -456,28 +456,21 @@ Resources:
       - Action:
         - logs:CreateLogStream
         - logs:CreateLogGroup
-        Resource:
-        - arn:aws:logs:us-east-2:608494368293:log-group:/aws/lambda/iso-service-dev*:*
-        Effect: Allow
-      - Action:
+        - logs:PutLogEvents
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
         - logs:PutLogEvents
         Resource:
-        - arn:aws:logs:us-east-2:608494368293:log-group:/aws/lambda/iso-service-dev*:*:*
+        - arn:aws:logs:*
         Effect: Allow
       - Action: s3:*
         Resource:
         - arn:aws:s3:::*
         Effect: Allow
       - Action:
-        - logs:CreateLogGroup
-        - logs:CreateLogStream
-        - logs:PutLogEvents
-        Resource: arn:aws:logs:us-east-2:608494368293:log-group:/aws/lambda/*:*:*
-        Effect: Allow
-      - Action:
         - SNS:*
         Resource:
-        - arn:aws:sns:us-east-2:608494368293:AmazonTextractExtractPDF-iso-service-dev
+        - arn:aws:sns:*
         Effect: Allow
       - Action:
         - "*"
@@ -490,37 +483,21 @@ Resources:
         - dynamodb:DescribeStream
         - dynamodb:ListStreams
         Resource:
-        - arn:aws:dynamodb:us-east-2:608494368293:table/iso-service-dev-comprehendData/stream/2020-07-29T01:07:35.137
+        - arn:aws:dynamodb:*
         Effect: Allow
       - Action:
         - sqs:ReceiveMessage
         - sqs:DeleteMessage
         - sqs:GetQueueAttributes
-        Resource:
-        - arn:aws:sqs:us-east-2:608494368293:iso-service-dev-extractedQueue
-        Effect: Allow
-      - Action:
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:GetQueueAttributes
         - sqs:ReceiveMessage
         - sqs:DeleteMessage
         - sqs:GetQueueAttributes
         Resource:
-        - arn:aws:sqs:us-east-2:608494368293:iso-service-dev-batchXMLToJsonQueue
+        - arn:aws:sqs:*
         Effect: Allow
-      - Action:
-        - sqs:ReceiveMessage
-        - sqs:DeleteMessage
-        - sqs:GetQueueAttributes
-        Resource:
-        - arn:aws:sqs:us-east-2:608494368293:iso-service-dev-batchXMLToJsonRollupQueue
-        Effect: Allow
-
-
-
-
-
-
-
-
 
 
 
