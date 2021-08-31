@@ -98,15 +98,16 @@ Resources:
   #         Properties:
   #           Bucket: !Ref MyFileBucket
   #           Events: s3:ObjectCreated:*
-
   MySNSTopic:
     Type: AWS::SNS::Topic
-      Properties:
-        # DisplayName: !Join ['-', [!Ref AppIdentity, 'SNSTopic', !Ref Stage]]
-        # Subscription:
-        #   - Endpoint: !GetAtt MySQS.Arn
-          # Protocol: sqs
-    
+    Properties:
+      Subscription:
+        - Endpoint:
+            Fn::GetAtt:
+              - "MySQS"
+              - "Arn"
+          Protocol: "sqs"
+          
   MySQS:
     Type: AWS::SQS::Queue
     Properties:
