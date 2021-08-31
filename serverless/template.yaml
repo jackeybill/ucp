@@ -103,9 +103,9 @@ Resources:
     Type: AWS::SNS::Topic
       Properties:
         # DisplayName: !Join ['-', [!Ref AppIdentity, 'SNSTopic', !Ref Stage]]
-        Subscription:
-          - Endpoint: !GetAtt MySQS.Arn
-          Protocol: sqs
+        # Subscription:
+        #   - Endpoint: !GetAtt MySQS.Arn
+          # Protocol: sqs
     
   MySQS:
     Type: AWS::SQS::Queue
