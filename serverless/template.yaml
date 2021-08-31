@@ -112,7 +112,6 @@ Resources:
     Properties:
       MaximumMessageSize: 256
 
-
   gwCasemain:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -152,7 +151,7 @@ Resources:
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
-        SubnetIds: 
+        SubnetIds:
           - !Ref MySubnet
       Events:
         Api1:

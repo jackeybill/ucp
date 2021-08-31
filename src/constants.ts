@@ -1,3 +1,4 @@
+import { request } from "node:http";
 import { DocumentAttributeValue } from "./utils/kendraTypes";
 export const PAGE_SIZE = 25;
 
