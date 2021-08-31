@@ -110,6 +110,7 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       MaximumMessageSize: 262144
+      VisibilityTimeout: 800
 
   gwCasemain:
     Type: 'AWS::Serverless::Function'
@@ -209,7 +210,6 @@ Resources:
           Type: SQS
           Properties:
             Queue: !GetAtt MySQS.Arn
-            VisibilityTimeout: 800
 
   isoservicedevtxtintosections:
     Type: 'AWS::Serverless::Function'
