@@ -188,7 +188,7 @@ Resources:
         Variables:
           STAGE: dev
           SERVICE: iso-service
-          NOTIFICATION_ARN: !GetAtt MySNSTopic.Arn
+          NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${MySNSTopic}"
           ROLE_ARN: !Ref SQSRole
 
   isoservicedevprocessPdfToTxt:
