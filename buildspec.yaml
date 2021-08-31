@@ -14,6 +14,7 @@
       commands:
         - echo "Starting React build `date` in `pwd`"
         - npm run build
+        # - npm run build -- --env ${CURRENT_ENVIRONMENT}
         # - echo "Starting cloudformation lint `date` in `pwd`"
         # - cfn-lint -t serverless/template.yaml
         - echo "Starting cloudformation package `date` in `pwd`"

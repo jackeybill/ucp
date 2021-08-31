@@ -45,6 +45,15 @@ Parameters:
     Description: Bucket to store CF State info 
     Default: aws-sam-cli-managed-default-samclisourcebucket-lepoic0s00k5-sg
 
+  CURRENT_ENVIRONMENT:
+    Type: String
+    Description: current environment
+    Default: https://ymd7qr4u4g.execute-api.us-east-1.amazonaws.com/master/cases   #PA_HOST
+
+
+
+  
+
 # --------------     Conditions   -------------------- #
 
 Conditions:
@@ -118,6 +127,9 @@ Resources:
               - 
                 Name: STATE_BUCKET
                 Value: !Ref CloudFormationStateBucket
+              - 
+                Name: CURRENT_ENVIRONMENT
+                Value: !Ref CURRENT_ENVIRONMENT
         Cache:
           Type: S3
           Location: !Sub ${CodePipelineArtifactStoreBucket}/ -cache
