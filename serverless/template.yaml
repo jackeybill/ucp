@@ -191,6 +191,7 @@ Resources:
           SERVICE: iso-service
           NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${MySNSTopic}"
           ROLE_ARN: !Ref SQSRole
+          TEXTRACT_NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:AmazonTextractExtractPDF-iso-service-dev"
 
   isoservicedevprocessPdfToTxt:
     Type: 'AWS::Serverless::Function'
