@@ -166,10 +166,12 @@ def lambda_handler(event, context):
     # bucket': {'name': 'iso-data-zone', 'object': {'key': 'iso-service-dev/RawDocuments/BI+clinical+study+test001.pdf', 
     #bucketName = 'iso-data-zone'
     #objectName = 'iso-service-dev/RawDocuments/BI clinical study test001.pdf'
+    print(objectName)
     if not objectName.endswith('.pdf'):
         return
     #skip call AWS Textract if already did it； s3://iso-data-zone/iso-service-dev/TextractOutput/NCT02620774.pdf.json
     outputName = objectName.replace('RawDocuments','TextractOutput')
+    print(outputName)
     if( checkFileExists(bucketName, outputName+'.json') ):
         #trigger processPdfToTxt
         lambda_client = boto3.client('lambda')
