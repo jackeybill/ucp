@@ -158,21 +158,28 @@ def lambda_handler(event, context):
     '''
     logger.info(f"extractPDF Handler event: {event}")
     # Get S3 bucket info from SQS Records
+    print(event)
+    print('-----------------')
     s3_data = event['Records'][0]['s3']
     bucketName = s3_data['bucket']['name']
     objectName = urllib.parse.unquote_plus(s3_data['object']['key'], encoding='utf-8') #s3_data['object']['key']
     # bucket': {'name': 'iso-data-zone', 'object': {'key': 'iso-service-dev/RawDocuments/BI+clinical+study+test001.pdf', 
     #bucketName = 'iso-data-zone'
     #objectName = 'iso-service-dev/RawDocuments/BI clinical study test001.pdf'
+    print(objectName)
     if not objectName.endswith('.pdf'):
         return
     #skip call AWS Textract if already did it； s3://iso-data-zone/iso-service-dev/TextractOutput/NCT02620774.pdf.json
     outputName = objectName.replace('RawDocuments','TextractOutput')
+    print(outputName)
     if( checkFileExists(bucketName, outputName+'.json') ):
+        print('========trigger processPdfToTxt===')
         #trigger processPdfToTxt
         lambda_client = boto3.client('lambda')
         data = {"Message":json.dumps({"DocumentLocation":{"S3Bucket":bucketName,"S3ObjectName":objectName},"JobId":123,"Status":"manual"})}
         payload = {'Records': [{'body':json.dumps(data)}]}
+        print('======extractPDF payload')
+        print(payload)
         logger.info(f"extractPDF payload: {payload}")
         lambda_client.invoke_async(FunctionName='iso-service-dev-processPdfToTxt', InvokeArgs=json.dumps(payload))
         return
@@ -184,10 +191,12 @@ def lambda_handler(event, context):
     path, file_name = os.path.split(objectName)
     target_bucket = get_target_bucket(objectName)
     try:
+        print('try----')
         insert_log(source_bucket=bucketName, target_bucket=target_bucket, file_name=file_name, successful='Inprocess')
         # arn:aws:sns:us-east-2:608494368293:AmazonTextractExtractPDF-dev
         logger.info("Start async job with bucket: {}, object: {}, topic:{}, role:{}".format(bucketName, objectName, snsTopic, snsRole))
         jobId = startAsyncJob(bucketName, objectName, snsTopic, snsRole)
+        print(jobId)
         logger.info("Get textract jobId:{}".format(jobId))
     except Exception as e:
         logger.error("extractPDF Error: {}".format(e))
