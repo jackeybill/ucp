@@ -79,6 +79,7 @@ def error_sns_handler(file_name, error_msg):
 
 
 def insert_log(source_bucket, target_bucket, file_name, successful):
+    return
     '''
     Insert_log function for inserting data into dynamodb table
     '''
@@ -98,6 +99,7 @@ def insert_log(source_bucket, target_bucket, file_name, successful):
 
 
 def update_log(source_bucket, target_bucket, file_name, successful):
+    return
     '''
     Update_log function for updating data into dynamodb table
     '''
@@ -195,6 +197,7 @@ def lambda_handler(event, context):
         # arn:aws:sns:us-east-2:608494368293:AmazonTextractExtractPDF-dev
         logger.info("Start async job with bucket: {}, object: {}, topic:{}, role:{}".format(bucketName, objectName, snsTopic, snsRole))
         jobId = startAsyncJob(bucketName, objectName, snsTopic, snsRole)
+        print(jobId)
         logger.info("Get textract jobId:{}".format(jobId))
     except Exception as e:
         logger.error("extractPDF Error: {}".format(e))
