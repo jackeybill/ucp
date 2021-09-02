@@ -158,6 +158,8 @@ def lambda_handler(event, context):
     '''
     logger.info(f"extractPDF Handler event: {event}")
     # Get S3 bucket info from SQS Records
+    print(event)
+    print('-----------------')
     s3_data = event['Records'][0]['s3']
     bucketName = s3_data['bucket']['name']
     objectName = urllib.parse.unquote_plus(s3_data['object']['key'], encoding='utf-8') #s3_data['object']['key']

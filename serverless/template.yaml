@@ -208,7 +208,7 @@ Resources:
     Properties:
       Handler: processPdfToTxt.lambda_handler
       CodeUri: main/iso-service-dev-processPdfToTxt/
-      Description: 'Process PDF to txt, and save into S3'  
+      Description: 'Process PDF to txt, and save into S3'
       Policies:
         - AWSLambdaExecute
       VpcConfig:
