@@ -79,7 +79,6 @@ def error_sns_handler(file_name, error_msg):
 
 
 def insert_log(source_bucket, target_bucket, file_name, successful):
-    return
     '''
     Insert_log function for inserting data into dynamodb table
     '''
@@ -99,7 +98,6 @@ def insert_log(source_bucket, target_bucket, file_name, successful):
 
 
 def update_log(source_bucket, target_bucket, file_name, successful):
-    return
     '''
     Update_log function for updating data into dynamodb table
     '''
@@ -193,6 +191,7 @@ def lambda_handler(event, context):
     path, file_name = os.path.split(objectName)
     target_bucket = get_target_bucket(objectName)
     try:
+        print('try----')
         insert_log(source_bucket=bucketName, target_bucket=target_bucket, file_name=file_name, successful='Inprocess')
         # arn:aws:sns:us-east-2:608494368293:AmazonTextractExtractPDF-dev
         logger.info("Start async job with bucket: {}, object: {}, topic:{}, role:{}".format(bucketName, objectName, snsTopic, snsRole))

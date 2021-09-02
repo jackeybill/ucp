@@ -354,7 +354,29 @@ Resources:
       ClientName: !Join ['-', [!Ref AppIdentity, 'UserPoolClientName', !Ref Stage]]
       GenerateSecret: false
 
- ## --------------   S3   -------------------- ##     
+## --------------   DynameDB   -------------------- ##     
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - AttributeName: file_name
+          AttributeType: S
+        - AttributeName: create_time
+          AttributeType: S
+        - AttributeName: source_bucket
+          AttributeType: S
+        - AttributeName: successful
+          AttributeType: S
+        - AttributeName: target_bucket
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      
+## --------------   S3   -------------------- ##     
 #S3 
   MyFileBucket:
     Type: "AWS::S3::Bucket"
