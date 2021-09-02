@@ -105,6 +105,16 @@ Resources:
               - "MySQS"
               - "Arn"
           Protocol: "sqs"
+
+  ExtractPdfSNsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint:
+            Fn::GetAtt:
+              - "MySQS"
+              - "Arn"
+          Protocol: "sqs"
           
   MySQS:
     Type: AWS::SQS::Queue
@@ -191,7 +201,7 @@ Resources:
           SERVICE: iso-service
           NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${MySNSTopic}"
           ROLE_ARN: !Ref SQSRole
-          TEXTRACT_NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:AmazonTextractExtractPDF-iso-service-dev"
+          TEXTRACT_NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${ExtractPdfSNsTopic}"
 
   isoservicedevprocessPdfToTxt:
     Type: 'AWS::Serverless::Function'
