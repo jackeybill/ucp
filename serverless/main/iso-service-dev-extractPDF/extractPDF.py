@@ -173,10 +173,13 @@ def lambda_handler(event, context):
     outputName = objectName.replace('RawDocuments','TextractOutput')
     print(outputName)
     if( checkFileExists(bucketName, outputName+'.json') ):
+        print('========trigger processPdfToTxt===')
         #trigger processPdfToTxt
         lambda_client = boto3.client('lambda')
         data = {"Message":json.dumps({"DocumentLocation":{"S3Bucket":bucketName,"S3ObjectName":objectName},"JobId":123,"Status":"manual"})}
         payload = {'Records': [{'body':json.dumps(data)}]}
+        print('======extractPDF payload')
+        print(payload)
         logger.info(f"extractPDF payload: {payload}")
         lambda_client.invoke_async(FunctionName='iso-service-dev-processPdfToTxt', InvokeArgs=json.dumps(payload))
         return
