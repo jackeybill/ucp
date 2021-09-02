@@ -214,13 +214,21 @@ Resources:
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
-        SubnetIds: 
+        SubnetIds:
           - !Ref MySubnet
       Events:
         SQS1:
           Type: SQS
           Properties:
             Queue: !GetAtt MySQS.Arn
+      Environment:
+        Variables:
+          STAGE: dev
+          SERVICE: iso-service
+          NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${MySNSTopic}"
+          ROLE_ARN: !Ref SQSRole
+          TEXTRACT_NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${ExtractPdfSNsTopic}"
+
 
   isoservicedevtxtintosections:
     Type: 'AWS::Serverless::Function'
