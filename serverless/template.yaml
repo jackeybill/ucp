@@ -302,9 +302,10 @@ Resources:
             - "${Arn}/*"
             - Arn:
                 Fn::GetAtt:
-                - Bucket
+                - MyFileBucket
                 - Arn
-      ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"    
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
+    
       VpcId: !Ref MyVPC
 
 #subnet 
