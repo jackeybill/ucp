@@ -380,16 +380,16 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties: 
       AttributeDefinitions: 
-        - AttributeName: file_name
-          AttributeType: S
-        - AttributeName: create_time
-          AttributeType: S
-        - AttributeName: source_bucket
-          AttributeType: S
-        - AttributeName: successful
-          AttributeType: S
-        - AttributeName: target_bucket
-          AttributeType: S
+        # - AttributeName: file_name
+        #   AttributeType: S
+        # - AttributeName: create_time
+        #   AttributeType: S
+        # - AttributeName: source_bucket
+        #   AttributeType: S
+        # - AttributeName: successful
+        #   AttributeType: S
+        # - AttributeName: target_bucket
+        #   AttributeType: S
         - AttributeName: id
           AttributeType: S
       KeySchema: 
