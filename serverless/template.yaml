@@ -304,11 +304,7 @@ Resources:
                 Fn::GetAtt:
                 - Bucket
                 - Arn
-      ServiceName:
-        Fn::Sub:
-        - com.amazonaws.${Region}.s3
-        - Region:
-          Ref: AWS::Region      
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"    
       VpcId: !Ref MyVPC
 
 #subnet 
