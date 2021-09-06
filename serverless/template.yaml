@@ -287,11 +287,11 @@ Resources:
         Value: !Ref AWS::StackName
 
 #vpc endpoint
-  # S3Endpoint:
-  #   Type: AWS::EC2::VPCEndpoint
-  #     Properties:  
-  #       ServiceName:  !Join ['-', [!Ref AppIdentity, 'S3', !Ref Stage]]
-  #       VpcId: !Ref MyVPC
+  S3Endpoint:
+    Type: AWS::EC2::VPCEndpoint
+      Properties:
+        ServiceName: !Join ['-', [!Ref AppIdentity, 'S3', !Ref Stage]]
+        VpcId: !Ref MyVPC
 
 
 #subnet 
@@ -377,6 +377,8 @@ Resources:
           AttributeType: S
         - AttributeName: target_bucket
           AttributeType: S
+        - AttributeName: id
+          AttributeType: N
       KeySchema: 
         - AttributeName: id
           KeyType: HASH
