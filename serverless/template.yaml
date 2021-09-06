@@ -290,7 +290,25 @@ Resources:
   S3Endpoint:
     Type: AWS::EC2::VPCEndpoint
     Properties:
-      ServiceName: !Join ['-', [!Ref AppIdentity, 'S3-Endpoint', !Ref Stage]]
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: "*"
+          Action:
+          - s3:PutObject
+          Resource:
+          - Fn::Sub:
+            - "${Arn}/*"
+            - Arn:
+                Fn::GetAtt:
+                - Bucket
+                - Arn
+      ServiceName:
+        Fn::Sub:
+        - com.amazonaws.${Region}.s3
+        - Region:
+          Ref: AWS::Region      
       VpcId: !Ref MyVPC
 
 #subnet 
