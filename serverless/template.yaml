@@ -391,10 +391,10 @@ Resources:
         - AttributeName: target_bucket
           AttributeType: S
         - AttributeName: id
-          AttributeType: N
-      # KeySchema: 
-      #   - AttributeName: id
-          # KeyType: HASH
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: id
+          KeyType: HASH
       ProvisionedThroughput: 
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
