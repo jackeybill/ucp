@@ -290,7 +290,21 @@ Resources:
   S3Endpoint:
     Type: AWS::EC2::VPCEndpoint
     Properties:
-      ServiceName: !Join ['-', [!Ref AppIdentity, 'S3 Endpoint', !Ref Stage]]
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: "*"
+          Action:
+          - s3:PutObject
+          Resource:
+          - Fn::Sub:
+            - "${Arn}/*"
+            - Arn:
+                Fn::GetAtt:
+                - MyFileBucket
+                - Arn
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
       VpcId: !Ref MyVPC
 
 #subnet 
@@ -365,19 +379,20 @@ Resources:
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties: 
+      TableName: !Join ['-', ['iso-service', !Ref Stage, 'log']]
       AttributeDefinitions: 
-        - AttributeName: file_name
-          AttributeType: S
-        - AttributeName: create_time
-          AttributeType: S
-        - AttributeName: source_bucket
-          AttributeType: S
-        - AttributeName: successful
-          AttributeType: S
-        - AttributeName: target_bucket
-          AttributeType: S
+        # - AttributeName: file_name
+        #   AttributeType: S
+        # - AttributeName: create_time
+        #   AttributeType: S
+        # - AttributeName: source_bucket
+        #   AttributeType: S
+        # - AttributeName: successful
+        #   AttributeType: S
+        # - AttributeName: target_bucket
+        #   AttributeType: S
         - AttributeName: id
-          AttributeType: N
+          AttributeType: S
       KeySchema: 
         - AttributeName: id
           KeyType: HASH
