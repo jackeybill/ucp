@@ -379,6 +379,7 @@ Resources:
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties: 
+      TableName: !Join ['-', [!Ref AppIdentity, !Ref Stage, 'log']]
       AttributeDefinitions: 
         # - AttributeName: file_name
         #   AttributeType: S
