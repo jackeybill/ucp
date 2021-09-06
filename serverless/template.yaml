@@ -290,7 +290,7 @@ Resources:
   S3Endpoint:
     Type: AWS::EC2::VPCEndpoint
     Properties:
-      ServiceName: !Join ['-', [!Ref AppIdentity, 'S3 Endpoint', !Ref Stage]]
+      ServiceName: !Join ['-', [!Ref AppIdentity, 'S3-Endpoint', !Ref Stage]]
       VpcId: !Ref MyVPC
 
 #subnet 
