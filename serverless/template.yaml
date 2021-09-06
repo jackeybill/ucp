@@ -286,14 +286,12 @@ Resources:
       - Key: Stack
         Value: !Ref AWS::StackName
 
-
 #vpc endpoint
   S3Endpoint:
     Type: AWS::EC2::VPCEndpoint
-      Properties:
-        ServiceName: !Join ['-', [!Ref AppIdentity, 'S3 Endpoint', !Ref Stage]]
-        VpcId: !Ref MyVPC
-
+    Properties:
+      ServiceName: !Join ['-', [!Ref AppIdentity, 'S3 Endpoint', !Ref Stage]]
+      VpcId: !Ref MyVPC
 
 #subnet 
   MySubnet:
