@@ -305,7 +305,6 @@ Resources:
                 - MyFileBucket
                 - Arn
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
-    
       VpcId: !Ref MyVPC
 
 #subnet 
