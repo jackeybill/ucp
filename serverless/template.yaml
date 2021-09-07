@@ -557,6 +557,7 @@ Resources:
                   - dynamodb:GetShardIterator
                   - dynamodb:DescribeStream
                   - dynamodb:ListStreams
+                  - dynamodb:GetItem
                 Resource:
                   - arn:aws:dynamodb:*
                 Effect: Allow
