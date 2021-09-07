@@ -268,10 +268,6 @@ Resources:
             Principal:
               Service:
                 - dynamodb.amazonaws.com
-            Action: 'sts:AssumeRole'
-          - Effect: Allow
-            Principal:
-              Service:
                 - s3.amazonaws.com
             Action: 'sts:AssumeRole'
       Path: /
@@ -281,8 +277,8 @@ Resources:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action: '*'
-                Resource: '*'
+                Action: "*"
+                Resource: "*"
 
 ## --------------   API   -------------------- ##
 # #API section
