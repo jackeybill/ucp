@@ -183,7 +183,7 @@ Resources:
       Handler: extractPDF.lambda_handler
       CodeUri: main/iso-service-dev-extractPDF/
       Policies:
-        - AWSLambdaExecute
+        - !Ref MyLambdaExecuteRole
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -237,7 +237,7 @@ Resources:
       CodeUri: main/iso-service-dev-txtintosections/
       Description: This lambda function to extract sections from txt
       Policies:
-        - AWSLambdaExecute
+        - !Ref MyLambdaExecuteRole
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -256,6 +256,29 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds: 
           - !Ref MySubnet
+
+## --------------   lambda role   -------------------- ##  
+  MyLambdaExecuteRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - s3.amazonaws.com
+                - dynamodb.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: AWS-UcpLambda-Service
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'
 
 ## --------------   API   -------------------- ##
 # #API section
