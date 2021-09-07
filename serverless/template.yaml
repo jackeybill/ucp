@@ -279,8 +279,8 @@ Resources:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: 10.0.0.0/16
-      EnableDnsSupport: false
-      EnableDnsHostnames: false
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
       InstanceTenancy: default
       Tags:
       - Key: Stack
@@ -296,15 +296,25 @@ Resources:
         - Effect: Allow
           Principal: "*"
           Action:
-          - s3:PutObject
+          - "*"
           Resource:
-          - Fn::Sub:
-            - "${Arn}/*"
-            - Arn:
-                Fn::GetAtt:
-                - MyFileBucket
-                - Arn
+          - "*"
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
+      VpcId: !Ref MyVPC
+  
+  DynamoDBEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: "*"
+          Action:
+          - "*"
+          Resource:
+          - "*"
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
       VpcId: !Ref MyVPC
 
 #subnet 
