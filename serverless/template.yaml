@@ -128,7 +128,7 @@ Resources:
       Handler: index.handler
       CodeUri: main/gwCase-main/
       Policies:
-        - AWSLambdaExecute
+        - !Ref MyLambdaExecuteRole
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -157,7 +157,7 @@ Resources:
       Handler: lambda_function.lambda_handler
       CodeUri: main/dean-dev-search-kendra/
       Policies:
-        - AWSLambdaExecute
+        - !Ref MyLambdaExecuteRole
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -210,7 +210,7 @@ Resources:
       CodeUri: main/iso-service-dev-processPdfToTxt/
       Description: 'Process PDF to txt, and save into S3'
       Policies:
-        - AWSLambdaExecute
+        - !Ref MyLambdaExecuteRole
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -250,35 +250,47 @@ Resources:
       Handler: lambda_function.lambda_handler
       CodeUri: main/iso-service-dev-aws-label/
       Policies:
-        - AWSLambdaExecute
+        - !Ref MyLambdaExecuteRole
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
         SubnetIds: 
           - !Ref MySubnet
 
-## --------------   lambda role   -------------------- ##  
+## --------------   lambda role   -------------------- ##
   MyLambdaExecuteRole:
-    Type: 'AWS::IAM::Role'
+    Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: 2012-10-17
+        Version: '2012-10-17'
         Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - dynamodb.amazonaws.com
-                - s3.amazonaws.com
-            Action: 'sts:AssumeRole'
-      Path: /
-      Policies:
-        - PolicyName: AWS-UcpLambda-Service
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action: "*"
-                Resource: "*"
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+            - dynamodb.amazonaws.com
+            - s3.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+  MyRolePolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: root
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action: "*"
+          Resource: "*"
+      Roles:
+      - !Ref MyLambdaExecuteRole
+  MyRootInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+      - !Ref MyLambdaExecuteRole
 
 ## --------------   API   -------------------- ##
 # #API section
