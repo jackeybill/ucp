@@ -2153,7 +2153,7 @@ const ScenarioPage = (props) => {
 
     return (
     <div className="scenario-container">
-      <Spin spinning={pageLoading} indicator={<LoadingOutlined style={{ color: "#ca4a04" }} />}>
+      <Spin spinning={pageLoading} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
       <div>
         <Row className="process-container">
             <Col span={2} className="center">
@@ -2875,7 +2875,7 @@ const ScenarioPage = (props) => {
       )}
       </Spin>
       <Drawer title="Historical Trial List" placement="right" onClose={handleCancel} visible={showHistorical}>
-        <Spin spinning={spinning}>
+        <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
         <Row>
             <Col span={24} style={{paddingBottom: '10px'}}>
               {visibleSOA ? (
