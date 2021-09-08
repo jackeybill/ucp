@@ -227,7 +227,6 @@ Resources:
           ROLE_ARN: !Ref SQSRole
           TEXTRACT_NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${ExtractPdfSNsTopic}"
 
-
   txtintosections:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -312,10 +311,7 @@ Resources:
   MyVPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: 10.0.0.0/16
-      EnableDnsSupport: true
-      EnableDnsHostnames: true
-      InstanceTenancy: default
+      CidrBlock: 172.31.0.0/16
       Tags:
       - Key: Stack
         Value: !Ref AWS::StackName
@@ -361,7 +357,12 @@ Resources:
     Properties:
       VpcId:
         Ref: MyVPC
-      CidrBlock: 10.0.0.0/24 
+      AvailabilityZone:
+        Fn::Select:
+         - 0
+         - Fn::GetAZs: ""
+      CidrBlock: 172.31.2.0/24
+      MapPublicIpOnLaunch: false 
       # AvailabilityZone: us-west-1b
       Tags:
       - Key: Stack
@@ -372,7 +373,12 @@ Resources:
     Properties:
       VpcId:
         Ref: MyVPC
-      CidrBlock: 10.0.1.0/24 
+      AvailabilityZone:
+        Fn::Select:
+         - 1
+         - Fn::GetAZs: ""
+      CidrBlock: 172.31.3.0/24
+      MapPublicIpOnLaunch: false
       Tags:
       - Key: Stack
         Value: Second subnet for UCP project
@@ -389,20 +395,12 @@ Resources:
         Value: !Ref AWS::StackName
       SecurityGroupIngress:
       - IpProtocol: -1
-        FromPort: 80
-        ToPort: 80
         CidrIp: 0.0.0.0/0
         Description: allow all the traffic to lambda
       SecurityGroupEgress:
       - IpProtocol: -1
-        FromPort: 80
-        ToPort: 80
         CidrIp: 0.0.0.0/0
         Description: allow all the traffic from lambda
-      - IpProtocol: -1
-        DestinationPrefixListId: pl-67a5400e
-      - IpProtocol: -1
-        DestinationPrefixListId: pl-6fa54006
 
 ## route table
   MyRouteTable:
