@@ -2148,7 +2148,7 @@ const ScenarioPage = (props) => {
 
     const date = Date().split(" ");
     const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
-    FileSaver.saveAs(blob, `exportedIE_AVG_${dateStr}.csv`);
+    FileSaver.saveAs(blob, `IE_Average_${dateStr}.csv`);
   }
 
     return (
