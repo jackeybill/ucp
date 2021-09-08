@@ -182,7 +182,7 @@ Resources:
     Properties:
       Handler: extractPDF.lambda_handler
       CodeUri: main/iso-service-dev-extractPDF/
-      Policies:
+      Role: 
         - !Ref MyLambdaExecuteRole
       VpcConfig:
         SecurityGroupIds: 
@@ -437,10 +437,10 @@ Resources:
         #   AttributeType: S
         # - AttributeName: target_bucket
         #   AttributeType: S
-        - AttributeName: id
+        - AttributeName: file_name
           AttributeType: S
       KeySchema: 
-        - AttributeName: id
+        - AttributeName: file_name
           KeyType: HASH
       ProvisionedThroughput: 
         ReadCapacityUnits: 5
