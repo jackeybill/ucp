@@ -335,7 +335,7 @@ Resources:
           - "*"
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
       RouteTableIds: 
-      - "RouteTableIds" : !GetAtt MyVPC.Outputs.PrivateSubnetRouteTable
+      - !Ref MyRouteTable
       VpcId: !Ref MyVPC
   
   DynamoDBEndpoint:
@@ -352,7 +352,7 @@ Resources:
           - "*"
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
       RouteTableIds: 
-      - "RouteTableIds" : !GetAtt MyVPC.Outputs.PrivateSubnetRouteTable
+      - !Ref MyRouteTable
       VpcId: !Ref MyVPC
 
 #subnet 
@@ -403,6 +403,22 @@ Resources:
         DestinationPrefixListId: pl-67a5400e
       - IpProtocol: -1
         DestinationPrefixListId: pl-6fa54006
+
+## route table
+  MyRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId: !Ref MyVPC
+  MySubnetARouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref MySubnet
+      RouteTableId: !Ref MyRouteTable
+  MySubnetBRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref SecondSubnet
+      RouteTableId: !Ref MyRouteTable
 
 ## --------------   Cognito   -------------------- ##
 #Congnito User Pool        
