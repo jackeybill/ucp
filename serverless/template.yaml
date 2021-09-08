@@ -177,13 +177,13 @@ Resources:
             Method: POST
             RestApiId: !Ref MyApi
 
-  isoservicedevextractPDF:
+  extractPDF:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: extractPDF.lambda_handler
       CodeUri: main/iso-service-dev-extractPDF/
       Policies:
-        - AWSLambdaExecute
+        - !Ref MyLambdaExecuteRole
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -203,7 +203,7 @@ Resources:
           ROLE_ARN: !Ref SQSRole
           TEXTRACT_NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${ExtractPdfSNsTopic}"
 
-  isoservicedevprocessPdfToTxt:
+  processPdfToTxt:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: processPdfToTxt.lambda_handler
@@ -230,7 +230,7 @@ Resources:
           TEXTRACT_NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${ExtractPdfSNsTopic}"
 
 
-  isoservicedevtxtintosections:
+  txtintosections:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: txtintosections.lambda_handler
@@ -288,6 +288,7 @@ Resources:
             - ec2.amazonaws.com
             - dynamodb.amazonaws.com
             - s3.amazonaws.com
+            - lambda.amazonaws.com
           Action:
           - sts:AssumeRole
       Path: "/"
