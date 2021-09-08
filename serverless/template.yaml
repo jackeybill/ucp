@@ -334,6 +334,8 @@ Resources:
           Resource:
           - "*"
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
+      RouteTableIds: 
+      - "RouteTableIds" : !GetAtt MyVPC.PrivateSubnetRouteTable
       VpcId: !Ref MyVPC
   
   DynamoDBEndpoint:
@@ -349,6 +351,8 @@ Resources:
           Resource:
           - "*"
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
+      RouteTableIds: 
+      - "RouteTableIds" : !GetAtt MyVPC.PrivateSubnetRouteTable
       VpcId: !Ref MyVPC
 
 #subnet 
@@ -395,6 +399,10 @@ Resources:
         ToPort: 80
         CidrIp: 0.0.0.0/0
         Description: allow all the traffic from lambda
+      - IpProtocol: -1
+        DestinationPrefixListId: pl-67a5400e
+      - IpProtocol: -1
+        DestinationPrefixListId: pl-6fa54006
 
 ## --------------   Cognito   -------------------- ##
 #Congnito User Pool        
@@ -625,13 +633,18 @@ Outputs:
   OrderApi:
     Description: "API Gateway endpoint URL for Prod stage for Order function"
     Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello/"
+  Bucket:
+    Description : "The name of the created bucket"
+    Value: !Ref MyFileBucket
+  VPC:
+    Description : "VPC Name"
+    Value: !Ref MyVPC
   # AmplifyAppID:
   #   Value: !Ref AmplifyApp
   # EndpointId:
   #   Value: !Ref Endpoint
   # EndpointName:
   #   Value: !GetAtt Endpoint.EndpointName
-
   # WebsiteCloudfront:
   #   Type: AWS::CloudFront::Distribution
   #   DependsOn:
