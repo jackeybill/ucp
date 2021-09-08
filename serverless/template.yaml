@@ -156,8 +156,7 @@ Resources:
     Properties:
       Handler: lambda_function.lambda_handler
       CodeUri: main/dean-dev-search-kendra/
-      Policies:
-        - AWSLambdaExecute
+      Role: !GetAtt MyLambdaExecuteRole.Arn
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
