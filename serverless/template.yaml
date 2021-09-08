@@ -182,8 +182,7 @@ Resources:
     Properties:
       Handler: extractPDF.lambda_handler
       CodeUri: main/iso-service-dev-extractPDF/
-      Role: 
-        - !GetAtt MyLambdaExecuteRole.Arn
+      Role: !GetAtt MyLambdaExecuteRole.Arn
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
