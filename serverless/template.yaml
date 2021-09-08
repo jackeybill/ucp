@@ -351,6 +351,23 @@ Resources:
       - !Ref MyRouteTable
       VpcId: !Ref MyVPC
 
+TextractEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: "*"
+          Action:
+          - "*"
+          Resource:
+          - "*"
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.textract"
+      RouteTableIds: 
+      - !Ref MyRouteTable
+      VpcId: !Ref MyVPC
+
 #subnet 
   MySubnet:
     Type: AWS::EC2::Subnet
