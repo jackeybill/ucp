@@ -335,7 +335,7 @@ Resources:
           - "*"
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
       RouteTableIds: 
-      - "RouteTableIds" : !GetAtt MyVPC.PrivateSubnetRouteTable
+      - "RouteTableIds" : !GetAtt MyVPC.Outputs.PrivateSubnetRouteTable
       VpcId: !Ref MyVPC
   
   DynamoDBEndpoint:
@@ -352,7 +352,7 @@ Resources:
           - "*"
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
       RouteTableIds: 
-      - "RouteTableIds" : !GetAtt MyVPC.PrivateSubnetRouteTable
+      - "RouteTableIds" : !GetAtt MyVPC.Outputs.PrivateSubnetRouteTable
       VpcId: !Ref MyVPC
 
 #subnet 
