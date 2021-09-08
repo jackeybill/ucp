@@ -183,7 +183,7 @@ Resources:
       Handler: extractPDF.lambda_handler
       CodeUri: main/iso-service-dev-extractPDF/
       Policies:
-        - !Ref MyLambdaExecuteRole
+        - AWSLambdaExecute
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
