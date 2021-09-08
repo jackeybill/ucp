@@ -128,7 +128,7 @@ Resources:
       Handler: index.handler
       CodeUri: main/gwCase-main/
       Policies:
-        - !Ref MyLambdaExecuteRole
+        - 'arn:aws:iam::608494368293:role/iso-service-dev-us-east-2-lambdaRole'
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -157,7 +157,7 @@ Resources:
       Handler: lambda_function.lambda_handler
       CodeUri: main/dean-dev-search-kendra/
       Policies:
-        - !Ref MyLambdaExecuteRole
+        - 'arn:aws:iam::608494368293:role/iso-service-dev-us-east-2-lambdaRole'
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -183,7 +183,7 @@ Resources:
       Handler: extractPDF.lambda_handler
       CodeUri: main/iso-service-dev-extractPDF/
       Policies:
-        - !Ref MyLambdaExecuteRole
+        - 'arn:aws:iam::608494368293:role/iso-service-dev-us-east-2-lambdaRole'
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -210,7 +210,7 @@ Resources:
       CodeUri: main/iso-service-dev-processPdfToTxt/
       Description: 'Process PDF to txt, and save into S3'
       Policies:
-        - !Ref MyLambdaExecuteRole
+        - 'arn:aws:iam::608494368293:role/iso-service-dev-us-east-2-lambdaRole'
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -237,7 +237,7 @@ Resources:
       CodeUri: main/iso-service-dev-txtintosections/
       Description: This lambda function to extract sections from txt
       Policies:
-        - !Ref MyLambdaExecuteRole
+        - 'arn:aws:iam::608494368293:role/iso-service-dev-us-east-2-lambdaRole'
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -250,7 +250,7 @@ Resources:
       Handler: lambda_function.lambda_handler
       CodeUri: main/iso-service-dev-aws-label/
       Policies:
-        - !Ref MyLambdaExecuteRole
+        - 'arn:aws:iam::608494368293:role/iso-service-dev-us-east-2-lambdaRole'
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
