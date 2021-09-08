@@ -532,6 +532,23 @@ export const getIEResource = async (nctids) => {
   return await response.json();
 }
 
+export const getAverage = async (nctids) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "findIeAvg": {
+        "nctList": nctids
+      }
+    })
+  })
+
+  return await response.json();
+}
+
 //for test only: Delete All In Progress Trials
 // export const deleteAllStudy = async () => {
 //   const response = await fetch(criteria_url, {

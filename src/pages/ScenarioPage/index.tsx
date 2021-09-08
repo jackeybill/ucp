@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
 import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer} from "antd";
-import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getSOAResource, getIEResource} from "../../utils/ajax-proxy";
+import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getSOAResource, getIEResource, getAverage} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
@@ -120,8 +120,11 @@ const ScenarioPage = (props) => {
     const [visibleSOA, setVisibleSOA] = useState(false)
     const [soaResource, setSOAResource] = useState([])
     const [ieResource, setIEResource] = useState(false)
+    const [avgResource, setAvgResource] = useState(false)
     const [inclusionResource, setInclusionResource] = useState([])
     const [exclusionResource, setExclusionResource] = useState([])
+    const [inclusionResourceAvg, setInclusionResourceAvg] = useState([])
+    const [exclusionResourceAvg, setExclusionResourceAvg] = useState([])
 
     //------------------------INCLUSION CRITERIA CONST START-----------------------------
     //Original libs for filter purpose
@@ -2046,6 +2049,8 @@ const ScenarioPage = (props) => {
       setSpinning(true)
       const resp = await getIEResource(similarHistoricalTrials);
       if (resp.statusCode == 200) {
+        console.log(JSON.parse(resp.body));
+
         setSpinning(false)
         setIEResource(true)
         setInclusionResource(JSON.parse(resp.body).inResult)
@@ -2088,7 +2093,64 @@ const ScenarioPage = (props) => {
     const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
     FileSaver.saveAs(blob, `IE_Resource_${dateStr}.csv`);
   }
-  
+
+  const downloadAverage = async () => {
+    let tempInclusionResourceAvg = []
+    let tempExclusionResourceAvg = []
+    if(!avgResource){
+      setSpinning(true)
+      const resp = await getAverage(similarHistoricalTrials);
+      if (resp.statusCode == 200) {
+        console.log(JSON.parse(resp.body));
+        setSpinning(false)
+        setAvgResource(true)
+        setInclusionResourceAvg(JSON.parse(resp.body).inResult)
+        setExclusionResourceAvg(JSON.parse(resp.body).exResult)
+        tempInclusionResourceAvg = JSON.parse(resp.body).inResult
+        tempExclusionResourceAvg = JSON.parse(resp.body).exResult
+      }
+    } else {
+      tempInclusionResourceAvg = inclusionResourceAvg
+      tempExclusionResourceAvg = exclusionResourceAvg
+    }
+
+    //export
+    let str = 'I/E' + ',' + 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Average Value' + ',' + 'Average Lower Limit' + ',' + 'Average Upper Limit' + ',' + 'Units'
+    for(const standardized in tempInclusionResourceAvg){
+      for(const criteria in tempInclusionResourceAvg[standardized]){
+        str += '\n' + 'INCLUSION' + ',' 
+                    + tempInclusionResourceAvg[standardized][criteria].category +  '","'
+                    + tempInclusionResourceAvg[standardized][criteria].raw + '","' 
+                    + tempInclusionResourceAvg[standardized][criteria].standardized + '","' 
+                    + (tempInclusionResourceAvg[standardized][criteria].avg_value === 0?"":tempInclusionResourceAvg[standardized][criteria].avg_value) + '","'
+                    + (tempInclusionResourceAvg[standardized][criteria].avg_lower === 0? "":tempInclusionResourceAvg[standardized][criteria].avg_lower) + '","' 
+                    + (tempInclusionResourceAvg[standardized][criteria].avg_upper ===0?"":tempInclusionResourceAvg[standardized][criteria].avg_upper)  + '","' 
+                    + tempInclusionResourceAvg[standardized][criteria].units +  '"'
+      }
+    }
+    for(const standardized in tempExclusionResourceAvg){
+      for(const criteria in tempExclusionResourceAvg[standardized]){
+        str += '\n' + 'EXCLUSION' + ',' 
+        + tempExclusionResourceAvg[standardized][criteria].category +  '","'
+        + tempExclusionResourceAvg[standardized][criteria].raw + '","' 
+        + tempExclusionResourceAvg[standardized][criteria].standardized + '","' 
+        + (tempExclusionResourceAvg[standardized][criteria].avg_value === 0? "":tempExclusionResourceAvg[standardized][criteria].avg_value) + '","'
+        + (tempExclusionResourceAvg[standardized][criteria].avg_lower === 0?"":tempExclusionResourceAvg[standardized][criteria].avg_lower) + '","' 
+        + (tempExclusionResourceAvg[standardized][criteria].avg_upper===0?"":tempExclusionResourceAvg[standardized][criteria].avg_upper) + '","' 
+        + tempExclusionResourceAvg[standardized][criteria].units +  '"'
+      }
+    }
+
+    let exportContent = "\uFEFF";
+    let blob = new Blob([exportContent + str], {
+      type: "text/plain;charset=utf-8"
+    });
+
+    const date = Date().split(" ");
+    const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
+    FileSaver.saveAs(blob, `exportedIE_AVG_${dateStr}.csv`);
+  }
+
     return (
     <div className="scenario-container">
       <Spin spinning={pageLoading} indicator={<LoadingOutlined style={{ color: "#ca4a04" }} />}>
@@ -2817,9 +2879,12 @@ const ScenarioPage = (props) => {
         <Row>
             <Col span={24} style={{paddingBottom: '10px'}}>
               {visibleSOA ? (
-                <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCCE</Button>
+                <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
               ) : (
-                <Button type="primary" onClick={downloadIE} style={{float: 'right'}}>VIEW SOURCCE</Button>
+                <>
+                  <Button type="primary" onClick={downloadIE} style={{float: 'right'}}>VIEW SOURCE</Button>
+                  <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button>
+                </>
               )}
             </Col>
         </Row>
