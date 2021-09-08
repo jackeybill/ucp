@@ -364,6 +364,7 @@ Resources:
           Resource:
           - "*"
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.textract"
+      VpcEndpointType: Interface
       RouteTableIds: 
       - !Ref MyRouteTable
       VpcId: !Ref MyVPC
