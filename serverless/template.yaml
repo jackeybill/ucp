@@ -286,6 +286,7 @@ Resources:
             - dynamodb.amazonaws.com
             - s3.amazonaws.com
             - lambda.amazonaws.com
+            - textract.amazonaws.com
           Action:
           - sts:AssumeRole
       Path: "/"
@@ -365,6 +366,11 @@ Resources:
           - "*"
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.textract"
       VpcEndpointType: Interface
+      SecurityGroupIds:
+      - !Ref MySecurityGroup
+      SubnetIds:
+      - !Ref MySubnet
+      - !Ref SecondSubnet
       VpcId: !Ref MyVPC
 
 #subnet 
