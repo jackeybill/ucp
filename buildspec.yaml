@@ -41,6 +41,3 @@
     Type: String
     Description: current environment
     Default: https://ymd7qr4u4g.execute-api.us-east-1.amazonaws.com/master/cases   #PA_HOST
-
-  echo >> "./.env"
-    ${CURRENT_ENVIRONMENT}
