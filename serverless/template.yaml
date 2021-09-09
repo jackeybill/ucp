@@ -109,6 +109,7 @@ Resources:
   ExtractPdfSNsTopic:
     Type: AWS::SNS::Topic
     Properties:
+      TopicName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
       Subscription:
         - Endpoint:
             Fn::GetAtt:
@@ -195,11 +196,11 @@ Resources:
             Events: s3:ObjectCreated:*
       Environment:
         Variables:
-          STAGE: dev
-          SERVICE: iso-service
-          NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${MySNSTopic}"
-          ROLE_ARN: !Ref SQSRole
-          TEXTRACT_NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${ExtractPdfSNsTopic}"
+          STAGE: !Ref Stage
+          SERVICE: !Ref AppIdentity
+          NOTIFICATION_ARN: !GetAtt MySNSTopic.Arn
+          ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
+          TEXTRACT_NOTIFICATION_ARN: !GetAtt ExtractPdfSNsTopic.Arn
 
   processPdfToTxt:
     Type: 'AWS::Serverless::Function'
@@ -223,9 +224,9 @@ Resources:
         Variables:
           STAGE: dev
           SERVICE: iso-service
-          NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${MySNSTopic}"
-          ROLE_ARN: !Ref SQSRole
-          TEXTRACT_NOTIFICATION_ARN: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${ExtractPdfSNsTopic}"
+          NOTIFICATION_ARN: !GetAtt MySNSTopic.Arn
+          ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
+          TEXTRACT_NOTIFICATION_ARN: !GetAtt ExtractPdfSNsTopic.Arn
 
   txtintosections:
     Type: 'AWS::Serverless::Function'
@@ -288,6 +289,8 @@ Resources:
             - lambda.amazonaws.com
             - textract.amazonaws.com
             - sns.amazonaws.com
+            - rds.amazonaws.com
+            - kendra.amazonaws.com
           Action:
           - sts:AssumeRole
       Path: "/"
