@@ -198,9 +198,9 @@ Resources:
         Variables:
           STAGE: !Ref Stage
           SERVICE: !Ref AppIdentity
-          NOTIFICATION_ARN: !GetAtt MySNSTopic.Arn
+          NOTIFICATION_ARN: !Ref MySNSTopic
           ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
-          TEXTRACT_NOTIFICATION_ARN: !GetAtt ExtractPdfSNsTopic.Arn
+          TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic
 
   processPdfToTxt:
     Type: 'AWS::Serverless::Function'
@@ -224,9 +224,9 @@ Resources:
         Variables:
           STAGE: dev
           SERVICE: iso-service
-          NOTIFICATION_ARN: !GetAtt MySNSTopic.Arn
+          NOTIFICATION_ARN: !Ref MySNSTopic
           ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
-          TEXTRACT_NOTIFICATION_ARN: !GetAtt ExtractPdfSNsTopic.Arn
+          TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic
 
   txtintosections:
     Type: 'AWS::Serverless::Function'
