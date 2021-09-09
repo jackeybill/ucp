@@ -2115,7 +2115,7 @@ const ScenarioPage = (props) => {
     }
 
     //export
-    let str = 'I/E' + ',' + 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Snormd' + ',' + 'Average Value' + ',' + 'Average Lower Limit' + ',' + 'Average Upper Limit' + ',' + 'Units'
+    let str = 'I/E' + ',' + 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Snomed' + ',' + 'Average Value' + ',' + 'Average Lower Limit' + ',' + 'Average Upper Limit' + ',' + 'Units'
     for(const standardized in tempInclusionResourceAvg){
       for(const criteria in tempInclusionResourceAvg[standardized]){
         str += '\n' + 'INCLUSION' + ',' 
