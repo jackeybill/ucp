@@ -2115,11 +2115,12 @@ const ScenarioPage = (props) => {
     }
 
     //export
-    let str = 'I/E' + ',' + 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Snomed' + ',' + 'Average Value' + ',' + 'Average Lower Limit' + ',' + 'Average Upper Limit' + ',' + 'Units'
+    let str = 'I/E' + ','  + 'NCT ID' + ','+ 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Snomed' + ',' + 'Average Value' + ',' + 'Average Lower Limit' + ',' + 'Average Upper Limit' + ',' + 'Units'
     for(const standardized in tempInclusionResourceAvg){
       for(const criteria in tempInclusionResourceAvg[standardized]){
-        str += '\n' + 'INCLUSION' + ',' 
-                    + tempInclusionResourceAvg[standardized][criteria].category + ',"'
+        str += '\n' + 'INCLUSION' + ',"' 
+                    + tempInclusionResourceAvg[standardized][criteria].nct + '","'
+                    + tempInclusionResourceAvg[standardized][criteria].category + '","' 
                     + tempInclusionResourceAvg[standardized][criteria].raw + '","' 
                     + tempInclusionResourceAvg[standardized][criteria].standardized + '","' 
                     + tempInclusionResourceAvg[standardized][criteria].snomed + '","' 
@@ -2131,8 +2132,9 @@ const ScenarioPage = (props) => {
     }
     for(const standardized in tempExclusionResourceAvg){
       for(const criteria in tempExclusionResourceAvg[standardized]){
-        str += '\n' + 'EXCLUSION' + ',' 
-        + tempExclusionResourceAvg[standardized][criteria].category + ',"'
+        str += '\n' + 'EXCLUSION' + ',"' 
+        + tempExclusionResourceAvg[standardized][criteria].nct + '","' 
+        + tempExclusionResourceAvg[standardized][criteria].category + '","' 
         + tempExclusionResourceAvg[standardized][criteria].raw + '","'
         + tempExclusionResourceAvg[standardized][criteria].standardized + '","' 
         + tempExclusionResourceAvg[standardized][criteria].snomed + '","' 
