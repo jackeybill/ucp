@@ -287,6 +287,7 @@ Resources:
             - s3.amazonaws.com
             - lambda.amazonaws.com
             - textract.amazonaws.com
+            - sns.amazonaws.com
           Action:
           - sts:AssumeRole
       Path: "/"
@@ -313,6 +314,8 @@ Resources:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: 172.31.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
       Tags:
       - Key: Stack
         Value: !Ref AWS::StackName
@@ -366,6 +369,29 @@ Resources:
           - "*"
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.textract"
       VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+      - !Ref MySecurityGroup
+      SubnetIds:
+      - !Ref MySubnet
+      - !Ref SecondSubnet
+      VpcId: !Ref MyVPC
+  
+  SnsEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: "*"
+          Action:
+          - "*"
+          Resource:
+          - "*"
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.sns"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
       SecurityGroupIds:
       - !Ref MySecurityGroup
       SubnetIds:
