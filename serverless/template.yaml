@@ -109,6 +109,7 @@ Resources:
   ExtractPdfSNsTopic:
     Type: AWS::SNS::Topic
     Properties:
+      DisplayName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
       TopicName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
       Subscription:
         - Endpoint:
@@ -123,13 +124,26 @@ Resources:
       MaximumMessageSize: 262144
       VisibilityTimeout: 800
 
+  AllowLambds2SQSPolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues: [!Ref 'MySQS']
+        PolicyDocument:
+          Version: '2008-10-17'
+          Id: PublicationPolicy4SendMsg
+          Statement:
+          - Sid: Allow-Lambda-SendMessage
+            Effect: Allow
+            Principal: "*"
+            Action: "SQS:*"
+            Resource: "*"
+
   gwCasemain:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: index.handler
       CodeUri: main/gwCase-main/
-      Policies:
-        - AWSLambdaExecute
+      Role: !GetAtt MyLambdaExecuteRole.Arn
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -208,8 +222,7 @@ Resources:
       Handler: processPdfToTxt.lambda_handler
       CodeUri: main/iso-service-dev-processPdfToTxt/
       Description: 'Process PDF to txt, and save into S3'
-      Policies:
-        - AWSLambdaExecute
+      Role: !GetAtt MyLambdaExecuteRole.Arn
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -222,8 +235,8 @@ Resources:
             Queue: !GetAtt MySQS.Arn
       Environment:
         Variables:
-          STAGE: dev
-          SERVICE: iso-service
+          STAGE: !Ref Stage
+          SERVICE: !Ref AppIdentity
           NOTIFICATION_ARN: !Ref MySNSTopic
           ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
           TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic
@@ -234,8 +247,7 @@ Resources:
       Handler: txtintosections.lambda_handler
       CodeUri: main/iso-service-dev-txtintosections/
       Description: This lambda function to extract sections from txt
-      Policies:
-        - AWSLambdaExecute
+      Role: !GetAtt MyLambdaExecuteRole.Arn
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
@@ -247,8 +259,7 @@ Resources:
     Properties:
       Handler: lambda_function.lambda_handler
       CodeUri: main/iso-service-dev-aws-label/
-      Policies:
-        - AWSLambdaExecute
+      Role: !GetAtt MyLambdaExecuteRole.Arn
       VpcConfig:
         SecurityGroupIds: 
           - !Ref MySecurityGroup
