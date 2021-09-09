@@ -293,8 +293,6 @@ Resources:
             - lambda.amazonaws.com
           Action:
           - sts:AssumeRole
-      ManagedPolicyArns:
-      - Ref: RoleBasePolicy
       Policies:
       - PolicyName: S3Writer
         PolicyDocument:
