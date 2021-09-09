@@ -104,4 +104,8 @@ export const PA_HOST_EMAIL = "https://2biav84kz7.execute-api.us-east-2.amazonaws
 
 export const PWC_LOGIN_URL ="https://ac-studio.pwc.com/function/idam?state="+window.location.origin+"&bottoken=eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDY4ODEyMDAsInN1YiI6IkJvdFRva2VuIiwiQm90SW5mb0lkIjoiMWIzNTFlM2YtMzQ4YS00MDhjLThjNWEtYzFjYTQyOTc1MmI4IiwiQm90TmFtZSI6IkhJQTIifQ.YfFU3ClMxEF3tELv6sf9UA_5ENdBaZPO5Gh2tDDOI7I";
 // export const PA_HOST = "https://uoz8c451m1.execute-api.us-west-2.amazonaws.com/dev/cases"
-export const PA_HOST = "https://ymd7qr4u4g.execute-api.us-east-1.amazonaws.com/master/cases"
+// export const PA_HOST = "https://ymd7qr4u4g.execute-api.us-east-1.amazonaws.com/master/cases"
+
+export const PA_HOST = process.env.CURRENT_ENVIRONMENT
+console.log('-----',process.env.CURRENT_ENVIRONMENT)
+

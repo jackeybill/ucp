@@ -12,9 +12,9 @@
     build:
       # on-failure: ABORT
       commands:
+        - echo ${CURRENT_ENVIRONMENT} >> ".env" 
         - echo "Starting React build `date` in `pwd`"
         - npm run build
-        # - npm run build -- --env ${CURRENT_ENVIRONMENT}
         # - echo "Starting cloudformation lint `date` in `pwd`"
         # - cfn-lint -t serverless/template.yaml
         - echo "Starting cloudformation package `date` in `pwd`"
@@ -24,6 +24,7 @@
       commands:
         - echo "SAM Package completed on `date`"
         - aws s3 sync build/ s3://${WEB_BUCKET}/ --delete
+       
 
   artifacts:  
     files:
@@ -35,3 +36,11 @@
     cache:
       paths:
         - node_modules/**/*
+
+  CURRENT_ENVIRONMENT:
+    Type: String
+    Description: current environment
+    Default: https://ymd7qr4u4g.execute-api.us-east-1.amazonaws.com/master/cases   #PA_HOST
+
+  echo >> "./.env"
+    ${CURRENT_ENVIRONMENT}

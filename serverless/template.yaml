@@ -111,6 +111,8 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds: 
           - !Ref MySubnet
+      Events:
+        
 
   gwCasemain:
     Type: 'AWS::Serverless::Function'
@@ -241,24 +243,24 @@ Resources:
           - !Ref MySubnet
 
 ## --------------   lambda role   -------------------- ##
-  MyRootInstanceProfile:
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      Path: "/"
-      Roles:
-      - !Ref MyLambdaExecuteRole
-  MyRolePolicies:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyName: root
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Action: "*"
-          Resource: "*"
-      Roles:
-      - !Ref MyLambdaExecuteRole
+  # MyRootInstanceProfile:
+  #   Type: AWS::IAM::InstanceProfile
+  #   Properties:
+  #     Path: "/"
+  #     Roles:
+  #     - !Ref MyLambdaExecuteRole
+  # MyRolePolicies:
+  #   Type: AWS::IAM::Policy
+  #   Properties:
+  #     PolicyName: root
+  #     PolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #       - Effect: Allow
+  #         Action: "*"
+  #         Resource: "*"
+  #     Roles:
+  #     - !Ref MyLambdaExecuteRole
   MyLambdaExecuteRole:
     Type: AWS::IAM::Role
     Properties:
@@ -277,8 +279,7 @@ Resources:
             - rds.amazonaws.com
             - kendra.amazonaws.com
           Action:
-          - sts:AssumeRole
-          
+          - sts:AssumeRole       
       Path: "/"
   
   S3PutObjectFunctionRole:
@@ -300,7 +301,6 @@ Resources:
           Statement:
           - Effect: Allow
             Action:
-            - s3:DeleteObject
             - s3:ListBucket
             - s3:PutObject
             Resource: "*"

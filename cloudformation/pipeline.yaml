@@ -45,11 +45,6 @@ Parameters:
     Description: Bucket to store CF State info 
     Default: aws-sam-cli-managed-default-samclisourcebucket-lepoic0s00k5-sg
 
-  CURRENT_ENVIRONMENT:
-    Type: String
-    Description: current environment
-    Default: https://ymd7qr4u4g.execute-api.us-east-1.amazonaws.com/master/cases   #PA_HOST
-
   TeamsNotification:
     Type: String
     Default: https://pwc.webhook.office.com/webhookb2/2d67fe6d-66aa-4adf-87bf-7a16fa2d62aa@513294a0-3e20-41b2-a970-6d30bf1546fa/IncomingWebhook/7f68a62fadf8408e97a4216c1e1ebe73/a45e4487-0c0a-4386-93ff-00573317b6f0
