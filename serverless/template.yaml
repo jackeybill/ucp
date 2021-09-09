@@ -48,8 +48,8 @@ Parameters:
 
 Globals:
   Function:
-    Timeout: 800
-    Runtime: python3.8
+    Timeout: 60
+    Runtime: python3.7
   
   
     
