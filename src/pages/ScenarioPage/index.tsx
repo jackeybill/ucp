@@ -2115,13 +2115,14 @@ const ScenarioPage = (props) => {
     }
 
     //export
-    let str = 'I/E' + ',' + 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Average Value' + ',' + 'Average Lower Limit' + ',' + 'Average Upper Limit' + ',' + 'Units'
+    let str = 'I/E' + ',' + 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Snormd' + ',' + 'Average Value' + ',' + 'Average Lower Limit' + ',' + 'Average Upper Limit' + ',' + 'Units'
     for(const standardized in tempInclusionResourceAvg){
       for(const criteria in tempInclusionResourceAvg[standardized]){
         str += '\n' + 'INCLUSION' + ',' 
                     + tempInclusionResourceAvg[standardized][criteria].category +  '","'
                     + tempInclusionResourceAvg[standardized][criteria].raw + '","' 
                     + tempInclusionResourceAvg[standardized][criteria].standardized + '","' 
+                    + tempInclusionResourceAvg[standardized][criteria].snormd + '","' 
                     + (tempInclusionResourceAvg[standardized][criteria].avg_value === 0?"":tempInclusionResourceAvg[standardized][criteria].avg_value) + '","'
                     + (tempInclusionResourceAvg[standardized][criteria].avg_lower === 0? "":tempInclusionResourceAvg[standardized][criteria].avg_lower) + '","' 
                     + (tempInclusionResourceAvg[standardized][criteria].avg_upper ===0?"":tempInclusionResourceAvg[standardized][criteria].avg_upper)  + '","' 
