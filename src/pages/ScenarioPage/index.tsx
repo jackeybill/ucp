@@ -2119,7 +2119,7 @@ const ScenarioPage = (props) => {
     for(const standardized in tempInclusionResourceAvg){
       for(const criteria in tempInclusionResourceAvg[standardized]){
         str += '\n' + 'INCLUSION' + ',' 
-                    + tempInclusionResourceAvg[standardized][criteria].category +  '","'
+                    + tempInclusionResourceAvg[standardized][criteria].category + '","'
                     + tempInclusionResourceAvg[standardized][criteria].raw + '","' 
                     + tempInclusionResourceAvg[standardized][criteria].standardized + '","' 
                     + tempInclusionResourceAvg[standardized][criteria].snormd + '","' 
@@ -2132,9 +2132,10 @@ const ScenarioPage = (props) => {
     for(const standardized in tempExclusionResourceAvg){
       for(const criteria in tempExclusionResourceAvg[standardized]){
         str += '\n' + 'EXCLUSION' + ',' 
-        + tempExclusionResourceAvg[standardized][criteria].category +  '","'
+        + tempExclusionResourceAvg[standardized][criteria].category + '","'
         + tempExclusionResourceAvg[standardized][criteria].raw + '","' 
         + tempExclusionResourceAvg[standardized][criteria].standardized + '","' 
+        + tempExclusionResourceAvg[standardized][criteria].snormd + '","' 
         + (tempExclusionResourceAvg[standardized][criteria].avg_value === 0? "":tempExclusionResourceAvg[standardized][criteria].avg_value) + '","'
         + (tempExclusionResourceAvg[standardized][criteria].avg_lower === 0?"":tempExclusionResourceAvg[standardized][criteria].avg_lower) + '","' 
         + (tempExclusionResourceAvg[standardized][criteria].avg_upper===0?"":tempExclusionResourceAvg[standardized][criteria].avg_upper) + '","' 
