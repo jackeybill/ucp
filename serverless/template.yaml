@@ -496,7 +496,7 @@ Resources:
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties: 
-      TableName: !Join ['-', ['iso-service', !Ref Stage, 'log']]
+      TableName: !Join ['-', [!Ref AppIdentity, !Ref Stage, 'log']]
       AttributeDefinitions: 
         # - AttributeName: file_name
         #   AttributeType: S
