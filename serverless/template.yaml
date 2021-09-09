@@ -103,7 +103,7 @@ Resources:
   createFolder:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Handler: index.handler
+      Handler: createFolder.lambda_handler
       CodeUri: main/iso-service-dev-create-folder/
       Role: !GetAtt MyLambdaExecuteRole.Arn
       VpcConfig:
