@@ -173,3 +173,13 @@ ul.ant-table-pagination {
 .ant-spin-dot-item {
   background-color: $theme-color;
 }
+
+.ant-table-content .ant-checkbox-indeterminate .ant-checkbox-inner::after{
+  background-color:$theme-color;
+}
+.ant-checkbox-wrapper:hover .ant-checkbox-inner, .ant-checkbox:hover .ant-checkbox-inner, .ant-checkbox-input:focus + .ant-checkbox-inner{
+  border-color:$theme-color;
+}
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector{
+  border-color:$theme-color;
+}
