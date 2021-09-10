@@ -1,0 +1,11 @@
+@import '../../../styles/variables.scss';
+.trial-summary-container{
+    .trial-item{
+        .ant-select.ant-select-show-arrow{
+            .ant-select-arrow .anticon{
+                color: $theme-color;
+            }
+        }
+    }
+
+}

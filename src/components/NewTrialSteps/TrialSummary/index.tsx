@@ -15,6 +15,7 @@ import {
 import { COUNTRY_MAP } from "../../../utils/country-map";
 import { Therapeutic_Area_Map } from "../../../utils/area-map";
 import { study_types, phase_options } from '../../../pages/TrialPortfolio'
+import './index.scss';
 
 const { Search } = Input;
 const { TextArea } = Input;

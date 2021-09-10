@@ -20,6 +20,15 @@
     .header-right {
       display: flex;
       align-items: center;
+
+      .ant-input-affix-wrapper{
+        background-color: #F8F8F8;
+        input.ant-input{
+          background-color: #F8F8F8;
+        }
+        
+      }
+
     }
 
     .system__info {
@@ -105,14 +114,13 @@
   }
 }
 .user__tag {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   background: #CA4A04;
   border-radius: 20px;
   text-align: center;
-  line-height: 30px;
+  line-height: 24px;
   color: #ffffff;
-  font-weight: 500;
   cursor: pointer;
 }
 
@@ -149,3 +157,4 @@
 .ant-layout-footer {
   padding: 0;
 }
+

@@ -467,8 +467,8 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                     onChange={this.handleDateChange}
                   />
                 </div>
-                <div className="filter-item">
-                  <Button type="primary" onClick={()=>this.onFindTrials(this.state.rawData)}>
+                <div className="filter-item find-trial-btn-wrapper">
+                  <Button onClick={()=>this.onFindTrials(this.state.rawData)}>
                     Find Trials
                   </Button>
                 </div>

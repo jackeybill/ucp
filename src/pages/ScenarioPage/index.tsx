@@ -2432,7 +2432,7 @@ const ScenarioPage = (props) => {
                     </Col>
                   </Row>
                 </Col>
-                <Col span={24 - criteriaLib} className={`${ collapsible ? "none-click" : "" }`}>
+                <Col span={24 - criteriaLib} className={`${ collapsible ? "none-click" : "" } main-content-right`}>
                   <Row style={{ paddingTop: '10px' }}>
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>
@@ -2452,7 +2452,7 @@ const ScenarioPage = (props) => {
                       <Row>
                         <Col span={24}>
                         <div className="option-item">
-                          <div>
+                          <div className="collapse-section-wrapper">
                             <Collapse activeKey={activeKey} onChange={callback} expandIconPosition="right" >
                               <Panel header={panelHeader()} key="1" forceRender={false} >
                                 <div className="chart-container">
@@ -2479,7 +2479,7 @@ const ScenarioPage = (props) => {
                         </div>
                         </Col>
                       </Row>
-                      <Row>
+                      <Row className="impact-summary-wrapper">
                         <Col span={24}>
                           <div className="impact-summary">
                             <span>Inclusion Criteria</span>
@@ -2708,7 +2708,7 @@ const ScenarioPage = (props) => {
                     </Col>
                   </Row>
                 </Col>
-                <Col span={24 - excluCriteriaLib} className={`${ excluCollapsible ? "none-click" : "" }`}>
+                <Col span={24 - excluCriteriaLib} className={`${ excluCollapsible ? "none-click" : "" } main-content-right`}>
                   <Row style={{ paddingTop: '10px' }}>
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>
@@ -2755,7 +2755,7 @@ const ScenarioPage = (props) => {
                         </div>
                         </Col>
                       </Row>
-                      <Row>
+                      <Row className="impact-summary-wrapper"> 
                         <Col span={24}>
                           <div className="impact-summary">
                             <span>Exclusion Criteria</span>

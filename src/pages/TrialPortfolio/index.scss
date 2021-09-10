@@ -15,6 +15,9 @@
         transform: translateY(-4px);
       }
     }
+    .ant-breadcrumb-link{
+      color: #999999;
+    }
   }
   .list-top {
     display: flex;
@@ -234,11 +237,15 @@
         cursor: pointer;
         color: $theme-color;
         text-transform: uppercase;
+        font-weight: 500;
 
         .anticon-left{
           color:#CA4A04;
         }
       }
+    }
+    button span{
+      font-weight: 500;
     }
   }
 }
@@ -288,7 +295,6 @@
   }
   .ant-steps-item .ant-steps-item-title {
     font-size: 14px;
-    font-weight: bold;
   }
   .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title{
     color: #CF4500;

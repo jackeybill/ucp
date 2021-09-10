@@ -339,7 +339,7 @@ const TrialPortfolio = (props) => {
         <>
           <div className="upper" style={backgroundPic}>
             <span className="small-trial">MY TRIALS</span>
-            <p className="title">Hello, {username}</p>
+            <p className="title">Hello {username},</p>
             <span className="sub-title">
               Here is a glance at your trial portfolio.
             </span>

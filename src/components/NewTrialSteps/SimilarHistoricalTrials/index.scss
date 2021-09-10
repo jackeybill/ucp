@@ -14,6 +14,20 @@
     margin-bottom: 10px;
     padding-left: 20px;
     padding-right: 6px;
+    &.find-trial-btn-wrapper{
+      text-align: center;
+      button.ant-btn{
+        border-color: $theme-color;
+        span{
+          color: $theme-color;
+        }
+      }
+      
+      
+    }
+    .ant-select.ant-select-show-arrow .ant-select-arrow .anticon{
+      color: $theme-color;
+    }
 
     label {
       margin-bottom: 0;
@@ -74,15 +88,15 @@
     }
 
     ul.ant-pagination{
-      border-left: 1px solid #ccc;
-      border-right: 1px solid #ccc;
-      border-bottom: 1px solid #ccc;
+      border-left: 1px solid #31393F33;
+      border-right: 1px solid #31393F33;
+      border-bottom: 1px solid #31393F33;
       margin-top: 0px;
       padding-top: 10px;
       padding-bottom: 10px;
     }
     .ant-table-container{
-      border: 1px solid #ccc;
+      border: 1px solid #31393F33;
 
       .ant-table-thead > tr > th{
         background: #666666;
@@ -98,12 +112,18 @@
       }
       
     }
+
+    .ant-table-container{
+      tr > th{
+        padding:10px;
+      }
+    }
   }
 }
 
 .chart-wrapper {
-  border-right: 1px solid #CCCCCC;
-  border-left: 1px solid #CCCCCC;
+  border-right: 1px solid #31393F33;
+  border-left: 1px solid #31393F33;
   padding-bottom: 10px;
   padding-top: 5px;
   display: flex;
@@ -113,9 +133,9 @@
 }
 .summary-count {
   border-top: 1px solid #f7f7f7;
-  border-bottom: 1px solid #ccc;
-  border-right: 1px solid #CCCCCC;
-  border-left: 1px solid #CCCCCC;
+  border-bottom: 1px solid #31393F33;
+  border-right: 1px solid #31393F33;
+  border-left: 1px solid #31393F33;
   font-size: 24px;
   color: #000000;
   padding-left: 20px;
