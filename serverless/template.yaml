@@ -45,7 +45,10 @@ Parameters:
     Description: SagerMaker ECR Image ARN
     Type: String
     Default: 608494368293.dkr.ecr.ap-southeast-1.amazonaws.com/mosaic-meddra-coding:latest
-
+  DirsToCreate:
+    Description: "list of directories to create."
+    Type: String
+    Default: ucp-filebucket-dev/RawDocuments 
 Globals:
   Function:
     Timeout: 60
@@ -508,16 +511,6 @@ Resources:
     Properties: 
       TableName: !Join ['-', [!Ref AppIdentity, !Ref Stage, 'log']]
       AttributeDefinitions: 
-        # - AttributeName: file_name
-        #   AttributeType: S
-        # - AttributeName: create_time
-        #   AttributeType: S
-        # - AttributeName: source_bucket
-        #   AttributeType: S
-        # - AttributeName: successful
-        #   AttributeType: S
-        # - AttributeName: target_bucket
-        #   AttributeType: S
         - AttributeName: file_name
           AttributeType: S
       KeySchema: 
@@ -545,8 +538,13 @@ Resources:
       #             -
       #               Name: suffix
       #               Value: pdf
-
-
+  
+  MyFileBucketResource:
+    Type: Custom::S3CustomResource 
+    Properties:
+      ServiceToken: !GetAtt AWSLambdaFunction.Arn
+      the_bucket: !Ref MyFileBucket 
+      dirs_to_create: !Ref DirsToCreate  
   # SQSQueue1:
   #   Type: AWS::SQS::Queue
   #   Properties: {}
