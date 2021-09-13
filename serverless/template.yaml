@@ -62,27 +62,27 @@ Resources:
 
 # create subnet sg vpc secretsmanager sagemaker endpoint sns
 # functuins section
-  # MySNSTopic:
-  #   Type: AWS::SNS::Topic
-  #   Properties:
-  #     Subscription:
-  #       - Endpoint:
-  #           Fn::GetAtt:
-  #             - "MySQS"
-  #             - "Arn"
-  #         Protocol: "sqs"
+  MySNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint:
+            Fn::GetAtt:
+              - "MySQS"
+              - "Arn"
+          Protocol: "sqs"
 
-  # ExtractPdfSNsTopic:
-  #   Type: AWS::SNS::Topic
-  #   Properties:
-  #     DisplayName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
-  #     TopicName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
-  #     Subscription:
-  #       - Endpoint:
-  #           Fn::GetAtt:
-  #             - "MySQS"
-  #             - "Arn"
-  #         Protocol: "sqs"
+  ExtractPdfSNsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
+      TopicName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
+      Subscription:
+        - Endpoint:
+            Fn::GetAtt:
+              - "MySQS"
+              - "Arn"
+          Protocol: "sqs"
           
   MySQS:
     Type: AWS::SQS::Queue
@@ -118,133 +118,133 @@ Resources:
   #     Events:
         
 
-  # gwCasemain:
-  #   Type: 'AWS::Serverless::Function'
-  #   Properties:
-  #     Handler: index.handler
-  #     CodeUri: main/gwCase-main/
-  #     Role: !GetAtt MyLambdaExecuteRole.Arn
-  #     VpcConfig:
-  #       SecurityGroupIds: 
-  #         - !Ref MySecurityGroup
-  #       SubnetIds: 
-  #         - !Ref MySubnet
-  #     Events:
-  #       Api1:
-  #         Type: Api
-  #         Properties:
-  #           Path: /cases
-  #           Method: ANY
-  #           RestApiId: !Ref MyApi
-  #       Api2:
-  #         Type: Api
-  #         Properties:
-  #           Path: /cases
-  #           Method: OPTIONS
-  #           RestApiId: !Ref MyApi
+  gwCasemain:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      CodeUri: main/gwCase-main/
+      Role: !GetAtt MyLambdaExecuteRole.Arn
+      VpcConfig:
+        SecurityGroupIds: 
+          - !Ref MySecurityGroup
+        SubnetIds: 
+          - !Ref MySubnet
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /cases
+            Method: ANY
+            RestApiId: !Ref MyApi
+        Api2:
+          Type: Api
+          Properties:
+            Path: /cases
+            Method: OPTIONS
+            RestApiId: !Ref MyApi
       # Layers:
         # - 'arn:aws:lambda:us-west-2:608494368293:layer:Jose:1'
         # - 'arn:aws:lambda:us-west-2:608494368293:layer:postgresqlClient-master:3'
 
-  # deandevsearchkendra:
-  #   Type: 'AWS::Serverless::Function'
-  #   Properties:
-  #     Handler: lambda_function.lambda_handler
-  #     CodeUri: main/dean-dev-search-kendra/
-  #     Role: !GetAtt MyLambdaExecuteRole.Arn
-  #     VpcConfig:
-  #       SecurityGroupIds: 
-  #         - !Ref MySecurityGroup
-  #       SubnetIds:
-  #         - !Ref MySubnet
-  #     Events:
-  #       Api1:
-  #         Type: Api
-  #         Properties:
-  #           Path: /
-  #           Method: GET
-  #           RestApiId: !Ref MyApi
-  #       Api2:
-  #         Type: Api
-  #         Properties:
-  #           Path: /
-  #           Method: POST
-  #           RestApiId: !Ref MyApi
+  deandevsearchkendra:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: lambda_function.lambda_handler
+      CodeUri: main/dean-dev-search-kendra/
+      Role: !GetAtt MyLambdaExecuteRole.Arn
+      VpcConfig:
+        SecurityGroupIds: 
+          - !Ref MySecurityGroup
+        SubnetIds:
+          - !Ref MySubnet
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
+            RestApiId: !Ref MyApi
+        Api2:
+          Type: Api
+          Properties:
+            Path: /
+            Method: POST
+            RestApiId: !Ref MyApi
 
-  # extractPDF:
-  #   Type: 'AWS::Serverless::Function'
-  #   Properties:
-  #     Handler: extractPDF.lambda_handler
-  #     CodeUri: main/iso-service-dev-extractPDF/
-  #     Role: !GetAtt MyLambdaExecuteRole.Arn
-  #     VpcConfig:
-  #       SecurityGroupIds: 
-  #         - !Ref MySecurityGroup
-  #       SubnetIds: 
-  #         - !Ref MySubnet
-  #     Events:
-  #       BucketEvent1:
-  #         Type: S3
-  #         Properties:
-  #           Bucket: !Ref MyFileBucket
-  #           Events: s3:ObjectCreated:*
-  #     Environment:
-  #       Variables:
-  #         STAGE: !Ref Stage
-  #         SERVICE: !Ref AppIdentity
-  #         NOTIFICATION_ARN: !Ref MySNSTopic
-  #         ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
-  #         TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic
+  extractPDF:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: extractPDF.lambda_handler
+      CodeUri: main/iso-service-dev-extractPDF/
+      Role: !GetAtt MyLambdaExecuteRole.Arn
+      VpcConfig:
+        SecurityGroupIds: 
+          - !Ref MySecurityGroup
+        SubnetIds: 
+          - !Ref MySubnet
+      Events:
+        BucketEvent1:
+          Type: S3
+          Properties:
+            Bucket: !Ref MyFileBucket
+            Events: s3:ObjectCreated:*
+      Environment:
+        Variables:
+          STAGE: !Ref Stage
+          SERVICE: !Ref AppIdentity
+          NOTIFICATION_ARN: !Ref MySNSTopic
+          ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
+          TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic
 
-  # processPdfToTxt:
-  #   Type: 'AWS::Serverless::Function'
-  #   Properties:
-  #     Handler: processPdfToTxt.lambda_handler
-  #     CodeUri: main/iso-service-dev-processPdfToTxt/
-  #     Description: 'Process PDF to txt, and save into S3'
-  #     Role: !GetAtt MyLambdaExecuteRole.Arn
-  #     VpcConfig:
-  #       SecurityGroupIds: 
-  #         - !Ref MySecurityGroup
-  #       SubnetIds:
-  #         - !Ref MySubnet
-  #     # Events:
-  #     #   SQS1:
-  #     #     Type: SQS
-  #     #     Properties:
-  #     #       Queue: !GetAtt MySQS.Arn
-  #     Environment:
-  #       Variables:
-  #         STAGE: !Ref Stage
-  #         SERVICE: !Ref AppIdentity
-  #         NOTIFICATION_ARN: !Ref MySNSTopic
-  #         ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
-  #         TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic
+  processPdfToTxt:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: processPdfToTxt.lambda_handler
+      CodeUri: main/iso-service-dev-processPdfToTxt/
+      Description: 'Process PDF to txt, and save into S3'
+      Role: !GetAtt MyLambdaExecuteRole.Arn
+      VpcConfig:
+        SecurityGroupIds: 
+          - !Ref MySecurityGroup
+        SubnetIds:
+          - !Ref MySubnet
+      Events:
+        SQS1:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt MySQS.Arn
+      Environment:
+        Variables:
+          STAGE: !Ref Stage
+          SERVICE: !Ref AppIdentity
+          NOTIFICATION_ARN: !Ref MySNSTopic
+          ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
+          TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic
 
-  # txtintosections:
-  #   Type: 'AWS::Serverless::Function'
-  #   Properties:
-  #     Handler: txtintosections.lambda_handler
-  #     CodeUri: main/iso-service-dev-txtintosections/
-  #     Description: This lambda function to extract sections from txt
-  #     Role: !GetAtt MyLambdaExecuteRole.Arn
-  #     VpcConfig:
-  #       SecurityGroupIds: 
-  #         - !Ref MySecurityGroup
-  #       SubnetIds: 
-  #         - !Ref MySubnet
+  txtintosections:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: txtintosections.lambda_handler
+      CodeUri: main/iso-service-dev-txtintosections/
+      Description: This lambda function to extract sections from txt
+      Role: !GetAtt MyLambdaExecuteRole.Arn
+      VpcConfig:
+        SecurityGroupIds: 
+          - !Ref MySecurityGroup
+        SubnetIds: 
+          - !Ref MySubnet
 
-  # isoservicedevawslabel:
-  #   Type: 'AWS::Serverless::Function'
-  #   Properties:
-  #     Handler: lambda_function.lambda_handler
-  #     CodeUri: main/iso-service-dev-aws-label/
-  #     Role: !GetAtt MyLambdaExecuteRole.Arn
-  #     VpcConfig:
-  #       SecurityGroupIds: 
-  #         - !Ref MySecurityGroup
-  #       SubnetIds: 
-  #         - !Ref MySubnet
+  isoservicedevawslabel:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: lambda_function.lambda_handler
+      CodeUri: main/iso-service-dev-aws-label/
+      Role: !GetAtt MyLambdaExecuteRole.Arn
+      VpcConfig:
+        SecurityGroupIds: 
+          - !Ref MySecurityGroup
+        SubnetIds: 
+          - !Ref MySubnet
 
 ## --------------   lambda role   -------------------- ##
   # MyRootInstanceProfile:
@@ -265,49 +265,49 @@ Resources:
   #         Resource: "*"
   #     Roles:
   #     - !Ref MyLambdaExecuteRole
-  # MyLambdaExecuteRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #       - Effect: Allow
-  #         Principal:
-  #           Service:
-  #           - ec2.amazonaws.com
-  #           - dynamodb.amazonaws.com
-  #           - s3.amazonaws.com
-  #           - lambda.amazonaws.com
-  #           - textract.amazonaws.com
-  #           - sns.amazonaws.com
-  #           - rds.amazonaws.com
-  #           - kendra.amazonaws.com
-  #         Action:
-  #         - sts:AssumeRole       
-  #     Path: "/"
+  MyLambdaExecuteRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+            - dynamodb.amazonaws.com
+            - s3.amazonaws.com
+            - lambda.amazonaws.com
+            - textract.amazonaws.com
+            - sns.amazonaws.com
+            - rds.amazonaws.com
+            - kendra.amazonaws.com
+          Action:
+          - sts:AssumeRole       
+      Path: "/"
   
-  # S3PutObjectFunctionRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #       - Effect: Allow
-  #         Principal:
-  #           Service:
-  #           - lambda.amazonaws.com
-  #         Action:
-  #         - sts:AssumeRole
-  #     Policies:
-  #     - PolicyName: S3Writer
-  #       PolicyDocument:
-  #         Version: '2012-10-17'
-  #         Statement:
-  #         - Effect: Allow
-  #           Action:
-  #           - s3:ListBucket
-  #           - s3:PutObject
-  #           Resource: "*"
+  S3PutObjectFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+      - PolicyName: S3Writer
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - s3:ListBucket
+            - s3:PutObject
+            Resource: "*"
 
 ## --------------   API   -------------------- ##
 # #API section
@@ -327,161 +327,161 @@ Resources:
       
 ## --------------   Networks   -------------------- ##
 #vpc
-  # MyVPC:
-  #   Type: AWS::EC2::VPC
-  #   Properties:
-  #     CidrBlock: 172.31.0.0/16
-  #     EnableDnsHostnames: true
-  #     EnableDnsSupport: true
-  #     Tags:
-  #     - Key: Stack
-  #       Value: !Ref AWS::StackName
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 172.31.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+      - Key: Stack
+        Value: !Ref AWS::StackName
 
 #vpc endpoint
-  # S3Endpoint:
-  #   Type: AWS::EC2::VPCEndpoint
-  #   Properties:
-  #     PolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #       - Effect: Allow
-  #         Principal: "*"
-  #         Action:
-  #         - "*"
-  #         Resource:
-  #         - "*"
-  #     ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
-  #     RouteTableIds: 
-  #     - !Ref MyRouteTable
-  #     VpcId: !Ref MyVPC
+  S3Endpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: "*"
+          Action:
+          - "*"
+          Resource:
+          - "*"
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
+      RouteTableIds: 
+      - !Ref MyRouteTable
+      VpcId: !Ref MyVPC
   
-  # DynamoDBEndpoint:
-  #   Type: AWS::EC2::VPCEndpoint
-  #   Properties:
-  #     PolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #       - Effect: Allow
-  #         Principal: "*"
-  #         Action:
-  #         - "*"
-  #         Resource:
-  #         - "*"
-  #     ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
-  #     RouteTableIds: 
-  #     - !Ref MyRouteTable
-  #     VpcId: !Ref MyVPC
+  DynamoDBEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: "*"
+          Action:
+          - "*"
+          Resource:
+          - "*"
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
+      RouteTableIds: 
+      - !Ref MyRouteTable
+      VpcId: !Ref MyVPC
 
-  # TextractEndpoint:
-  #   Type: AWS::EC2::VPCEndpoint
-  #   Properties:
-  #     PolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #       - Effect: Allow
-  #         Principal: "*"
-  #         Action:
-  #         - "*"
-  #         Resource:
-  #         - "*"
-  #     ServiceName: !Sub "com.amazonaws.${AWS::Region}.textract"
-  #     VpcEndpointType: Interface
-  #     PrivateDnsEnabled: true
-  #     SecurityGroupIds:
-  #     - !Ref MySecurityGroup
-  #     SubnetIds:
-  #     - !Ref MySubnet
-  #     - !Ref SecondSubnet
-  #     VpcId: !Ref MyVPC
+  TextractEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: "*"
+          Action:
+          - "*"
+          Resource:
+          - "*"
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.textract"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+      - !Ref MySecurityGroup
+      SubnetIds:
+      - !Ref MySubnet
+      - !Ref SecondSubnet
+      VpcId: !Ref MyVPC
   
-  # SnsEndpoint:
-  #   Type: AWS::EC2::VPCEndpoint
-  #   Properties:
-  #     PolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #       - Effect: Allow
-  #         Principal: "*"
-  #         Action:
-  #         - "*"
-  #         Resource:
-  #         - "*"
-  #     ServiceName: !Sub "com.amazonaws.${AWS::Region}.sns"
-  #     VpcEndpointType: Interface
-  #     PrivateDnsEnabled: true
-  #     SecurityGroupIds:
-  #     - !Ref MySecurityGroup
-  #     SubnetIds:
-  #     - !Ref MySubnet
-  #     - !Ref SecondSubnet
-  #     VpcId: !Ref MyVPC
+  SnsEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: "*"
+          Action:
+          - "*"
+          Resource:
+          - "*"
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.sns"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+      - !Ref MySecurityGroup
+      SubnetIds:
+      - !Ref MySubnet
+      - !Ref SecondSubnet
+      VpcId: !Ref MyVPC
 
 #subnet 
-  # MySubnet:
-  #   Type: AWS::EC2::Subnet
-  #   Properties:
-  #     VpcId:
-  #       Ref: MyVPC
-  #     AvailabilityZone:
-  #       Fn::Select:
-  #        - 0
-  #        - Fn::GetAZs: ""
-  #     CidrBlock: 172.31.2.0/24
-  #     MapPublicIpOnLaunch: false 
-  #     # AvailabilityZone: us-west-1b
-  #     Tags:
-  #     - Key: Stack
-  #       Value: !Ref AWS::StackName
+  MySubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: MyVPC
+      AvailabilityZone:
+        Fn::Select:
+         - 0
+         - Fn::GetAZs: ""
+      CidrBlock: 172.31.2.0/24
+      MapPublicIpOnLaunch: false 
+      # AvailabilityZone: us-west-1b
+      Tags:
+      - Key: Stack
+        Value: !Ref AWS::StackName
 
-  # SecondSubnet:
-  #   Type: AWS::EC2::Subnet
-  #   Properties:
-  #     VpcId:
-  #       Ref: MyVPC
-  #     AvailabilityZone:
-  #       Fn::Select:
-  #        - 1
-  #        - Fn::GetAZs: ""
-  #     CidrBlock: 172.31.3.0/24
-  #     MapPublicIpOnLaunch: false
-  #     Tags:
-  #     - Key: Stack
-  #       Value: Second subnet for UCP project
+  SecondSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: MyVPC
+      AvailabilityZone:
+        Fn::Select:
+         - 1
+         - Fn::GetAZs: ""
+      CidrBlock: 172.31.3.0/24
+      MapPublicIpOnLaunch: false
+      Tags:
+      - Key: Stack
+        Value: Second subnet for UCP project
 
 #SG
-  # MySecurityGroup:
-  #   Type: AWS::EC2::SecurityGroup
-  #   Properties:
-  #     GroupDescription: security group
-  #     VpcId:
-  #       Ref: MyVPC
-  #     Tags: 
-  #     - Key: Stack
-  #       Value: !Ref AWS::StackName
-  #     SecurityGroupIngress:
-  #     - IpProtocol: -1
-  #       CidrIp: 0.0.0.0/0
-  #       Description: allow all the traffic to lambda
-  #     SecurityGroupEgress:
-  #     - IpProtocol: -1
-  #       CidrIp: 0.0.0.0/0
-  #       Description: allow all the traffic from lambda
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: security group
+      VpcId:
+        Ref: MyVPC
+      Tags: 
+      - Key: Stack
+        Value: !Ref AWS::StackName
+      SecurityGroupIngress:
+      - IpProtocol: -1
+        CidrIp: 0.0.0.0/0
+        Description: allow all the traffic to lambda
+      SecurityGroupEgress:
+      - IpProtocol: -1
+        CidrIp: 0.0.0.0/0
+        Description: allow all the traffic from lambda
 
 ## route table
-  # MyRouteTable:
-  #     Type: AWS::EC2::RouteTable
-  #     Properties:
-  #       VpcId: !Ref MyVPC
-  # MySubnetARouteTableAssociation:
-  #   Type: AWS::EC2::SubnetRouteTableAssociation
-  #   Properties:
-  #     SubnetId: !Ref MySubnet
-  #     RouteTableId: !Ref MyRouteTable
-  # MySubnetBRouteTableAssociation:
-  #   Type: AWS::EC2::SubnetRouteTableAssociation
-  #   Properties:
-  #     SubnetId: !Ref SecondSubnet
-  #     RouteTableId: !Ref MyRouteTable
+  MyRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId: !Ref MyVPC
+  MySubnetARouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref MySubnet
+      RouteTableId: !Ref MyRouteTable
+  MySubnetBRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref SecondSubnet
+      RouteTableId: !Ref MyRouteTable
 
 ## --------------   Cognito   -------------------- ##
 #Congnito User Pool        
@@ -507,29 +507,29 @@ Resources:
       GenerateSecret: false
 
 ## --------------   DynameDB   -------------------- ##     
-  # DynamoDBTable:
-  #   Type: AWS::DynamoDB::Table
-  #   Properties: 
-  #     TableName: !Join ['-', [!Ref AppIdentity, !Ref Stage, 'log']]
-  #     AttributeDefinitions: 
-  #       # - AttributeName: file_name
-  #       #   AttributeType: S
-  #       # - AttributeName: create_time
-  #       #   AttributeType: S
-  #       # - AttributeName: source_bucket
-  #       #   AttributeType: S
-  #       # - AttributeName: successful
-  #       #   AttributeType: S
-  #       # - AttributeName: target_bucket
-  #       #   AttributeType: S
-  #       - AttributeName: file_name
-  #         AttributeType: S
-  #     KeySchema: 
-  #       - AttributeName: file_name
-  #         KeyType: HASH
-  #     ProvisionedThroughput: 
-  #       ReadCapacityUnits: 5
-  #       WriteCapacityUnits: 5
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      TableName: !Join ['-', [!Ref AppIdentity, !Ref Stage, 'log']]
+      AttributeDefinitions: 
+        # - AttributeName: file_name
+        #   AttributeType: S
+        # - AttributeName: create_time
+        #   AttributeType: S
+        # - AttributeName: source_bucket
+        #   AttributeType: S
+        # - AttributeName: successful
+        #   AttributeType: S
+        # - AttributeName: target_bucket
+        #   AttributeType: S
+        - AttributeName: file_name
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: file_name
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
       
 ## --------------   S3   -------------------- ##     
 #S3 
@@ -572,139 +572,139 @@ Resources:
           InstanceType: ml.t2.large
           ModelName: !GetAtt Model.ModelName
           VariantName: !GetAtt Model.ModelName
-  # Model:
-  #   Type: "AWS::SageMaker::Model"
-  #   Properties:
-  #     PrimaryContainer:
-  #       Image: !Ref SageMakerImage
-  #     ExecutionRoleArn: !GetAtt ExecutionRole.Arn
+  Model:
+    Type: "AWS::SageMaker::Model"
+    Properties:
+      PrimaryContainer:
+        Image: !Ref SageMakerImage
+      ExecutionRoleArn: !GetAtt ExecutionRole.Arn
 
-  # ExecutionRole: 
-  #   Type: "AWS::IAM::Role"
-  #   Properties: 
-  #     AssumeRolePolicyDocument: 
-  #       Version: "2012-10-17"
-  #       Statement: 
-  #         - 
-  #           Effect: "Allow"
-  #           Principal: 
-  #             Service: 
-  #               - "sagemaker.amazonaws.com"
-  #           Action: 
-  #             - "sts:AssumeRole"
-  #     Path: "/"
-  #     Policies: 
-  #       - 
-  #         PolicyName: "root"
-  #         PolicyDocument: 
-  #           Version: "2012-10-17"
-  #           Statement: 
-  #             - 
-  #               Effect: "Allow"
-  #               Action: "*"
-                # Resource: "*"
+  ExecutionRole: 
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "sagemaker.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies: 
+        - 
+          PolicyName: "root"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - 
+                Effect: "Allow"
+                Action: "*"
+                Resource: "*"
 
 ## --------------   Amplify   -------------------- ##
 #amplify section
-  # AmplifyApp:
-  #   Type: AWS::Amplify::App
-  #   Properties:
-  #     Name: !Join ['-', [!Ref AppIdentity, 'amplify', !Ref Stage]]
-  #     Repository: !Sub "https://github.com/${GithubUser}/${GithubRepo}.git"
-  #     AccessToken: !Ref GithubToken
-  #     IAMServiceRole: !GetAtt AmplifyRole.Arn
-  #     EnvironmentVariables:
-  #       - Name: ENDPOINT
-  #         Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
+  AmplifyApp:
+    Type: AWS::Amplify::App
+    Properties:
+      Name: !Join ['-', [!Ref AppIdentity, 'amplify', !Ref Stage]]
+      Repository: !Sub "https://github.com/${GithubUser}/${GithubRepo}.git"
+      AccessToken: !Ref GithubToken
+      IAMServiceRole: !GetAtt AmplifyRole.Arn
+      EnvironmentVariables:
+        - Name: ENDPOINT
+          Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
 
-  # AmplifyBranch:
-  #   Type: AWS::Amplify::Branch
-  #   Properties:
-  #     BranchName: !Ref GitBranchName
-  #     AppId: !GetAtt AmplifyApp.AppId
-  #     EnableAutoBuild: true
+  AmplifyBranch:
+    Type: AWS::Amplify::Branch
+    Properties:
+      BranchName: !Ref GitBranchName
+      AppId: !GetAtt AmplifyApp.AppId
+      EnableAutoBuild: true
 
 
 ## --------------   IAM Role   -------------------- ##
-  # AmplifyRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: 2012-10-17
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service:
-  #               - amplify.amazonaws.com
-  #           Action:
-  #             - sts:AssumeRole
-  #     Policies:
-  #       - PolicyName: Amplify
-  #         PolicyDocument:
-  #           Version: 2012-10-17
-  #           Statement:
-  #             - Effect: Allow
-  #               Action: "amplify:*"
-  #               Resource: "*"
+  AmplifyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - amplify.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: Amplify
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: "amplify:*"
+                Resource: "*"
 
-  # SQSRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: 2012-10-17
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service:
-  #               - sqs.amazonaws.com
-  #           Action:
-  #             - sts:AssumeRole
-  #     Policies:
-  #       - PolicyName: sqsExecution
-  #         PolicyDocument:
-  #           Version: 2012-10-17
-  #           Statement:
-  #             - Action:
-  #                 - logs:CreateLogStream
-  #                 - logs:CreateLogGroup
-  #                 - logs:PutLogEvents
-  #                 - logs:CreateLogGroup
-  #                 - logs:CreateLogStream
-  #                 - logs:PutLogEvents
-  #               Resource:
-  #                 - arn:aws:logs:*
-  #               Effect: Allow
-  #             - Action: s3:*
-  #               Resource:
-  #                 - arn:aws:s3:::*
-  #               Effect: Allow
-  #             - Action:
-  #                 - SNS:*
-  #               Resource:
-  #                 - arn:aws:sns:*
-  #               Effect: Allow
-  #             - Action:
-  #                 - dynamodb:GetRecords
-  #                 - dynamodb:GetShardIterator
-  #                 - dynamodb:DescribeStream
-  #                 - dynamodb:ListStreams
-  #                 - dynamodb:GetItem
-  #               Resource:
-  #                 - arn:aws:dynamodb:*
-  #               Effect: Allow
-  #             - Action:
-  #                 - sqs:ReceiveMessage
-  #                 - sqs:DeleteMessage
-  #                 - sqs:GetQueueAttributes
-  #                 - sqs:ReceiveMessage
-  #                 - sqs:DeleteMessage
-  #                 - sqs:GetQueueAttributes
-  #                 - sqs:ReceiveMessage
-  #                 - sqs:DeleteMessage
-  #                 - sqs:GetQueueAttributes
-  #               Resource:
-  #                 - arn:aws:sqs:*
-  #               Effect: Allow
+  SQSRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - sqs.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: sqsExecution
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - arn:aws:logs:*
+                Effect: Allow
+              - Action: s3:*
+                Resource:
+                  - arn:aws:s3:::*
+                Effect: Allow
+              - Action:
+                  - SNS:*
+                Resource:
+                  - arn:aws:sns:*
+                Effect: Allow
+              - Action:
+                  - dynamodb:GetRecords
+                  - dynamodb:GetShardIterator
+                  - dynamodb:DescribeStream
+                  - dynamodb:ListStreams
+                  - dynamodb:GetItem
+                Resource:
+                  - arn:aws:dynamodb:*
+                Effect: Allow
+              - Action:
+                  - sqs:ReceiveMessage
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                  - sqs:ReceiveMessage
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                  - sqs:ReceiveMessage
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                Resource:
+                  - arn:aws:sqs:*
+                Effect: Allow
 
 
 
@@ -715,9 +715,9 @@ Outputs:
   Bucket:
     Description : "The name of the created bucket"
     Value: !Ref MyFileBucket
-  # VPC:
-  #   Description : "VPC Name"
-  #   Value: !Ref MyVPC
+  VPC:
+    Description : "VPC Name"
+    Value: !Ref MyVPC
   # AmplifyAppID:
   #   Value: !Ref AmplifyApp
   # EndpointId:
