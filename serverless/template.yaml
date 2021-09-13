@@ -90,19 +90,19 @@ Resources:
       MaximumMessageSize: 262144
       VisibilityTimeout: 800
 
-  # AllowLambds2SQSPolicy:
-  #     Type: AWS::SQS::QueuePolicy
-  #     Properties:
-  #       Queues: [!Ref 'MySQS']
-  #       PolicyDocument:
-  #         Version: '2008-10-17'
-  #         Id: PublicationPolicy4SendMsg
-  #         Statement:
-  #         - Sid: Allow-Lambda-SendMessage
-  #           Effect: Allow
-  #           Principal: "*"
-  #           Action: "SQS:*"
-  #           Resource: "*"
+  AllowLambds2SQSPolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues: [!Ref 'MySQS']
+        PolicyDocument:
+          Version: '2008-10-17'
+          Id: PublicationPolicy4SendMsg
+          Statement:
+          - Sid: Allow-Lambda-SendMessage
+            Effect: Allow
+            Principal: "*"
+            Action: "SQS:*"
+            Resource: "*"
   
   # createFolder:
   #   Type: 'AWS::Serverless::Function'
@@ -311,19 +311,19 @@ Resources:
 
 ## --------------   API   -------------------- ##
 # #API section
-  # MyApi:
-  #   Type: AWS::Serverless::Api
-  #   Properties:
-  #     StageName: !Ref Stage
-  #     Cors: 
-  #       AllowMethods: "'*'"
-  #       AllowHeaders: "'*'"
-  #       AllowOrigin: "'*'"
-  #     Auth:
-  #       DefaultAuthorizer: MyCognitoAuthorizer
-        # Authorizers:
-        #   MyCognitoAuthorizer:
-        #     UserPoolArn: !GetAtt MyCognitoUserPool.Arn
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Stage
+      Cors: 
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+      Auth:
+        DefaultAuthorizer: MyCognitoAuthorizer
+        Authorizers:
+          MyCognitoAuthorizer:
+            UserPoolArn: !GetAtt MyCognitoUserPool.Arn
       
 ## --------------   Networks   -------------------- ##
 #vpc
@@ -485,26 +485,26 @@ Resources:
 
 ## --------------   Cognito   -------------------- ##
 #Congnito User Pool        
-  # MyCognitoUserPool:
-  #   Type: AWS::Cognito::UserPool
-  #   Properties:
-  #     UserPoolName: !Join ['-', [!Ref AppIdentity, 'UserPool', !Ref Stage]]
-  #     Policies:
-  #       PasswordPolicy:
-  #         MinimumLength: 8
-  #     UsernameAttributes:
-  #       - email
-  #     Schema:
-  #       - AttributeDataType: String
-  #         Name: email
-  #         Required: false
+  MyCognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Join ['-', [!Ref AppIdentity, 'UserPool', !Ref Stage]]
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      UsernameAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: false
   
-  # MyCognitoUserPoolClient:
-  #   Type: AWS::Cognito::UserPoolClient
-  #   Properties:
-  #     UserPoolId: !Ref MyCognitoUserPool
-  #     ClientName: !Join ['-', [!Ref AppIdentity, 'UserPoolClientName', !Ref Stage]]
-  #     GenerateSecret: false
+  MyCognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref MyCognitoUserPool
+      ClientName: !Join ['-', [!Ref AppIdentity, 'UserPoolClientName', !Ref Stage]]
+      GenerateSecret: false
 
 ## --------------   DynameDB   -------------------- ##     
   # DynamoDBTable:
@@ -563,15 +563,15 @@ Resources:
   #   Properties:
   #     EndpointConfigName:
   #       !GetAtt EndpointConfig.EndpointConfigName
-  # EndpointConfig:
-  #   Type: "AWS::SageMaker::EndpointConfig"
-  #   Properties:
-  #     ProductionVariants:
-  #       - InitialInstanceCount: 1
-  #         InitialVariantWeight: 1.0
-  #         InstanceType: ml.t2.large
-  #         ModelName: !GetAtt Model.ModelName
-  #         VariantName: !GetAtt Model.ModelName
+  EndpointConfig:
+    Type: "AWS::SageMaker::EndpointConfig"
+    Properties:
+      ProductionVariants:
+        - InitialInstanceCount: 1
+          InitialVariantWeight: 1.0
+          InstanceType: ml.t2.large
+          ModelName: !GetAtt Model.ModelName
+          VariantName: !GetAtt Model.ModelName
   # Model:
   #   Type: "AWS::SageMaker::Model"
   #   Properties:
@@ -709,9 +709,9 @@ Resources:
 
 
 Outputs:
-  # OrderApi:
-  #   Description: "API Gateway endpoint URL for Prod stage for Order function"
-  #   Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello/"
+  OrderApi:
+    Description: "API Gateway endpoint URL for Prod stage for Order function"
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello/"
   Bucket:
     Description : "The name of the created bucket"
     Value: !Ref MyFileBucket
