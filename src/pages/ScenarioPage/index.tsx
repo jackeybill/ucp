@@ -568,7 +568,7 @@ const ScenarioPage = (props) => {
           tempStr = Number(item.Value.avg_upper) + " " + item.Value.units
         } else {tempStr = Number(item.Value.avg_lower)+ " - " + Number(item.Value.avg_upper) + " " + item.Value.units}
       } else{
-        tempStr = '*'
+        tempStr = '-'
       }
       // else {
       //   var value = item.Value
