@@ -56,6 +56,9 @@ const EditTable = (props) => {
 
   useEffect(() => {
     let newList = []
+
+    console.log("data: ",props.data);
+    
     props.data.map((item, id) =>{
       if(item['splitPart'] === undefined){
         newList.push(item)
@@ -76,6 +79,8 @@ const EditTable = (props) => {
     }
     
     setData(newList)
+    console.log("newList",newList);
+    
   }, [props.data])
 
   useEffect(() => {
@@ -89,6 +94,8 @@ const EditTable = (props) => {
     const targetRecord = tmpData.find(e=> e.Key==record.Key)
     targetRecord.Children[idx][key]=e.target.value
     setData(tmpData)
+    console.log("tmpData L92: ",tmpData);
+    
     
   }
 
@@ -133,6 +140,8 @@ const EditTable = (props) => {
           return item
         })
         setData(tempData);
+        console.log("tempData L138: ",tempData);
+        
         setEditingKey(''); 
 
         const temp = []
@@ -145,6 +154,8 @@ const EditTable = (props) => {
       } else {
         newData.push(row);
         setData(newData);
+        console.log("newData L52: ",newData);
+
         setEditingKey('');
 
         const temp = []

@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
 import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer} from "antd";
-import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getSOAResource, getIEResource, getAverage} from "../../utils/ajax-proxy";
+import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getCriteriaLibByNctId, getSOAResource, getIEResource, getAverage} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
@@ -228,6 +228,8 @@ const ScenarioPage = (props) => {
       } else {
         const getTrialById = async () => {
             const resp = await getStudy(props.location.state.trial_id);
+            console.log("getlist",resp);
+            
             if(resp.statusCode == 200){
                 const tempRecord = resp.body
                 setTrialRecord(tempRecord)
@@ -344,15 +346,22 @@ const ScenarioPage = (props) => {
 
         const summaryDefaultList = async () => {
           const nctIdList = props.location.state.similarHistoricalTrials
+          console.log("nctIdList",nctIdList);
+          
           var resp
-          if(nctIdList != undefined && nctIdList instanceof Array && nctIdList.length > 0){
-            resp = await getSummaryListByNctId(props.location.state.similarHistoricalTrials);
-          } else {
-            resp = await getSummaryDefaultList();
-          }
+          // if(nctIdList != undefined && nctIdList instanceof Array && nctIdList.length > 0){
+            console.log("input",props.location.state.similarHistoricalTrials);
+            resp = await getCriteriaLibByNctId(props.location.state.similarHistoricalTrials);
+            // console.log("criteria",resp);
+          // } else {
+          //   resp = await getSummaryDefaultList();
+          //   console.log("default",resp);
+          // }
           setPageLoading(false)
             if (resp.statusCode == 200) {
-                const response = JSON.parse(resp.body)
+                // const response = JSON.parse(resp.body)
+                const response = resp.body
+                console.log("criteria result: ", response);
                 const inclusionCriteria = response[0].InclusionCriteria
                 for(var i = 0; i < inclusionCriteria.length; i ++){
                     var incluIndex = getCatorgoryIndex(i, inclusionCriteria)
@@ -543,36 +552,51 @@ const ScenarioPage = (props) => {
     }
 
     function formatValue(item){
+      console.log(item.Text, item.Value);
+      
       var tempStr
       if(item.Value === ''){
         tempStr = '-'
-      } else {
-        var value = item.Value
-        if(value instanceof Array){
-          if(value.length === 3){
-            tempStr = formatNum(value[0]) + ' - ' + formatNum(value[1]) + value[2]
-          } else if(value[0] === Number(value[0])){
-            tempStr = formatNum(value[0])
-            if(value.length > 1){
-              tempStr += ' - ' + formatNum(value[1])
-            }
-          } else {
-            var id = value[0].lastIndexOf('.')
-            var a = value[0]
-            if(id > -1 && id + 2 < a.length){
-              a = a.substr(0, id + 3)
-            }
-            tempStr = a
-            if(value.length > 1){
-              tempStr += formatNum(value[1])
-            }
-          }
-        } else if(value === Number(value)){
-          tempStr = value.toFixed(2)+''
-        } else {
-          tempStr = value
-        }
+      } else if (item.Value.avg_value != '' && item.Value.avg_value != 0) {
+        tempStr = Number(item.Value.avg_value) + " " + item.Value.units
+      } else if (item.Value.avg_lower == 0 && item.Value.avg_upper != 0) {
+        tempStr = "< "+ Number(item.Value.avg_upper)+ " " + item.Value.units
+      } else if (item.Value.avg_lower != 0 && item.Value.avg_upper == 0) {
+        tempStr = "> "+ Number(item.Value.avg_lower)+ " " + item.Value.units
+      } else if (item.Value.avg_lower != 0 && item.Value.avg_upper != 0) {
+        if (Number(item.Value.avg_lower) == Number(item.Value.avg_upper)){
+          tempStr = Number(item.Value.avg_upper) + " " + item.Value.units
+        } else {tempStr = Number(item.Value.avg_lower)+ " - " + Number(item.Value.avg_upper) + " " + item.Value.units}
+      } else{
+        tempStr = '*'
       }
+      // else {
+      //   var value = item.Value
+      //   if(value instanceof Array){
+      //     if(value.length === 3){
+      //       tempStr = formatNum(value[0]) + ' - ' + formatNum(value[1]) + value[2]
+      //     } else if(value[0] === Number(value[0])){
+      //       tempStr = formatNum(value[0])
+      //       if(value.length > 1){
+      //         tempStr += ' - ' + formatNum(value[1])
+      //       }
+      //     } else {
+      //       var id = value[0].lastIndexOf('.')
+      //       var a = value[0]
+      //       if(id > -1 && id + 2 < a.length){
+      //         a = a.substr(0, id + 3)
+      //       }
+      //       tempStr = a
+      //       if(value.length > 1){
+      //         tempStr += formatNum(value[1])
+      //       }
+      //     }
+      //   } else if(value === Number(value)){
+      //     tempStr = value.toFixed(2)+''
+      //   } else {
+      //     tempStr = value
+      //   }
+      // }
       return tempStr
     }
 
@@ -593,8 +617,10 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
-                "Timeframe": "-",
+                // "Values": formatValue(item),
+                // "Timeframe": "-",
+                "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
               excluDemographicsElements.push(newItem)
@@ -611,8 +637,10 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
-                "Timeframe": "-",
+                // "Values": formatValue(item),
+                // "Timeframe": "-",
+                "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
               excluMedConditionElements.push(newItem)
@@ -629,8 +657,10 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
-                "Timeframe": "-",
+                // "Values": formatValue(item),
+                // "Timeframe": "-",
+                "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
               excluInterventionElements.push(newItem)
@@ -647,8 +677,10 @@ const ScenarioPage = (props) => {
             if(index < 0){
               var newItem = {
                 "Eligibility Criteria": item.Text,
-                "Values": formatValue(item),
-                "Timeframe": "-",
+                // "Values": formatValue(item),
+                // "Timeframe": "-",
+                "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
               excluLabTestElements.push(newItem)
@@ -676,7 +708,8 @@ const ScenarioPage = (props) => {
           item.Key = (id + 1) + ''
           return item
         }))
-
+        console.log("demographicsElementsTmp",demographicsElementsTmp);
+        
 
         let medConditionElementsTmp = medConditionElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
@@ -689,6 +722,8 @@ const ScenarioPage = (props) => {
           item.Key = demographicsTableDataTmp.length + (id + 1) + ''
           return item
         }))
+        console.log("medConditionElementsTmp",medConditionElementsTmp);
+        
 
          let interventionElementsTmp = interventionElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
@@ -701,7 +736,8 @@ const ScenarioPage = (props) => {
           item.Key = demographicsTableDataTmp.length + medConditionTableDataTmp.length + (id + 1) + ''        
           return item
         }))
-  
+        console.log("interventionElementsTmp",interventionElementsTmp);
+        
        
         let labTestElementsTmp = labTestElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
@@ -714,7 +750,8 @@ const ScenarioPage = (props) => {
           item.Key = demographicsTableDataTmp.length + medConditionTableDataTmp.length + interventionTableDataTmp.length+(id + 1) + ''
           return item
         }))
-    
+        console.log("labTestElementsTmp",labTestElementsTmp);
+        
 
         setCollapsible(false)
         setDefaultActiveKey(['2', '3', '4', '5'])

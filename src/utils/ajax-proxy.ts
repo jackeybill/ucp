@@ -382,6 +382,24 @@ export const getSummaryListByNctId = async (nctIdList) => {
   return await response.json();
 }
 
+// replace for getSummaryListByNctId
+export const getCriteriaLibByNctId = async (nct_list) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+  headers: {
+    'Access-Control-Request-Method': 'POST',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+      "findCriteriaLib": {
+        "nctList": nct_list
+      }
+    })
+  })
+
+  return await response.json();
+}
+
 export const updateStudy = async (params:any) => {
   const response = await fetch(criteria_url, {
     method: 'POST',
