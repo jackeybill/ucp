@@ -4,8 +4,10 @@ import { saveText } from "../../utils/ajax-proxy";
 import successIcon from "../../assets/success.svg";
 import warnIcon from "../../assets/warn.svg";
 import { connect } from "react-redux";
+import {ENDPOINT_SECTION} from '../../pages/ProtocolSection'
 import * as fileActions from "../../actions/file.js";
 import "./index.scss";
+import { isTable } from "../Extraction";
 
 const { Option } = Select;
 
@@ -31,8 +33,13 @@ interface TextWithEntityIF {
   hanldeRemoveCategory?: (e) => void;
   handleSaveContent?: Function;
   updateWordsCollection?: (e) => void;
+  updateTableDatasource?: Function;
   readFile?: (e) => void;
   fileReader?:{}
+  tableBody?:any,   
+  tableBodyColumnIndex?:any,
+  tableBodyRowIndex?:any
+  isEndPointTable?:any
 }
 
 interface markIF {
@@ -43,6 +50,8 @@ interface markIF {
   children: Array<any>;
   score: 1;
 }
+
+
 
 export const formatWord = (w) => {
   w = w.toLowerCase()
@@ -72,25 +81,23 @@ const renderConcepts = (concepts = [], text = "", entity = "") => {
   return (
     <div className="concept-box">
       {concepts.length > 0 &&
-        concepts.map((c) => {
-          return (
-            <div className="concept-item">
-              <div className="item-title">      
-               {text}
-              </div>
-              <div className="item-desc">
-                <p className="desc-title">Top inferred concepts</p>
+        <div className="concept-item">
+          <div className="item-desc">
+            <p className="desc-title">Top inferred concepts</p>
+            { concepts.map((c) => {
+              return (
                 <div className="code">
-                  <span>{c.Code}</span>
+                  {c.Code?<span>{c.Code}</span>:''}
                   <div className="desc-box" >
-                    <p className="desc">{c.Description}</p>
-                    <p className="score">{ c.Score?c.Score.toFixed(2):'-' } score</p>
+                    {c.Description?<p className="desc">{c.Description}</p>:''}
+                    {c.Score?<p className="score">{ c.Score?c.Score.toFixed(2):'-' } score</p>:''}         
                   </div>
-                </div>          
-              </div>
-            </div>
-          );
-        })}
+                </div>  
+              )
+            })}                   
+          </div>
+        </div>
+        }
     </div>
   );
 };
@@ -104,12 +111,15 @@ const renderMark = (markParams, entity) => {
     concepts = [],
   } = markParams;
 
+  let term = word.children.map(c => {
+    return c.term||""
+  }).join(' ')
+
   if (showConcepts && concepts.length > 0) {
     let text = word.children.map(c => {
       return c.text
-  }).join(' ')
-    if (text.indexOf(",") > -1) text = text.slice(0, text.length - 1)
-   
+    }).join(' ')  
+    if (text.indexOf(",") > -1) text = text.slice(0, text.length - 1) 
     return (
       <Tooltip key={word.id} placement="right" title={renderConcepts(concepts, text, entity)}>
         <mark
@@ -143,7 +153,7 @@ const renderMark = (markParams, entity) => {
                 : ""
             }`}
           >
-            {formatWord(word.category)}
+            {formatWord(word.category)}&nbsp; 
           </span>
         </mark>
       </Tooltip>
@@ -159,7 +169,7 @@ const renderMark = (markParams, entity) => {
     >
       {word.children.map((child) => {
         if (child.id = "57") {
-            console.log('nnn-----', child.text.indexOf('\t'))
+            // console.log('nnn-----', child.text.indexOf('\t'))
         }
       
         child.text.indexOf('\t')!=-1 && child.text.replace('\n','<br/>')
@@ -188,7 +198,7 @@ const renderMark = (markParams, entity) => {
             : ""
         }`}
       >
-        {formatWord(word.category)}
+        {formatWord(word.category)}&nbsp;
       </span>
       </mark>
       
@@ -208,7 +218,11 @@ const renderTooltipTitle = (
   handleSaveContent,
   readFile,
   fileReader,
-  entity
+  entity,
+  tableBody,
+  tableBodyColumnIndex,
+  tableBodyRowIndex,
+  isEndPointTable
 ) => {
   const id = word.id;
   const score = word.score || "";
@@ -216,8 +230,6 @@ const renderTooltipTitle = (
       return c.text
   }).join(' ')
   if (text.indexOf(",") > -1) text = text.slice(0, text.length - 1)
-  // console.log('currentScore----', currentScore,currentId)
-  // console.log('score----', score,id,score.toFixed(0))
   
   return (
     <div className="mark-tooltip-container">
@@ -258,7 +270,7 @@ const renderTooltipTitle = (
         <span
           className="remove-btn"
           onClick={(e) =>
-            hanldeRemoveCategory(id, wordsCollection, updateWordsCollection, saveParamsObj,readFile,fileReader)
+            hanldeRemoveCategory(id, wordsCollection, updateWordsCollection, saveParamsObj,readFile,fileReader,isEndPointTable,tableBodyRowIndex,tableBodyColumnIndex)
           }
         >
           Remove Entity
@@ -274,7 +286,10 @@ const renderTooltipTitle = (
               currentLabel,
               wordsCollection,
               updateWordsCollection,
-              saveParamsObj
+              saveParamsObj,
+              tableBody,   
+              tableBodyColumnIndex,
+              tableBodyRowIndex
             )
           }
         >
@@ -285,7 +300,7 @@ const renderTooltipTitle = (
   );
 };
 
-const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,saveParamsObj,readFile,fileReader) => {
+const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,saveParamsObj,readFile,fileReader,isEndPointTable,tableBodyRowIndex,tableBodyColumnIndex) => {
  
   const tempWordsCollection = wordsCollection.slice(0);
   const startWordIdx = tempWordsCollection.findIndex((wObj) => {
@@ -296,14 +311,32 @@ const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,s
   tempWordsCollection.splice(startWordIdx, 1, ...childrenItem);
   updateWordsCollection(tempWordsCollection);
   const markCollection = tempWordsCollection.filter((w) => w.type == "mark");
+
   const { hashKey, entity, activeSection, path } = saveParamsObj;
-     const paramBody = {
+  let paramBody,updatedData
+   if(isEndPointTable){
+    updatedData = fileReader.file[hashKey][activeSection][0].tableResult.slice(0)
+    updatedData[tableBodyRowIndex+1][tableBodyColumnIndex].comprehendMedical[entity].label=tempWordsCollection
+    
+    paramBody = {
+      [hashKey]: {
+        [activeSection]: [
+          {
+            tableResult: updatedData
+          },
+        ],
+      },
+    };
+   }else{
+    updatedData = fileReader.file[hashKey][activeSection].slice(0)
+    updatedData[0].comprehendMedical[entity].label = tempWordsCollection;
+
+    paramBody = {
       [hashKey]: {
         [activeSection]: [
           {
             comprehendMedical: {
               [entity]: {
-                // label: markCollection,
                  label: tempWordsCollection,
               },
             },
@@ -311,19 +344,15 @@ const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,s
         ],
       },
     };
-   
-  const saveRes = await saveText(paramBody, path);
-   readFile({
-      updatedSection: paramBody,
-    });
-  if (saveRes.statusCode == "200") {
-    let temFile = fileReader.file
-    temFile[hashKey][activeSection][0].comprehendMedical[entity].label = tempWordsCollection
+   }
 
+     
+  const saveRes = await saveText(paramBody, path);
+  if (saveRes.statusCode == "200") {
       message.success("Remove successfully");
       readFile({
         updatedSection: paramBody,
-        file:temFile
+        file: updatedData,
       });
     }
 };
@@ -342,6 +371,11 @@ const TextWithEntity = (props: TextWithEntityIF) => {
     activeSection,
     path,
     readFile,
+    tableBody,
+    tableBodyColumnIndex,
+    tableBodyRowIndex,
+    isEndPointTable,
+    updateTableDatasource
   } = props;
 
   const [currentLabel, setCurrentLabel] = useState("");
@@ -416,13 +450,18 @@ const TextWithEntity = (props: TextWithEntityIF) => {
       selectedWordObj.length,
       newMarkObj
     );
-
-    updateWordsCollection(tempWordsCollection);
+    
+    if(isEndPointTable){
+      updateTableDatasource(tempWordsCollection,tableBodyColumnIndex,tableBodyRowIndex)
+    }else{
+      updateWordsCollection(tempWordsCollection);
+    }
+    
   };
 
   return (
     <div className="text-with-entity-container">
-      {/* <pre> */}
+      <pre>
       <div
         className="content text"
         id="pdf-content"
@@ -441,7 +480,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
                     : ""
                 }`}
               >
-                {word.text?word.text:''}&nbsp; 
+                {word.text? word.text : ''}&nbsp;
               </span>
             );
           }
@@ -479,7 +518,11 @@ const TextWithEntity = (props: TextWithEntityIF) => {
                       handleSaveContent,
                       props.readFile,
                       props.fileReader,
-                      entity
+                      entity,
+                      tableBody,
+                      tableBodyColumnIndex,
+                      tableBodyRowIndex,
+                      isEndPointTable
                     )}
                   >
                     {renderMark(markParams, entity)}
@@ -512,7 +555,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
                             : ""
                         } `}
                       >
-                        {child.text}{" "}
+                        {child.text}
                       </span>
                     );
                   })}
@@ -522,7 +565,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
           }
         })}
         </div>
-        {/* </pre> */}
+        </pre>
     </div>
   );
 };
@@ -538,4 +581,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(TextWithEntity);
-// export default TextWithEntity;

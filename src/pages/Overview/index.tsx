@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
-import { Button, Drawer, Table, Spin, message } from "antd";
+import { Button, Drawer, Table, Spin, message, Tooltip } from "antd";
 import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
 import { LoadingOutlined, CloseOutlined } from '@ant-design/icons';
@@ -24,22 +24,68 @@ const columns = [
       title: "NCT ID",
       dataIndex: "nctID",
       key: "nctID",
+      sorter: (a, b) => a.nctID.substr(4,7) - b.nctID.substr(4,7),
+      render: (text, row, index) => {
+        return (
+          <>
+            <span className="nct_id_column">{text}</span>
+          </>
+        );   
+      }
     },
     {
       title: "Protocol Name",
       dataIndex: "protocolName",
       key: "protocolName",
+      sorter: (a, b) => a.protocolName.length - b.protocolName.length,
+      ellipsis: {
+        showTitle: false,
+      },
+      width: "770px",
+      render: (text, row, index) => {
+        if (text.length>98) {
+          return (
+            <Tooltip placement="topLeft" title={text} overlayStyle={{minWidth:690}}>
+              {text}
+            </Tooltip>
+          );  
+        } 
+        else {
+          return (
+            <span>{text}</span>
+          );  
+        }
+      }
     },
     {
       title: "Validation Status",
       dataIndex: "status",
       key: "status",
+      sorter: (a, b) => {
+        let numA;
+        let numB;
+        if (a.status==="Not started") {
+           numA = 10
+        } else if (a.status==="In progress") {
+           numA = 20
+        } else {
+           numA = 30
+        }
+        if (b.status==="Not started") {
+           numB = 10
+        } else if (b.status==="In progress") {
+           numB = 20
+        } else {
+           numB = 30
+        }        
+        return numA - numB
+      },
       render: (text, row, index) => {
         return (
-          <>
+          <div className="status_column">
             {showStatusCircle(text)}
             <span>{text}</span>
-          </>
+          </div>
         );   
       }
     },
@@ -47,9 +93,19 @@ const columns = [
       title: "Last Updated",
       dataIndex: "lastUpdate",
       key: "lastUpdate",
+      defaultSortOrder: 'descend' as 'descend',
+      sorter: (a, b) => { 
+          let aTime = new Date(a.lastUpdate).getTime();
+          let bTime = new Date(b.lastUpdate).getTime();
+          return aTime - bTime;
+      },
       render: (text, row, index) => {
-        return moment(text).format('MM-DD-YYYY');   
-      }
+        return (
+          <>
+            <span className="update_column">{moment(text).format('MM-DD-YYYY')}</span>
+          </>
+        )
+      },
     },
   ];
 
@@ -141,7 +197,8 @@ const Overview = (props: any) => {
           <Table
             columns={columns}
             dataSource={data}
-            pagination={{ position: ["bottomRight"], size: "small" }}
+            showSorterTooltip={false}
+            pagination={{ position: ["bottomRight"], size: "small", pageSize: 6 }}
               onRow={
                 record => {
                   return {
@@ -183,7 +240,7 @@ const Overview = (props: any) => {
               pathname: "/protocol-sections",
               state: {
                 status: "Not started",
-                title: props.fileReader.protocolName? props.fileReader.protocolName: props.fileReader.fileName
+                title: props.fileReader.protocolName !== ""? props.fileReader.protocolName: props.fileReader.fileName
               }
             })}
           >

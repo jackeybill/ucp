@@ -13,6 +13,7 @@ const backgroundImg = {
   backgroundRepeat: "no-repeat",
   overflow: "hidden",
   marginLeft: "-3px",
+  backgroundSize: "100%",
 };
 
 const LoginErr = "Invalidate username or password";
@@ -121,7 +122,7 @@ const Login = (props: any) => {
                   >
                     Login
                   </Button>
-                  <div className="forget__password">Forget password?</div>
+                  <div className="forget__password">Forgot password?</div>
                 </Form.Item>
               </Form>
             </div>

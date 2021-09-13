@@ -60,8 +60,8 @@ const ExtractionTable = (props: any, ref) => {
   const { activeSection } = props;
   const file = props.fileReader.file;
 
-  const key = file.keyName || Object.keys(file)[0] || [];
-  let initContent = file[key][activeSection][0].table;
+  const key = file.keyName || Object.keys(file)[0];
+  let initContent = file[key][activeSection][0]&&file[key][activeSection][0].table;
 
   const path = file["result_url"];
   const [entity, setEntity] = useState(initEntity);
@@ -78,24 +78,23 @@ const ExtractionTable = (props: any, ref) => {
   // const allWordsCollection = file[key][activeSection][0].comprehendMedical["Entities"].label
   // const allSummary = file[key][activeSection][0].comprehendMedical["Entities"].Summary;
 
-  const initSvgEntity =
-  file[key][activeSection][0].comprehendMedical && file[key][activeSection][0].comprehendMedical["Entities"];
+  const initSvgEntity = file[key][activeSection][0]?
+  file[key][activeSection][0].comprehendMedical && file[key][activeSection][0].comprehendMedical["Entities"]: [];
   const [svgEntity, setSvgEntity] = useState(initSvgEntity);
 
-  const initLabels =
-  file[key][activeSection][0].comprehendMedical[entity] && file[key][activeSection][0].comprehendMedical[entity].label || {};
+  const initLabels = file[key][activeSection][0]? file[key][activeSection][0].comprehendMedical[entity] && file[key][activeSection][0].comprehendMedical[entity].label: {};
   const [labels, setLabels] = useState(initLabels); // labels and wordsColelction are same now
   const [wordsCollection, setWordsCollection] = useState(initLabels);
-  const entities =
-  file[key][activeSection][0].comprehendMedical[entity] && file[key][activeSection][0].comprehendMedical[entity].Entities || {};
-  const firstMarkId = initLabels && initLabels.length > 0 && initLabels[0].id;
-  const summary = file[key][activeSection][0].comprehendMedical[entity] && file[key][activeSection][0].comprehendMedical[entity].Summary || {};
+  // const entities =
+  // file[key][activeSection][0].comprehendMedical[entity] && file[key][activeSection][0].comprehendMedical[entity].Entities || {};
+  // const firstMarkId = initLabels && initLabels.length > 0 && initLabels[0].id;
+  // const summary = file[key][activeSection][0].comprehendMedical[entity] && file[key][activeSection][0].comprehendMedical[entity].Summary || {};
 
-  const initSoaResult = file[key][activeSection][0].soaResult || [];
+  const initSoaResult = file[key][activeSection][0]&&file[key][activeSection][0].soaResult || [];
   const [soaResult, setSoaResult] = useState(initSoaResult);
-  const initSoaSummary = file[key][activeSection][0].soaSummary && file[key][activeSection][0].soaSummary || {};
+  const initSoaSummary = file[key][activeSection][0] && file[key][activeSection][0].soaSummary && file[key][activeSection][0].soaSummary || {};
   const [soaSummary, setSoaSummary] = useState(initSoaSummary);
-  const xPos = file[key][activeSection][0].xPos && file[key][activeSection][0].xPos - 1 || 2;
+  const xPos = file[key][activeSection][0] && file[key][activeSection][0].xPos && file[key][activeSection][0].xPos - 1 || 2;
   const [currentScore, setCurrentScore] = useState(1)
   const [currentId, setCurrentId] = useState(null)
   const saveParamsObj = {
@@ -135,12 +134,12 @@ const ExtractionTable = (props: any, ref) => {
   useEffect(() => {
     setActiveType("");
     // setContent(file[key][activeSection][0].table);
-    setLabels(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label);
+    setLabels(file[key][activeSection][0]&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label);
     setWordsCollection(
-      file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label
+      file[key][activeSection][0]&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label
     );
-    setSoaResult(file[key][activeSection][0].soaResult&&file[key][activeSection][0].soaResult)
-    setSoaSummary(file[key][activeSection][0].soaSummary && file[key][activeSection][0].soaSummary)
+    setSoaResult(file[key][activeSection][0]&&file[key][activeSection][0].soaResult&&file[key][activeSection][0].soaResult)
+    setSoaSummary(file[key][activeSection][0]&&file[key][activeSection][0].soaSummary && file[key][activeSection][0].soaSummary)
     const paramBody = {
       [key]: {
         [activeSection]: [
@@ -154,7 +153,7 @@ const ExtractionTable = (props: any, ref) => {
     props.readFile({
       updatedSection: paramBody,
     });
-  }, [activeSection, entity, labels ,content, file[key][activeSection][0].soaSummary]);
+  }, [activeSection, entity, labels ,content, file[key][activeSection][0]&&file[key][activeSection][0].soaSummary]);
 
   useEffect(() => {
     props.updateCurrentEntity(entity);
@@ -180,7 +179,7 @@ const ExtractionTable = (props: any, ref) => {
 
     setWordsCollection(labels);
     props.updateCurrentEntity(entity);
-    setSvgEntity(file[key][activeSection][0].comprehendMedical["Entities"]);
+    setSvgEntity(file[key][activeSection][0]&&file[key][activeSection][0].comprehendMedical["Entities"]);
     setActiveTabKey(props.fileReader.activeTabKey)
   }, [entity, activeSection, labels, activeTabKey,props.fileReader.activeTabKey, props.fileReader.file]);
 
@@ -190,6 +189,38 @@ const ExtractionTable = (props: any, ref) => {
       <span className={`key-word ${searchTxt && matchWord(iten, searchTxt)}`}>
         {iten}
       </span>
+    )
+  }
+  const renderPlainTextForFirstColumn = (iten) => {
+    return (
+      <span className={`key-word-in-first-column ${searchTxt && matchWord(iten, searchTxt)}`} style={{display:"inline-block",width: "180px"}}>
+        {iten}
+      </span>
+    )
+  }
+  const renderPlainTextForComments = (iten,index,indey,content) => {
+    return (
+      iten.toString().length > 68? (
+        <td>
+          <span className={`key-word-in-first-column ${searchTxt && matchWord(iten, searchTxt)}`} style={{display:"inline-block",width: "400px", textAlign:"left"}}>
+            {iten}
+          </span>
+        </td>
+      ):(
+        indey === content[index].length-1?(
+          <td style={{textAlign:"left"}}>
+            <span className={`key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{textAlign:"left"}}>
+              {iten}
+            </span>
+          </td>
+        ):(
+          <td >
+            <span className={`key-word ${searchTxt && matchWord(iten, searchTxt)}`}>
+              {iten}
+            </span>
+          </td>
+        )
+      )
     )
   }
 
@@ -482,130 +513,132 @@ const ExtractionTable = (props: any, ref) => {
           }
           key="ENTITY RECOGNITION"
         >
-          <div className="entity-recognition">
-            <div className="header">
-              <span className="section-name">
-                {activeSection == "includeAllText"
-                  ? "COMPLETE DOCUMENT"
-                  : getDisplayTitle(activeSection)}
-              </span>
-              <Input
-                placeholder="Search keywords"
-                prefix={<SearchOutlined />}
-                style={{ width: 200 }}
-                onChange={onTextChange}
-                value={searchTxt}
-              />
-            </div>
-            <div className="summary">
-              <p>
-                Entity types identified in the text below. Select on an entity
-                type to filter the document.
-              </p>
-              <div className="entity-types filterable">
-                {file[key][activeSection][0].soaSummary?(
-                  <>
-                    <div
-                  className={`type-item ALL ${
-                    activeType == "" ? "active" : ""
-                  }`}
-                  key="all"
-                  onClick={() => onChangeActiveType("")}
-                >
-                  All
-                </div>
-                {Object.entries(soaSummary) &&
-                  Object.entries(soaSummary).map((s: any) => {
-                    return (
-                      <div
-                        className={`type-item ${s[0]} ${
-                          s[0] == activeType ? "active" : ""
-                        }`}
-                        key={s[0]}
-                        onClick={() => onChangeActiveType(s[0])}
-                      >
-                        {formatWord(s[0])}&nbsp;(<span>{s[1]}</span>)
-                      </div>
-                    );
-                  })}
-                  </>
-                ):
-                (<div className="type-item-activity">
-                Schedule of Activities&nbsp;<span>({soaResult&&soaResult.length})</span>
-                </div>)}
+          {(file[key]["scheduleActivities"][0]&&file[key]["scheduleActivities"][0].table)&&(
+            <div className="entity-recognition">
+              <div className="header">
+                <span className="section-name">
+                  {activeSection == "includeAllText"
+                    ? "COMPLETE DOCUMENT"
+                    : getDisplayTitle(activeSection)}
+                </span>
+                <Input
+                  placeholder="Search keywords"
+                  prefix={<SearchOutlined />}
+                  style={{ width: 200 }}
+                  onChange={onTextChange}
+                  value={searchTxt}
+                />
               </div>
-            </div>
-            {Array.isArray(content) ? (
-              <div className="content-table-extraction" id="pdf-content">
-                <div className="content-table-title">Schedule of Activities:</div>
-                <div className="content-table-content">
-                <table>
-                  <tbody>
-                    {
-                        content.map((item, index) => {
-                          return (
-                            index < 1? (
-                              <tr>
-                              {
-                                item.map((iten, indey) => {
-                                  return (
-                                    <td>
-                                      {renderPlainText(iten)}
-                                    </td>
-                                  )
-                                })
-                              }
-                            </tr>
-                            ):(
-                              <tr>
-                              {
-                                item.map((iten, indey) => {
-                                  return (
-                                    indey < 1? (
-                                      soaEntity(iten, soaResult).length && soaEntity(iten, soaResult)[0].category === activeType || activeType === ""?(
-                                        soaEntity(iten, soaResult).length?(
-                                        <td>
-                                         {renderMarkText(iten)}
-                                        </td>
-                                        ):(
+              <div className="summary">
+                <p>
+                  Entity types identified in the text below. Select on an entity
+                  type to filter the document.
+                </p>
+                <div className="entity-types filterable">
+                  {file[key][activeSection][0]&&file[key][activeSection][0].soaSummary?(
+                    <>
+                      <div
+                    className={`type-item ALL ${
+                      activeType == "" ? "active" : ""
+                    }`}
+                    key="all"
+                    onClick={() => onChangeActiveType("")}
+                  >
+                    All
+                  </div>
+                  {Object.entries(soaSummary) &&
+                    Object.entries(soaSummary).map((s: any) => {
+                      return (
+                        <div
+                          className={`type-item ${s[0]} ${
+                            s[0] == activeType ? "active" : ""
+                          }`}
+                          key={s[0]}
+                          onClick={() => onChangeActiveType(s[0])}
+                        >
+                          {formatWord(s[0])}&nbsp;(<span>{s[1]}</span>)
+                        </div>
+                      );
+                    })}
+                    </>
+                  ):
+                  (<div className="type-item-activity">
+                  Schedule of Activities&nbsp;<span>({soaResult&&soaResult.length})</span>
+                  </div>)}
+                </div>
+              </div>
+              {Array.isArray(content)&&content!==[] ? (
+                <div className="content-table-extraction" id="pdf-content">
+                  <div className="content-table-title">Schedule of Activities:</div>
+                  <div className="content-table-content">
+                  <table>
+                    <tbody>
+                      {
+                          content.map((item, index) => {
+                            return (
+                              index < 1? (
+                                <tr>
+                                {
+                                  item.map((iten, indey) => {
+                                    return (
+                                      <td>
+                                        <span className={`key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{display:"inline-block",width: "80px"}}>
+                                          {iten}
+                                        </span>
+                                      </td>
+                                    )
+                                  })
+                                }
+                              </tr>
+                              ):(
+                                <tr>
+                                {
+                                  item.map((iten, indey) => {
+                                    return (
+                                      indey < 1? (
+                                        soaEntity(iten, soaResult).length && soaEntity(iten, soaResult)[0].category === activeType || activeType === ""?(
+                                          soaEntity(iten, soaResult).length?(
+                                          <td>
+                                          {renderMarkText(iten)}
+                                          </td>
+                                          ):(
+                                            <td>
+                                              {renderPlainTextForFirstColumn(iten)}
+                                            </td>
+                                          )
+                                        ):
+                                        (
                                           <td>
                                             {renderPlainText(iten)}
                                           </td>
                                         )
-                                      ):
-                                      (
-                                        <td>
-                                          {renderPlainText(iten)}
-                                        </td>
-                                      )
-                                    ) :(
-                                      iten.startsWith("X") ? (
-                                        <td>
-                                          <CheckCircleFilled/>
-                                          {/* {iten.substr(1)} */}
-                                        </td>
-                                      ) : (
-                                        <td>
-                                          {renderPlainText(iten)}
-                                        </td>
+                                      ) :(
+                                        iten.startsWith("X")||iten==="(X)"? (
+                                          <td>
+                                            <CheckCircleFilled/>
+                                            {/* {iten.substr(1)} */}
+                                          </td>
+                                        ) : (
+                                          renderPlainTextForComments(iten,index,indey,content)
+                                        )
                                       )
                                     )
-                                  )
-                                })
-                              }
-                            </tr>
+                                  })
+                                }
+                              </tr>
+                              )
                             )
-                          )
-                        })
-                    }
-                  </tbody>
-                </table>
+                          })
+                      }
+                    </tbody>
+                  </table>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="raw-content"> {content} </div>
-            )}
+              ) : (
+                <div className="raw-content"> {content} </div>
+              )}
           </div>
+          )}
         </TabPane> 
         <TabPane
           tab={
@@ -616,7 +649,8 @@ const ExtractionTable = (props: any, ref) => {
           }
           key="VALIDATION"
         >
-          <div className="entity-validation">
+          {(file[key]["scheduleActivities"][0]&&file[key]["scheduleActivities"][0].table)&&(
+            <div className="entity-validation">
             <div className="header">
               <span className="section-name">
                 {activeSection == "includeAllText"
@@ -637,7 +671,7 @@ const ExtractionTable = (props: any, ref) => {
                 type to filter the document.
               </p>
               <div className="entity-types filterable">
-                {file[key][activeSection][0].soaSummary?(
+                {file[key][activeSection][0]&&file[key][activeSection][0].soaSummary?(
                   <>
                     <div
                   className={`type-item ALL ${
@@ -669,7 +703,7 @@ const ExtractionTable = (props: any, ref) => {
                 </div>)}
               </div>
             </div>
-            {Array.isArray(content) ? (
+            {Array.isArray(content)&&content!==[] ? (
               <div className="content-table-extraction" id="pdf-content">
                 <div className="content-table-title">Schedule of Activities:</div>
                 <div className="content-table-content">
@@ -683,13 +717,19 @@ const ExtractionTable = (props: any, ref) => {
                               {
                                 item.map((iten, indey) => {
                                   return (
-                                    <td>
-                                      <Select className={`table_head key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{ width: 140 }} value={iten} bordered={false} onChange={(val)=>{handleHeadChange(val, index, indey)}}>
-                                        {headData.map(head => (
-                                          <Option key={head} value={head}>{head}</Option>
-                                        ))}
-                                      </Select>
-                                    </td>
+                                    indey < 1? (
+                                      <td>
+                                        {renderPlainText(iten)}
+                                      </td>
+                                    ): (
+                                      <td>
+                                        <Select className={`table_head key-word ${searchTxt && matchWord(iten, searchTxt)}`} style={{ width: 140 }} value={iten} bordered={false} onChange={(val)=>{handleHeadChange(val, index, indey)}}>
+                                          {headData.map(head => (
+                                            <Option key={head} value={head}>{head}</Option>
+                                          ))}
+                                        </Select>
+                                      </td>
+                                    )
                                   )
                                 })
                               }
@@ -731,7 +771,7 @@ const ExtractionTable = (props: any, ref) => {
                                           </td>
                                         ):(
                                           <td onClick={()=>{handleAddUnderline(iten)}}>
-                                            {renderPlainText(iten)}
+                                            {renderPlainTextForFirstColumn(iten)}
                                           </td>
                                         )
                                       ):
@@ -741,15 +781,13 @@ const ExtractionTable = (props: any, ref) => {
                                         </td>
                                       )
                                     ):(
-                                      iten.startsWith("X") ? (
+                                      iten.startsWith("X")||iten==="(X)" ? (
                                         <td>
                                           <CheckCircleFilled/>
                                           {/* {iten.substr(1)} */}
                                         </td>
                                       ) : (
-                                        <td>
-                                          {renderPlainText(iten)}
-                                        </td>
+                                        renderPlainTextForComments(iten,index,indey,content)
                                       )
                                     )
                                   )
@@ -792,7 +830,7 @@ const ExtractionTable = (props: any, ref) => {
                                             </td>
                                         ):(
                                           <td onClick={()=>{handleAddUnderline(iten)}}>
-                                            {renderPlainText(iten)}
+                                            {renderPlainTextForFirstColumn(iten)}
                                           </td>
                                         )
                                       ):
@@ -802,7 +840,7 @@ const ExtractionTable = (props: any, ref) => {
                                         </td>
                                       )
                                     ):(
-                                      iten.startsWith("X") ? (
+                                      iten.startsWith("X")||iten==="(X)"? (
                                         <td onClick={()=>{onChangeIconType("X", index, indey)}} style={{cursor:"pointer"}}>
                                           <CheckCircleFilled/>
                                           {/* {iten.substr(1)} */}
@@ -813,9 +851,7 @@ const ExtractionTable = (props: any, ref) => {
                                             <CheckCircleTwoTone twoToneColor="#ddd" />
                                           </td>
                                         ):(
-                                          <td>
-                                            {renderPlainText(iten)}
-                                          </td>
+                                          renderPlainTextForComments(iten,index,indey,content)
                                         )
                                       )
                                     )
@@ -836,6 +872,7 @@ const ExtractionTable = (props: any, ref) => {
               <div className="raw-content"> {content} </div>
             )}
           </div>
+          )}
         </TabPane>
       </Tabs>
     </div>

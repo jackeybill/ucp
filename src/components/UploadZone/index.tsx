@@ -11,8 +11,8 @@ import { uploadFile, extractText } from "../../utils/ajax-proxy";
 import "./index.scss";
 
 const PATH = "iso-service-dev/RawDocuments/";
-let nctID = "";
-let protocolName = "";
+let nctID = ""
+let protocolName = ""
 
 const toBase64 = (file: File) =>
   new Promise<string>((resolve, reject) => {
@@ -35,6 +35,10 @@ const Dropzone = (props: any) => {
   const [progress, setProgress] = useState(0);
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
+  // const [nctID, setNctID] = useState("");
+  // const [protocolName, setProtocolName] = useState("");
+
+  const [form] = Form.useForm();
 
   useEffect(() => {
     //mock progress
@@ -64,6 +68,12 @@ const Dropzone = (props: any) => {
         continue;
       }
       const base64 = await toBase64(f);
+      if (nctID === "") {
+        nctID = f.name.split(".")[0].toString()
+      }
+      // if (protocolName === "") {
+      //   protocolName = f.name
+      // }
       const res = await uploadFile(nctID, protocolName, f.name, PATH, base64.split(",")[1]);
       console.log(res);
       
@@ -80,9 +90,13 @@ const Dropzone = (props: any) => {
             const result = JSON.parse(extractedRes.body);
             // console.log("--upload new file--", result);
             const availableTabs: string[] = [];
+            form.setFieldsValue({
+              nctID: nctID === ""?f.name.split(".")[0].toString():nctID,
+              protocolName: protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
+            });
             props.readFile({
-              file: result,
-              protocolName:protocolName,
+              file: result,          
+              protocolName:protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
               fileName:f.name,
             });
             fileList.push({ 'nctID': nctID, 'protocolName': protocolName, filename: f.name, result, availableTabs });
@@ -104,8 +118,6 @@ const Dropzone = (props: any) => {
     onDrop,
     disabled: loading,
   });
-
-  const [form] = Form.useForm();
 
   const onFinish = (values: any) => {
     nctID = values.nctID || ""

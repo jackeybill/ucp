@@ -2,7 +2,6 @@
 .text-with-entity-container {
   .content {
     span {
-      display: inline;
       white-space: pre;
       word-wrap: break-word;
     }
@@ -11,6 +10,12 @@
 .ant-tooltip .ant-tooltip-content .ant-tooltip-inner {
   background-color: #ffffff !important;
   color: rgba(0, 0, 0, 0.75);
+}
+.term-content{
+  display: inline-block;
+    max-width: 121px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .concept-box {
@@ -26,9 +31,15 @@
     }
     .code {
       display: flex;
+      border-bottom: 1px solid #bfbfbf;
+      &:last-child{
+        border-bottom: 1px solid transparent;
+      }
+      span{
+        padding-right: 6px;
+      }
     }
     .desc-box {
-      padding-left: 10px;
       p {
         padding: 0 5px;
       }
@@ -96,7 +107,7 @@
       right: 0;
       transform: translateY(-50%);
     }
-    .cate-label {
+    span.cate-label {
       font-size: 10px;
       display: block;
     }
@@ -108,6 +119,10 @@
     right: -14px;
   }
 }
+.text-with-entity-container .text mark span.cate-label {
+  display: flex;
+}
+
 .mark-tooltip-container {
   .highlighted-text {
     font-weight: 600;
@@ -149,6 +164,23 @@
 .ant-select-dropdown {
   z-index: 1100 !important;
 }
+
+
+.html-section{
+  tr{
+    padding:10px;
+    border: 1px solid #cccccc;
+
+    th, td{
+      padding:10px 15px;
+      border-right: 1px solid #cccccc;
+    }
+  }
+}
+
+
+
+
 .entity-types {
   .type-item {
     background-color: #cbcbcb;
@@ -237,6 +269,32 @@
   .TIME_EXPRESSION {
     background-color: $TIME_EXPRESSION;
   }
+  .TEST_NAME{
+    background-color: $TEST_NAME;
+  }
+  .PROCEDURE_NAME{
+    background-color:$PROCEDURE_NAME;
+  }
+  .TREATMENT_NAME{
+    background-color:$TREATMENT_NAME;
+  }
+  .TIME_TO_DX_NAME{
+    background-color:$TIME_TO_DX_NAME;
+  }
+  .TIME_TO_MEDICATION_NAME{
+    background-color:$TIME_TO_MEDICATION_NAME;
+  }
+  .TIME_TO_TREATMENT_NAME{
+    background-color:$TIME_TO_TREATMENT_NAME;
+  }
+  .TEST_VALUE{
+    background-color:$TEST_VALUE;
+  }
+  .TEST_UNIT{
+    background-color: $TEST_UNIT;
+  }
+
+
 }
 
 mark {
@@ -322,6 +380,33 @@ mark {
   .TIME_EXPRESSION {
     border-color: $TIME_EXPRESSION;
   }
+  .TEST_NAME{
+    border-color: $TEST_NAME;
+  }
+  .PROCEDURE_NAME{
+    border-color:$PROCEDURE_NAME;
+  }
+  .TREATMENT_NAME{
+    border-color:$TREATMENT_NAME;
+  }
+  .TIME_TO_DX_NAME{
+    border-color:$TIME_TO_DX_NAME;
+  }
+  .TIME_TO_MEDICATION_NAME{
+    border-color:$TIME_TO_MEDICATION_NAME;
+  }
+  .TIME_TO_TREATMENT_NAME{
+    border-color:$TIME_TO_TREATMENT_NAME;
+  }
+  .TEST_VALUE{
+    border-color:$TEST_VALUE
+  }
+  .TEST_UNIT{
+    border-color: $TEST_UNIT;
+  }
+
+
+
 }
 
 mark.warn {

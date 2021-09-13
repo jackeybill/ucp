@@ -1,18 +1,20 @@
 import React from "react";
 import { sectionOptions } from "../../pages/ProtocolSection";
 import { CheckCircleFilled } from '@ant-design/icons'
+import {ENDPOINT_SECTION} from "../../pages/ProtocolSection"
+import TableTextWithEntity from "../../components/TableTextWithEntity";
 import "./index.scss";
 
 interface SectionTextIF {
   protocolSection?: string;
   sections?: any;
   fileReader?: any;
+  file?:any;
+  entity?:any
 }
 
-// export const exceptionLabel = "INCLUSION / EXCLUSION CRITERIA";
-
 const SectionText = (props: SectionTextIF) => {
-  const { protocolSection, sections } = props;
+  const { protocolSection, sections, entity } = props;
   const key =
         props.fileReader.file.keyName ||
         Object.keys(props.fileReader.file)[0];
@@ -31,8 +33,6 @@ const SectionText = (props: SectionTextIF) => {
       ) : (
         <div>
           {sections.map((s) => {
-            // let inclusionTxt;
-            // let exclusionTxt;
             const displayTitle = sectionOptions.find((e) => e.value == s);
             const sectionTxt =
             props.fileReader.file[key][s] && (props.fileReader.file[key][s].length > 0 && props.fileReader.file[key][s][0].content.toString() !== "[object Object]"? props.fileReader.file[key][s][0].content
@@ -40,10 +40,6 @@ const SectionText = (props: SectionTextIF) => {
             const tableTxt =
             props.fileReader.file[key][s] && (props.fileReader.file[key][s].length > 0 && props.fileReader.file[key][s][0].content.toString() !== "[object Object]" && displayTitle.label == "SCHEDULE OF ACTIVITIES"? props.fileReader.file[key][s][0].table
                 : "")                
-            // if (displayTitle && displayTitle.label == exceptionLabel) {
-            //   inclusionTxt = props.fileReader.file[key]["inclusionCriteria"][0].content
-            //   exclusionTxt = props.fileReader.file[key]["exclusionCriteria"][0].content
-            // }
             return (
               <div className="section-item" key={s}>
                 <div className="section-title">
@@ -51,10 +47,6 @@ const SectionText = (props: SectionTextIF) => {
                 </div>
                 <div className="section-content">
                   {displayTitle && displayTitle.label == "SCHEDULE OF ACTIVITIES" &&Array.isArray(tableTxt)? (
-                    // <>
-                    //   <div className="inclusion-txt">{inclusionTxt}</div>
-                    //   <div><pre>{exclusionTxt}</pre> </div>
-                    // </>
                     <pre>
                       <div className="content-table">
                         <table>
@@ -62,12 +54,16 @@ const SectionText = (props: SectionTextIF) => {
                             {
                                 tableTxt.map((item, index) => {
                                   return (
-                                    index < 2? (
+                                    index < 1? (
                                       <tr>
                                       {
                                         item.map((iten, indey) => {
                                           return (
-                                            <td>{iten}</td>
+                                            <td>
+                                              <span style={{display:"inline-block",width: "80px"}}>
+                                                {iten}
+                                              </span>
+                                            </td>
                                           )
                                         })
                                       }
@@ -78,15 +74,39 @@ const SectionText = (props: SectionTextIF) => {
                                         item.map((iten, indey) => {
                                           return (
                                             indey < 1? (
-                                              <td>{iten}</td>
+                                              <td>
+                                                <span style={{display:"inline-block",width: "180px", textAlign:"left"}}>
+                                                  {iten}
+                                                </span>
+                                              </td>
                                             ) :(
-                                              iten.startsWith("X") ? (
+                                              iten.startsWith("X")||iten==="(X)" ? (
                                                 <td>
                                                   <CheckCircleFilled/>
                                                   {/* {iten.substr(1)} */}
                                                 </td>
                                               ) : (
-                                                <td>{iten}</td>
+                                                iten.toString().length > 68? (
+                                                  <td>
+                                                    <span style={{display:"inline-block",width: "400px", textAlign:"left"}}>
+                                                      {iten}
+                                                    </span>
+                                                  </td>
+                                                ):(
+                                                  indey === tableTxt[index].length-1?(
+                                                    <td style={{textAlign:"left"}}>
+                                                      <span >
+                                                        {iten}
+                                                      </span>
+                                                    </td>
+                                                  ):(
+                                                    <td >
+                                                      <span >
+                                                        {iten}
+                                                      </span>
+                                                    </td>
+                                                  )
+                                                )
                                               )
                                             )
                                           )
@@ -102,7 +122,17 @@ const SectionText = (props: SectionTextIF) => {
                       </div>
                     </pre>
                   ) : (
-                    <pre> <pre>{sectionTxt}</pre></pre>
+                    <>
+                    {
+                      s==ENDPOINT_SECTION&&props.file[key][s][0].tableResult? (
+                        <TableTextWithEntity
+                        dataSource={props.file[key][s][0].tableResult}
+                        showPlainText={true}
+                        entity={entity}
+                    />           
+                      ): <pre> <div>{sectionTxt}</div></pre>
+                    }
+                    </>
                   )}
                 </div>
               </div>

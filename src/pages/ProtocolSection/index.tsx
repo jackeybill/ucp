@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { withRouter } from "react-router";
-import { Radio, Checkbox, Button, Menu, Dropdown, message } from "antd";
+import { Radio, Checkbox, Button, Menu, Dropdown, message,Modal, Tooltip } from "antd";
 import {
   SaveOutlined,
   DownOutlined,
@@ -18,24 +18,28 @@ import { connect } from "react-redux";
 import { saveSvgAsPng } from "save-svg-as-png";
 import { submitText } from "../../utils/ajax-proxy";
 import SectionText from "../../components/SectionsText";
-import Extraction from "../../components/Extraction";
+import Extraction, { isTable } from "../../components/Extraction";
 import ExtractionTable from "../../components/ExtractionTable";
 import * as fileActions from "../../actions/file.js";
 import "./index.scss";
+
+const baseUrl ="https://ucp-docs.s3.us-west-2.amazonaws.com/iso-service-dev/RawDocuments/"
+
 
 const completeDocument = "includeAllText";
 
 export const sectionOptions = [
   { label: "PROTOCOL TITLE", value: "protocolTitle" },
   { label: "BRIEF SUMMARY", value: "briefSummary" },
-  // {
-  //   label: "OBJECTIVES, ENDPOINTS, ESTIMANDS",
-  //   value: "objectivesEndpointsEstimands",
-  // },
   { label: "INCLUSION CRITERIA", value: "inclusionCriteria" },
   { label: "EXCLUSION CRITERIA", value: "exclusionCriteria" },
   { label: "SCHEDULE OF ACTIVITIES", value: "scheduleActivities" },
+  {
+    label: "OBJECTIVES & ENDPOINTS",
+    value: "objectivesEndpointsEstimands",
+  },
 ];
+export const ENDPOINT_SECTION="objectivesEndpointsEstimands"
 export const initSelectedSections = sectionOptions.map((s) => {
   return s.value;
 });
@@ -75,10 +79,18 @@ const ProtocolSection = (props: any) => {
   const [sections, setSections] = useState(initSelectedSections);
   const [activeSection, setActiveSection] = useState("");
   const [format, setFormat] = useState("Export as");
-  const [entity, setEntity] = useState("");
+  const [entity, setEntity] = useState("Entities");
   const [formatOptions, setFormatOptions] = useState(defaultExportOptions);
   const [checkedSections, setCheckSections] = useState(initSelectedSections);
+  const [pageNum, setPageNum] = useState(1)
+  const [filePath, setFilePath] = useState("")
+  const [isModalVisible,setIsModalVisible] = useState(false)
 
+  useEffect(()=>{
+    setFormat("Export as")
+  },[activeSection])
+  
+  
   useEffect(() => {
     if (props.fileReader.activeTabKey == "ENTITY RELATIONSHIPS") {
       setFormatOptions(relationshipExportOptions);
@@ -100,21 +112,33 @@ const ProtocolSection = (props: any) => {
 
   useEffect(() => {
     if (props.location.pathname == "/extraction") {
-      if (entity && activeSection && file[key][activeSection][0].comprehendMedical[entity]) {
-        setEntities(file[key][activeSection][0].comprehendMedical[entity].Entities)
-      } else if (entity && activeSection && file[key][activeSection][0].table) {
-        setEntities(file[key][activeSection][0].table)
+      if (entity && activeSection && file[key][activeSection][0] && file[key][activeSection][0].comprehendMedical[entity]) {
+        setEntities(file[key][activeSection][0] && file[key][activeSection][0].comprehendMedical[entity].Entities)
+      } else if (entity && activeSection && file[key][activeSection][0] && file[key][activeSection][0].table) {
+        setEntities(file[key][activeSection][0] && file[key][activeSection][0].table)
       }
-    }
+      if(activeSection=="scheduleActivities"){
+        file[key][activeSection][0].pageNo && setPageNum(file[key][activeSection][0].pageNo)
+      } 
+    }    
   }, [activeSection]);
+
+  useEffect( ()=>{
+    setFilePath(`${baseUrl}${fileName}#page=${pageNum}`)
+  },[pageNum,fileName])
+  const iframeStr = '<iframe src='+filePath+'></iframe>'; 
+  
+  const onIframe = ()=>{
+    return  {__html: iframeStr}
+  }
 
   const updateCurrentEntity = (e) => {
     setEntity(e);
   };
 
   const pdfExport = (e, fileName, sourceElement) => {
-    // const width = sourceElement.clientWidth
-    // const height = sourceElement.clientHeight
+    const width = sourceElement.clientWidth
+    const height = sourceElement.clientHeight
     // const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [height, width] });
     // pdf.autoPrint();
     // pdf.html(sourceElement, { html2canvas: { scale: 1,backgroundColor:'#ffffff', width,height}}).then(() => {
@@ -123,7 +147,7 @@ const ProtocolSection = (props: any) => {
 
     var node = sourceElement;
     domtoimage
-      .toPng(node)
+      .toPng(node,{quality: 1,  height:height, width:width})
       .then(function (dataUrl) {
         var img = new Image();
         img.src = dataUrl;
@@ -160,7 +184,14 @@ const ProtocolSection = (props: any) => {
   const changeFormat = (e) => {
     setFormat(e.key);
     if (e.key == "PNG" && activeTabKey != "ENTITY RELATIONSHIPS") {
-      const source = document.getElementById("pdf-content");
+      let source 
+      // = document.getElementById("validation-content");
+      if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
+        source = document.getElementById("pdf-table-content");
+      }else{
+        source = document.getElementById("pdf-content");
+      }
+    
       pdfExport(e, fname, source);
     }
     if (e.key == "PNG" && activeTabKey == "ENTITY RELATIONSHIPS") {
@@ -170,10 +201,17 @@ const ProtocolSection = (props: any) => {
     if (e.key == "JSON") {
       const file = props.fileReader.file;
       const key = file.keyName || Object.keys(file)[0] || [];
-      const jsonData = activeSection
-        ? (activeSection === "scheduleActivities"? file[key][activeSection][0].table : file[key][activeSection][0].comprehendMedical[entity].Entities)
-        : file[key]["includeAllText"][0].comprehendMedical[entity].Entities;
-      jsonExport(jsonData, fname);
+      let jsonData
+      if(!activeSection){
+        jsonData = file[key]["includeAllText"][0].comprehendMedical[entity].Entities;
+      } else{
+
+        if(activeSection === "scheduleActivities"|| (activeSection === ENDPOINT_SECTION&& isTable(file,key,activeSection))){
+          jsonData=file[key][activeSection][0].table
+        }else{
+          jsonData=file[key][activeSection][0].comprehendMedical[entity].Entities
+        }
+      }
     }
   };
 
@@ -184,7 +222,7 @@ const ProtocolSection = (props: any) => {
           return e == "CSV" ? (
             <Menu.Item key={e}>
               <CSVLink
-                data={entities ? entities : []}
+                data={ entities ? entities : []}
                 filename={fname + ".csv"}
               >
                 CSV
@@ -198,6 +236,35 @@ const ProtocolSection = (props: any) => {
     );
   };
 
+  const showProtocolTitleText = (text) => {
+      if (text.length>71) {
+        return (
+          <Tooltip title={text} overlayStyle={{minWidth:800}}>
+            <span className="title_protocol_text">{text}</span>
+          </Tooltip>
+        );  
+      } 
+      else {
+        return (
+          <span className="title_protocol_text">{text}</span>
+        );  
+      }
+  }
+  const showProtocolTitlePlainText = (text) => {
+      if (text.length>98) {
+        return (
+          <Tooltip title={text} overlayStyle={{minWidth:1100}}>
+            <span className="title_protocol_text_plain">{text}</span>
+          </Tooltip>
+        );  
+      } 
+      else {
+        return (
+          <span className="title_protocol_text_plain">{text}</span>
+        );  
+      }
+  }
+
   const onChange = (checkedValues) => {
     if (checkedValues) {
       setProtocolSection("sections");
@@ -208,7 +275,7 @@ const ProtocolSection = (props: any) => {
 
   const onHandleActiveSection = (s) => {
     setProtocolSection("sections");
-    setActiveSection(s);    
+    setActiveSection(s);   
   };
 
   const onRadioChange = (e) => {
@@ -228,16 +295,30 @@ const ProtocolSection = (props: any) => {
         const source = document.getElementById("svg-viewport");
         svgExport();
       } else {
-        const source = document.getElementById("pdf-content");
+        let source
+        if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
+          source = document.getElementById("pdf-table-content");
+        }else{
+          source = document.getElementById("pdf-content");
+        }
         pdfExport(e, fname, source);
       }
     }
     if (format == "JSON") {
       const file = props.fileReader.file;
       const key = file.keyName || Object.keys(file)[0] || [];
-      const jsonData = activeSection
-      ? (activeSection === "scheduleActivities"? file[key][activeSection][0].table : file[key][activeSection][0].comprehendMedical[entity].Entities)
-      : file[key]["includeAllText"][0].comprehendMedical[entity].Entities;
+      let jsonData
+      if(!activeSection){
+        jsonData = file[key]["includeAllText"][0].comprehendMedical[entity].Entities;
+      } else{
+
+        if(activeSection === "scheduleActivities"|| (activeSection === ENDPOINT_SECTION && isTable(file,key,activeSection))){
+          jsonData=file[key][activeSection][0].table
+        }else{
+          jsonData=file[key][activeSection][0].comprehendMedical[entity].Entities
+        }
+      }
+
       jsonExport(jsonData, fileName);
     }
   }
@@ -268,14 +349,23 @@ const ProtocolSection = (props: any) => {
     }
   };
 
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <div className="protocol-section">
       <div className="section-header">
         <span className="file-name">
-          {props.location.pathname === "/protocol-sections" && protocolTitleText}
+          {props.location.pathname === "/protocol-sections" && showProtocolTitlePlainText(protocolTitleText)}
           {props.location.pathname !== "/protocol-sections" &&
           protocolSection != completeDocument && (
-              <span>
+              <span className="protocol-wrapper">
                 <span
                 className="back-btn"
                 onClick={() => {props.history.push("/overview");props.readFile({ activeTabKey: "ENTITY RECOGNITION" })
@@ -284,7 +374,7 @@ const ProtocolSection = (props: any) => {
                   <LeftOutlined /> 
                   <i>Home</i>
                 </span>
-                <span className="title_protocol_text">{protocolTitleText}</span>
+                {showProtocolTitleText(protocolTitleText)}
                 <span className="title_status_icon">
                   {showStatusCircle(protocolStatus)}
                   {protocolStatus}
@@ -325,7 +415,11 @@ const ProtocolSection = (props: any) => {
       </div>
       <div className="section-body">
         {
-          props.location.pathname == "/extraction" && <div className="section-header-bar"></div>
+          props.location.pathname == "/extraction" && <div className="section-header-bar">
+            {
+              activeSection=="scheduleActivities" && <Button type="primary"  onClick={()=>setIsModalVisible(true)}>View Source</Button> 
+            }
+          </div>
         }
         <div className="sidebar">
           {
@@ -399,8 +493,9 @@ const ProtocolSection = (props: any) => {
           </div>
         </div>
         <div className="main-content">
-          {props.location.pathname == "/protocol-sections" && (
+          {props.location.pathname == "/protocol-sections" && activeSection!=ENDPOINT_SECTION && (
             <SectionText
+              file={file}
               protocolSection={protocolSection}
               sections={
                 protocolSection != completeDocument
@@ -408,6 +503,7 @@ const ProtocolSection = (props: any) => {
                   : [completeDocument]
               }
               fileReader={props.fileReader}
+              entity={entity}
             />
           )}
           {props.location.pathname === "/extraction" && activeSection !== "scheduleActivities"&& checkedSections[0]!== "scheduleActivities" &&(
@@ -418,7 +514,7 @@ const ProtocolSection = (props: any) => {
               />
             </>
           )}
-          {props.location.pathname === "/extraction" && (activeSection === "scheduleActivities"|| checkedSections[0]=== "scheduleActivities")&& (
+          {props.location.pathname === "/extraction" && (activeSection === "scheduleActivities"|| checkedSections[0]=== "scheduleActivities")&& (file[key]["scheduleActivities"]&&file[key]["scheduleActivities"][0]&&file[key]["scheduleActivities"][0].table&&file[key]["scheduleActivities"][0].table!=={}&&file[key]["scheduleActivities"][0].table[0])&&(
             <>
               <ExtractionTable
                 updateCurrentEntity={updateCurrentEntity}
@@ -426,6 +522,7 @@ const ProtocolSection = (props: any) => {
               />
             </>
           )}
+         
         </div>
       </div>
       <div className="section-footer">
@@ -526,6 +623,10 @@ const ProtocolSection = (props: any) => {
             </div>
           )}
       </div>
+
+      <Modal title={protocolTitleText} wrapClassName="file-source-modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+        <div className="iframe-wrapper" dangerouslySetInnerHTML={ onIframe() } />
+      </Modal>
     </div>
   );
 };
