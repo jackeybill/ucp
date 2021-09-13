@@ -2279,13 +2279,6 @@ const ScenarioPage = (props) => {
                 <DownloadOutlined />
                 EXPORT AS
               </Dropdown.Button>
-              {activeTabKey === '3'? (
-                <></>
-              ) : (
-                <Button type="primary" onClick={saveCriteria} style={{zIndex: 1, marginTop: '8px', marginRight: '20px'}}>
-                  Save
-                </Button>
-              )}
             </Col>
           </Row>
         </div>
@@ -2520,6 +2513,13 @@ const ScenarioPage = (props) => {
                         <Col span={24}>
                           <div className="impact-summary">
                             <span>Inclusion Criteria</span>
+                            {activeTabKey === '3'? (
+                                <></>
+                              ) : (
+                                <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
+                                  Save
+                                </Button>
+                              )}
                           </div>
                           </Col>
                       </Row>
@@ -2796,6 +2796,13 @@ const ScenarioPage = (props) => {
                         <Col span={24}>
                           <div className="impact-summary">
                             <span>Exclusion Criteria</span>
+                            {activeTabKey === '3'? (
+                              <></>
+                            ) : (
+                              <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
+                                Save
+                              </Button>
+                            )}
                           </div>
                           </Col>
                       </Row>
