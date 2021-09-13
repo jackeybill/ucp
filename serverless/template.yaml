@@ -45,10 +45,10 @@ Parameters:
     Description: SagerMaker ECR Image ARN
     Type: String
     Default: 608494368293.dkr.ecr.ap-southeast-1.amazonaws.com/mosaic-meddra-coding:latest
-  ApiBaseUrl:
-    Description: api base url
-    Type: String
-    Default: https://ymd7qr4u4g.execute-api.us-east-1.amazonaws.com
+  # ApiBaseUrl:
+  #   Description: api base url
+  #   Type: String
+  #   Default: https://ymd7qr4u4g.execute-api.us-east-1.amazonaws.com
 
 Globals:
   Function:

@@ -14,7 +14,7 @@
       commands:
         - echo ${AppHost} >> ".env" 
         - echo "Starting React build `date` in `pwd`"
-        - REACT_APP_STAGE=${Stage} REACT_APP_HOST=${Parameters.ApiBaseUrl} REACT_APP_TEST=123 npm run build
+        - REACT_APP_STAGE=${Stage} REACT_APP_API_BASE_URL=${API_BASE_URL} npm run build
         # - echo "Starting cloudformation lint `date` in `pwd`"
         # - cfn-lint -t serverless/template.yaml
         - echo "Starting cloudformation package `date` in `pwd`"
