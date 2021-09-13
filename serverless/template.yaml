@@ -62,27 +62,27 @@ Resources:
 
 # create subnet sg vpc secretsmanager sagemaker endpoint sns
 # functuins section
-  MySNSTopic:
-    Type: AWS::SNS::Topic
-    Properties:
-      Subscription:
-        - Endpoint:
-            Fn::GetAtt:
-              - "MySQS"
-              - "Arn"
-          Protocol: "sqs"
+  # MySNSTopic:
+  #   Type: AWS::SNS::Topic
+  #   Properties:
+  #     Subscription:
+  #       - Endpoint:
+  #           Fn::GetAtt:
+  #             - "MySQS"
+  #             - "Arn"
+  #         Protocol: "sqs"
 
-  ExtractPdfSNsTopic:
-    Type: AWS::SNS::Topic
-    Properties:
-      DisplayName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
-      TopicName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
-      Subscription:
-        - Endpoint:
-            Fn::GetAtt:
-              - "MySQS"
-              - "Arn"
-          Protocol: "sqs"
+  # ExtractPdfSNsTopic:
+  #   Type: AWS::SNS::Topic
+  #   Properties:
+  #     DisplayName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
+  #     TopicName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
+  #     Subscription:
+  #       - Endpoint:
+  #           Fn::GetAtt:
+  #             - "MySQS"
+  #             - "Arn"
+  #         Protocol: "sqs"
           
   # MySQS:
   #   Type: AWS::SQS::Queue
