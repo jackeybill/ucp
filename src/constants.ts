@@ -107,5 +107,5 @@ export const PWC_LOGIN_URL ="https://ac-studio.pwc.com/function/idam?state="+win
 // export const PA_HOST = "https://ymd7qr4u4g.execute-api.us-east-1.amazonaws.com/master/cases"
 
 export const PA_HOST = process.env.CURRENT_ENVIRONMENT
-console.log('current env-----',process.env.REACT_APP_STAGE, process.env.REACT_APP_HOST)
+console.log('current env-----',process.env.REACT_APP_STAGE, process.env.REACT_APP_HOST, process.env.REACT_APP_TEST)
 
