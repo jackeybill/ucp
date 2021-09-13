@@ -100,18 +100,18 @@ Resources:
             Action: "SQS:*"
             Resource: "*"
   
-  createFolder:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: createFolder.lambda_handler
-      CodeUri: main/iso-service-dev-create-folder/
-      Role: !GetAtt S3PutObjectFunctionRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds: 
-          - !Ref MySubnet
-      Events:
+  # createFolder:
+  #   Type: 'AWS::Serverless::Function'
+  #   Properties:
+  #     Handler: createFolder.lambda_handler
+  #     CodeUri: main/iso-service-dev-create-folder/
+  #     Role: !GetAtt S3PutObjectFunctionRole.Arn
+  #     VpcConfig:
+  #       SecurityGroupIds: 
+  #         - !Ref MySecurityGroup
+  #       SubnetIds: 
+  #         - !Ref MySubnet
+  #     Events:
         
 
   gwCasemain:

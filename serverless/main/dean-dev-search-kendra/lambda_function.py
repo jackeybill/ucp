@@ -27,10 +27,14 @@ matchingPB[9] = 20
 matchingPB[10] = 5
 
 DEFAULT_PAGE_SIZE = 25
-bucketName = 'iso-data-zone'
-s3_url_base = 'https://iso-data-zone.s3.us-east-2.amazonaws.com/'
+# bucketName = 'iso-data-zone'
+# s3_url_base = 'https://iso-data-zone.s3.us-east-2.amazonaws.com/'
+bucketName = 'ucp-filebucket-dev'
+s3_url_base = 'https://ucp-filebucket-dev.s3.ap-southeast-1.amazonaws.com/'
 
-lambda_client = boto3.client('lambda', region_name = 'us-east-2')
+# lambda_client = boto3.client('lambda', region_name = 'us-east-2')
+# kendraClient = boto3.client('kendra', region_name='us-east-1')
+lambda_client = boto3.client('lambda', region_name = 'ap-southeast-1')
 kendraClient = boto3.client('kendra', region_name='us-east-1')
 s3_client = boto3.client('s3')
 
