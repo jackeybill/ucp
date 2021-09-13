@@ -606,23 +606,23 @@ Resources:
 
 ## --------------   Amplify   -------------------- ##
 #amplify section
-  AmplifyApp:
-    Type: AWS::Amplify::App
-    Properties:
-      Name: !Join ['-', [!Ref AppIdentity, 'amplify', !Ref Stage]]
-      Repository: !Sub "https://github.com/${GithubUser}/${GithubRepo}.git"
-      AccessToken: !Ref GithubToken
-      IAMServiceRole: !GetAtt AmplifyRole.Arn
-      EnvironmentVariables:
-        - Name: ENDPOINT
-          Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
+  # AmplifyApp:
+  #   Type: AWS::Amplify::App
+  #   Properties:
+  #     Name: !Join ['-', [!Ref AppIdentity, 'amplify', !Ref Stage]]
+  #     Repository: !Sub "https://github.com/${GithubUser}/${GithubRepo}.git"
+  #     AccessToken: !Ref GithubToken
+  #     IAMServiceRole: !GetAtt AmplifyRole.Arn
+  #     EnvironmentVariables:
+  #       - Name: ENDPOINT
+  #         Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
 
-  AmplifyBranch:
-    Type: AWS::Amplify::Branch
-    Properties:
-      BranchName: !Ref GitBranchName
-      AppId: !GetAtt AmplifyApp.AppId
-      EnableAutoBuild: true
+  # AmplifyBranch:
+  #   Type: AWS::Amplify::Branch
+  #   Properties:
+  #     BranchName: !Ref GitBranchName
+  #     AppId: !GetAtt AmplifyApp.AppId
+  #     EnableAutoBuild: true
 
 
 ## --------------   IAM Role   -------------------- ##
@@ -709,15 +709,15 @@ Resources:
 
 
 Outputs:
-  OrderApi:
-    Description: "API Gateway endpoint URL for Prod stage for Order function"
-    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello/"
+  # OrderApi:
+  #   Description: "API Gateway endpoint URL for Prod stage for Order function"
+  #   Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello/"
   Bucket:
     Description : "The name of the created bucket"
     Value: !Ref MyFileBucket
-  VPC:
-    Description : "VPC Name"
-    Value: !Ref MyVPC
+  # VPC:
+  #   Description : "VPC Name"
+  #   Value: !Ref MyVPC
   # AmplifyAppID:
   #   Value: !Ref AmplifyApp
   # EndpointId:
