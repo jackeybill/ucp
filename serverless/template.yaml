@@ -84,11 +84,11 @@ Resources:
   #             - "Arn"
   #         Protocol: "sqs"
           
-  # MySQS:
-  #   Type: AWS::SQS::Queue
-  #   Properties:
-  #     MaximumMessageSize: 262144
-  #     VisibilityTimeout: 800
+  MySQS:
+    Type: AWS::SQS::Queue
+    Properties:
+      MaximumMessageSize: 262144
+      VisibilityTimeout: 800
 
   # AllowLambds2SQSPolicy:
   #     Type: AWS::SQS::QueuePolicy
