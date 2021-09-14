@@ -552,7 +552,7 @@ Resources:
 
 
 ## --------------   Sagemaker   -------------------- ##
-Sagemaker
+# Sagemaker
   Endpoint:
     Type: "AWS::SageMaker::Endpoint"
     Properties:
