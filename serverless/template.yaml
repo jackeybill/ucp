@@ -553,11 +553,11 @@ Resources:
 
 ## --------------   Sagemaker   -------------------- ##
 # Sagemaker
-  Endpoint:
-    Type: "AWS::SageMaker::Endpoint"
-    Properties:
-      EndpointConfigName:
-        !GetAtt EndpointConfig.EndpointConfigName
+  # Endpoint:
+  #   Type: "AWS::SageMaker::Endpoint"
+  #   Properties:
+  #     EndpointConfigName:
+  #       !GetAtt EndpointConfig.EndpointConfigName
   EndpointConfig:
     Type: "AWS::SageMaker::EndpointConfig"
     Properties:
