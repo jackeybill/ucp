@@ -51,7 +51,6 @@ Globals:
     Timeout: 60
     Runtime: python3.7
   
-  
     
 Resources:
 ## --------------   Lambda   -------------------- ##
