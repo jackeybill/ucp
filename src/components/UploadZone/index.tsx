@@ -10,7 +10,7 @@ import ImgUpload from "../../assets/img-upload.png";
 import { uploadFile, extractText } from "../../utils/ajax-proxy";
 import "./index.scss";
 
-const PATH = "iso-service-dev/RawDocuments/";
+const PATH = "ucp-filebucket-dev/RawDocuments/";
 let nctID = ""
 let protocolName = ""
 
