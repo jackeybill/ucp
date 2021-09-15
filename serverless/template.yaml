@@ -157,17 +157,17 @@ Resources:
         # - 'arn:aws:lambda:us-west-2:608494368293:layer:Jose:1'
         # - 'arn:aws:lambda:us-west-2:608494368293:layer:postgresqlClient-master:3'
 
-  deandevsearchkendra:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: lambda_function.lambda_handler
-      CodeUri: main/dean-dev-search-kendra/
-      Role: !GetAtt MyLambdaExecuteRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds:
-          - !Ref MySubnet
+  # deandevsearchkendra:
+  #   Type: 'AWS::Serverless::Function'
+  #   Properties:
+  #     Handler: lambda_function.lambda_handler
+  #     CodeUri: main/dean-dev-search-kendra/
+  #     Role: !GetAtt MyLambdaExecuteRole.Arn
+  #     VpcConfig:
+  #       SecurityGroupIds: 
+  #         - !Ref MySecurityGroup
+  #       SubnetIds:
+  #         - !Ref MySubnet
       # Events:
       #   Api1:
       #     Type: Api
@@ -182,17 +182,17 @@ Resources:
       #       Method: POST
       #       RestApiId: !Ref MyApi
 
-  extractPDF:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: extractPDF.lambda_handler
-      CodeUri: main/iso-service-dev-extractPDF/
-      Role: !GetAtt MyLambdaExecuteRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds: 
-          - !Ref MySubnet
+  # extractPDF:
+  #   Type: 'AWS::Serverless::Function'
+  #   Properties:
+  #     Handler: extractPDF.lambda_handler
+  #     CodeUri: main/iso-service-dev-extractPDF/
+  #     Role: !GetAtt MyLambdaExecuteRole.Arn
+  #     VpcConfig:
+  #       SecurityGroupIds: 
+  #         - !Ref MySecurityGroup
+  #       SubnetIds: 
+  #         - !Ref MySubnet
       # Events:
       #   BucketEvent1:
       #     Type: S3
@@ -207,55 +207,55 @@ Resources:
       #     ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
       #     TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic
 
-  processPdfToTxt:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: processPdfToTxt.lambda_handler
-      CodeUri: main/iso-service-dev-processPdfToTxt/
-      Description: 'Process PDF to txt, and save into S3'
-      Role: !GetAtt MyLambdaExecuteRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds:
-          - !Ref MySubnet
-      Events:
-        SQS1:
-          Type: SQS
-          Properties:
-            Queue: !GetAtt MySQS.Arn
-      Environment:
-        Variables:
-          STAGE: !Ref Stage
-          SERVICE: !Ref AppIdentity
-          NOTIFICATION_ARN: !Ref MySNSTopic
-          ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
-          TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic
+  # processPdfToTxt:
+  #   Type: 'AWS::Serverless::Function'
+  #   Properties:
+  #     Handler: processPdfToTxt.lambda_handler
+  #     CodeUri: main/iso-service-dev-processPdfToTxt/
+  #     Description: 'Process PDF to txt, and save into S3'
+  #     Role: !GetAtt MyLambdaExecuteRole.Arn
+  #     VpcConfig:
+  #       SecurityGroupIds: 
+  #         - !Ref MySecurityGroup
+  #       SubnetIds:
+  #         - !Ref MySubnet
+  #     Events:
+  #       SQS1:
+  #         Type: SQS
+  #         Properties:
+  #           Queue: !GetAtt MySQS.Arn
+  #     Environment:
+  #       Variables:
+  #         STAGE: !Ref Stage
+  #         SERVICE: !Ref AppIdentity
+  #         NOTIFICATION_ARN: !Ref MySNSTopic
+  #         ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
+  #         TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic
 
-  txtintosections:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: txtintosections.lambda_handler
-      CodeUri: main/iso-service-dev-txtintosections/
-      Description: This lambda function to extract sections from txt
-      Role: !GetAtt MyLambdaExecuteRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds: 
-          - !Ref MySubnet
+  # txtintosections:
+  #   Type: 'AWS::Serverless::Function'
+  #   Properties:
+  #     Handler: txtintosections.lambda_handler
+  #     CodeUri: main/iso-service-dev-txtintosections/
+  #     Description: This lambda function to extract sections from txt
+  #     Role: !GetAtt MyLambdaExecuteRole.Arn
+  #     VpcConfig:
+  #       SecurityGroupIds: 
+  #         - !Ref MySecurityGroup
+  #       SubnetIds: 
+  #         - !Ref MySubnet
 
-  isoservicedevawslabel:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: lambda_function.lambda_handler
-      CodeUri: main/iso-service-dev-aws-label/
-      Role: !GetAtt MyLambdaExecuteRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds: 
-          - !Ref MySubnet
+  # isoservicedevawslabel:
+  #   Type: 'AWS::Serverless::Function'
+  #   Properties:
+  #     Handler: lambda_function.lambda_handler
+  #     CodeUri: main/iso-service-dev-aws-label/
+  #     Role: !GetAtt MyLambdaExecuteRole.Arn
+  #     VpcConfig:
+  #       SecurityGroupIds: 
+  #         - !Ref MySecurityGroup
+  #       SubnetIds: 
+  #         - !Ref MySubnet
 
 ## --------------   lambda role   -------------------- ##
   MyRootInstanceProfile:
