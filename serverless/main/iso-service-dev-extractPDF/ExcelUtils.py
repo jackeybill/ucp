@@ -64,7 +64,7 @@ class ExcelUtils():
                         
                         downloadUtils.download('pdf', sheet.cell_value(j, i).strip(), bucket,'reg-intel-service-dev/reg-intel-data-source/rfi-documents/'+ sheet.cell_value(j, 0)+'/')
 
-                        downloadUtils.download('pdf', sheet.cell_value(j, i).strip(), bucket,'iso-service-dev/RawDocuments/'+ sheet.cell_value(j, 0)+'/')
+                        downloadUtils.download('pdf', sheet.cell_value(j, i).strip(), bucket,'RawDocuments/'+ sheet.cell_value(j, 0)+'/')
                     else:
                         #item_attributes['type'] = 'html'
                         item['ContentType'] = 'HTML'

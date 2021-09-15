@@ -87,8 +87,8 @@ def getCachedAWSResults(text, method='entities'):
     util:ExtractUtils = ExtractUtils()
     comprehendmedical = boto3.client('comprehendmedical')
     
-    s3BucketName = 'iso-data-zone'
-    documentName = 'iso-service-dev/comprehendOutput/'+method+'/'+util.md5_hash(text)+'.json'
+    s3BucketName = 'ucp-filebucket-dev'
+    documentName = 'comprehendOutput/'+method+'/'+util.md5_hash(text)+'.json'
     print(f"read aws result from cache: {documentName}")
     results = getExistResult(s3BucketName,documentName)
     if results == None:
@@ -293,8 +293,8 @@ def getItemInfo(id, filename, objectiveType, title, content, comprehendMedical):
 
 def parseTxt(bucketName, bucketKey, fileContent):
     #s3 
-    #s3BucketName = "iso-data-zone"                    #"iso-clinicaltrial-studyprotocols"
-    #documentPath = "iso-service-dev/RawDocuments/"    #"study_protocols_eli_lilly_and_company_phase1/"
+    #s3BucketName = "ucp-filebucket-dev"                    #"iso-clinicaltrial-studyprotocols"
+    #documentPath = "RawDocuments/"    #"study_protocols_eli_lilly_and_company_phase1/"
     
     #document and spoonsor
     #filename = 'NCT01484431.pdf'
@@ -345,7 +345,7 @@ def parseTxt(bucketName, bucketKey, fileContent):
 
 def getPathInfo(event):
     # Started job with bucket: BI clinical study.pdf ; Clinical Pharmacology Protocol
-    #return 'iso-data-zone','iso-service-dev/comprehend-input/BI clinical study.pdf.txt'
+    #return 'ucp-filebucket-dev','comprehend-input/BI clinical study.pdf.txt'
     payload = event['Records'][0]['s3']
     s3BucketName = payload['bucket']['name']
     documentName = urllib.parse.unquote_plus(payload['object']['key'], encoding='utf-8')
@@ -582,9 +582,9 @@ def removeSpecialChars(str):
     
 #TODO need to be done
 def getSoaProcessedContent(bucketName, bucketKey):
-    bucketName = "iso-data-zone"
-    #bucketKey = "iso-service-dev/comprehend-input/NCT02995733.pdf.txt"
-    bucketKey = "iso-service-dev/comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt"
+    bucketName = "ucp-filebucket-dev"
+    #bucketKey = "comprehend-input/NCT02995733.pdf.txt"
+    bucketKey = "comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt"
     
     tabletype = 'list' #'html' 'csv'
     soaRawContent = SOAfromResponseUsingPA(get_json_format(bucketName, bucketKey),jsontype=True,pretty=False,tabletype=tabletype)
@@ -615,9 +615,9 @@ def getCostDic():
 
 def processEndpoints(bucketName, bucketKey):
     # NCT02133742, NCT03023826, 
-    #bucketName = "iso-data-zone"
-    #bucketKey = "iso-service-dev/comprehend-input/NCT03023826.pdf.txt"
-    #bucketKey = "iso-service-dev/comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt"
+    #bucketName = "ucp-filebucket-dev"
+    #bucketKey = "comprehend-input/NCT03023826.pdf.txt"
+    #bucketKey = "comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt"
     response = get_json_format(bucketName, bucketKey)
     #print(response)
     # path = 'data/processed/textract/document/pfizer/phase2/' #
@@ -656,7 +656,7 @@ def testMe():
     print('nctId', nctId)
     #updateTitle('study_protocol', nctId, load_title_from_ctti(nctId))
     # NCT02133742 , NCT03023826
-    #processEndpoints("iso-data-zone", "iso-service-dev/comprehend-input/NCT03023826.pdf.txt")
+    #processEndpoints("ucp-filebucket-dev", "comprehend-input/NCT03023826.pdf.txt")
     #print( load_brief_from_ctti(nctId))
     #print( load_title_from_ctti(nctId))
     #print( rdsDB.getCriteria('NCT00613574'))
@@ -670,8 +670,8 @@ def testMe():
     #item['exclusion_comprehend'] = process_result_summary(item['exclusion_criteria'])
     
     
-    # # iso-data-zone, and file name: iso-service-dev/comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt
-    #response = s3.put_object(Bucket='iso-data-zone', Key='iso-service-dev/comprehendOutput/data/'+nctId+'.json', Body=json.dumps(item))
+    # # ucp-filebucket-dev, and file name: comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt
+    #response = s3.put_object(Bucket='ucp-filebucket-dev', Key='comprehendOutput/data/'+nctId+'.json', Body=json.dumps(item))
     return
 
     #return processSoaProcessedContent(soaProcessedContent)
@@ -830,7 +830,7 @@ def process(data, soaDic, nct_id):
     :return:
     """
     try:
-        fbModelResult = s3.get_object(Bucket='iso-data-zone', Key='iso-service-dev/facebookModel/'+str(nct_id)+'.json')['Body']
+        fbModelResult = s3.get_object(Bucket='ucp-filebucket-dev', Key='facebookModel/'+str(nct_id)+'.json')['Body']
         fbModelResult = json.loads(fbModelResult.read())
     except Exception as exception:
         fbModelResult = None
@@ -1056,7 +1056,7 @@ def runFacebook(nct_id, runI, runE, protocol):
             exCriteria = criteria[exPos:len(criteria)]
     try:
         try:
-            oldResult = s3.get_object(Bucket='iso-data-zone', Key='iso-service-dev/facebookModel/'+nct_id+'.json')['Body']
+            oldResult = s3.get_object(Bucket='ucp-filebucket-dev', Key='facebookModel/'+nct_id+'.json')['Body']
             oldResult = json.loads(oldResult.read())
             modelResult = {}
             if runI:
@@ -1104,7 +1104,7 @@ def runFacebook(nct_id, runI, runE, protocol):
                                                        Body=payload)
                 exResult = json.loads(response['Body'].read().decode())
                 modelResult['exclusion'] = exResult
-            s3.put_object(Bucket='iso-data-zone', Key='iso-service-dev/facebookModel/'+nct_id+'.json',Body=json.dumps(modelResult))
+            s3.put_object(Bucket='ucp-filebucket-dev', Key='facebookModel/'+nct_id+'.json',Body=json.dumps(modelResult))
     except Exception as e:
         print(e)
         modelResult = {}
@@ -1119,13 +1119,13 @@ def rm_test6():
     #         count += 1
     # print(count)
 def rm_test5():
-    bucketName = 'iso-data-zone'
+    bucketName = 'ucp-filebucket-dev'
     header = ['nct', 'inclusion-Kanak', 'exclusion-Kanak', 'inclusion-CTTI', 'exclusion-CTTI', 'source']
     with open('/tmp/ieContent.csv', 'w', encoding='UTF8') as f:
         writer = csv.writer(f)
         writer.writerow(header)
         for nct in protocolsList:
-            bucketKey = 'iso-service-dev/comprehend-input/' + nct + '.pdf.txt'
+            bucketKey = 'comprehend-input/' + nct + '.pdf.txt'
             response = s3.get_object(Bucket=bucketName, Key=bucketKey)
             txt = response['Body'].read().decode('utf-8')
             sectionNames = ['Inclusion Criteria','Exclusion Criteria']
@@ -1157,13 +1157,13 @@ def rm_test5():
             # runFacebook(nct, True, True, outputObj)
             data = [nct, iContent.strip(), eContent.strip(), inclusion_body_dummy.strip(), exclusion_body_dummy.strip(), source]
             writer.writerow(data)
-    s3.put_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/ieContentSummary.csv', Body=open('/tmp/ieContent.csv', 'rb'))
+    s3.put_object(Bucket='ucp-filebucket-dev', Key='summary/ieContentSummary.csv', Body=open('/tmp/ieContent.csv', 'rb'))
     
 def rm_test3():
     res_dic = {}
     nctList = []
-    bucketName = 'iso-data-zone'
-    bucketKey = 'iso-service-dev/summary/soaSummary.json'
+    bucketName = 'ucp-filebucket-dev'
+    bucketKey = 'summary/soaSummary.json'
     soaSummaryObj = s3.get_object(Bucket=bucketName, Key=bucketKey)['Body']
     soaSummaryObj = json.loads(soaSummaryObj.read())
     actIndex = soaSummaryObj['actIndex']
@@ -1174,7 +1174,7 @@ def rm_test3():
                 nctList.append(key)
     res_dic['nctList'] = nctList
     print(len(nctList))
-    s3.put_object(Bucket=bucketName, Key='iso-service-dev/summary/detailedSOA.json', Body=json.dumps(res_dic))
+    s3.put_object(Bucket=bucketName, Key='summary/detailedSOA.json', Body=json.dumps(res_dic))
     
 def rm_test():
     res_dic = {}
@@ -1186,13 +1186,13 @@ def rm_test():
             'inclusionFromDB' : '',
             'exclusionFromDB' : ''
         }
-        bucketName = 'iso-data-zone'
-        bucketKey = 'iso-service-dev/comprehend-input/' + item + '.pdf.txt'
+        bucketName = 'ucp-filebucket-dev'
+        bucketKey = 'comprehend-input/' + item + '.pdf.txt'
         response = s3.get_object(Bucket=bucketName, Key=bucketKey)
         txt = response['Body'].read().decode('utf-8')
         sectionNames = ['Inclusion Criteria','Exclusion Criteria']
         result = infn_sect_extra.extractSections(txt,sectionNames, False)
-        s3.put_object(Bucket=bucketName, Key='iso-service-dev/summary/ieRawOutput/'+item+'.json', Body=json.dumps(result))
+        s3.put_object(Bucket=bucketName, Key='summary/ieRawOutput/'+item+'.json', Body=json.dumps(result))
         continue
         # print(result)
         # break
@@ -1217,11 +1217,11 @@ def rm_test():
                 if exclusion_body_dummy != None:
                     res_dic[item]['exclusionFromDB'] = True
                     ieDetailDic[item] = 'CTTI'
-    s3.put_object(Bucket=bucketName, Key='iso-service-dev/summary/detailedIE.json', Body=json.dumps(res_dic))
+    s3.put_object(Bucket=bucketName, Key='summary/detailedIE.json', Body=json.dumps(res_dic))
     # return 0
     
 def rm_test2():
-    ieData = s3.get_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/detailedIE.json')['Body']
+    ieData = s3.get_object(Bucket='ucp-filebucket-dev', Key='summary/detailedIE.json')['Body']
     ieData = json.loads(ieData.read())
     header = ['nct', 'hasInclusion', 'hasExclusion', 'inclusionFromDB', 'exclusionFromDB']
     with open('/tmp/ie.csv', 'w', encoding='UTF8') as f:
@@ -1232,7 +1232,7 @@ def rm_test2():
             data = [key, ieData[key]['hasInclusion'], ieData[key]['hasExclusion'],ieData[key]['inclusionFromDB'],ieData[key]['exclusionFromDB']]
             #write the data
             writer.writerow(data)
-    s3.put_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/detailedIE.csv', Body=open('/tmp/ie.csv', 'rb'))
+    s3.put_object(Bucket='ucp-filebucket-dev', Key='summary/detailedIE.csv', Body=open('/tmp/ie.csv', 'rb'))
 
 def kanak_test(event):
     print("Test event - Kanak")
@@ -1240,8 +1240,8 @@ def kanak_test(event):
         return None
     output = {}
     for nct in event['nctList']:
-        bucketName = 'iso-data-zone'
-        bucketKey = f'iso-service-dev/TextractOutput/{nct}.pdf.json'
+        bucketName = 'ucp-filebucket-dev'
+        bucketKey = f'TextractOutput/{nct}.pdf.json'
         response = get_json_format(bucketName, bucketKey)
         text = infn_ep_extra.loadtextforResponse(response)
         output[nct] = {}
@@ -1268,9 +1268,9 @@ def lambda_handler(event, context):
     # processScheduleOfActivities()
     # return
     bucketName, bucketKey = getPathInfo(event)
-    # iso-data-zone, and file name: iso-service-dev/comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt
-    #bucketName = 'iso-data-zone'
-    #bucketKey = 'iso-service-dev/comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt'
+    # ucp-filebucket-dev, and file name: comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt
+    #bucketName = 'ucp-filebucket-dev'
+    #bucketKey = 'comprehend-input/Clinical Pharmacology Protocol 887663.pdf.txt'
     if not bucketKey.endswith('.txt'):
         return
     
@@ -1933,7 +1933,7 @@ def lambda_handler(event, context):
     print('call iso-service-dev-aws-label')
     # Dean Add export CSV file
     # content = save_csv(hash_value, protocol)
-    # iso-service-dev/bak/ProtocolExtraction/
+    # bak/ProtocolExtraction/
     # response = s3.put_object(Bucket=bucketName, Key=prefixName+'/bak/ProtocolExtraction/csv/'+getFileName(bucketKey)+'.csv', Body=content)
     
     return {'message': 'ok'}
