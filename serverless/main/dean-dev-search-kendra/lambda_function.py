@@ -28,7 +28,7 @@ matchingPB[10] = 5
 
 DEFAULT_PAGE_SIZE = 25
 # bucketName = 'iso-data-zone'
-s3_url_base = 'https://iso-data-zone.s3.us-east-2.amazonaws.com/'
+# s3_url_base = 'https://iso-data-zone.s3.us-east-2.amazonaws.com/'
 bucketName = 'ucp-filebucket-dev'
 # s3_url_base = 'https://ucp-filebucket-dev.s3.ap-southeast-1.amazonaws.com/'
 
@@ -241,7 +241,7 @@ def getFileList():
     print('Get file list...')
     paginator = s3_client.get_paginator('list_objects')
     operation_parameters = {'Bucket': bucketName,
-                            'Prefix': 'iso-service-dev/RawDocuments/'
+                            'Prefix': 'RawDocuments/'
     }
     page_iterator = paginator.paginate(**operation_parameters)
     fileLists = []
@@ -503,7 +503,7 @@ def findMeanCost(nctList):
     totalCost = 0
     totalPB = 0
     for nct in nctList:
-        key = 'iso-service-dev/input/data/' + nct + '.pdf.json'
+        key = 'input/data/' + nct + '.pdf.json'
         tf = s3_client.get_object(Bucket=bucketName, Key=key)['Body']
         td = json.loads(tf.read())
         totalCost += td[list(td.keys())[0]]['scheduleActivities'][0]['totalCost']
