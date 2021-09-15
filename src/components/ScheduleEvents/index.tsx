@@ -1091,10 +1091,6 @@ const ScheduleEvents = (props) => {
          <span>Configure Schedule Of Events Table</span>
         </Row>
         <br/>
-        <Row className="configure-desc">
-         <span >Aliquam faucibus, odio nec commodo aliquam, neque felis placerat dui, a porta ante lectus dapibus</span>
-        </Row>
-        <br/>
         <Row className="modal-filed">
           <Col span={12} className="label"><span>Number of Visits</span></Col>
           <Col span={12} className="input-number"><InputNumber min={1} step={1} onStep={onStepVisit} value={numbers.visitNumber} /></Col>

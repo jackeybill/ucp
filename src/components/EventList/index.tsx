@@ -29,12 +29,23 @@ const EventList = (props) => {
   const [sort,setSort] = useState("")
   const [weeks, setWeeks] = useState([])
   const [visits, setVisits] = useState([])
-  const [expandKeys, setExpandKeys] = useState(["1"])
+  const [expandKeys, setExpandKeys] = useState([])
   let [labs, setLabs] = useState(props.labs||[]);
   let [examination, setExamination] = useState(props.examination||[])
   let [procedures, setProcedures] = useState(props.procedures||[])
   let [questionnaire, setQuestionnaire] = useState(props.questionnaire||[])
   let [studyProcedures, setStudyProcedures] = useState(props.studyProcedures||[])
+
+  useEffect( ()=>{
+    const expandKeysTmp = expandKeys.slice(0)
+    if (props.labs && props.labs.length>0) expandKeysTmp.push('1')
+    if (props.examination && props.examination.length>0) expandKeysTmp.push('2')
+    if (props.procedures && props.procedures.length>0) expandKeysTmp.push('3')
+    if (props.questionnaire && props.questionnaire.length>0) expandKeysTmp.push('4')
+    if (props.studyProcedures && props.studyProcedures.length>0) expandKeysTmp.push('5')
+    setExpandKeys(expandKeysTmp)
+
+  },[props.labs, props.examination, props.procedures,props.questionnaire,props.studyProcedures])
 
   useEffect(() => {
     if(props.viewOnly) setExpandKeys(['1','2','3','4','5'])
