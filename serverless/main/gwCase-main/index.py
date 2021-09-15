@@ -26,7 +26,7 @@ def getFileName(documentName):
 
 def getPathInfo(event):
     # Started job with bucket: BI clinical study.pdf ; Clinical Pharmacology Protocol
-    #return 'ucp-filebucket-dev','iso-service-dev/comprehend-input/BI clinical study.pdf.txt'
+    #return 'ucp-filebucket-dev','comprehend-input/BI clinical study.pdf.txt'
     payload = event['Records'][0]['s3']
 
     s3BucketName = payload['bucket']['name']
@@ -225,7 +225,7 @@ def uploadFile(event):
 
     path, filename = os.path.split(file)
     s3_client = boto3.client('s3')
-    # ucp-filebucket-dev/iso-service-dev/RawDocuments
+    # ucp-filebucket-dev/RawDocuments
     response = s3_client.put_object(Bucket=bucket, ACL="public-read",Key=key + filename, Body=body)
 
 
