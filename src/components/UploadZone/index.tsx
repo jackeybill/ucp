@@ -8,9 +8,10 @@ import { useDropzone } from "react-dropzone";
 import { LoadingOutlined} from "@ant-design/icons";
 import ImgUpload from "../../assets/img-upload.png";
 import { uploadFile, extractText } from "../../utils/ajax-proxy";
+import {FILE_PATH} from '../../constants';
 import "./index.scss";
 
-const PATH = "ucp-filebucket-dev/RawDocuments/";
+
 let nctID = ""
 let protocolName = ""
 
@@ -74,7 +75,7 @@ const Dropzone = (props: any) => {
       // if (protocolName === "") {
       //   protocolName = f.name
       // }
-      const res = await uploadFile(nctID, protocolName, f.name, PATH, base64.split(",")[1]);
+      const res = await uploadFile(nctID, protocolName, f.name, FILE_PATH, base64.split(",")[1]);
       console.log(res);
       
       if (res.body === "success") {
@@ -85,7 +86,7 @@ const Dropzone = (props: any) => {
           console.log(`waiting ${10 + 10 * times}s`);
           await sleep(10000 + times * 5000 *2);
           times++;
-          extractedRes = await extractText(PATH + f.name);
+          extractedRes = await extractText(FILE_PATH + f.name);
           try {
             const result = JSON.parse(extractedRes.body);
             // console.log("--upload new file--", result);
