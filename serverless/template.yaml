@@ -137,22 +137,22 @@ Resources:
             Path: /cases
             Method: OPTIONS
             RestApiId: !Ref MyApi
-        BucketEvent1:
-          Type: S3
-          Properties:
-            Bucket: !Ref MyFileBucket
-            Events: s3:ObjectCreated:*
-        SQS1:
-          Type: SQS
-          Properties:
-            Queue: !GetAtt MySQS.Arn
-      Environment:
-        Variables:
-          STAGE: !Ref Stage
-          SERVICE: !Ref AppIdentity
-          NOTIFICATION_ARN: !Ref MySNSTopic
-          ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
-          TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic     
+        # BucketEvent1:
+        #   Type: S3
+        #   Properties:
+        #     Bucket: !Ref MyFileBucket
+        #     Events: s3:ObjectCreated:*
+        # SQS1:
+        #   Type: SQS
+        #   Properties:
+        #     Queue: !GetAtt MySQS.Arn
+      # Environment:
+      #   Variables:
+      #     STAGE: !Ref Stage
+      #     SERVICE: !Ref AppIdentity
+      #     NOTIFICATION_ARN: !Ref MySNSTopic
+      #     ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
+      #     TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic     
       # Layers:
         # - 'arn:aws:lambda:us-west-2:608494368293:layer:Jose:1'
         # - 'arn:aws:lambda:us-west-2:608494368293:layer:postgresqlClient-master:3'
@@ -168,19 +168,19 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds:
           - !Ref MySubnet
-      # Events:
-      #   Api1:
-      #     Type: Api
-      #     Properties:
-      #       Path: /
-      #       Method: GET
-      #       RestApiId: !Ref MyApi
-      #   Api2:
-      #     Type: Api
-      #     Properties:
-      #       Path: /
-      #       Method: POST
-      #       RestApiId: !Ref MyApi
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
+            RestApiId: !Ref MyApi
+        Api2:
+          Type: Api
+          Properties:
+            Path: /
+            Method: POST
+            RestApiId: !Ref MyApi
 
   extractPDF:
     Type: 'AWS::Serverless::Function'
@@ -193,19 +193,19 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds: 
           - !Ref MySubnet
-      # Events:
-      #   BucketEvent1:
-      #     Type: S3
-      #     Properties:
-      #       Bucket: !Ref MyFileBucket
-      #       Events: s3:ObjectCreated:*
-      # Environment:
-      #   Variables:
-      #     STAGE: !Ref Stage
-      #     SERVICE: !Ref AppIdentity
-      #     NOTIFICATION_ARN: !Ref MySNSTopic
-      #     ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
-      #     TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic
+      Events:
+        BucketEvent1:
+          Type: S3
+          Properties:
+            Bucket: !Ref MyFileBucket
+            Events: s3:ObjectCreated:*
+      Environment:
+        Variables:
+          STAGE: !Ref Stage
+          SERVICE: !Ref AppIdentity
+          NOTIFICATION_ARN: !Ref MySNSTopic
+          ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
+          TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic
 
   processPdfToTxt:
     Type: 'AWS::Serverless::Function'
