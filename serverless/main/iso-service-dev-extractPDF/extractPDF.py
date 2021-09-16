@@ -41,7 +41,7 @@ def startAsyncJob(bucketName, objectName, snsTopic, snsRole):
            },
            OutputConfig={
                 'S3Bucket': bucketName,
-                'S3Prefix': 'iso-service-dev/log'
+                'S3Prefix': 'log'
             }
         )
     logger.info("Response from textract: {}".format(response))

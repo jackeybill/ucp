@@ -1372,7 +1372,7 @@ def format_entities(d, hashcode):
     return d
 
 def updateIeSummary(nctId):
-    ieSummaryObj = s3_client.get_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/ieSummary.json')['Body']
+    ieSummaryObj = s3_client.get_object(Bucket='ucp-filebucket-dev', Key='summary/ieSummary.json')['Body']
     ieSummaryObj = json.loads(ieSummaryObj.read())
     for ie in ieSummaryObj:
         ieOfNct = ieSummaryObj[ie][nctId]
@@ -1381,7 +1381,7 @@ def updateIeSummary(nctId):
                 if entity['rawText'] in ieMapping:
                     entity['snomedTerm'] = ieMapping[entity['rawText']]['snomedTerm']
                     entity['omopTerm'] = ieMapping[entity['rawText']]['snomedTerm']
-    s3_client.put_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/ieSummary.json', Body=json.dumps(ieSummaryObj))
+    s3_client.put_object(Bucket='ucp-filebucket-dev', Key='summary/ieSummary.json', Body=json.dumps(ieSummaryObj))
         
     
 def getNctId(key):
@@ -1415,7 +1415,7 @@ def lambda_handler(event, context):
     # return testMe()
     
 
-    bucket = 'iso-data-zone'
+    bucket = 'ucp-filebucket-dev'
     # key = 'iso-service-dev/input/data/WWQC-POL-6.3 Test Method Validation v7.pdf.json'
     load_json_data(event['bucket'], event['key'])
     return {

@@ -7,7 +7,7 @@ from AwsUtils import AwsUtils
 
 awsUtils:AwsUtils = AwsUtils()
 DEFAULT_PAGE_SIZE = 25
-bucketName = 'iso-data-zone'
+bucketName = 'ucp-filebucket-dev'
 s3_url_base = 'https://iso-data-zone.s3.us-east-2.amazonaws.com/'
 s3_client = boto3.client('s3')
 

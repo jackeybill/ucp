@@ -6,7 +6,7 @@ import * as fileActions from "../../actions/file.js";
 import { LoadingOutlined, CloseOutlined } from '@ant-design/icons';
 import UplodZone from "../../components/UploadZone";
 import moment from 'moment';
-
+import {FILE_PATH} from '../../constants';
 import { getOverviewList, extractText } from "../../utils/ajax-proxy";
 import "./index.scss";
 
@@ -158,7 +158,7 @@ const Overview = (props: any) => {
 
   const handleRowClick = async (record) => {
     setLoading(true)    
-    const filepath = `iso-service-dev/RawDocuments/${record.fileName}`
+    const filepath = `${FILE_PATH}${record.fileName}`
     const resp = await extractText(filepath)
     setLoading(false)
     if (resp.statusCode == 200) {  

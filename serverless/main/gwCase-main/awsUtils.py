@@ -172,7 +172,7 @@ def extractFormNow():
     response = textractClient.analyze_document(
         Document={
           'S3Object': 
-            {"Bucket": "iso-data-zone",
+            {"Bucket": "ucp-filebucket-dev",
              "Name": "prior-authorization-service-dev/RawDocuments/Patient 1_PA _ Medical Form_final.pdf"
             }}, 
             FeatureTypes=['FORMS'])

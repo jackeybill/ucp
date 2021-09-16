@@ -16,7 +16,8 @@ import studies
 import loadStandardEvents
 import csv
 #import testMe
-runtime = boto3.client('runtime.sagemaker', region_name = 'us-east-2')
+# runtime = boto3.client('runtime.sagemaker', region_name = 'us-east-2')
+runtime = boto3.client('runtime.sagemaker', region_name = 'ap-southeast-1')
 s3 = boto3.client('s3')
 def getFileName(documentName):
     base, filename = os.path.split(documentName)
@@ -25,7 +26,7 @@ def getFileName(documentName):
 
 def getPathInfo(event):
     # Started job with bucket: BI clinical study.pdf ; Clinical Pharmacology Protocol
-    #return 'iso-data-zone','iso-service-dev/comprehend-input/BI clinical study.pdf.txt'
+    #return 'ucp-filebucket-dev','comprehend-input/BI clinical study.pdf.txt'
     payload = event['Records'][0]['s3']
 
     s3BucketName = payload['bucket']['name']
@@ -212,7 +213,8 @@ def uploadFile(event):
     print('upload file start...')
     body = base64.b64decode(event['name'])
     # file = urlparse(event['file']).path
-    bucket = 'iso-data-zone'
+    # bucket = 'ucp-filebucket-dev'
+    bucket = 'ucp-filebucket-dev'
     if "bucket" in event:
         bucket = event['bucket']
     file = event['file']
@@ -223,7 +225,7 @@ def uploadFile(event):
 
     path, filename = os.path.split(file)
     s3_client = boto3.client('s3')
-    # iso-data-zone/iso-service-dev/RawDocuments
+    # ucp-filebucket-dev/RawDocuments
     response = s3_client.put_object(Bucket=bucket, ACL="public-read",Key=key + filename, Body=body)
 
 
@@ -253,7 +255,7 @@ def rm_test2(nctList):
                     writer.writerow(data)
             #write the data
             
-    s3.put_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/exportedIE.csv', Body=open('/tmp/ieSummary.csv', 'rb'))
+    s3.put_object(Bucket='ucp-filebucket-dev', Key='summary/exportedIE.csv', Body=open('/tmp/ieSummary.csv', 'rb'))
 
 def rm_test3(nctList):
     soaData = json.loads(findSoaItem(nctList)['body'])
@@ -264,7 +266,7 @@ def rm_test3(nctList):
         for item in soaData['soaItemList']:
             data = [item['nctID'], item['category'], item['raw'], item['standardized']]
             writer.writerow(data)
-    s3.put_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/exportedSOA.csv', Body=open('/tmp/soaSummary.csv', 'rb'))
+    s3.put_object(Bucket='ucp-filebucket-dev', Key='summary/exportedSOA.csv', Body=open('/tmp/soaSummary.csv', 'rb'))
 
 def rm_test4(nctList):
     header = ['nct', 'I/E', 'criterion', 'relation']
@@ -274,7 +276,7 @@ def rm_test4(nctList):
         
         for nct in protocolsList:
             try:
-                modelResult = s3.get_object(Bucket='iso-data-zone', Key='iso-service-dev/facebookModel/'+str(nct)+'.json')['Body']
+                modelResult = s3.get_object(Bucket='ucp-filebucket-dev', Key='facebookModel/'+str(nct)+'.json')['Body']
             except Exception as e:
                 continue
             modelResult = json.loads(modelResult.read())
@@ -282,15 +284,15 @@ def rm_test4(nctList):
                 for num in modelResult[ieKey]['cfg_results']['criterion']:
                     data = [nct, str(ieKey), modelResult[ieKey]['cfg_results']['criterion'][num],  modelResult[ieKey]['cfg_results']['relation'][num]]
                     writer.writerow(data)
-    s3.put_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/exportedFB.csv', Body=open('/tmp/facebookSummary.csv', 'rb'))
+    s3.put_object(Bucket='ucp-filebucket-dev', Key='summary/exportedFB.csv', Body=open('/tmp/facebookSummary.csv', 'rb'))
         
     
 def findSoaItem(inputList):
-    bucketName = 'iso-data-zone'
+    bucketName = 'ucp-filebucket-dev'
     s3_client = boto3.client('s3')
     soaItemList = []
     if(len(inputList) == 0):
-        soaSummaryObj = s3_client.get_object(Bucket=bucketName, Key='iso-service-dev/summary/soaSummary.json')['Body']
+        soaSummaryObj = s3_client.get_object(Bucket=bucketName, Key='summary/soaSummary.json')['Body']
         soaSummaryObj = json.loads(soaSummaryObj.read())
         actIndex = soaSummaryObj['actIndex']
         for nct in actIndex:
@@ -303,7 +305,7 @@ def findSoaItem(inputList):
                 }
                 soaItemList.append(newResultObj)
     else:
-        soaSummaryObj = s3_client.get_object(Bucket=bucketName, Key='iso-service-dev/summary/soaSummary.json')['Body']
+        soaSummaryObj = s3_client.get_object(Bucket=bucketName, Key='summary/soaSummary.json')['Body']
         soaSummaryObj = json.loads(soaSummaryObj.read())
         actIndex = soaSummaryObj['actIndex']
         for nct in inputList:
@@ -325,9 +327,9 @@ def findSoaItem(inputList):
     }
 
 def findIeItem(inputList):
-    bucketName = 'iso-data-zone'
+    bucketName = 'ucp-filebucket-dev'
     s3_client = boto3.client('s3')
-    ieSummaryObj = s3_client.get_object(Bucket=bucketName, Key='iso-service-dev/summary/ieSummary.json')['Body']
+    ieSummaryObj = s3_client.get_object(Bucket=bucketName, Key='summary/ieSummary.json')['Body']
     ieSummaryObj = json.loads(ieSummaryObj.read())
     inDic = ieSummaryObj['inclusionCriteria']
     exDic = ieSummaryObj['exclusionCriteria']
@@ -362,13 +364,13 @@ def findIeItem(inputList):
         "body": json.dumps(result)
     }
 def findMeanCost(inputList):
-    bucketName = 'iso-data-zone'
+    bucketName = 'ucp-filebucket-dev'
     s3_client = boto3.client('s3')
     totalCost = 0
     totalPB = 0
     denom = 0
     if(len(inputList) == 0):
-        soaSummaryObj = s3_client.get_object(Bucket=bucketName, Key='iso-service-dev/summary/soaSummary.json')['Body']
+        soaSummaryObj = s3_client.get_object(Bucket=bucketName, Key='summary/soaSummary.json')['Body']
         soaSummaryObj = json.loads(soaSummaryObj.read())
         nctCostPbMap = soaSummaryObj['nctCostPbMap']
         for key in nctCostPbMap:
@@ -377,7 +379,7 @@ def findMeanCost(inputList):
                 totalPB += nctCostPbMap[key]['pb']
                 denom += 1
     else:
-        soaSummaryObj = s3_client.get_object(Bucket=bucketName, Key='iso-service-dev/summary/soaSummary.json')['Body']
+        soaSummaryObj = s3_client.get_object(Bucket=bucketName, Key='summary/soaSummary.json')['Body']
         soaSummaryObj = json.loads(soaSummaryObj.read())
         nctCostPbMap = soaSummaryObj['nctCostPbMap']
         for nct in inputList:
@@ -433,7 +435,7 @@ def handler(event, context):
             return criteriaSummary.handler(event['body']['nct_ids'])
         if method == 'default':
             s3 = boto3.client('s3')
-            data = s3.get_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/all_summary.json')['Body'].read()
+            data = s3.get_object(Bucket='ucp-filebucket-dev', Key='summary/all_summary.json')['Body'].read()
             # return {'statusCode':200, 'body': certeriaSummary.load_from_dynamodb('NCT0000000')['Summary'] }
             return {'statusCode':200, 'body': data }
             
@@ -466,7 +468,7 @@ def handler(event, context):
     if 'schedule_activities' in event:
         costDic = getCostDic()
         s3 = boto3.client('s3')
-        data = s3.get_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/scheduleOfActivitiesFrequency.json')['Body'].read()
+        data = s3.get_object(Bucket='ucp-filebucket-dev', Key='summary/scheduleOfActivitiesFrequency.json')['Body'].read()
         data = json.loads(data)
         for key in data:
             if(key != 'summary'):

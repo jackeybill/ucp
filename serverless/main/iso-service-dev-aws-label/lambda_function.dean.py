@@ -481,7 +481,7 @@ def lambda_handler(event, context):
     # return testMe()
     
 
-    bucket = 'iso-data-zone'
+    bucket = 'ucp-filebucket-dev'
     # key = 'iso-service-dev/input/data/WWQC-POL-6.3 Test Method Validation v7.pdf.json'
     load_json_data(event['bucket'], event['key'])
     return {

@@ -140,6 +140,22 @@ Resources:
             Path: /cases
             Method: OPTIONS
             RestApiId: !Ref MyApi
+        # BucketEvent1:
+        #   Type: S3
+        #   Properties:
+        #     Bucket: !Ref MyFileBucket
+        #     Events: s3:ObjectCreated:*
+        # SQS1:
+        #   Type: SQS
+        #   Properties:
+        #     Queue: !GetAtt MySQS.Arn
+      # Environment:
+      #   Variables:
+      #     STAGE: !Ref Stage
+      #     SERVICE: !Ref AppIdentity
+      #     NOTIFICATION_ARN: !Ref MySNSTopic
+      #     ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
+      #     TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic     
       # Layers:
         # - 'arn:aws:lambda:us-west-2:608494368293:layer:Jose:1'
         # - 'arn:aws:lambda:us-west-2:608494368293:layer:postgresqlClient-master:3'
@@ -155,19 +171,19 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds:
           - !Ref MySubnet
-      Events:
-        Api1:
-          Type: Api
-          Properties:
-            Path: /
-            Method: GET
-            RestApiId: !Ref MyApi
-        Api2:
-          Type: Api
-          Properties:
-            Path: /
-            Method: POST
-            RestApiId: !Ref MyApi
+      # Events:
+      #   Api1:
+      #     Type: Api
+      #     Properties:
+      #       Path: /
+      #       Method: GET
+      #       RestApiId: !Ref MyApi
+      #   Api2:
+      #     Type: Api
+      #     Properties:
+      #       Path: /
+      #       Method: POST
+      #       RestApiId: !Ref MyApi
 
   extractPDF:
     Type: 'AWS::Serverless::Function'
@@ -245,27 +261,29 @@ Resources:
           - !Ref MySubnet
 
 ## --------------   lambda role   -------------------- ##
-  # MyRootInstanceProfile:
-  #   Type: AWS::IAM::InstanceProfile
-  #   Properties:
-  #     Path: "/"
-  #     Roles:
-  #     - !Ref MyLambdaExecuteRole
-  # MyRolePolicies:
-  #   Type: AWS::IAM::Policy
-  #   Properties:
-  #     PolicyName: root
-  #     PolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #       - Effect: Allow
-  #         Action: "*"
-  #         Resource: "*"
-  #     Roles:
-  #     - !Ref MyLambdaExecuteRole
+  MyRootInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+      - !Ref MyLambdaExecuteRole
+  MyRolePolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: root
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action: "*"
+          Resource: "*"
+      Roles:
+      - !Ref MyLambdaExecuteRole
   MyLambdaExecuteRole:
     Type: AWS::IAM::Role
     Properties:
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -550,7 +568,7 @@ Resources:
 
 
 ## --------------   Sagemaker   -------------------- ##
-#Sagemaker
+# Sagemaker
   # Endpoint:
   #   Type: "AWS::SageMaker::Endpoint"
   #   Properties:
