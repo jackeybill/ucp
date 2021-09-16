@@ -168,19 +168,19 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds:
           - !Ref MySubnet
-      Events:
-        Api1:
-          Type: Api
-          Properties:
-            Path: /
-            Method: GET
-            RestApiId: !Ref MyApi
-        Api2:
-          Type: Api
-          Properties:
-            Path: /
-            Method: POST
-            RestApiId: !Ref MyApi
+      # Events:
+      #   Api1:
+      #     Type: Api
+      #     Properties:
+      #       Path: /
+      #       Method: GET
+      #       RestApiId: !Ref MyApi
+      #   Api2:
+      #     Type: Api
+      #     Properties:
+      #       Path: /
+      #       Method: POST
+      #       RestApiId: !Ref MyApi
 
   extractPDF:
     Type: 'AWS::Serverless::Function'
