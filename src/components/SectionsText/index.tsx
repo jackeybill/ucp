@@ -88,7 +88,7 @@ const SectionText = (props: SectionTextIF) => {
                                                 </span>
                                               </td>
                                             ) :(
-                                              iten.startsWith("X")||iten==="(X)" ? (
+                                              iten.startsWith("X")||iten==="(X)" ||iten==="x"? (
                                                 <td>
                                                   <CheckCircleFilled/>
                                                   {/* {iten.substr(1)} */}

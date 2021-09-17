@@ -613,7 +613,7 @@ const ExtractionTable = (props: any, ref) => {
                                           </td>
                                         )
                                       ) :(
-                                        iten.startsWith("X")||iten==="(X)"? (
+                                        iten.startsWith("X")||iten==="(X)"||iten==="x"? (
                                           <td>
                                             <CheckCircleFilled/>
                                             {/* {iten.substr(1)} */}
@@ -781,7 +781,7 @@ const ExtractionTable = (props: any, ref) => {
                                         </td>
                                       )
                                     ):(
-                                      iten.startsWith("X")||iten==="(X)" ? (
+                                      iten.startsWith("X")||iten==="(X)"||iten==="x" ? (
                                         <td>
                                           <CheckCircleFilled/>
                                           {/* {iten.substr(1)} */}
@@ -840,7 +840,7 @@ const ExtractionTable = (props: any, ref) => {
                                         </td>
                                       )
                                     ):(
-                                      iten.startsWith("X")||iten==="(X)"? (
+                                      iten.startsWith("X")||iten==="(X)"||iten==="x"? (
                                         <td onClick={()=>{onChangeIconType("X", index, indey)}} style={{cursor:"pointer"}}>
                                           <CheckCircleFilled/>
                                           {/* {iten.substr(1)} */}
