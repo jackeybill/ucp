@@ -160,6 +160,32 @@ Resources:
         # - 'arn:aws:lambda:us-west-2:608494368293:layer:Jose:1'
         # - 'arn:aws:lambda:us-west-2:608494368293:layer:postgresqlClient-master:3'
 
+  isoservicedevupload:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: upload.lambda_handler
+      Runtime: python3.7
+      CodeUri: main/iso-service-dev-upload/
+      Description: Upload file from api gateway to S3
+      Role: !GetAtt MyLambdaExecuteRole.Arn
+      VpcConfig:
+        SecurityGroupIds: 
+          - !Ref MySecurityGroup
+        SubnetIds: 
+          - !Ref MySubnet
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /upload
+            Method: POST
+      Environment:
+        Variables:
+          STAGE: !Ref Stage
+          SERVICE: !Ref AppIdentity
+          BUCKET_NAME: !Ref MyFileBucket
+         
+
   deandevsearchkendra:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -171,19 +197,19 @@ Resources:
           - !Ref MySecurityGroup
         SubnetIds:
           - !Ref MySubnet
-      # Events:
-      #   Api1:
-      #     Type: Api
-      #     Properties:
-      #       Path: /
-      #       Method: GET
-      #       RestApiId: !Ref MyApi
-      #   Api2:
-      #     Type: Api
-      #     Properties:
-      #       Path: /
-      #       Method: POST
-      #       RestApiId: !Ref MyApi
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
+            RestApiId: !Ref MyApi
+        Api2:
+          Type: Api
+          Properties:
+            Path: /
+            Method: POST
+            RestApiId: !Ref MyApi
 
   extractPDF:
     Type: 'AWS::Serverless::Function'
