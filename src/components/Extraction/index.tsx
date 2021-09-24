@@ -103,7 +103,16 @@ const Extraction = (props: any, ref) => {
       summaryCollection.forEach((s) => {
         if (s && Object.keys(s).length > 0) keys.push(Object.keys(s));
       });
-      return Array.from(new Set(keys.flat()));
+      const flatKeys=Array.from(new Set(keys.flat()))
+      // //remove Adverse Event, add Test Value, Test Unit
+      const ADVERSE_EVENT="ADVERSE_EVENT"
+      const TEST_VALUE="TEST_VALUE"
+      const TEST_UNIT="TEST_UNIT"
+      const adIndex = flatKeys.findIndex( e=> e.toUpperCase()===ADVERSE_EVENT)
+      if(adIndex >-1) flatKeys.splice(adIndex,1)    
+      if(flatKeys.findIndex(e=> e.toUpperCase()===TEST_VALUE)<0) flatKeys.push(TEST_VALUE)
+      if(flatKeys.findIndex(e=> e.toUpperCase()===TEST_UNIT)<0) flatKeys.push(TEST_UNIT)
+      return flatKeys;
     };
 
     if (file[key]) {
