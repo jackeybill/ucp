@@ -40,6 +40,7 @@ export const sectionOptions = [
   },
 ];
 export const ENDPOINT_SECTION="objectivesEndpointsEstimands"
+export const SCHEDULE_OF_ACTIVITIES="scheduleActivities"
 export const initSelectedSections = sectionOptions.map((s) => {
   return s.value;
 });
@@ -493,7 +494,7 @@ const ProtocolSection = (props: any) => {
           </div>
         </div>
         <div className="main-content">
-          {props.location.pathname == "/protocol-sections" && activeSection!=ENDPOINT_SECTION && (
+          {props.location.pathname == "/protocol-sections"  && (
             <SectionText
               file={file}
               protocolSection={protocolSection}

@@ -1,7 +1,7 @@
 import React from "react";
 import { sectionOptions } from "../../pages/ProtocolSection";
 import { CheckCircleFilled } from '@ant-design/icons'
-import {ENDPOINT_SECTION} from "../../pages/ProtocolSection"
+import {ENDPOINT_SECTION,SCHEDULE_OF_ACTIVITIES} from "../../pages/ProtocolSection"
 import TableTextWithEntity from "../../components/TableTextWithEntity";
 import "./index.scss";
 
@@ -13,8 +13,15 @@ interface SectionTextIF {
   entity?:any
 }
 
+interface EndpointParagraphIF{
+  name:string;
+  text:string;
+  type:string;
+}
+
 const SectionText = (props: SectionTextIF) => {
   const { protocolSection, sections, entity } = props;
+  console.log( props)
   const key =
         props.fileReader.file.keyName ||
         Object.keys(props.fileReader.file)[0];
@@ -36,7 +43,7 @@ const SectionText = (props: SectionTextIF) => {
             const displayTitle = sectionOptions.find((e) => e.value == s);
             const sectionTxt =
             props.fileReader.file[key][s] && (props.fileReader.file[key][s].length > 0 && props.fileReader.file[key][s][0].content.toString() !== "[object Object]"? props.fileReader.file[key][s][0].content
-                : "")                
+                : "")  
             const tableTxt =
             props.fileReader.file[key][s] && (props.fileReader.file[key][s].length > 0 && props.fileReader.file[key][s][0].content.toString() !== "[object Object]" && displayTitle.label == "SCHEDULE OF ACTIVITIES"? props.fileReader.file[key][s][0].table
                 : "")                
@@ -46,7 +53,7 @@ const SectionText = (props: SectionTextIF) => {
                   {displayTitle && displayTitle.label}
                 </div>
                 <div className="section-content">
-                  {displayTitle && displayTitle.label == "SCHEDULE OF ACTIVITIES" &&Array.isArray(tableTxt)? (
+                  {displayTitle && displayTitle.label == "SCHEDULE OF ACTIVITIES" &&Array.isArray(tableTxt)&& (
                     <pre>
                       <div className="content-table">
                         <table>
@@ -121,19 +128,38 @@ const SectionText = (props: SectionTextIF) => {
                         </table>
                       </div>
                     </pre>
-                  ) : (
-                    <>
-                    {
-                      s==ENDPOINT_SECTION&&props.file[key][s][0].tableResult? (
-                        <TableTextWithEntity
-                        dataSource={props.file[key][s][0].tableResult}
-                        showPlainText={true}
-                        entity={entity}
-                    />           
-                      ): <pre> <div>{sectionTxt}</div></pre>
-                    }
-                    </>
                   )}
+                  {
+                    s==ENDPOINT_SECTION&&props.file[key][s][0].tableResult&& (
+                      <TableTextWithEntity
+                      dataSource={props.file[key][s][0].tableResult}
+                      showPlainText={true}
+                      entity={entity}
+                    />     
+                    )
+                  }
+                  {
+                    s==ENDPOINT_SECTION&&props.file[key][s][0].raw && !props.file[key][s][0].tableResult&& (
+                      <div className="endpoint-raw-content">
+                          {
+                            props.file[key][s][0].raw && Object.values(props.file[key][s][0].raw.content).map((paragraph:EndpointParagraphIF,idx:number)=>{
+                              console.log( paragraph.text)
+                              const formattedText = paragraph.text.replace("\n",`<br/>&nbsp;&nbsp;&nbsp;&nbsp;<i class="my_symble">&#8226</i>&nbsp;&nbsp;`)                           
+                              return(  
+                                <div className={paragraph.type==="heading"?"heading":"body"} key={idx}> 
+                                  <div className="paragraph-name">{paragraph.name}</div>
+                                  <div className="paragraph-text" dangerouslySetInnerHTML={{__html:formattedText}}></div>                                
+                                </div>
+                              )
+                            })
+                          }
+                          </div>
+                    )
+                  }
+                  {
+                    s!==ENDPOINT_SECTION && s!==SCHEDULE_OF_ACTIVITIES && (<pre> <div>{sectionTxt}</div></pre>)
+                  }
+                  
                 </div>
               </div>
             );

@@ -45,6 +45,27 @@
   .btn.btn-primary {
     color: #ffffff;
   }
+
+  .endpoint-raw-content{
+    .heading{
+      margin-bottom: 10px;
+      .paragraph-name{
+        font-weight: 800;
+      }
+    }
+    .body{
+      margin:10px 0;
+      .paragraph-name{
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+    }
+    .paragraph-text{
+      .my_symble{
+        font-weight: 800;
+      }
+    }
+  }
 }
 
 
