@@ -80,6 +80,7 @@ const columns = [
         }        
         return numA - numB
       },
+      width: "164px",
       render: (text, row, index) => {
         return (
           <div className="status_column">
