@@ -41,7 +41,7 @@ const columns = [
       ellipsis: {
         showTitle: false,
       },
-      width: "770px",
+      width: "700px",
       render: (text, row, index) => {
         if (text.length>98) {
           return (
