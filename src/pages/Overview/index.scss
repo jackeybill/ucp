@@ -100,9 +100,11 @@
   //   // display: inline-block;
   //   // width: 680px;
   // }
-  // .status_column {
-  //   width: 160px;
-  // }
+  .status_column {
+    span {
+      white-space: nowrap;
+    }
+  }
   // .update_column {
   //   display: inline-block;
   //   width: 100px;
