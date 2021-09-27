@@ -1,7 +1,7 @@
 @import "../../styles/variables.scss";
 .trial-portfolio-container {
   .ant-breadcrumb {
-    padding: 20px 0 30px 120px;
+    padding: 20px 0 30px 100px;
     // background-color: #dedede;
     color: #999999;
     a {
@@ -22,7 +22,7 @@
   .list-top {
     display: flex;
     margin-bottom: 30px;
-    padding: 0 120px;
+    padding: 0 100px;
     align-items: flex-end;
     .count {
       flex: 1;
@@ -49,7 +49,7 @@
     }
   }
   .upper {
-    padding: 20px 120px 0px 120px;
+    padding: 20px 100px 0px 100px;
     
     .title {
       font-size: 32px;
@@ -126,7 +126,7 @@
 }
 
 .trial-details-wrapper {
-  padding: 0 120px 0px 120px;
+  padding: 0 100px 0px 100px;
 }
 
 .trial-item {

@@ -58,7 +58,7 @@ export const phase_options = [
 ];
 export const study_types = [
   "All",
-  "Interventional Studies (Clinical Trials)",
+  "Interventional",
   "Observational Studies",
   "Patient Registries",
   "Expanded Access Studies",

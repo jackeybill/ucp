@@ -2316,7 +2316,7 @@ const ScenarioPage = (props) => {
                       <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
                         <Col span={16}>
                           <div className="item-option">
-                            <span>Select / Unselect criteria to add to Trial</span>
+                            <span>Select criteria to add to Trial</span>
                           </div>
                         </Col>
                         <Col span={8} style={{textAlign:'right'}}>
@@ -2339,7 +2339,7 @@ const ScenarioPage = (props) => {
                       {visible ? (
                       <div className="freqSection">
                         <div className="title">
-                          <span>Set Frequency</span>
+                          {/* <span>Set Frequency</span> */}
                           <CloseOutlined
                             className="right-icon"
                             onClick={() => setVisible(false)}
@@ -2487,7 +2487,7 @@ const ScenarioPage = (props) => {
                               <Panel header={panelHeader()} key="1" forceRender={false} >
                                 <div className="chart-container">
                                   <div className="label">
-                                    <span>Click on each metrics to filter</span>
+                                    <span>Click on each metric to filter</span>
                                   </div>
                                   <ReactECharts
                                     option={amendmentRateoption}
@@ -2496,7 +2496,7 @@ const ScenarioPage = (props) => {
                                 </div>
                                 <div className="chart-container  box">
                                   <div className="label">
-                                    <span>Click on each metrics to filter</span>
+                                    <span>Click on each metric to filter</span>
                                   </div>
                                   <ReactECharts
                                     option={screenFailureOption}
@@ -2597,7 +2597,7 @@ const ScenarioPage = (props) => {
                       <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
                         <Col span={16}>
                           <div className="item-option">
-                            <span className="tip">Select / Unselect criteria to add to Trial</span>
+                            <span className="tip">Select criteria to add to Trial</span>
                           </div>
                         </Col>
                         <Col span={8} style={{textAlign:'right'}}>
@@ -2620,7 +2620,7 @@ const ScenarioPage = (props) => {
                       {excluVisible ? (
                       <div className="freqSection">
                         <div className="title">
-                          <span>Set Frequency</span>
+                          {/* <span>Set Frequency</span> */}
                           <CloseOutlined
                             className="right-icon"
                             onClick={() => setExcluVisible(false)}
@@ -2770,7 +2770,7 @@ const ScenarioPage = (props) => {
                               <Panel header={panelHeader()} key="1" forceRender={false} >
                                 <div className="chart-container">
                                   <div className="label">
-                                    <span>Click on each metrics to filter</span>
+                                    <span>Click on each metric to filter</span>
                                   </div>
                                   <ReactECharts
                                     option={excluAmendmentRateoption}
@@ -2779,7 +2779,7 @@ const ScenarioPage = (props) => {
                                 </div>
                                 <div className="chart-container  box">
                                   <div className="label">
-                                    <span>Click on each metrics to filter</span>
+                                    <span>Click on each metric to filter</span>
                                   </div>
                                   <ReactECharts
                                     option={excluScreenFailureOption}

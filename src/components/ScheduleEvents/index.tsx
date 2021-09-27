@@ -1050,7 +1050,7 @@ const ScheduleEvents = (props) => {
                     <Col span={12}>
                       <ReactECharts option={costOption} style={{ height: 175}}/>
                       <div style={{paddingLeft: '50%', fontSize: '14px', color: '#999'}}>
-                        <span>Click on each metrics to filter</span>
+                        <span>Click on each metric to filter</span>
                       </div>
                     </Col>
                     <Col span={12}>
