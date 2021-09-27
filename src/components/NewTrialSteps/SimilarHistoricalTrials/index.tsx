@@ -193,7 +193,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
 
   onFindTrials = (datasource) => {
     let tempIndication = this.state.indication.length > 0 ? [...this.state.indication] : []
-    if(tempIndication.indexOf('Type2 Diabetes') > -1){
+    if(tempIndication.indexOf('Type 2 Diabetes') > -1){
       tempIndication.push('Diabetes Mellitus Type 2')
     }
     const filteredData = datasource.filter((d) => {

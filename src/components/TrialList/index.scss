@@ -45,7 +45,7 @@
     div {
       flex: 1;
       padding-right: 8px;
-      padding-left: 0;
+      padding-left: 2px;
       color: #333333;
       font-size: 14px;
       align-self: center;
@@ -93,6 +93,7 @@
     div {
       flex: 1;
       padding-right: 8px;
+      padding-left: 2px;
       &:last-child{
         max-width: 120px;
         text-align: right;
