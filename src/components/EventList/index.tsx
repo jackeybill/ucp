@@ -1,8 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { Button, Collapse, Select, Input, message, } from "antd";
+import React, { useState, useEffect,useReducer } from "react";
+import { Button, Collapse, Select, Input, Popconfirm, Radio,Space,message, Tooltip} from "antd";
 import { withRouter } from 'react-router';
-import { CheckCircleFilled, CheckCircleTwoTone,CaretUpOutlined,CaretDownOutlined,MinusCircleOutlined} from "@ant-design/icons";
+import { 
+  CheckCircleFilled, 
+  CheckCircleTwoTone,
+  CaretUpOutlined,
+  CaretDownOutlined,
+  MinusCircleOutlined,
+  PlusCircleOutlined,
+  CloseCircleOutlined
+} from "@ant-design/icons";
 import "./index.scss";
+import telehealth_icon from '../../assets/fax.svg';
+import patient_at_home_icon from '../../assets/home.svg';
+import hospital_icon from '../../assets/hospital.svg';
+import mobile_health_icon from '../../assets/mobile.svg';
+import pharmacy_icon from '../../assets/medical.svg';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -13,8 +26,6 @@ const PROCEDURES = 'Procedures';
 const QUESTIONNAIRES = 'Questionnaires';
 const STUDY_PROCEDURES = 'Study Procedures';
 
-
-
 const endpoints_map = [
   "Change in weight from baseline",
   "Change in FPG from baseline",
@@ -22,8 +33,42 @@ const endpoints_map = [
   "Total number of weekly insulin injections to achieve glycemic",
 ];
 
+const modality_options =[
+  {
+    key:"patient_at_home",
+    name: "Patient at home",
+    icon: patient_at_home_icon
+  },
+  {
+    key:"telehealth",
+    name: "Telehealth",
+    icon: telehealth_icon
+  },
+  {
+    key:"mobile_health",
+    name: "Mobile health",
+    icon: mobile_health_icon
+  },
+  {
+    key:"pharmacy",
+    name: "Pharmacy",
+    icon: pharmacy_icon
+  },
+  {
+    key:"hospital",
+    name:  "Hospital",
+    icon:hospital_icon
+  }
+]
+
+
+// const ModalityListIF{
+
+// }
+
 
 const EventList = (props) => {
+  console.log("====props====", props)
   const { visitNumber, weekNumber } = props.numbers;
   const viewOnly = props.viewOnly ||false;
   const [sort,setSort] = useState("")
@@ -35,6 +80,16 @@ const EventList = (props) => {
   let [procedures, setProcedures] = useState(props.procedures||[])
   let [questionnaire, setQuestionnaire] = useState(props.questionnaire||[])
   let [studyProcedures, setStudyProcedures] = useState(props.studyProcedures||[])
+  const [currentModality, setCurrentModality] = useState('')
+  
+  const [rowModality, setRowModality] =  useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    {}
+  );
+  const [columnModality, setColumnModality] =  useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    {}
+  );
 
   useEffect( ()=>{
     const expandKeysTmp = expandKeys.slice(0)
@@ -71,10 +126,10 @@ const EventList = (props) => {
           condition.push({
             visits: e,
             weeks:weeks[idx],
-            checked:false,
+            modality:""
           });
         });
-        const totalVisit = condition.filter(e=>e.checked).length
+        const totalVisit = condition.filter(e=>e.modality && e.modality!=="").length
         ele.condition = condition;
         ele.totalVisit = totalVisit;
       }
@@ -105,10 +160,11 @@ const EventList = (props) => {
           condition.push({
             visits: e,
             weeks:weeks[e-1],
-            checked: ele.condition.length >= e ? ele.condition[e-1].checked : false,
+            // checked: ele.condition.length >= e ? ele.condition[e-1].checked : false,
+            modality: ele.condition.length >= e ? ele.condition[e-1].modality : '',
           });
         }
-        const totalVisit = condition.filter(e=>e.checked).length
+        const totalVisit = condition.filter(e=>e.modality&&e.modality!=="").length
         ele.condition = condition;
         ele.totalVisit = totalVisit;
     });
@@ -146,7 +202,8 @@ const EventList = (props) => {
       initCodition.push({
           visits: e,
           weeks: weeks[idx],
-          checked: false,
+          modality:""
+
         });
       });
       return initCodition
@@ -256,6 +313,73 @@ const EventList = (props) => {
     props.handleEventChange()
   };
 
+  const updateAllCategories = (condition, Categories,evt, tmpCon) =>{
+
+    const totalVisitTmp = condition.filter(c => c.modality && c.modality!=="").length
+    switch (Categories) {
+      case LABS:     
+        const tmpLabs = labs.slice(0);
+        const targetLab = tmpLabs.find(
+          (ele) => ele["Standard Event"] == evt["Standard Event"]
+        )
+        targetLab.condition = tmpCon;
+        targetLab.totalVisit = totalVisitTmp
+        setLabs(tmpLabs);
+        break;
+      
+      case PHYSICAL_EXAMINATION:       
+        const tmpExamination = examination.slice(0);
+        const targetEaxm = tmpExamination.find(
+          (ele) => ele["Standard Event"] == evt["Standard Event"]
+        )
+        targetEaxm.condition = tmpCon;
+        targetEaxm.totalVisit = totalVisitTmp
+        setExamination(tmpExamination);
+        break;
+      
+      case PROCEDURES:       
+        const tmpProcedures= procedures.slice(0);
+        const targetProcedure = tmpProcedures.find(
+          (ele) => ele["Standard Event"] == evt["Standard Event"]
+        )
+        targetProcedure.condition = tmpCon;
+        targetProcedure.totalVisit = totalVisitTmp
+        setProcedures(tmpProcedures);
+        break;
+      
+       case QUESTIONNAIRES:       
+        const tmpQuestionnaire= questionnaire.slice(0);
+        const targetQuestionnaire = tmpQuestionnaire.find(
+          (ele) => ele["Standard Event"] == evt["Standard Event"]
+        )
+        targetQuestionnaire.condition = tmpCon;
+        targetQuestionnaire.totalVisit = totalVisitTmp
+        setQuestionnaire(tmpQuestionnaire);
+        break;
+      
+       case STUDY_PROCEDURES:       
+        const tmpStudyProcedures= studyProcedures.slice(0);
+        const targetStudyProcedure=tmpStudyProcedures.find(
+          (ele) => ele["Standard Event"] == evt["Standard Event"]
+        )
+        targetStudyProcedure.condition = tmpCon;
+        targetStudyProcedure.totalVisit = totalVisitTmp
+        setStudyProcedures(tmpStudyProcedures);
+        break; 
+      default:
+    }
+
+  }
+
+  const onModalityChange = (e,evt, idx) => {
+    const { Categories, condition } = evt;
+    let tmpCon = condition.slice(0);
+    setCurrentModality(e.target.value) 
+    tmpCon[idx].modality = e.target.value
+    updateAllCategories(condition, Categories,evt, tmpCon)
+    props.handleEventChange()
+  };
+
   const renderVisit = () => {
     let visits = [];
     for (var i = 1; i <= visitNumber; i++) {
@@ -323,7 +447,6 @@ const EventList = (props) => {
   const onWeekChange = (e,idx) => {
     const tmpWeeks = weeks.slice(0)
     tmpWeeks[idx] = Number(e.target.value)
-
     setWeeks(tmpWeeks)
     props.handleEventChange(tmpWeeks)
   }
@@ -542,7 +665,203 @@ const EventList = (props) => {
   function callback(key) {
     setExpandKeys(key)
   }
+
+  const onColumnModalityChange =(e,idx)=>{
+    setColumnModality({ [idx]: e.target.value})
+  }
+
+  const updateColumnModality = (tmpCategories, columnId, isOptimized=false, optimizedModality="") =>{
+    tmpCategories.forEach( e=>{
+      const condition= e.condition
+      if(isOptimized){
+        condition[columnId].modality=optimizedModality
+      }
+      if(!isOptimized && Boolean(condition[columnId].modality)) condition[columnId].modality=columnModality[columnId]    
+    })
+    return tmpCategories
+  }
+
+  const onApplyToColumn=(idx)=>{
+    let tmpLabs = labs.slice(0);  
+    tmpLabs = updateColumnModality( tmpLabs,idx)
+    setLabs(tmpLabs)
   
+    let tmpExamination = examination.slice(0); 
+    tmpExamination =updateColumnModality(tmpExamination,idx)
+    setExamination(tmpExamination)      
+    
+  
+    let tmpProcedures = procedures.slice(0);
+    tmpProcedures =updateColumnModality(tmpProcedures,idx)
+    setProcedures(tmpProcedures )       
+      
+    let tmpQuestionnaire = questionnaire.slice(0);  
+    tmpQuestionnaire =updateColumnModality(tmpQuestionnaire,idx)
+    setQuestionnaire(tmpQuestionnaire)    
+  
+    let tmpStudyProcedures = studyProcedures.slice(0); 
+    tmpStudyProcedures =updateColumnModality(tmpStudyProcedures,idx)
+    setStudyProcedures(tmpStudyProcedures)    
+    props.handleEventChange()
+    
+  }
+
+  const onOptimize=(idx)=>{
+    // select the fewest number of differing modalities across the visit.
+    const modalityCollection={}
+    const modalitySummary={}
+    const columnConditionCollection = []
+    labs.forEach( ele=>{
+      columnConditionCollection.push( ele.condition[idx])
+    }) 
+    examination.forEach( ele=>{
+      columnConditionCollection.push( ele.condition[idx])
+    })
+    procedures.forEach( ele=>{
+      columnConditionCollection.push( ele.condition[idx])
+    })
+    questionnaire.forEach( ele=>{
+      columnConditionCollection.push( ele.condition[idx])
+    })
+    studyProcedures.forEach( ele=>{
+      columnConditionCollection.push( ele.condition[idx])
+    })
+
+    columnConditionCollection.filter(element=>element.modality&&element.modality!=="")
+    .forEach( element=>{
+    if( Object.keys(modalityCollection).indexOf(element.modality)<0 ){
+      modalityCollection[element.modality]=[element]
+    }else{
+      modalityCollection[element.modality].push(element)
+    }
+        
+    modality_options.forEach( option=>{
+      if(Object.keys(modalityCollection).indexOf(option.name)==-1){
+        modalitySummary[option.name]=0
+      }else{
+        modalitySummary[option.name]=modalityCollection[option.name].length
+      }
+    })
+    //find the modality with fewest number
+    const ascModality = Object.keys(modalitySummary)
+    ascModality.sort( (a,b)=>{
+      return modalitySummary[a] - modalitySummary[b]
+    })
+    
+    const modalityWithFewestNumber = ascModality[0]  
+    // fill the blank
+    let tmpLabs = labs.slice(0);  
+    tmpLabs=updateColumnModality(tmpLabs,idx,true,modalityWithFewestNumber)
+    setLabs(tmpLabs)
+
+    let tmpExamination = examination.slice(0); 
+    tmpExamination =updateColumnModality(tmpExamination,idx,true,modalityWithFewestNumber)
+    setExamination(tmpExamination)      
+    
+    let tmpProcedures = procedures.slice(0);
+    tmpProcedures =updateColumnModality(tmpProcedures,idx,true,modalityWithFewestNumber)
+    setProcedures(tmpProcedures )       
+      
+    let tmpQuestionnaire = questionnaire.slice(0);  
+    tmpQuestionnaire =updateColumnModality(tmpQuestionnaire,idx,true,modalityWithFewestNumber)
+    setQuestionnaire(tmpQuestionnaire)    
+  
+    let tmpStudyProcedures = studyProcedures.slice(0); 
+    tmpStudyProcedures =updateColumnModality(tmpStudyProcedures,idx,true,modalityWithFewestNumber)
+    setStudyProcedures(tmpStudyProcedures) 
+  })
+  }
+  
+  const onRowModalityChange =(e,evt)=>{
+    setRowModality({ [evt["Standard Event"]]: e.target.value})
+  }
+  const onApplyToRow = (evt,fillAll=false) =>{
+    const { Categories, condition } = evt;
+    let tmpCon = condition.slice(0);
+    tmpCon.forEach(element => {
+      if(fillAll){    
+        element.modality= rowModality[evt["Standard Event"]]
+      }else{
+        element.modality= Boolean(element.modality)?rowModality[evt["Standard Event"]]:''
+      }      
+    });
+    updateAllCategories(condition, Categories,evt, tmpCon)
+    props.handleEventChange()
+  }
+
+  const insertCondition=(category,idx)=>{
+    category.forEach(cat=>{
+      cat.condition.splice(idx+1,0,{visits:idx+2, weeks:'', modality:''})
+      cat.condition.map( (c,i)=>c.visits=i+1)
+    })
+  }
+  
+  const insertColumn=((idx)=>{
+    // update visits
+    const temp = visits.slice(0)
+    temp.push(visits.length+1)
+    setVisits(temp)
+    // update weeks
+    const newWeeks = weeks.slice(0)
+    newWeeks.splice(idx+1,0,'')
+    setWeeks(newWeeks)
+    // props.updateEditNumbers({
+    //   visitNumber: temp.length+1, 
+    //   weekNumber: newWeeks.length+1
+    // })
+    // update all conditions
+    insertCondition(labs,idx)
+    insertCondition(examination,idx)
+    insertCondition(procedures,idx)
+    insertCondition(questionnaire,idx)
+    insertCondition(studyProcedures,idx)
+  })
+  
+  
+
+  const ModalityList = (props) =>{
+  const {category,evt,idx,value,rowModality,columnModality,event} = props
+    return(
+      <div className="modality-list-container">
+        <CloseCircleOutlined />
+        <Radio.Group 
+        onChange={props.isRowBatch?(e)=>onRowModalityChange(e,evt): props.isColumnBatch?(e)=>onColumnModalityChange(e,idx): (e)=>onModalityChange(e,evt,idx)} 
+        value={props.isRowBatch?rowModality[evt['Standard Event']]: props.isColumnBatch?  (columnModality[idx]?columnModality[idx]:"") :value}        
+        >
+        <Space direction="vertical">  
+        {modality_options.map( (m,idx)=>{
+          return(
+            <div className="modality-item" key={idx}>
+              <Radio value={m.name}> <img src={m.icon} alt=""/> {m.name}</Radio>
+            </div>
+          )
+        })}
+        </Space>
+      </Radio.Group>  
+      {
+        props.isColumnBatch&&(
+          <div className="action-group">  
+            <div className="whole action" onClick={()=>onApplyToColumn(idx)}>Apply to this column</div>  
+            <div className="batch action" onClick={()=>onOptimize(idx)}>Optimize to Align</div>
+            <div className="insert-column action" onClick={()=>insertColumn(idx)}>Add Visit After</div> 
+          </div>
+        )
+      }    
+      {
+        props.isRowBatch && (
+        <div className="action-group">  
+          <div className="whole action" onClick={()=>onApplyToRow(evt)}>Apply to this Row</div>  
+          <div className="batch action" onClick={()=>onApplyToRow(evt,true)}>Fill Row with Selection</div>
+        </div>
+        )
+      }
+      </div>
+    )
+  }
+  function cancel(e) {
+    console.log(e);
+    message.error('Click on No');
+  }
   return (
     <div className="event-list-container">
       <div className="container-top">
@@ -563,7 +882,11 @@ const EventList = (props) => {
               <div className="colunm-row e-row"></div>
               <div className="visit-row e-row number">
                 <div className="colunm td">Visits</div>
-                {renderVisit()}
+                {
+                  visits.map((v)=>{
+                    return <div className="td" key={v}>{v}</div>
+                  })
+                }
               </div>
             </div>
 
@@ -579,14 +902,47 @@ const EventList = (props) => {
                 </div>
                 <div className="f-1-small">Total Visits</div>
               </div>
-              <div className="week-row e-row number">
-                <div className="colunm td ">Weeks</div>
+              <div className="head-bottom-container">
+              <div className="e-row number">
+                <div className="colunm td row-title ">Weeks</div>
+                <div className="week-row-wrapper">
+                <div className="weeks-container">              
+                  {
+                    weeks.map((week, idx) => {
+                      return viewOnly?<span className="td" key={`week_span_${idx}`}>{week}</span>: <Input className="td" key={`week_${idx}`} value={week} onChange={(e)=>onWeekChange(e,idx)} />                  
+                    })
+                  }               
+                </div>      
+                <div className="column-action-container">              
                 {
-                  weeks.map((week, idx) => {
-                    return viewOnly?<span className="td" key={`week_span_${idx}`}>{week}</span>: <Input className="td" key={`week_${idx}`} value={week} onChange={(e)=>onWeekChange(e,idx)} />                  
+                  visits.map( (visit,idx)=>{
+                    return(
+                      <div className="td" key={idx}>
+                        <Tooltip                        
+                          title={
+                            <ModalityList 
+                            // evt={visit} 
+                            idx={idx} 
+                            // value="" 
+                            // category={PHYSICAL_EXAMINATION} 
+                            isColumnBatch={true} 
+                            // event={examination} 
+                            columnModality={columnModality} 
+                            insertColumn={insertColumn}
+                            />
+                        }
+                      color="#ffffff"                    
+                      >
+                      <PlusCircleOutlined /> 
+                      </Tooltip> 
+                      </div>                 
+                    )
                   })
-                }
+                }                    
+              </div>  
+              </div>          
               </div>
+              </div>          
             </div>
           </div>
         </div>
@@ -650,8 +1006,17 @@ const EventList = (props) => {
                       <div className="visits-td td f-1-small">{evt.totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
-                      <div className="colunm td"></div>
-                      {evt.condition.length > 0 &&
+                      <div className="colunm td">
+                      <Tooltip  
+                        title={<ModalityList evt={evt}   category={LABS} isRowBatch={true} rowModality={rowModality}/>}
+                        color="#ffffff"  
+                        // visible={true}                        
+                        >
+                         <PlusCircleOutlined /> 
+                        </Tooltip> 
+
+                      </div>
+                      {/* {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
                           return (
                             <div className="td" key={`labs_event_${idx}`}>
@@ -667,7 +1032,28 @@ const EventList = (props) => {
                               </span>
                             </div>
                           );
-                        })}
+                        })} */}
+                        {evt.condition.length > 0 &&
+                          evt.condition.map((con, idx) => {
+                            const targetItem =modality_options.find(m=>m.name==con.modality)   
+                            return (
+                              <div className="td" key={`labs_event_${idx}`}>
+                                <span
+                                  className={`${viewOnly?'viewOnly':''} incon-wrapper`}
+                                  // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                >
+                                   <Tooltip  
+                                  title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}
+                                  // trigger="click"
+                                  color="#ffffff"
+                                  // visible={}                                
+                                  >
+                                 {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                 </Tooltip>  
+                                </span>
+                              </div>
+                            );
+                          })}                        
                     </div>
                   </div>
                 );
@@ -683,10 +1069,10 @@ const EventList = (props) => {
                   </div>
                   <div className="cost">
                     $ {getTotalCost(examination)}
-                    </div>
-                  <div></div>
+                  </div> 
+                  <div></div>           
                 </div>
-                <div></div>
+                <div className="event-title action-row"></div>
               </div>
             }
             key="2"
@@ -733,8 +1119,17 @@ const EventList = (props) => {
                       <div className="visits-td td f-1-small">{evt.totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
-                      <div className="colunm td"></div>
-                      {evt.condition.length > 0 &&
+                      <div className="colunm td">
+                      <Tooltip  
+                        title={<ModalityList evt={evt}  category={PHYSICAL_EXAMINATION} isRowBatch={true} rowModality={rowModality}/>}
+                        color="#ffffff"  
+                        // visible={true}                        
+                        >
+                         <PlusCircleOutlined /> 
+                        </Tooltip> 
+
+                      </div>
+                      {/* {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
                           return (
                             <div className="td" key={`exam_event_${idx}`}>
@@ -747,6 +1142,27 @@ const EventList = (props) => {
                                 ) : (
                                   <CheckCircleTwoTone twoToneColor="#ddd" />
                                 )}
+                              </span>
+                            </div>
+                          );
+                        })} */}
+                        {evt.condition.length > 0 &&
+                          evt.condition.map((con, idx) => {
+                          const targetItem =modality_options.find(m=>m.name==con.modality)                        
+                          return (
+                            <div className="td" key={`exam_event_${idx}`}>
+                              <span
+                                className="incon-wrapper"
+                                // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                              >
+                                <Tooltip  
+                                  title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}
+                                  // trigger="click"
+                                  color="#ffffff"
+                                  // visible={}                                
+                                  >
+                                 {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                 </Tooltip>                                                                                     
                               </span>
                             </div>
                           );
@@ -817,20 +1233,32 @@ const EventList = (props) => {
                       <div className="visits-td td f-1-small">{evt.totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
-                      <div className="colunm td"></div>
+                      <div className="colunm td">
+                      <Tooltip  
+                        title={<ModalityList evt={evt}   category={PROCEDURES} isRowBatch={true} rowModality={rowModality}/>}
+                        color="#ffffff"  
+                        // visible={true}                        
+                        >
+                         <PlusCircleOutlined /> 
+                        </Tooltip> 
+                      </div>
                       {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
+                          const targetItem =modality_options.find(m=>m.name==con.modality)                        
                           return (
                             <div className="td" key={`procedure_event_${idx}`}>
                               <span
                                 className="incon-wrapper"
-                                onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
                               >
-                                {con.checked ? (
-                                  <CheckCircleFilled />
-                                ) : (
-                                  <CheckCircleTwoTone twoToneColor="#ddd" />
-                                )}
+                                <Tooltip  
+                                  title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}
+                                  // trigger="click"
+                                  color="#ffffff"
+                                  // visible={}                                
+                                  >
+                                 {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                 </Tooltip> 
                               </span>
                             </div>
                           );
@@ -901,20 +1329,29 @@ const EventList = (props) => {
                       <div className="visits-td td f-1-small">{evt.totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
-                      <div className="colunm td"></div>
+                      <div className="colunm td">
+                      <Tooltip  
+                        title={<ModalityList evt={evt}  category={QUESTIONNAIRES} isRowBatch={true} rowModality={rowModality}/>}
+                        color="#ffffff"                       
+                        >
+                         <PlusCircleOutlined /> 
+                        </Tooltip> 
+                      </div>
                       {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
+                          const targetItem =modality_options.find(m=>m.name==con.modality)                        
                           return (
                             <div className="td" key={`question_event_${idx}`}>
                               <span
                                 className="incon-wrapper"
-                                onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
                               >
-                                {con.checked ? (
-                                  <CheckCircleFilled />
-                                ) : (
-                                  <CheckCircleTwoTone twoToneColor="#ddd" />
-                                )}
+                                 <Tooltip  
+                                  title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}                            
+                                  color="#ffffff"                                               
+                                  >
+                                 {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                 </Tooltip> 
                               </span>
                             </div>
                           );
@@ -985,20 +1422,29 @@ const EventList = (props) => {
                       <div className="visits-td td f-1-small">{evt.totalVisit}</div>
                     </div>
                     <div className="status-row e-row">
-                      <div className="colunm td"></div>
+                      <div className="colunm td">
+                      <Tooltip  
+                        title={<ModalityList evt={evt}  category={STUDY_PROCEDURES} isRowBatch={true} rowModality={rowModality}/>}
+                        color="#ffffff"                         
+                        >
+                         <PlusCircleOutlined /> 
+                        </Tooltip> 
+                      </div>
                       {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
+                          const targetItem =modality_options.find(m=>m.name==con.modality)                        
                           return (
                             <div className="td" key={`study_event_${idx}`}>
                               <span
                                 className="incon-wrapper"
                                 onClick={!viewOnly?() => toggleChecked(evt, idx):null}
                               >
-                                {con.checked ? (
-                                  <CheckCircleFilled />
-                                ) : (
-                                  <CheckCircleTwoTone twoToneColor="#ddd" />
-                                )}
+                                <Tooltip  
+                                  title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}                          
+                                  color="#ffffff"                                           
+                                  >
+                                 {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                 </Tooltip> 
                               </span>
                             </div>
                           );

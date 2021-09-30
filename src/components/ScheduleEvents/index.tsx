@@ -1069,6 +1069,7 @@ const ScheduleEvents = (props) => {
                       saveEvents={saveEvents}
                       handleEventChange={handleEventChange}
                       numbers={editNumbers}
+                      updateEditNumbers={setEditNumbers}
                       labs={addedLabs}
                       examination={addedExamination}
                       procedures={addedProcedures}

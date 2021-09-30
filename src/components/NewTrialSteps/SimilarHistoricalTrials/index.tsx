@@ -193,6 +193,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
 
   onFindTrials = (datasource) => {
     let tempIndication = this.state.indication.length > 0 ? [...this.state.indication] : []
+    //combine Type 2 Diabetes and Diabetes Mellitus Type 2, only show Type 2 Diabetes in UI
     if(tempIndication.indexOf('Type 2 Diabetes') > -1){
       tempIndication.push('Diabetes Mellitus Type 2')
     }
