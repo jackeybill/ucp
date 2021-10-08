@@ -6,6 +6,7 @@ import ReactECharts from 'echarts-for-react';
 import "./index.scss";
 import EventList from '../EventList';
 import FileSaver from 'file-saver';
+import {modality_options} from '../EventList'
 
 const { Panel } = Collapse;
 
@@ -32,7 +33,7 @@ const defaultCostValue = [
 const defaultBurdenValue = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 const initialNumber = {
-  visitNumber: 9,
+  visitNumber: 8,
   weekNumber: 26
 }
 
@@ -59,17 +60,24 @@ const visitDimensionalScore = [
 ]
 
 const ScheduleEvents = (props) => {
-
+  const scenario = props.record.scenarios.find(s=> s['scenario_id'] === props.scenarioId)
+  const eventsConfigure = scenario['Schedule of Events']
   const [hiddeTags, setHiddeTags] = useState(true)
   const [showConfigure, setShowConfigure] = useState(false)
   const [eventLib, setEventLib] = useState(6)
   const [activeCollapse, setActiveCollapse] = useState(['1'])
   const [numbers, setNumbers] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    { ...initialNumber }
+    { visitNumber: eventsConfigure?.Visits || 9,
+      weekNumber: eventsConfigure.Weeks?eventsConfigure.Weeks[eventsConfigure.Weeks?.length-1]: 26
+     }
   );
-  const [editNumbers, setEditNumbers] = useState({visitNumber: 9, weekNumber: 26});
+  const [editNumbers, setEditNumbers] = useState({
+    visitNumber: eventsConfigure?.Visits || 9,
+    weekNumber:eventsConfigure.Weeks?eventsConfigure.Weeks[eventsConfigure.Weeks?.length-1]: 26
+  });
   const [weeks, setWeeks] = useState([1,4,7,10,13,16,19,22,26])
+  const [visits, setVisits] = useState([])
   const [minV, setMinV] = useState(80)
   const [maxV, setMaxV] = useState(100)
   const [visibleSlider, setVisibleSlider] = useState(false)
@@ -93,6 +101,49 @@ const ScheduleEvents = (props) => {
   const [burdenXAxis, setBurdenXAxis] = useState(['1', '2', '3', '4', '5', '6', '7', '8', '9'])
   const [showTooltip, setShowTooltip] = useState(false)
   const [submitType, setSubmitType] = useState(0)
+
+  //Activities by Modality chart
+  const[modalityChartData,setModalityChartData] = useState([])
+  // const[modalityOption,setModalityOption] = useState(initModalityOption )
+  const modalityOption = {
+    title:{
+      text: 'Activities by Modality',
+      x:'center',
+      y:'top',
+      show:true,
+      textStyle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333'
+      },
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        // Use axis to trigger tooltip
+        type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+      }
+    },
+    grid: {
+      left: '10%',
+      right: '4%',
+      top: '15%',
+      bottom: '6%',
+      containLabel: true
+  },
+    xAxis: {
+      name: 'Visit Number',
+      nameLocation: "middle", 
+      type: 'category',
+      data: visits
+   },
+   yAxis: {
+      type: 'value'
+   },
+    series:modalityChartData
+
+  };
+ 
 
   //Event Libs
   //Original data from backend
@@ -138,6 +189,45 @@ const ScheduleEvents = (props) => {
     }
   },[props.submitType]);
 
+  useEffect(()=>{
+    if(eventsConfigure.Visits && eventsConfigure.Weeks){
+      setNumbers({
+        visitNumber:eventsConfigure.Visits,
+        weekNumber:eventsConfigure.Weeks[eventsConfigure.Weeks.length-1]
+      })
+      setEditNumbers({
+        visitNumber:eventsConfigure.Visits,
+        weekNumber:eventsConfigure.Weeks[eventsConfigure.Weeks.length-1]
+      })
+      const tmpSoAConfig = {
+        [CATEGORY_LABS]:eventsConfigure[CATEGORY_LABS].entities,
+        [CATEGORY_PHYSICAL_EXAMINATION]:eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities,
+        [CATEGORY_PROCEDURES]:eventsConfigure[CATEGORY_PROCEDURES].entities,
+        [CATEGORY_QUESTIONNAIRES]:eventsConfigure[CATEGORY_QUESTIONNAIRES].entities,
+        [CATEGORY_STUDY_PROCEDURES]:eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities
+      }
+      // setModalityChartData(getModalitySeriesData(tmpSoAConfig))
+
+    }
+   
+    // getModalitySeriesData(tmpSoAConfig)
+
+  },[eventsConfigure.Visits,eventsConfigure.Weeks])
+  // useEffect(()=>{
+  //    //init Activities by Modality chart data
+  //    const tmpSoAConfig = {
+  //     [CATEGORY_LABS]:eventsConfigure[CATEGORY_LABS].entities,
+  //     [CATEGORY_PHYSICAL_EXAMINATION]:eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities,
+  //     [CATEGORY_PROCEDURES]:eventsConfigure[CATEGORY_PROCEDURES].entities,
+  //     [CATEGORY_QUESTIONNAIRES]:eventsConfigure[CATEGORY_QUESTIONNAIRES].entities,
+  //     [CATEGORY_STUDY_PROCEDURES]:eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities
+  //   }
+  //   getModalitySeriesData(tmpSoAConfig)
+
+  // },[eventsConfigure])
+
+
+
   useEffect(() => {
     //Verify if this is the first time to set Events
     const scenario = props.record.scenarios.find(s=> s['scenario_id'] === props.scenarioId)
@@ -155,13 +245,12 @@ const ScheduleEvents = (props) => {
 
       if (resp.statusCode == 200) {
           const response = JSON.parse(resp.body)
-          console.log(response)
+          console.log('getStandardEventsLib-----',response)
           setOrgLabs(response[CATEGORY_LABS])
           setOrgExamination(response[CATEGORY_PHYSICAL_EXAMINATION])
           setOrgProcedures(response[CATEGORY_PROCEDURES])
           setOrgQuestionnaires(response[CATEGORY_QUESTIONNAIRES])
           setOrgStudyProcedures(response[CATEGORY_STUDY_PROCEDURES])
-
           //Init previous configure
           if(eventsConfigure != undefined && eventsConfigure.Labs != undefined){
             setNumbers({
@@ -183,6 +272,17 @@ const ScheduleEvents = (props) => {
             setCostData(eventsConfigure.CostData)
             setBurdenData(eventsConfigure.BurdenData)
             setBurdenXAxis(eventsConfigure.BurdenXAxis)
+            //init Activities by Modality chart data
+           
+            const tmpSoAConfig = {
+              [CATEGORY_LABS]:eventsConfigure[CATEGORY_LABS].entities,
+              [CATEGORY_PHYSICAL_EXAMINATION]:eventsConfigure[CATEGORY_PHYSICAL_EXAMINATION].entities,
+              [CATEGORY_PROCEDURES]:eventsConfigure[CATEGORY_PROCEDURES].entities,
+              [CATEGORY_QUESTIONNAIRES]:eventsConfigure[CATEGORY_QUESTIONNAIRES].entities,
+              [CATEGORY_STUDY_PROCEDURES]:eventsConfigure[CATEGORY_STUDY_PROCEDURES].entities
+            }          
+            getModalitySeriesData(tmpSoAConfig)
+            
             if(eventsConfigure.CostRate.length > 0){
               setShowTooltip(true)
               setShowPatientLabel(true)
@@ -248,19 +348,37 @@ const ScheduleEvents = (props) => {
     );
   };
 
+  useEffect(()=>{
+
+    const getVisits = () =>{
+      let visitArr = [];
+      for (let i = 0; i <= editNumbers.visitNumber-1; i++) {
+        visitArr.push(i+1)
+      }
+     return visitArr
+    }
+    const visitArr = getVisits()
+
+    setVisits(visitArr)
+  },[editNumbers,numbers])
+
+ 
+
   const burdenOption = {
     title : {
       text: 'Patient Burden',
       subtext: burdenSubTitle,
-      x:'left',
-      y:'center',
+      x:'center',
+      y:'25%',
+      left:'center',
+      top:'top',
       textStyle: {
         fontSize: 16,
         fontWeight: 'bold',
         color: '#333'
       },
       subtextStyle: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'normal',
         color: '#999'
       }
@@ -273,10 +391,10 @@ const ScheduleEvents = (props) => {
       }
     },
     grid: {
-        left: '50%',
+        left: '10%',
         right: '4%',
-        top: '10%',
-        bottom: '5%',
+        top: '30%',
+        bottom: '6%',
         containLabel: true
     },
     legend: {
@@ -329,7 +447,7 @@ const ScheduleEvents = (props) => {
         color: '#333'
       },
       subtextStyle: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'normal',
         color: '#999'
       }
@@ -345,6 +463,13 @@ const ScheduleEvents = (props) => {
       },
       data: [CATEGORY_LABS, CATEGORY_PHYSICAL_EXAMINATION, CATEGORY_PROCEDURES, CATEGORY_QUESTIONNAIRES, CATEGORY_STUDY_PROCEDURES]
     },
+    grid: {
+      left: '10%',
+      right: '4%',
+      top: '10%',
+      bottom: '5%',
+      containLabel: true
+  },
     tooltip: {
       show: showTooltip,
       trigger: 'item',
@@ -410,6 +535,9 @@ const ScheduleEvents = (props) => {
     ]
   };
 
+ 
+
+
   const handleEventChange = (tmpWeeks) =>{
     if(tmpWeeks != undefined && tmpWeeks.length > 0){
       setWeeks(tmpWeeks)
@@ -421,6 +549,96 @@ const ScheduleEvents = (props) => {
     setEventCriteria({
       'Finished' : false
     })
+  }
+
+  const statisticsPerVisit = (categories,idx)=>{
+    //statistics of each column
+    const modalityCollection={}
+    const modalitySummary={}
+    const columnConditionCollection = []
+
+    if(categories[CATEGORY_LABS].length>0){
+      categories[CATEGORY_LABS].forEach( ele=>{
+        columnConditionCollection.push( ele.condition[idx])
+      }) 
+    }
+    if(categories[CATEGORY_PHYSICAL_EXAMINATION].length>0){
+      categories[CATEGORY_PHYSICAL_EXAMINATION].forEach( ele=>{
+        columnConditionCollection.push( ele.condition[idx])
+      })
+
+    }
+    if(categories[CATEGORY_PROCEDURES].length>0){
+      categories[CATEGORY_PROCEDURES].forEach( ele=>{
+        columnConditionCollection.push( ele.condition[idx])
+      })
+      
+    }
+    if(categories[CATEGORY_QUESTIONNAIRES].length>0){
+      categories[CATEGORY_QUESTIONNAIRES].forEach( ele=>{
+        columnConditionCollection.push( ele.condition[idx])
+      })
+    }
+    if(categories[CATEGORY_STUDY_PROCEDURES].length>0){
+      categories[CATEGORY_STUDY_PROCEDURES].forEach( ele=>{
+        columnConditionCollection.push( ele.condition[idx])
+      })
+    }
+    
+    columnConditionCollection.filter(element=>element.modality&&element.modality!=="")
+    .forEach( element=>{
+    if( Object.keys(modalityCollection).indexOf(element.modality)<0 ){
+      modalityCollection[element.modality]=[element]
+    }else{
+      modalityCollection[element.modality].push(element)
+    }})
+        
+    modality_options.forEach( option=>{
+      if(Object.keys(modalityCollection).indexOf(option.name)==-1){
+        modalitySummary[option.name]=0
+      }else{
+        modalitySummary[option.name]=modalityCollection[option.name].length
+      }
+    })
+    return modalitySummary
+  }
+
+  useEffect(()=>{
+    const categories={
+      [CATEGORY_LABS]:addedLabs,
+      [CATEGORY_PHYSICAL_EXAMINATION]:addedExamination,
+      [CATEGORY_PROCEDURES]:addedProcedures,
+      [CATEGORY_QUESTIONNAIRES]:addedQuestionnaires,
+      [CATEGORY_STUDY_PROCEDURES]:addedStudyProcedures,
+    }
+    getModalitySeriesData(categories)
+
+  },[visits,addedLabs,addedExamination,addedProcedures,addedQuestionnaires,addedStudyProcedures])
+
+  const getModalitySeriesData = (categories) =>{
+    const modalitySeries = []
+    
+    const visitStacks=visits.map( (ele,idx)=>{
+      return statisticsPerVisit(categories,idx)
+    })
+    if(visitStacks.filter(v=>v!==undefined).length==0) return
+    modality_options.forEach((element,idx)=>{
+      const data = visitStacks.map( v=>{
+        return v[element.name]
+      })
+      modalitySeries.push({
+        name: element.name,
+        type: 'bar',
+        stack: 'total',
+        emphasis: {
+          focus: 'series'
+        },
+        data,
+        color:element.color
+      })
+    })
+    
+    setModalityChartData(modalitySeries)   
   }
 
   const saveEvents = async (scheduleOfEvents) =>{
@@ -444,7 +662,7 @@ const ScheduleEvents = (props) => {
 
     let burdenMatrixList = []
     let tempBurdenXAxis = []
-    for(var i =0; i< numbers.visitNumber; i ++){
+    for(var i =0; i< scheduleOfEvents.Visits; i ++){
       burdenMatrixList.push([0,0,0,0,0,0,0,0,0,0])
       tempBurdenXAxis.push((i+1)+'')
     }
@@ -454,7 +672,7 @@ const ScheduleEvents = (props) => {
       labeTotalCost += Number(scheduleOfEvents[CATEGORY_LABS].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_LABS].entities[a].totalVisit
       if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length; b ++){
-          if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition[b].checked){
+          if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition[b].modality!==""){
             let tempBurdenMatrix = []
             burdenMatrixList[b].map((item, idx) =>{
               tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_LABS].entities[a].soaWeights[idx])
@@ -470,7 +688,7 @@ const ScheduleEvents = (props) => {
       examinationTotalCost += Number(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].totalVisit
       if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length; b ++){
-          if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition[b].checked){
+          if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition[b].modality!==""){
             let tempBurdenMatrix = []
             burdenMatrixList[b].map((item, idx) =>{
               tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].soaWeights[idx])
@@ -486,7 +704,7 @@ const ScheduleEvents = (props) => {
       proceduresTotalCost += Number(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].totalVisit
       if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length; b ++){
-          if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition[b].checked){
+          if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition[b].modality!==""){
             let tempBurdenMatrix = []
             burdenMatrixList[b].map((item, idx) =>{
               tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].soaWeights[idx])
@@ -502,7 +720,7 @@ const ScheduleEvents = (props) => {
       questionairesTotalCost += Number(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].totalVisit
       if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length; b ++){
-          if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition[b].checked){
+          if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition[b].modality!==""){
             let tempBurdenMatrix = []
             burdenMatrixList[b].map((item, idx) =>{
               tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].soaWeights[idx])
@@ -518,7 +736,7 @@ const ScheduleEvents = (props) => {
       studyTotalCost += Number(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].totalVisit
       if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length > 0){
         for(let b = 0; b < scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length; b ++){
-          if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition[b].checked){
+          if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition[b].modality!==""){
             let tempBurdenMatrix = []
             burdenMatrixList[b].map((item, idx) =>{
               tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].soaWeights[idx])
@@ -588,6 +806,16 @@ const ScheduleEvents = (props) => {
       }
     })
 
+    const categories={
+      [CATEGORY_LABS]:scheduleOfEvents[CATEGORY_LABS].entities,
+      [CATEGORY_PHYSICAL_EXAMINATION]:scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities,
+      [CATEGORY_PROCEDURES]:scheduleOfEvents[CATEGORY_PROCEDURES].entities,
+      [CATEGORY_QUESTIONNAIRES]:scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities,
+      [CATEGORY_STUDY_PROCEDURES]:scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities,
+    }
+    // setModalityChartData(getModalitySeriesData(categories))
+    getModalitySeriesData(categories)
+
     let newTrial = props.record
     newTrial.scenarios = newScenarioList
 
@@ -597,6 +825,7 @@ const ScheduleEvents = (props) => {
       if(submitType != 0){
         props.history.push({pathname: '/trials', state: {trial_id: props.record['_id']}})
       }
+      props.getTrialById()
     }
   }
 
@@ -847,6 +1076,8 @@ const ScheduleEvents = (props) => {
     setFilteredStudyProcedures(filterLibs(orgStudyProcedures, addedStudyProcedures, value[0], value[1]))
   }
 
+   
+
   return (
     <div className="tab-container">
       <div className={`side-toolbar ${eventLib > 0 ? 'hidden' : ''}`} onClick={()=> setEventLib(6)}>
@@ -1047,14 +1278,18 @@ const ScheduleEvents = (props) => {
               <Collapse defaultActiveKey={['1']} onChange={excluCallback} expandIconPosition="right" className="event-chart">
                 <Panel header={panelHeader()} key="1">
                   <Row>
-                    <Col span={12}>
+                    <Col span={8}>
                       <ReactECharts option={costOption} style={{ height: 175}}/>
                       <div style={{paddingLeft: '50%', fontSize: '14px', color: '#999'}}>
                         <span>Click on each metric to filter</span>
                       </div>
                     </Col>
-                    <Col span={12}>
-                      <ReactECharts option={burdenOption} style={{ height: 190}}/>
+                    <Col span={8}>
+
+                      <ReactECharts option={burdenOption} style={{ height: 200}}/>
+                    </Col>
+                    <Col span={8}>
+                      <ReactECharts option={modalityOption} style={{ height: 200}}/>
                     </Col>
                   </Row>
                 </Panel>
@@ -1069,7 +1304,7 @@ const ScheduleEvents = (props) => {
                       saveEvents={saveEvents}
                       handleEventChange={handleEventChange}
                       numbers={editNumbers}
-                      updateEditNumbers={setEditNumbers}
+                      // updateNumbers={setNumbers}
                       labs={addedLabs}
                       examination={addedExamination}
                       procedures={addedProcedures}
@@ -1077,6 +1312,7 @@ const ScheduleEvents = (props) => {
                       studyProcedures={addedStudyProcedures}
                       weeks={weeks}
                       submitType={submitType}
+                      updateWeeks={setWeeks}
                     />
                 </div>
               </Col>

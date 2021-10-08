@@ -40,20 +40,37 @@
           .row-title{
             font-weight: 600;
           }
+          .e-row.number{
+            display: flex;
+            width: 100%;
+            .column.td.row-title{
+              
+            };
+          }
           
         }
         .week-row-wrapper{
+          flex:1;
 
           .weeks-container{
             display: flex;
+            width: 100%;
+            width: 100%;
+            .num-cell{
+              flex:1
+            }
           }
           .column-action-container{
             display: flex;
             .td{
+              
               border-right: 1px solid #eeeeee;
               padding: 5px 0;
               text-align: center;
               background-color: #f5f5f5;
+            }
+            .num-cell{
+              flex:1;
             }
           }
 
@@ -124,10 +141,12 @@
     }
     .e-row.number{
       display: flex;
-      .td {
-        flex:1;
+      .td {    
         text-align: center;
         padding: 0 2px !important;
+      }
+      .num-cell{
+        flex:1;
       }
 
     } 

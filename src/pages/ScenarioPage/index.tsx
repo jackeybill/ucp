@@ -214,7 +214,118 @@ const ScenarioPage = (props) => {
   let [excluLabTestTableData, setExcluLabTestTableData] = useState([])
     //------------------------EXCLUSION CRITERIA CONST END-----------------------------
   
+    const getTrialById = async () => {
+      const resp = await getStudy(props.location.state.trial_id);
+      console.log("getlist",resp);
+      
+      if(resp.statusCode == 200){
+          const tempRecord = JSON.parse(JSON.stringify(resp.body))
+          setTrialRecord(tempRecord)
+          setTrialTitle(tempRecord['trial_title'])
+          if(tempRecord.similarHistoricalTrials !== undefined){
+            setSimilarHistoricalTrials(tempRecord.similarHistoricalTrials)
+          }
+          
+          const tempScenarioId = props.location.state.scenarioId
+          const tempEditFlag = props.location.state.editFlag
+          const tempScenarioType = props.location.state.scenarioType
+          const tempScenario = tempRecord.scenarios.find( i=> i['scenario_id'] == tempScenarioId)
+          setScenarioId(tempScenarioId)
+          setEditFlag(tempEditFlag)
+          setScenarioType(tempScenarioType)
+          setScenario(tempScenario)
 
+          console.log('edit scenario for: ' +  tempScenarioId + ': ' +  tempEditFlag)
+
+          if(tempEditFlag && tempScenario['Inclusion Criteria'].Demographics !== undefined
+            && tempScenario['Inclusion Criteria'].Demographics.Entities !== undefined){
+              demographicsElements = tempScenario['Inclusion Criteria'].Demographics.Entities
+              interventionElements = tempScenario['Inclusion Criteria'].Intervention.Entities
+              medConditionElements = tempScenario['Inclusion Criteria']['Medical Condition'].Entities
+              labTestElements = tempScenario['Inclusion Criteria']['Lab / Test'].Entities
+              
+              excluDemographicsElements = tempScenario['Exclusion Criteria'].Demographics.Entities
+              excluMedConditionElements = tempScenario['Exclusion Criteria']['Medical Condition'].Entities
+              excluInterventionElements = tempScenario['Exclusion Criteria'].Intervention.Entities
+              excluLabTestElements = tempScenario['Exclusion Criteria']['Lab / Test'].Entities
+
+              //Get inclusion chart info
+              var inclu = tempScenario["Inclusion Criteria"]
+              
+              setProtocolRateData([
+                  {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
+                  {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
+                  {value: formatNumber(inclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
+                  {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
+              ])
+              setScreenRateData([
+                  {value: formatNumber(inclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
+                  {value: formatNumber(inclu.Intervention.screen_failure_rate), name: 'Intervention'},
+                  {value: formatNumber(inclu.Demographics.screen_failure_rate), name: 'Demographics'},
+                  {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
+              ])
+      
+              var tempScoreA = ''
+              var tempScoreB = ''
+                  
+                  var score = formatNumber(tempScenario.protocol_amendment_rate)
+                  if(score <= 33){
+                    tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{good|GOOD}'
+                  } else if(score > 33  && score <= 67){
+                    tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{fair|FAIR}'
+                  } else if(score > 67){
+                    tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{poor|POOR}'
+                  }
+
+                  var scoreB = formatNumber(tempScenario.screen_failure_rate)
+                  if(scoreB <= 33){
+                    tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{good|GOOD}'
+                  } else if(scoreB > 33  && scoreB <= 67){
+                    tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{fair|FAIR}'
+                  } else if(scoreB > 67){
+                    tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{poor|POOR}'
+                  }
+
+                  setAmend_avg_rate(tempScoreA)
+                  setScreen_avg_rate(tempScoreB)
+
+              //Get exclusion chart info
+              var exclu = tempScenario["Exclusion Criteria"]
+              
+              setExcluProtocolRateData([
+                  {value: formatNumber(exclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
+                  {value: formatNumber(exclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
+                  {value: formatNumber(exclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
+                  {value: formatNumber(exclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
+              ])
+              setExcluScreenRateData([
+                  {value: formatNumber(exclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
+                  {value: formatNumber(exclu.Intervention.screen_failure_rate), name: 'Intervention'},
+                  {value: formatNumber(exclu.Demographics.screen_failure_rate), name: 'Demographics'},
+                  {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
+              ])
+      
+                  setExcluAmend_avg_rate(tempScoreA)
+                  setExcluScreen_avg_rate(tempScoreB)
+
+              setShowChartLabel(true)
+              setImpactColors(activeChartColors)
+              setExcluImpactColors(activeChartColors)
+          }
+          
+          if(tempRecord['Therapeutic Area Average']){
+            setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
+            setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
+            setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
+            setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
+          }
+          
+          if(tempEditFlag){
+              updateTrial(1)
+              updateTrial(2)
+          }
+      }
+  };
     useEffect(() => {
       let tempData = [];
       for(let i = 0, l = resultdata.length; i < l; i++){
@@ -226,118 +337,7 @@ const ScenarioPage = (props) => {
       if(props.location.state.trial_id == undefined || props.location.state.trial_id == ''){
         props.history.push({pathname: '/trials'})
       } else {
-        const getTrialById = async () => {
-            const resp = await getStudy(props.location.state.trial_id);
-            console.log("getlist",resp);
-            
-            if(resp.statusCode == 200){
-                const tempRecord = resp.body
-                setTrialRecord(tempRecord)
-                setTrialTitle(tempRecord['trial_title'])
-                if(tempRecord.similarHistoricalTrials !== undefined){
-                  setSimilarHistoricalTrials(tempRecord.similarHistoricalTrials)
-                }
-                
-                const tempScenarioId = props.location.state.scenarioId
-                const tempEditFlag = props.location.state.editFlag
-                const tempScenarioType = props.location.state.scenarioType
-                const tempScenario = tempRecord.scenarios.find( i=> i['scenario_id'] == tempScenarioId)
-                setScenarioId(tempScenarioId)
-                setEditFlag(tempEditFlag)
-                setScenarioType(tempScenarioType)
-                setScenario(tempScenario)
-
-                console.log('edit scenario for: ' +  tempScenarioId + ': ' +  tempEditFlag)
-
-                if(tempEditFlag && tempScenario['Inclusion Criteria'].Demographics !== undefined
-                  && tempScenario['Inclusion Criteria'].Demographics.Entities !== undefined){
-                    demographicsElements = tempScenario['Inclusion Criteria'].Demographics.Entities
-                    interventionElements = tempScenario['Inclusion Criteria'].Intervention.Entities
-                    medConditionElements = tempScenario['Inclusion Criteria']['Medical Condition'].Entities
-                    labTestElements = tempScenario['Inclusion Criteria']['Lab / Test'].Entities
-                    
-                    excluDemographicsElements = tempScenario['Exclusion Criteria'].Demographics.Entities
-                    excluMedConditionElements = tempScenario['Exclusion Criteria']['Medical Condition'].Entities
-                    excluInterventionElements = tempScenario['Exclusion Criteria'].Intervention.Entities
-                    excluLabTestElements = tempScenario['Exclusion Criteria']['Lab / Test'].Entities
-
-                    //Get inclusion chart info
-                    var inclu = tempScenario["Inclusion Criteria"]
-                    
-                    setProtocolRateData([
-                        {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
-                        {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
-                        {value: formatNumber(inclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
-                        {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
-                    ])
-                    setScreenRateData([
-                        {value: formatNumber(inclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
-                        {value: formatNumber(inclu.Intervention.screen_failure_rate), name: 'Intervention'},
-                        {value: formatNumber(inclu.Demographics.screen_failure_rate), name: 'Demographics'},
-                        {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
-                    ])
-            
-                    var tempScoreA = ''
-                    var tempScoreB = ''
-                        
-                        var score = formatNumber(tempScenario.protocol_amendment_rate)
-                        if(score <= 33){
-                          tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{good|GOOD}'
-                        } else if(score > 33  && score <= 67){
-                          tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{fair|FAIR}'
-                        } else if(score > 67){
-                          tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{poor|POOR}'
-                        }
-
-                        var scoreB = formatNumber(tempScenario.screen_failure_rate)
-                        if(scoreB <= 33){
-                          tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{good|GOOD}'
-                        } else if(scoreB > 33  && scoreB <= 67){
-                          tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{fair|FAIR}'
-                        } else if(scoreB > 67){
-                          tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{poor|POOR}'
-                        }
-
-                        setAmend_avg_rate(tempScoreA)
-                        setScreen_avg_rate(tempScoreB)
-
-                    //Get exclusion chart info
-                    var exclu = tempScenario["Exclusion Criteria"]
-                    
-                    setExcluProtocolRateData([
-                        {value: formatNumber(exclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
-                        {value: formatNumber(exclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
-                        {value: formatNumber(exclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
-                        {value: formatNumber(exclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
-                    ])
-                    setExcluScreenRateData([
-                        {value: formatNumber(exclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
-                        {value: formatNumber(exclu.Intervention.screen_failure_rate), name: 'Intervention'},
-                        {value: formatNumber(exclu.Demographics.screen_failure_rate), name: 'Demographics'},
-                        {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
-                    ])
-            
-                        setExcluAmend_avg_rate(tempScoreA)
-                        setExcluScreen_avg_rate(tempScoreB)
-
-                    setShowChartLabel(true)
-                    setImpactColors(activeChartColors)
-                    setExcluImpactColors(activeChartColors)
-                }
-                
-                if(tempRecord['Therapeutic Area Average']){
-                  setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
-                  setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
-                  setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
-                  setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
-                }
-                
-                if(tempEditFlag){
-                    updateTrial(1)
-                    updateTrial(2)
-                }
-            }
-        };
+       
         getTrialById();
       }
     }, []);
@@ -2086,8 +2086,6 @@ const ScenarioPage = (props) => {
       setSpinning(true)
       const resp = await getIEResource(similarHistoricalTrials);
       if (resp.statusCode == 200) {
-        console.log(JSON.parse(resp.body));
-
         setSpinning(false)
         setIEResource(true)
         setInclusionResource(JSON.parse(resp.body).inResult)
@@ -2138,7 +2136,6 @@ const ScenarioPage = (props) => {
       setSpinning(true)
       const resp = await getAverage(similarHistoricalTrials);
       if (resp.statusCode == 200) {
-        console.log(JSON.parse(resp.body));
         setSpinning(false)
         setAvgResource(true)
         setInclusionResourceAvg(JSON.parse(resp.body).inResult)
@@ -2919,7 +2916,7 @@ const ScenarioPage = (props) => {
       </div>
 
       ) : (
-              <div className="ie-container"><ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} history={props.history} setVisibleSOA={showSOAModal}/></div>
+              <div className="ie-container"><ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} history={props.history} setVisibleSOA={showSOAModal} getTrialById={getTrialById}/></div>
       )}
       </Spin>
       <Drawer title="Historical Trial List" placement="right" onClose={handleCancel} visible={showHistorical}>
