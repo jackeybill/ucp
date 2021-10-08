@@ -168,10 +168,6 @@ const renderMark = (markParams, entity) => {
       }`}
     >
       {word.children.map((child) => {
-        if (child.id = "57") {
-            // console.log('nnn-----', child.text.indexOf('\t'))
-        }
-      
         child.text.indexOf('\t')!=-1 && child.text.replace('\n','<br/>')
         return (
           <span
