@@ -104,7 +104,7 @@ const Extraction = (props: any, ref) => {
         if (s && Object.keys(s).length > 0) keys.push(Object.keys(s));
       });
       const flatKeys=Array.from(new Set(keys.flat()))
-      // //remove Adverse Event, add Test Value, Test Unit
+      //remove Adverse Event, add Test Value, Test Unit
       const ADVERSE_EVENT="ADVERSE_EVENT"
       const TEST_VALUE="TEST_VALUE"
       const TEST_UNIT="TEST_UNIT"
@@ -238,12 +238,11 @@ const Extraction = (props: any, ref) => {
     const markCollection = tempWordsCollection.filter((w) => w.type == "mark");
     const { hashKey, entity, activeSection, path } = saveParamsObj;
     let paramBody,updatedData
-    
-    if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
 
-      updatedData = file[hashKey][activeSection][0].tableResult.slice(0)
-      updatedData[tableBodyRowIndex+1][tableBodyColumnIndex].comprehendMedical[entity].label=tempWordsCollection
-      
+    if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
+      updatedData = file 
+      updatedData[hashKey][activeSection][0].tableResult[tableBodyRowIndex+1][tableBodyColumnIndex].comprehendMedical[entity].label=tempWordsCollection    
+
       paramBody = {
         [hashKey]: {
           [activeSection]: [
@@ -254,10 +253,10 @@ const Extraction = (props: any, ref) => {
         },
       };
 
-      
+
     }else{
-      updatedData = file[hashKey][activeSection].slice(0)
-      updatedData[0].comprehendMedical[entity].label = tempWordsCollection;
+      updatedData = file
+      file[hashKey][activeSection][0].comprehendMedical[entity].label = tempWordsCollection;
 
       paramBody = {
         [hashKey]: {

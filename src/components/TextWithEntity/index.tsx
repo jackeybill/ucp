@@ -311,8 +311,8 @@ const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,s
   const { hashKey, entity, activeSection, path } = saveParamsObj;
   let paramBody,updatedData
    if(isEndPointTable){
-    updatedData = fileReader.file[hashKey][activeSection][0].tableResult.slice(0)
-    updatedData[tableBodyRowIndex+1][tableBodyColumnIndex].comprehendMedical[entity].label=tempWordsCollection
+    updatedData = fileReader.file 
+    updatedData[hashKey][activeSection][0].tableResult[tableBodyRowIndex+1][tableBodyColumnIndex].comprehendMedical[entity].label=tempWordsCollection
     
     paramBody = {
       [hashKey]: {
@@ -324,8 +324,8 @@ const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,s
       },
     };
    }else{
-    updatedData = fileReader.file[hashKey][activeSection].slice(0)
-    updatedData[0].comprehendMedical[entity].label = tempWordsCollection;
+    updatedData = fileReader.file
+    updatedData[hashKey][activeSection][0].comprehendMedical[entity].label = tempWordsCollection;
 
     paramBody = {
       [hashKey]: {
