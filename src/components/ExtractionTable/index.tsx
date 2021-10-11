@@ -344,23 +344,23 @@ const ExtractionTable = (props: any, ref) => {
         ],
       },
     };
-    console.log("paramBody:",paramBody);
-    console.log("path:",path);
-    const saveRes = await saveText(paramBody, path);
-     readFile({
-        updatedSection: paramBody,
-      });
-    if (saveRes.statusCode == "200") {
+    // console.log("paramBody:",paramBody);
+    // console.log("path:",path);
+    // const saveRes = await saveText(paramBody, path);
+    //  readFile({
+    //     updatedSection: paramBody,
+    //   });
+    // if (saveRes.statusCode == "200") {
       let temFile = fileReader.file
       temFile[key][activeSection][0].soaResult = newArr
       temFile[key][activeSection][0].table = content
 
-        message.success("Remove successfully");
+        // message.success("Remove successfully");
         readFile({
           updatedSection: paramBody,
           file:temFile
         });
-      }
+      // }
   };
 
   const handleSaveContent = async (
@@ -404,22 +404,22 @@ const ExtractionTable = (props: any, ref) => {
       },
     };
 
-    console.log("paramBody:",paramBody);
-    console.log("path:",path);
-    const saveRes = await saveText(paramBody, path);
+    // console.log("paramBody:",paramBody);
+    // console.log("path:",path);
+    // const saveRes = await saveText(paramBody, path);
     // const prevFile = props.fileReader.file[key];
 
     let temFile = props.fileReader.file;
     temFile[key][activeSection][0].soaResult = soaResult
     temFile[key][activeSection][0].table = content
 
-    if (saveRes.statusCode == "200") {
-      message.success("Save successfully");
+    // if (saveRes.statusCode == "200") {
+    //   message.success("Save successfully");
       props.readFile({
         updatedSection: paramBody,
         file: temFile,
       });
-    }
+    // }
   };
 
   const handleAddUnderline = (iten) => {

@@ -343,14 +343,14 @@ const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,s
    }
 
      
-  const saveRes = await saveText(paramBody, path);
-  if (saveRes.statusCode == "200") {
-      message.success("Remove successfully");
+  // const saveRes = await saveText(paramBody, path);
+  // if (saveRes.statusCode == "200") {
+  //     message.success("Remove successfully");
       readFile({
         updatedSection: paramBody,
         file: updatedData,
       });
-    }
+    // }
 };
 
 const TextWithEntity = (props: TextWithEntityIF) => {

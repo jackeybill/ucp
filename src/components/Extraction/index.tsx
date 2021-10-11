@@ -272,15 +272,15 @@ const Extraction = (props: any, ref) => {
         },
       };
     }
-    const saveRes = await saveText(paramBody, path);
+    // const saveRes = await saveText(paramBody, path);
 
-    if (saveRes.statusCode == "200") {
-      message.success("Save successfully");
+    // if (saveRes.statusCode == "200") {
+      // message.success("Save successfully");
       props.readFile({
         updatedSection: paramBody,
         file: updatedData,
       });
-    }
+    // }
   };
 
   return (
