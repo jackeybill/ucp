@@ -312,20 +312,20 @@ const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,s
       },
     };
    
-  const saveRes = await saveText(paramBody, path);
-   readFile({
-      updatedSection: paramBody,
-    });
-  if (saveRes.statusCode == "200") {
+  // const saveRes = await saveText(paramBody, path);
+  //  readFile({
+  //     updatedSection: paramBody,
+  //   });
+  // if (saveRes.statusCode == "200") {
     let temFile = fileReader.file
     temFile[hashKey][activeSection][0].comprehendMedical[entity].label = tempWordsCollection
 
-      message.success("Remove successfully");
+      // message.success("Remove successfully");
       readFile({
         updatedSection: paramBody,
         file:temFile
       });
-    }
+    // }
 };
 
 const TextWithEntity = (props: TextWithEntityIF) => {

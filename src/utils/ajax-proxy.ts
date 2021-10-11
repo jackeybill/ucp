@@ -273,6 +273,7 @@ export const takeAction = async (action = "", params = {}) => {
   return await response.json();
 };
 
+// Save with status ""In progress""
 export const saveText = async (result: any, path: any) => {
   const status = "In progress"
   const lastUpdate= moment().format('MM-DD-YYYY')
@@ -288,6 +289,7 @@ export const saveText = async (result: any, path: any) => {
   return await response.json();
 };
 
+// Save with status "Completed"
 export const submitText = async (result: any, path: any,) => {
    const status = "Completed"
   const lastUpdate= moment().format('MM-DD-YYYY');   

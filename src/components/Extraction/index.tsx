@@ -231,20 +231,20 @@ const Extraction = (props: any, ref) => {
       },
     };
 
-    const saveRes = await saveText(paramBody, path);
+    // const saveRes = await saveText(paramBody, path);
     const prevFile = props.fileReader.file[hashKey];
 
     let temFile = props.fileReader.file;
     temFile[hashKey][activeSection][0].comprehendMedical[entity].label =
       tempWordsCollection;
 
-    if (saveRes.statusCode == "200") {
-      message.success("Save successfully");
+    // if (saveRes.statusCode == "200") {
+    //   message.success("Save successfully");
       props.readFile({
         updatedSection: paramBody,
         file: temFile,
       });
-    }
+    // }
   };
 
   return (
