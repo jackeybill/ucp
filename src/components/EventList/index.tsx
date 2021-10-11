@@ -649,20 +649,42 @@ const EventList = (props) => {
     setColumnModality({ [idx]: e.target.value})
   }
 
-  const updateColumnModality = (tmpCategories, columnId, isOptimized=false, optimizedModality="") =>{
+  const getAvaliableModalityNames = (modality) =>{
+    let avaliableModalityNames=modality.map( (m,idx)=>{
+      return {[modality_options[idx].name]:m}
+    })
+    .filter(ele=>Object.values(ele)[0]!==0 ) //0 means not avaliable
+    .map( item=>Object.keys(item)[0])
+    console.log(avaliableModalityNames)
+    return avaliableModalityNames
+
+  }
+
+  const updateColumnModality = (tmpCategories, columnId, isOptimized=false, descModality=[]) =>{
+ 
     tmpCategories.forEach( e=>{
       const condition= e.condition
+      let avaliableModalityNames = getAvaliableModalityNames(e.modality)
       if(isOptimized){
-        condition[columnId].modality=optimizedModality
+        // if the most common modality is not avaliable for this event, then use second common one...
+        for(let i=0; i<descModality.length; i++){
+          if(avaliableModalityNames.indexOf(descModality[i])>-1){
+            condition[columnId].modality=descModality[i]
+            break;
+          }
+        }       
       }
-      if(!isOptimized && Boolean(condition[columnId].modality)) condition[columnId].modality=columnModality[columnId]    
+      if(!isOptimized && Boolean(condition[columnId].modality)) {
+        // only if the selected modality is one of its avaliable modalities.      
+       if(avaliableModalityNames.indexOf(columnModality[columnId])>-1) condition[columnId].modality=columnModality[columnId]   
+      } 
     })
     return tmpCategories
   }
 
   const onApplyToColumn=(idx)=>{
     let tmpLabs = labs.slice(0);  
-    tmpLabs = updateColumnModality( tmpLabs,idx)
+    tmpLabs = updateColumnModality(tmpLabs,idx)
     setLabs(tmpLabs)
   
     let tmpExamination = examination.slice(0); 
@@ -728,26 +750,26 @@ const EventList = (props) => {
     descModality.sort( (a,b)=>{
       return modalitySummary[b] - modalitySummary[a]
     })
-    const modalityWithFewestNumber = descModality[0]  
+   
     // fill the blank
     let tmpLabs = labs.slice(0);  
-    tmpLabs=updateColumnModality(tmpLabs,idx,true,modalityWithFewestNumber)
+    tmpLabs=updateColumnModality(tmpLabs,idx,true,descModality)
     setLabs(tmpLabs)
 
     let tmpExamination = examination.slice(0); 
-    tmpExamination =updateColumnModality(tmpExamination,idx,true,modalityWithFewestNumber)
+    tmpExamination =updateColumnModality(tmpExamination,idx,true,descModality)
     setExamination(tmpExamination)      
     
     let tmpProcedures = procedures.slice(0);
-    tmpProcedures =updateColumnModality(tmpProcedures,idx,true,modalityWithFewestNumber)
+    tmpProcedures =updateColumnModality(tmpProcedures,idx,true,descModality)
     setProcedures(tmpProcedures )       
       
     let tmpQuestionnaire = questionnaire.slice(0);  
-    tmpQuestionnaire =updateColumnModality(tmpQuestionnaire,idx,true,modalityWithFewestNumber)
+    tmpQuestionnaire =updateColumnModality(tmpQuestionnaire,idx,true,descModality)
     setQuestionnaire(tmpQuestionnaire)    
   
     let tmpStudyProcedures = studyProcedures.slice(0); 
-    tmpStudyProcedures =updateColumnModality(tmpStudyProcedures,idx,true,modalityWithFewestNumber)
+    tmpStudyProcedures =updateColumnModality(tmpStudyProcedures,idx,true,descModality)
     setStudyProcedures(tmpStudyProcedures) 
   })
   }

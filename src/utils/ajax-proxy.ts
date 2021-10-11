@@ -584,6 +584,7 @@ export const getAverage = async (nctids) => {
 //   return await response.json();
 // }
 
+
 //for test only: Delete Trial By Id
 // export const deleteStudy = async (nctId) => {
 //   const response = await fetch(criteria_url, {
