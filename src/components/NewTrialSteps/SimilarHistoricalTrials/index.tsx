@@ -2,7 +2,11 @@ import React from "react";
 import { Table, Row, Col, Select, Button, Spin, Slider, Tooltip } from "antd";
 import { FilterOutlined } from "@ant-design/icons";
 import CustomChart from "../../CustomChart";
-import { phase_options, study_types,study_status } from "../../../pages/TrialPortfolio";
+import {
+  phase_options,
+  study_types,
+  study_status,
+} from "../../../pages/TrialPortfolio";
 import { listStudy } from "../../../utils/ajax-proxy";
 import { connect } from "react-redux";
 import ReactECharts from "echarts-for-react";
@@ -27,12 +31,12 @@ const columns = [
   {
     title: "Sponsor",
     dataIndex: "sponsor",
-    ellipsis: true
+    ellipsis: true,
   },
   {
     title: "Status",
     dataIndex: "study_status",
-    ellipsis: true
+    ellipsis: true,
   },
   {
     title: "Phase",
@@ -47,7 +51,7 @@ interface HistoricalProps {
   indicationList?: any;
   shouldFetch?: boolean;
   fetchHistory?: any;
-  historyTrial?:any
+  historyTrial?: any;
 }
 const min = 1990;
 const max = 2020;
@@ -61,26 +65,24 @@ const marks = {
   2020: "2020",
 };
 
-const sponsorChartColor =[
-    "#d04a02",
-    "#d4520d",
-    "#d85d1c",
-    "#de6c30",
-    "#e47d47",
-    "#e68d5e",
-    "#e8aa89",
-]
-const statusChartColor=[
+const sponsorChartColor = [
   "#d04a02",
   "#d4520d",
   "#d85d1c",
   "#de6c30",
   "#e47d47",
   "#e68d5e",
-  "#e8aa89"
-]
-
-
+  "#e8aa89",
+];
+const statusChartColor = [
+  "#d04a02",
+  "#d4520d",
+  "#d85d1c",
+  "#de6c30",
+  "#e47d47",
+  "#e68d5e",
+  "#e8aa89",
+];
 
 class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
   constructor(props: HistoricalProps) {
@@ -94,11 +96,14 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     pageSizeOptions: ["5", "10", "20", "50", "100"],
     sideBar: 6,
     showFilter: true,
-    studyType: this.props.newTrial.study_type||"",
-    studyPhase: this.props.newTrial.study_phase||"",
+    studyType: this.props.newTrial.study_type || "",
+    studyPhase: this.props.newTrial.study_phase || "",
     studyStatus: "",
-    indication: this.props.newTrial.indication.length === 0 ? this.props.indicationList : this.props.newTrial.indication,
-    pediatric: this.props.newTrial.pediatric_study||"",
+    indication:
+      this.props.newTrial.indication.length === 0
+        ? this.props.indicationList
+        : this.props.newTrial.indication,
+    pediatric: this.props.newTrial.pediatric_study || "",
     dateFrom: 1990,
     dateTo: 2020,
     selectedRowKeys: this.props.newTrial.similarHistoricalTrials,
@@ -109,11 +114,12 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     sponsorChartData: [],
     optionOne: {},
     optionTwo: {},
-    showStatusChart:true
+    showStatusChart: true,
   };
   componentDidMount() {
     this.props.historyTrial.shouldFetch && this.getHistoryList();
-    !this.props.historyTrial.shouldFetch && this.onFindTrials(this.state.rawData)
+    !this.props.historyTrial.shouldFetch &&
+      this.onFindTrials(this.state.rawData);
   }
 
   getChartData(datasource, key) {
@@ -145,21 +151,21 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     });
 
     if (resp.statusCode == 200) {
-      console.log('history list-----',JSON.parse(resp.body))
-      const tmpData = JSON.parse(resp.body).map((d, idx) => {  
+      console.log("history list-----", JSON.parse(resp.body));
+      const tmpData = JSON.parse(resp.body).map((d, idx) => {
         d.key = d["nct_id"];
-        d.sponsor = d.sponsor || '';
-        d.study_status = d.study_status || '';
+        d.sponsor = d.sponsor || "";
+        d.study_status = d.study_status || "";
         return d;
-      })
-      this.onFindTrials(tmpData)
+      });
+      this.onFindTrials(tmpData);
       this.setState({
         rawData: tmpData,
       });
       this.props.fetchHistory({
         historyData: tmpData,
-        shouldFetch:false
-      })
+        shouldFetch: false,
+      });
     }
   };
 
@@ -182,40 +188,38 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     });
   };
 
-  handleLegendFormatter = (chartData, legenName) => {  
+  handleLegendFormatter = (chartData, legenName) => {
     const sum = chartData.reduce((accumulator, currentValue) => {
-      return accumulator + currentValue.value
-    }, 0)
-    const targetVal = chartData.find(d => d.name == legenName).value
+      return accumulator + currentValue.value;
+    }, 0);
+    const targetVal = chartData.find((d) => d.name == legenName).value;
     let p = ((targetVal / sum) * 100).toFixed(2);
-    return legenName + " - " + p + "%";  
-  }
+    return legenName + " - " + p + "%";
+  };
 
   onFindTrials = (datasource) => {
-    let tempIndication = this.state.indication.length > 0 ? [...this.state.indication] : []
-    //combine Type 2 Diabetes and Diabetes Mellitus Type 2, only show Type 2 Diabetes in UI
-    if(tempIndication.indexOf('Type 2 Diabetes') > -1){
-      tempIndication.push('Diabetes Mellitus Type 2')
-    }
+    let tempIndication =
+      this.state.indication.length > 0 ? [...this.state.indication] : [];
     const filteredData = datasource.filter((d) => {
-      const date = d['start_date'].split('-')[0]
+      const date = d["start_date"].split("-")[0];
       return (
         (this.state.studyPhase != "" && this.state.studyPhase != "All"
-          ? d.study_phase.indexOf(this.state.studyPhase)>-1
+          ? d.study_phase.indexOf(this.state.studyPhase) > -1
           : true) &&
         (this.state.studyType != "" && this.state.studyType != "All"
           ? d.study_type == this.state.studyType
           : true) &&
         (this.state.studyStatus != "" && this.state.studyStatus != "All"
-          ? d['study_status'] == this.state.studyStatus
+          ? d["study_status"] == this.state.studyStatus
           : true) &&
         (tempIndication.length > 0
-          ? tempIndication.indexOf(d.indication)>-1
+          ? tempIndication.indexOf(d.indication) > -1
           : true) &&
         (this.state.pediatric != "" && this.state.pediatric != "All"
           ? d.pediatric == this.state.pediatric
-          : true) &&  
-        date>=this.state.dateFrom && date<=this.state.dateTo
+          : true) &&
+        date >= this.state.dateFrom &&
+        date <= this.state.dateTo
       );
     });
     const statusData = this.getChartData(filteredData, "study_status");
@@ -228,12 +232,12 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
 
     if (this.state.studyStatus != "" && this.state.studyStatus != "All") {
       this.setState({
-        showStatusChart:false
-      })
+        showStatusChart: false,
+      });
     } else {
       this.setState({
-        showStatusChart:true
-      })
+        showStatusChart: true,
+      });
     }
   };
 
@@ -250,11 +254,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       tooltip: {
         trigger: "item",
         formatter: function (params) {
-          return (
-            [params.name] +
-            " - " +
-            [params.value] 
-          );
+          return [params.name] + " - " + [params.value];
         },
       },
       // legend: {
@@ -266,7 +266,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       //     fontSize: 8,
       //   },
       //   formatter: function (params) {
-      //     const chartData = optionOne.series[0].data      
+      //     const chartData = optionOne.series[0].data
       //     const sum = chartData.reduce((accumulator, currentValue) => {
       //      return accumulator + currentValue.value
       //     }, 0)
@@ -306,11 +306,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       tooltip: {
         trigger: "item",
         formatter: function (params) {
-          return (
-            [params.name] +
-            " - " +
-            [params.value]
-          );
+          return [params.name] + " - " + [params.value];
         },
       },
       // legend: {
@@ -322,7 +318,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       //     fontSize: 8,
       //   },
       //   formatter: function (params,idx) {
-      //     const chartData = optionTwo.series[0].data   
+      //     const chartData = optionTwo.series[0].data
       //     const sum = chartData.reduce((accumulator, currentValue) => {
       //      return accumulator + currentValue.value
       //     }, 0)
@@ -334,13 +330,13 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       series: [
         {
           type: "pie",
-           center: ["30%", "35%"],
+          center: ["30%", "35%"],
           radius: ["20%", "50%"],
           avoidLabelOverlap: false,
           label: {
             show: false,
           },
-          color:statusChartColor,
+          color: statusChartColor,
           data: this.state.statusChartData,
         },
       ],
@@ -370,165 +366,192 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       <div className="historical-trial-list">
         <Row>
           <Col span={this.state.sideBar} className="side-bar">
-                <div className="filter-item filter-label"><span>Filters</span></div>
-                <div className="filter-item">
-                  <label>STUDY PHASE</label>
-                  <Select
-                    value={this.state.studyPhase||"All"}
-                    style={{ width: "100%" }}
-                    onChange={(e) => this.onSelectChange("studyPhase", e)}
-                  >
-                    {phase_options.map((o) => {
-                      return (
-                        <Option value={o} key={o}>
-                          {o}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </div>
+            <div className="filter-item filter-label">
+              <span>Filters</span>
+            </div>
+            <div className="filter-item">
+              <label>STUDY PHASE</label>
+              <Select
+                value={this.state.studyPhase || "All"}
+                style={{ width: "100%" }}
+                onChange={(e) => this.onSelectChange("studyPhase", e)}
+              >
+                {phase_options.map((o) => {
+                  return (
+                    <Option value={o} key={o}>
+                      {o}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </div>
 
-                <div className="filter-item">
-                  <label>STUDY TYPE</label>
-                  <Select
-                    value={this.state.studyType||"All"}
-                    style={{ width: "100%" }}
-                    onChange={(e) => this.onSelectChange("studyType", e)}
-                  >
-                    {study_types.map((o) => {
-                      return (
-                        <Option value={o} key={o}>
-                          {o}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </div>
-                <div className="filter-item">
-                  <label>STUDY STATUS</label>
-                  <Select
-                    value={this.state.studyStatus||"All"}
-                    style={{ width: "100%" }}
-                    onChange={(e) => this.onSelectChange("studyStatus", e)}
-                  >
-                     <Option value="All" key="All">All</Option>
-                    {study_status.sort().map((o) => {
-                      return (
-                        <Option value={o} key={o}>
-                          {o}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </div>
-                <div className="filter-item">
-                  <label>INDICATION</label>
-                  <Select
-                    mode="multiple"
-                    allowClear
-                    value={this.state.indication}
-                    style={{ width: "100%" }}
-                    onChange={(e) => this.onSelectChange("indication", e)}
-                  >
-                    {this.props.indicationList.map((o) => {
-                      return (
-                        <Option value={o} key={o}>
-                          {o}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </div>
-                <div className="filter-item">
-                  <label>PEDIATRIC</label>
-                  <Select
-                    value={this.state.pediatric||"All"}
-                    style={{ width: "100%" }}
-                    onChange={(e) => this.onSelectChange("pediatric", e)}
-                  >
-                    {["All", "YES", "NO"].map((o) => {
-                      return (
-                        <Option value={o} key={o}>
-                          {o}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </div>
-                <div className="filter-item">
-                  <label>STUDY START DATE</label>
-                  <Slider
-                    step={null}
-                    min={min}
-                    max={max}
-                    range={{ draggableTrack: true }}
-                    marks={marks}
-                    dots
-                    value={[this.state.dateFrom, this.state.dateTo]}
-                    onChange={this.handleDateChange}
-                  />
-                </div>
-                <div className="filter-item find-trial-btn-wrapper">
-                  <Button onClick={()=>this.onFindTrials(this.state.rawData)}>
-                    Find Trials
-                  </Button>
-                </div>
+            <div className="filter-item">
+              <label>STUDY TYPE</label>
+              <Select
+                value={this.state.studyType || "All"}
+                style={{ width: "100%" }}
+                onChange={(e) => this.onSelectChange("studyType", e)}
+              >
+                {study_types.map((o) => {
+                  return (
+                    <Option value={o} key={o}>
+                      {o}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </div>
+            <div className="filter-item">
+              <label>STUDY STATUS</label>
+              <Select
+                value={this.state.studyStatus || "All"}
+                style={{ width: "100%" }}
+                onChange={(e) => this.onSelectChange("studyStatus", e)}
+              >
+                <Option value="All" key="All">
+                  All
+                </Option>
+                {study_status.sort().map((o) => {
+                  return (
+                    <Option value={o} key={o}>
+                      {o}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </div>
+            <div className="filter-item">
+              <label>INDICATION</label>
+              <Select
+                mode="multiple"
+                allowClear
+                value={this.state.indication}
+                style={{ width: "100%" }}
+                onChange={(e) => this.onSelectChange("indication", e)}
+              >
+                {this.props.indicationList.map((o) => {
+                  return (
+                    <Option value={o} key={o}>
+                      {o}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </div>
+            <div className="filter-item">
+              <label>PEDIATRIC</label>
+              <Select
+                value={this.state.pediatric || "All"}
+                style={{ width: "100%" }}
+                onChange={(e) => this.onSelectChange("pediatric", e)}
+              >
+                {["All", "YES", "NO"].map((o) => {
+                  return (
+                    <Option value={o} key={o}>
+                      {o}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </div>
+            <div className="filter-item">
+              <label>STUDY START DATE</label>
+              <Slider
+                step={null}
+                min={min}
+                max={max}
+                range={{ draggableTrack: true }}
+                marks={marks}
+                dots
+                value={[this.state.dateFrom, this.state.dateTo]}
+                onChange={this.handleDateChange}
+              />
+            </div>
+            <div className="filter-item find-trial-btn-wrapper">
+              <Button onClick={() => this.onFindTrials(this.state.rawData)}>
+                Find Trials
+              </Button>
+            </div>
           </Col>
 
           <Col span={24 - this.state.sideBar} className="historical-desc">
-            <Spin spinning={this.state.spinning} >
+            <Spin spinning={this.state.spinning}>
               <div className="title">Similar Historical Trials</div>
-              <div className="title-desc">Refine the list of similar historical trials that you will use to design your trial.</div>
+              <div className="title-desc">
+                Refine the list of similar historical trials that you will use
+                to design your trial.
+              </div>
               <div className="summary-count">
-                  {this.state.data && this.state.data.length}
-                  <span className="num-desc">&nbsp;Total Number of Trials</span>
-                </div>
+                {this.state.data && this.state.data.length}
+                <span className="num-desc">&nbsp;Total Number of Trials</span>
+              </div>
               <div className="chart-wrapper">
                 <div className="chart">
-                  <ReactECharts option={this.getOptionOne()}></ReactECharts> 
-                  <div className="my-legend-wrapper">         
-                  {
-                    this.state.sponsorChartData.sort((a,b)=>{
-                      return b.value -a.value
-                    }).slice(0,5).map( (d,idx)=>{
-                      const chartData = this.state.sponsorChartData
-                      const sum = chartData.reduce((accumulator, currentValue) => {
-                       return accumulator + currentValue.value
-                      }, 0)                    
-                      let percent = ((d.value / sum) * 100).toFixed(2);                  
-                      return(
-                        <div className="custom-legend" >
-                        <span className="my_legend" style={{'backgroundColor':sponsorChartColor[idx]}}></span><i className="my_legend_text">{`${d.name} - ${percent}%`}</i> 
-                      </div>  
-                      )
-                    })
-                  }  
-                </div>   
+                  <ReactECharts option={this.getOptionOne()}></ReactECharts>
+                  <div className="my-legend-wrapper">
+                    {this.state.sponsorChartData
+                      .sort((a, b) => {
+                        return b.value - a.value;
+                      })
+                      .slice(0, 5)
+                      .map((d, idx) => {
+                        const chartData = this.state.sponsorChartData;
+                        const sum = chartData.reduce(
+                          (accumulator, currentValue) => {
+                            return accumulator + currentValue.value;
+                          },
+                          0
+                        );
+                        let percent = ((d.value / sum) * 100).toFixed(2);
+                        return (
+                          <div className="custom-legend">
+                            <span
+                              className="my_legend"
+                              style={{
+                                backgroundColor: sponsorChartColor[idx],
+                              }}
+                            ></span>
+                            <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                          </div>
+                        );
+                      })}
+                  </div>
                 </div>
                 <div className="chart">
-                    {this.state.showStatusChart?(
-                      <>
-                        <ReactECharts option={this.getOptionTwo()}></ReactECharts>
-                        <div className="my-legend-wrapper">         
-                        {
-                          this.state.statusChartData.sort((a,b)=>{
-                            return b.value -a.value
-                          }).slice(0,5).map( (d,idx)=>{
-                            const chartData = this.state.statusChartData
-                            const sum = chartData.reduce((accumulator, currentValue) => {
-                            return accumulator + currentValue.value
-                            }, 0)                    
-                            let percent = ((d.value / sum) * 100).toFixed(2);                  
-                            return(
-                              <div className="custom-legend" >
-                              <span className="my_legend" style={{'backgroundColor':statusChartColor[idx]}}></span><i className="my_legend_text">{`${d.name} - ${percent}%`}</i> 
-                            </div>  
-                            )
+                  {this.state.showStatusChart ? (
+                    <>
+                      <ReactECharts option={this.getOptionTwo()}></ReactECharts>
+                      <div className="my-legend-wrapper">
+                        {this.state.statusChartData
+                          .sort((a, b) => {
+                            return b.value - a.value;
                           })
-                        }  
-                      </div>  
-                     </>
-                    ):null}     
+                          .slice(0, 5)
+                          .map((d, idx) => {
+                            const chartData = this.state.statusChartData;
+                            const sum = chartData.reduce(
+                              (accumulator, currentValue) => {
+                                return accumulator + currentValue.value;
+                              },
+                              0
+                            );
+                            let percent = ((d.value / sum) * 100).toFixed(2);
+                            return (
+                              <div className="custom-legend">
+                                <span
+                                  className="my_legend"
+                                  style={{
+                                    backgroundColor: statusChartColor[idx],
+                                  }}
+                                ></span>
+                                <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </>
+                  ) : null}
                 </div>
               </div>
               <Row>
@@ -537,13 +560,14 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                   dataSource={this.state.data}
                   pagination={{
                     position: ["bottomRight"],
-                    showTotal: (total, range) => `${range[0]}-${range[1]} of ${this.state.data.length} items`,
+                    showTotal: (total, range) =>
+                      `${range[0]}-${range[1]} of ${this.state.data.length} items`,
                     // pageSize: this.state.pageSize,
                     pageSize: 5,
                     onChange: this.changePage,
                     current: this.state.current,
                     total: this.state.data.length,
-                    
+
                     // showSizeChanger: true,
                     // onShowSizeChange: this.onShowSizeChange,
                     // pageSizeOptions: this.state.pageSizeOptions
@@ -563,12 +587,12 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
 
 const mapDispatchToProps = (dispatch) => ({
   createTrial: (val) => dispatch(createActions.createTrial(val)),
-  fetchHistory:(val) => dispatch(historyActions.fetchHistory(val)),
+  fetchHistory: (val) => dispatch(historyActions.fetchHistory(val)),
 });
 
 const mapStateToProps = (state) => ({
   newTrial: state.trialReducer,
-  historyTrial:state.historyReducer,
+  historyTrial: state.historyReducer,
 });
 export default connect(
   mapStateToProps,
