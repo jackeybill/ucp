@@ -194,6 +194,43 @@ const ProtocolSection = (props: any) => {
     }
   };
 
+  const changeEntiesforCSV = (rawarr) => {
+    let arr = JSON.parse(JSON.stringify(rawarr))   
+    let newArr = arr.map((item, index, arr)=> {
+      if (item.Traits || item.SubChild || item.Attributes) {
+        if(item.Traits&&Array.isArray(item.Traits)&&item.Traits.length !== 0){
+          let textOfTraits = []
+          item.Traits.forEach((item, index, arr)=> {
+            if(item.Name) {
+              textOfTraits.push(item.Name)
+            }
+          }) 
+          item.Traits = textOfTraits.join(";")
+        }
+        if(item.SubChild&&Array.isArray(item.SubChild)&&item.SubChild.length !== 0){
+          let textOfSubChild = []
+          item.SubChild.forEach((item, index, arr)=> {
+            if(item.Text) {
+              textOfSubChild.push(item.Text)
+            }
+          }) 
+          item.SubChild = textOfSubChild.join(";")
+        }
+        if(item.Attributes&&Array.isArray(item.Attributes)&&item.Attributes.length !== 0){
+          let textOfAttributes = []
+          item.Attributes.forEach((item, index, arr)=> {
+            if(item.Text) {
+              textOfAttributes.push(item.Text)
+            }
+          }) 
+          item.Attributes = textOfAttributes.join(";")
+        }
+      } 
+      return item
+  })  
+    return newArr
+  }
+
   const exportMenu = () => {
     return (
       <Menu onClick={changeFormat}>
@@ -201,7 +238,7 @@ const ProtocolSection = (props: any) => {
           return e == "CSV" ? (
             <Menu.Item key={e}>
               <CSVLink
-                data={entities ? entities : []}
+                data={entities ? changeEntiesforCSV(entities) : []}
                 filename={fname + ".csv"}
               >
                 CSV
@@ -360,7 +397,7 @@ const ProtocolSection = (props: any) => {
                     <>
                       <DownloadOutlined />
                       <CSVLink
-                        data={entities ? entities : []}
+                        data={entities ? changeEntiesforCSV(entities) : []}
                         filename={fname + ".csv"}
                       >
                         CSV
