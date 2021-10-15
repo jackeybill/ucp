@@ -122,7 +122,7 @@ const ProtocolSection = (props: any) => {
         file[key][activeSection][0].pageNo && setPageNum(file[key][activeSection][0].pageNo)
       } 
     }    
-  }, [activeSection]);
+  }, [activeSection, entity]);
 
   useEffect( ()=>{
     setFilePath(`${baseUrl}${fileName}#page=${pageNum}`)
@@ -219,7 +219,7 @@ const ProtocolSection = (props: any) => {
   const changeEntiesforCSV = (rawarr) => {
     let arr = JSON.parse(JSON.stringify(rawarr))   
     let newArr = arr.map((item, index, arr)=> {
-      if (item.Traits || item.SubChild || item.Attributes) {
+      if (item.Traits || item.SubChild || item.Attributes || item.ICD10CMConcepts ||item.RxNormConcepts ||item.MedDRAConcepts) {
         if(item.Traits&&Array.isArray(item.Traits)&&item.Traits.length !== 0){
           let textOfTraits = []
           item.Traits.forEach((item, index, arr)=> {
@@ -246,6 +246,33 @@ const ProtocolSection = (props: any) => {
             }
           }) 
           item.Attributes = textOfAttributes.join(";")
+        }
+        if(item.ICD10CMConcepts&&Array.isArray(item.ICD10CMConcepts)&&item.ICD10CMConcepts.length !== 0){
+          let textOfICD10CMConcepts = []
+          item.ICD10CMConcepts.forEach((item, index, arr)=> {
+            if(item.Description) {
+              textOfICD10CMConcepts.push(item.Description)
+            }
+          }) 
+          item.ICD10CMConcepts = textOfICD10CMConcepts.join(";")
+        }
+        if(item.MedDRAConcepts&&Array.isArray(item.MedDRAConcepts)&&item.MedDRAConcepts.length !== 0){
+          let textOfMedDRAConcepts = []
+          item.MedDRAConcepts.forEach((item, index, arr)=> {
+            if(item.Description) {
+              textOfMedDRAConcepts.push(item.Description)
+            }
+          }) 
+          item.MedDRAConcepts = textOfMedDRAConcepts.join(";")
+        }
+        if(item.RxNormConcepts&&Array.isArray(item.RxNormConcepts)&&item.RxNormConcepts.length !== 0){
+          let textOfRxNormConcepts = []
+          item.RxNormConcepts.forEach((item, index, arr)=> {
+            if(item.Description) {
+              textOfRxNormConcepts.push(item.Description)
+            }
+          }) 
+          item.RxNormConcepts = textOfRxNormConcepts.join(";")
         }
       } 
       return item
