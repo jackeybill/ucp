@@ -2220,7 +2220,35 @@ const ScenarioPage = (props) => {
                     <Step title="Add Schedule of Events"/>
                 </Steps>
             </Col>
-            <Col span={10} className={`center ${ collapsible ? "none-click" : "" }`} >
+            {/* delete this Col for showing  Enrollment Feasibility*/}
+             <Col span={10} className={`center ${ collapsible ? "none-click" : "" }`} >
+                {activeTabKey === '1'?(
+                    <>
+                        <Button type="primary" className="step-btn" onClick={() => setActiveTabKey('2')}>
+                            NEXT:EXCLUSION CRITERIA
+                        </Button>
+                    </>
+                ):(activeTabKey === '2'&&(processStep === 0?(
+                    <>
+                        <Button type="primary" className="step-btn" onClick={() => setProcessStep(1)}>
+                            NEXT:ADD SCHEDULE OF EVENTS
+                        </Button>
+                        <Button className="view-btn step-btn" onClick={() => setActiveTabKey('1')}>
+                            PREV:INCLUSION CRITERIA
+                        </Button>
+                    </>):(
+                      <>
+                      <Button type="primary" className="step-btn"  onClick={()=> setSubmitType(2)}>
+                          SAVE AND FINISH LATER
+                      </Button>
+                      <Button className="view-btn step-btn" onClick={() => setSubmitType(1)}>
+                          PREV:EXCLUSION CRITERIA
+                      </Button>
+                  </>
+                    )
+                ))}
+            </Col>
+            {/* <Col span={10} className={`center ${ collapsible ? "none-click" : "" }`} >
                 {activeTabKey === '1'?(
                     <>
                         <Button type="primary" className="step-btn" onClick={() => setActiveTabKey('2')}>
@@ -2256,7 +2284,7 @@ const ScenarioPage = (props) => {
                         </Button>
                     </>
                 )))}
-            </Col>
+            </Col> */}
             
         </Row>
       </div>
@@ -2849,7 +2877,7 @@ const ScenarioPage = (props) => {
                 </Col>
               </Row>
             </TabPane>
-            <TabPane tab="Enrollment Feasibility" key="3" disabled={collapsible}>
+            {/* <TabPane tab="Enrollment Feasibility" key="3" disabled={collapsible}>
             <Row>
                 <Col span={5}>
                 </Col>
@@ -2913,7 +2941,7 @@ const ScenarioPage = (props) => {
                 </Col>
                 <Col span={5}></Col>
               </Row>
-            </TabPane>
+            </TabPane> */}
           </Tabs>
         </div>
       </div>
