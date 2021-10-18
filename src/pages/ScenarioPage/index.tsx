@@ -2072,7 +2072,7 @@ const ScenarioPage = (props) => {
 
     function downloadFile(fileName) {
       var request = new XMLHttpRequest()
-      request.open('GET', 'https://iso-data-zone.s3.amazonaws.com/iso-service-dev/summary/'+fileName)
+      request.open('GET', 'https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/summary/'+fileName)
       request.setRequestHeader('Content-Disposition', 'attachement;filename='+fileName)
       request.onload = function(){
         var binaryData = []; 
