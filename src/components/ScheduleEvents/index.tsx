@@ -61,9 +61,9 @@ const visitDimensionalScore = [
 
 const ScheduleEvents = (props) => {
   const endpoints = {
-    primary_endpoints: props.record.primary_endpoints,
-    secondary_endpoints: props.record.secondary_endpoints,
-    tertiary_endpoints: props.record.tertiary_endpoints,
+    "Primary Endpoints": props.record.primary_endpoints,
+    "Secondary Endpoints": props.record.secondary_endpoints,
+    "Tertiary Endpoints": props.record.tertiary_endpoints,
   };
   const scenario = props.record.scenarios.find(s=> s['scenario_id'] === props.scenarioId)
   const eventsConfigure = scenario['Schedule of Events']

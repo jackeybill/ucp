@@ -413,7 +413,7 @@ const EventList = (props) => {
         value={evt.endpoint}
         onChange={(value)=> onEndpointChange(value,evt,idx)}
       >
-         <Option value="No endpoint">No endpoint</Option>
+         <Option value="No endpoint">No Endpoint</Option>
         {Object.keys(trialEndpoints).map((k, idx) => {
           return (
             <>
