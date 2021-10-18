@@ -221,7 +221,7 @@ const ScenarioPage = (props) => {
       if(resp.statusCode == 200){
           const tempRecord = JSON.parse(JSON.stringify(resp.body))
           setTrialRecord(tempRecord)
-          setTrialTitle(tempRecord['trial_title'])
+          setTrialTitle(tempRecord['trial_alias'])
           if(tempRecord.similarHistoricalTrials !== undefined){
             setSimilarHistoricalTrials(tempRecord.similarHistoricalTrials)
           }
@@ -1817,6 +1817,7 @@ const ScenarioPage = (props) => {
       }
 
       let tempBurdenData = []
+      let patient_burden = 0
       for(const m in burdenMatrixList){
         const visitMatrix = burdenMatrixList[m].map((max) => {
           return max > 0 ? 1 : 0
@@ -1830,6 +1831,16 @@ const ScenarioPage = (props) => {
           currentVisitScore += visitMatrix[c] * visitDimensionalScore[c].Value + excessMatrix[c]
         }
         tempBurdenData.push(currentVisitScore)
+        patient_burden += currentVisitScore
+      }
+
+      let patient_burden_rate = 'GOOD'
+      if (patient_burden > 0 && patient_burden <= 400) {
+        patient_burden_rate = 'GOOD'
+      } else if (patient_burden > 400 && patient_burden <= 600) {
+        patient_burden_rate = 'FAIR'
+      } else if (patient_burden > 600){
+        patient_burden_rate = 'POOR'
       }
 
       let tempCostData = [
@@ -1852,12 +1863,14 @@ const ScenarioPage = (props) => {
       }
 
       specificScenario['Schedule of Events'] = Object.assign(scheduleOfEvents,{
-        'TotalCost': formatCostAvg(totalCost, 1000),
+        'TotalCost': '' + formatCostAvg(totalCost, 1000),
         'CostRate': costBreakdown,
         'CostData': tempCostData,
         'BurdenData': tempBurdenData,
         'BurdenXAxis': tempBurdenXAxis,
-        'Finished': true
+        'Finished': true,
+        'patient_burden': patient_burden,
+        'patient_burden_rate': patient_burden_rate
       })
       return specificScenario
     }
