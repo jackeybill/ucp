@@ -310,8 +310,7 @@ export const submitText = async (result: any, path: any,) => {
 };
 
 // criteria
-// const criteria_url="https://jtbey858h4.execute-api.us-west-2.amazonaws.com/main/cases"
-const criteria_url="https://qw90oypb5e.execute-api.us-west-2.amazonaws.com/default/gwCase-support"
+const criteria_url="https://jtbey858h4.execute-api.us-west-2.amazonaws.com/main/cases"
 export const getTrialList = async () => {
   const response = await fetch(criteria_url, {
     method: 'POST',

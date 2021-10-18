@@ -361,29 +361,6 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onRowSelectChange,
-      selections: [
-        Table.SELECTION_ALL,
-        {
-          key: 'current_page',
-          text: 'Select current page',
-          onSelect: this.onRowSelectChange
-        },
-        // {
-        //   key: 'current_page2',
-        //   text: 'Select all in current page',
-        //   onSelect: changableRowKeys => {
-        //     let newSelectedRowKeys = [];
-        //     newSelectedRowKeys = changableRowKeys.filter((key, index) => {
-        //       if (index % 2 !== 0) {
-        //         return false;
-        //       }
-        //       return true;
-        //     });
-        //     this.setState({ selectedRowKeys: newSelectedRowKeys });
-        //   },
-        // },
-        Table.SELECTION_NONE,
-      ],
     };
     return (
       <div className="historical-trial-list">
