@@ -558,55 +558,21 @@ const ScenarioPage = (props) => {
       if(item.Value === ''){
         tempStr = '-'
       } else if (item.Value.avg_value != '' && item.Value.avg_value != 0) {
-        tempStr = Number(item.Value.avg_value) + " " + item.Value.units
+        tempStr = Number(item.Value.avg_value.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
       } else if (item.Value.avg_lower == 0 && item.Value.avg_upper != 0) {
-        tempStr = "< "+ Number(item.Value.avg_upper)+ " " + item.Value.units
+        tempStr = "< "+ Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
       } else if (item.Value.avg_lower != 0 && item.Value.avg_upper == 0) {
-        tempStr = "> "+ Number(item.Value.avg_lower)+ " " + item.Value.units
+        tempStr = "> "+ Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
       } else if (item.Value.avg_lower != 0 && item.Value.avg_upper != 0) {
         if (Number(item.Value.avg_lower) == Number(item.Value.avg_upper)){
-          tempStr = Number(item.Value.avg_upper) + " " + item.Value.units
-        } else {tempStr = Number(item.Value.avg_lower)+ " - " + Number(item.Value.avg_upper) + " " + item.Value.units}
+          tempStr = Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+        } else {
+          tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " - " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+        }
       } else{
         tempStr = '-'
       }
-      // else {
-      //   var value = item.Value
-      //   if(value instanceof Array){
-      //     if(value.length === 3){
-      //       tempStr = formatNum(value[0]) + ' - ' + formatNum(value[1]) + value[2]
-      //     } else if(value[0] === Number(value[0])){
-      //       tempStr = formatNum(value[0])
-      //       if(value.length > 1){
-      //         tempStr += ' - ' + formatNum(value[1])
-      //       }
-      //     } else {
-      //       var id = value[0].lastIndexOf('.')
-      //       var a = value[0]
-      //       if(id > -1 && id + 2 < a.length){
-      //         a = a.substr(0, id + 3)
-      //       }
-      //       tempStr = a
-      //       if(value.length > 1){
-      //         tempStr += formatNum(value[1])
-      //       }
-      //     }
-      //   } else if(value === Number(value)){
-      //     tempStr = value.toFixed(2)+''
-      //   } else {
-      //     tempStr = value
-      //   }
-      // }
       return tempStr
-    }
-
-    function formatNum(value){
-      var str = value.toString()
-      var id = str.lastIndexOf('.')
-      if(id > -1){
-        str = str.substr(0, id)
-      }
-      return str
     }
 
     const handleExcluOptionSelect = (item, activeType, id, key) =>{
