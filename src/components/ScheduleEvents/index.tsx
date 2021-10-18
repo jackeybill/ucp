@@ -37,7 +37,7 @@ const initialNumber = {
 }
 
 const initEventCriteria = {
-  'TotalCost': '0',
+  'TotalCost': 0,
   'CostRate': '',
   'CostData': [],
   'BurdenData': [],
@@ -65,6 +65,8 @@ const ScheduleEvents = (props) => {
     "Tertiary Endpoints": props.record.tertiary_endpoints,
   };
 
+  const scenario = props.record.scenarios.find(s=> s['scenario_id'] === props.scenarioId)
+  const eventsConfigure = scenario['Schedule of Events']
   const [hiddeTags, setHiddeTags] = useState(true)
   const [showConfigure, setShowConfigure] = useState(false)
   const [eventLib, setEventLib] = useState(6)
@@ -535,7 +537,6 @@ const ScheduleEvents = (props) => {
     }
 
     let tempBurdenData = []
-    let patient_burden = 0
     for(const m in burdenMatrixList){
       const visitMatrix = burdenMatrixList[m].map((max) => {
         return max > 0 ? 1 : 0
@@ -549,16 +550,6 @@ const ScheduleEvents = (props) => {
         currentVisitScore += visitMatrix[c] * visitDimensionalScore[c].Value + excessMatrix[c]
       }
       tempBurdenData.push(currentVisitScore)
-      patient_burden += currentVisitScore
-    }
-
-    let patient_burden_rate = 'GOOD'
-    if (patient_burden > 0 && patient_burden <= 400) {
-      patient_burden_rate = 'GOOD'
-    } else if (patient_burden > 400 && patient_burden <= 600) {
-      patient_burden_rate = 'FAIR'
-    } else if (patient_burden > 600){
-      patient_burden_rate = 'POOR'
     }
 
     let tempCostData = [
@@ -587,15 +578,13 @@ const ScheduleEvents = (props) => {
 
     let newScenario = props.record.scenarios.find( i=> i['scenario_id'] == props.scenarioId)
     newScenario['Schedule of Events'] = Object.assign(scheduleOfEvents,{
-      'TotalCost': '' + formatCostAvg(totalCost, 1000),
+      'TotalCost': formatCostAvg(totalCost, 1000),
       'CostRate': costBreakdown,
       'CostData': tempCostData,
       'BurdenData': tempBurdenData,
       'BurdenXAxis': tempBurdenXAxis,
       'Finished': true,
-      'WeekNumber': editNumbers.weekNumber,
-      'patient_burden': patient_burden,
-      'patient_burden_rate': patient_burden_rate
+      'WeekNumber': editNumbers.weekNumber
     })
     setEventCriteria(newScenario['Schedule of Events'])
     const newScenarioList = props.record.scenarios.map((item, id) =>{
