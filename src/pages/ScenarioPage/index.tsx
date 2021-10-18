@@ -335,9 +335,6 @@ const ScenarioPage = (props) => {
       if(props.location.state.trial_id == undefined || props.location.state.trial_id == ''){
         props.history.push({pathname: '/trials'})
       } else {
-<<<<<<< HEAD
-       
-=======
         const getTrialById = async () => {
             const resp = await getStudy(props.location.state.trial_id);
             console.log("getlist",resp);
@@ -450,7 +447,6 @@ const ScenarioPage = (props) => {
                 }
             }
         };
->>>>>>> 48fa5ceac7922f8305fd4516d7d8208e00f9e396
         getTrialById();
       }
     }, []);
@@ -2176,19 +2172,10 @@ const ScenarioPage = (props) => {
       setSpinning(true)
       const resp = await getIEResource(similarHistoricalTrials);
       if (resp.statusCode == 200) {
-<<<<<<< HEAD
-        setSpinning(false)
-        setIEResource(true)
-        setInclusionResource(JSON.parse(resp.body).inResult)
-        setExclusionResource(JSON.parse(resp.body).exResult)
-        tempInclusionResource = JSON.parse(resp.body).inResult
-        tempExclusionResource = JSON.parse(resp.body).exResult
-=======
         var num = resp.body.lastIndexOf('/')+1
         let fileName = resp.body.substr(num)
 
         downloadFile(fileName)
->>>>>>> 48fa5ceac7922f8305fd4516d7d8208e00f9e396
       }
     } else {
       downloadFile(ieResource)
