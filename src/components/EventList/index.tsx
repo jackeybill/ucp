@@ -25,7 +25,6 @@ const endpoints_map = [
 
 const EventList = (props) => {
   const { visitNumber, weekNumber } = props.numbers;
-  const trialEndpoints=props.endpoints
   const viewOnly = props.viewOnly ||false;
   const [sort,setSort] = useState("")
   const [weeks, setWeeks] = useState([])
@@ -36,6 +35,8 @@ const EventList = (props) => {
   let [procedures, setProcedures] = useState(props.procedures||[])
   let [questionnaire, setQuestionnaire] = useState(props.questionnaire||[])
   let [studyProcedures, setStudyProcedures] = useState(props.studyProcedures||[])
+
+  const trialEndpoints=props.endpoints
 
   useEffect( ()=>{
     const expandKeysTmp = expandKeys.slice(0)
@@ -312,23 +313,25 @@ const EventList = (props) => {
         value={evt.endpoint}
         onChange={(value)=> onEndpointChange(value,evt,idx)}
       >
-         <Option value="No endpoint">No Endpoint</Option>
-        {Object.keys(trialEndpoints).map((k, idx) => {
+        {/* {endpoints_map.map((e, idx) => (
+          <Option value={e} key={idx}>
+            {e}
+          </Option>
+        ))} */}
+        <Option value="No endpoint">No Endpoint</Option>
+
+          {Object.keys(trialEndpoints).map((k, idx) => {
+
           return (
-            <>
-              <Option value={k} key={idx} disabled>
-                {k}
-              </Option>
-              {trialEndpoints[k].map((endpoint, i) => {
-                return (
-                  <Option value={endpoint} key={i}>
-                    {endpoint}
-                  </Option>
-                );
-              })}
-            </>
-          );
-        })}
+          <>
+            <Option value={k} key={idx} disabled>{k}</Option>
+            {trialEndpoints[k].map((endpoint, i) => {
+              return (
+                <Option value={endpoint} key={i}>{endpoint}</Option>
+              );
+            })}
+          </>
+          );})}
       </Select>
     );
   };
