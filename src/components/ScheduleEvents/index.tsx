@@ -59,6 +59,11 @@ const visitDimensionalScore = [
 ]
 
 const ScheduleEvents = (props) => {
+  const endpoints = {
+    "Primary Endpoints": props.record.primary_endpoints,
+    "Secondary Endpoints": props.record.secondary_endpoints,
+    "Tertiary Endpoints": props.record.tertiary_endpoints,
+  };
 
   const [hiddeTags, setHiddeTags] = useState(true)
   const [showConfigure, setShowConfigure] = useState(false)
@@ -1079,6 +1084,7 @@ const ScheduleEvents = (props) => {
               <Col span={24}>
                 <div className="event-dashboard-container">
                     <EventList
+                      endpoints={endpoints}
                       saveEvents={saveEvents}
                       handleEventChange={handleEventChange}
                       numbers={editNumbers}
