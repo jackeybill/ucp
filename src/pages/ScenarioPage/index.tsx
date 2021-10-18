@@ -119,10 +119,8 @@ const ScenarioPage = (props) => {
     const [chartTitle, setChartTitle] = useState('Patients Eligible - 80K(16% of Dataset)')
     const [visibleSOA, setVisibleSOA] = useState(false)
     const [soaResource, setSOAResource] = useState([])
-    const [ieResource, setIEResource] = useState(false)
+    const [ieResource, setIEResource] = useState('')
     const [avgResource, setAvgResource] = useState(false)
-    const [inclusionResource, setInclusionResource] = useState([])
-    const [exclusionResource, setExclusionResource] = useState([])
     const [inclusionResourceAvg, setInclusionResourceAvg] = useState([])
     const [exclusionResourceAvg, setExclusionResourceAvg] = useState([])
 
@@ -226,7 +224,118 @@ const ScenarioPage = (props) => {
       if(props.location.state.trial_id == undefined || props.location.state.trial_id == ''){
         props.history.push({pathname: '/trials'})
       } else {
-       
+        const getTrialById = async () => {
+            const resp = await getStudy(props.location.state.trial_id);
+            console.log("getlist",resp);
+            
+            if(resp.statusCode == 200){
+                const tempRecord = resp.body
+                setTrialRecord(tempRecord)
+                setTrialTitle(tempRecord['trial_alias'])
+                if(tempRecord.similarHistoricalTrials !== undefined){
+                  setSimilarHistoricalTrials(tempRecord.similarHistoricalTrials)
+                }
+                
+                const tempScenarioId = props.location.state.scenarioId
+                const tempEditFlag = props.location.state.editFlag
+                const tempScenarioType = props.location.state.scenarioType
+                const tempScenario = tempRecord.scenarios.find( i=> i['scenario_id'] == tempScenarioId)
+                setScenarioId(tempScenarioId)
+                setEditFlag(tempEditFlag)
+                setScenarioType(tempScenarioType)
+                setScenario(tempScenario)
+
+                console.log('edit scenario for: ' +  tempScenarioId + ': ' +  tempEditFlag)
+
+                if(tempEditFlag && tempScenario['Inclusion Criteria'].Demographics !== undefined
+                  && tempScenario['Inclusion Criteria'].Demographics.Entities !== undefined){
+                    demographicsElements = tempScenario['Inclusion Criteria'].Demographics.Entities
+                    interventionElements = tempScenario['Inclusion Criteria'].Intervention.Entities
+                    medConditionElements = tempScenario['Inclusion Criteria']['Medical Condition'].Entities
+                    labTestElements = tempScenario['Inclusion Criteria']['Lab / Test'].Entities
+                    
+                    excluDemographicsElements = tempScenario['Exclusion Criteria'].Demographics.Entities
+                    excluMedConditionElements = tempScenario['Exclusion Criteria']['Medical Condition'].Entities
+                    excluInterventionElements = tempScenario['Exclusion Criteria'].Intervention.Entities
+                    excluLabTestElements = tempScenario['Exclusion Criteria']['Lab / Test'].Entities
+
+                    //Get inclusion chart info
+                    var inclu = tempScenario["Inclusion Criteria"]
+                    
+                    setProtocolRateData([
+                        {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
+                        {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
+                        {value: formatNumber(inclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
+                        {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
+                    ])
+                    setScreenRateData([
+                        {value: formatNumber(inclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
+                        {value: formatNumber(inclu.Intervention.screen_failure_rate), name: 'Intervention'},
+                        {value: formatNumber(inclu.Demographics.screen_failure_rate), name: 'Demographics'},
+                        {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
+                    ])
+            
+                    var tempScoreA = ''
+                    var tempScoreB = ''
+                        
+                        var score = formatNumber(tempScenario.protocol_amendment_rate)
+                        if(score <= 33){
+                          tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{good|GOOD}'
+                        } else if(score > 33  && score <= 67){
+                          tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{fair|FAIR}'
+                        } else if(score > 67){
+                          tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{poor|POOR}'
+                        }
+
+                        var scoreB = formatNumber(tempScenario.screen_failure_rate)
+                        if(scoreB <= 33){
+                          tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{good|GOOD}'
+                        } else if(scoreB > 33  && scoreB <= 67){
+                          tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{fair|FAIR}'
+                        } else if(scoreB > 67){
+                          tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{poor|POOR}'
+                        }
+
+                        setAmend_avg_rate(tempScoreA)
+                        setScreen_avg_rate(tempScoreB)
+
+                    //Get exclusion chart info
+                    var exclu = tempScenario["Exclusion Criteria"]
+                    
+                    setExcluProtocolRateData([
+                        {value: formatNumber(exclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
+                        {value: formatNumber(exclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
+                        {value: formatNumber(exclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
+                        {value: formatNumber(exclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
+                    ])
+                    setExcluScreenRateData([
+                        {value: formatNumber(exclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
+                        {value: formatNumber(exclu.Intervention.screen_failure_rate), name: 'Intervention'},
+                        {value: formatNumber(exclu.Demographics.screen_failure_rate), name: 'Demographics'},
+                        {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
+                    ])
+            
+                        setExcluAmend_avg_rate(tempScoreA)
+                        setExcluScreen_avg_rate(tempScoreB)
+
+                    setShowChartLabel(true)
+                    setImpactColors(activeChartColors)
+                    setExcluImpactColors(activeChartColors)
+                }
+                
+                if(tempRecord['Therapeutic Area Average']){
+                  setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
+                  setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
+                  setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
+                  setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
+                }
+                
+                if(tempEditFlag){
+                    updateTrial(1)
+                    updateTrial(2)
+                }
+            }
+        };
         getTrialById();
       }
     }, []);
@@ -447,55 +556,21 @@ const ScenarioPage = (props) => {
       if(item.Value === ''){
         tempStr = '-'
       } else if (item.Value.avg_value != '' && item.Value.avg_value != 0) {
-        tempStr = Number(item.Value.avg_value) + " " + item.Value.units
+        tempStr = Number(item.Value.avg_value.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
       } else if (item.Value.avg_lower == 0 && item.Value.avg_upper != 0) {
-        tempStr = "< "+ Number(item.Value.avg_upper)+ " " + item.Value.units
+        tempStr = "< "+ Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
       } else if (item.Value.avg_lower != 0 && item.Value.avg_upper == 0) {
-        tempStr = "> "+ Number(item.Value.avg_lower)+ " " + item.Value.units
+        tempStr = "> "+ Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
       } else if (item.Value.avg_lower != 0 && item.Value.avg_upper != 0) {
         if (Number(item.Value.avg_lower) == Number(item.Value.avg_upper)){
-          tempStr = Number(item.Value.avg_upper) + " " + item.Value.units
-        } else {tempStr = Number(item.Value.avg_lower)+ " - " + Number(item.Value.avg_upper) + " " + item.Value.units}
+          tempStr = Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+        } else {
+          tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " - " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+        }
       } else{
         tempStr = '-'
       }
-      // else {
-      //   var value = item.Value
-      //   if(value instanceof Array){
-      //     if(value.length === 3){
-      //       tempStr = formatNum(value[0]) + ' - ' + formatNum(value[1]) + value[2]
-      //     } else if(value[0] === Number(value[0])){
-      //       tempStr = formatNum(value[0])
-      //       if(value.length > 1){
-      //         tempStr += ' - ' + formatNum(value[1])
-      //       }
-      //     } else {
-      //       var id = value[0].lastIndexOf('.')
-      //       var a = value[0]
-      //       if(id > -1 && id + 2 < a.length){
-      //         a = a.substr(0, id + 3)
-      //       }
-      //       tempStr = a
-      //       if(value.length > 1){
-      //         tempStr += formatNum(value[1])
-      //       }
-      //     }
-      //   } else if(value === Number(value)){
-      //     tempStr = value.toFixed(2)+''
-      //   } else {
-      //     tempStr = value
-      //   }
-      // }
       return tempStr
-    }
-
-    function formatNum(value){
-      var str = value.toString()
-      var id = str.lastIndexOf('.')
-      if(id > -1){
-        str = str.substr(0, id)
-      }
-      return str
     }
 
     const handleExcluOptionSelect = (item, activeType, id, key) =>{
@@ -1706,6 +1781,7 @@ const ScenarioPage = (props) => {
       }
 
       let tempBurdenData = []
+      let patient_burden = 0
       for(const m in burdenMatrixList){
         const visitMatrix = burdenMatrixList[m].map((max) => {
           return max > 0 ? 1 : 0
@@ -1719,6 +1795,16 @@ const ScenarioPage = (props) => {
           currentVisitScore += visitMatrix[c] * visitDimensionalScore[c].Value + excessMatrix[c]
         }
         tempBurdenData.push(currentVisitScore)
+        patient_burden += currentVisitScore
+      }
+
+      let patient_burden_rate = 'GOOD'
+      if (patient_burden > 0 && patient_burden <= 400) {
+        patient_burden_rate = 'GOOD'
+      } else if (patient_burden > 400 && patient_burden <= 600) {
+        patient_burden_rate = 'FAIR'
+      } else if (patient_burden > 600){
+        patient_burden_rate = 'POOR'
       }
 
       let tempCostData = [
@@ -1741,12 +1827,14 @@ const ScenarioPage = (props) => {
       }
 
       specificScenario['Schedule of Events'] = Object.assign(scheduleOfEvents,{
-        'TotalCost': formatCostAvg(totalCost, 1000),
+        'TotalCost': '' + formatCostAvg(totalCost, 1000),
         'CostRate': costBreakdown,
         'CostData': tempCostData,
         'BurdenData': tempBurdenData,
         'BurdenXAxis': tempBurdenXAxis,
-        'Finished': true
+        'Finished': true,
+        'patient_burden': patient_burden,
+        'patient_burden_rate': patient_burden_rate
       })
       return specificScenario
     }
@@ -1969,53 +2057,37 @@ const ScenarioPage = (props) => {
   }
 
   const downloadIE = async () => {
-    let tempInclusionResource = []
-    let tempExclusionResource = []
-    if(!ieResource){
+    if(ieResource == ''){
       setSpinning(true)
       const resp = await getIEResource(similarHistoricalTrials);
       if (resp.statusCode == 200) {
-        setSpinning(false)
-        setIEResource(true)
-        setInclusionResource(JSON.parse(resp.body).inResult)
-        setExclusionResource(JSON.parse(resp.body).exResult)
-        tempInclusionResource = JSON.parse(resp.body).inResult
-        tempExclusionResource = JSON.parse(resp.body).exResult
+        var num = resp.body.lastIndexOf('/')+1
+        let fileName = resp.body.substr(num)
+
+        downloadFile(fileName)
       }
     } else {
-      tempInclusionResource = inclusionResource
-      tempExclusionResource = exclusionResource
+      downloadFile(ieResource)
     }
 
-    //export
-    let str = 'INDIVIDUAL PROTOCOL'
-    str += '\n' + 'I/E' + ',' + 'NCT ID' + ',' + 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Value' + ','
-                + 'Modifier (If Applicable)' + ',' + 'Lower Limit' + ',' + 'Upper Limit' + ',' + 'Units' + ',' + 'Time'
-    for(const id in tempInclusionResource){
-      str += '\n' + 'INCLUSION' + ',' + tempInclusionResource[id].nct + ',"' + tempInclusionResource[id].category +  '","'
-                  + tempInclusionResource[id].raw + '","' + tempInclusionResource[id].standardized + '","' 
-                  + tempInclusionResource[id].value + '","'
-                  + tempInclusionResource[id].modifier +  '","' + tempInclusionResource[id].lower + '","' 
-                  + tempInclusionResource[id].upper + '","' + tempInclusionResource[id].units +  '","'
-                  + tempInclusionResource[id].time +  '"'
+    function downloadFile(fileName) {
+      var request = new XMLHttpRequest()
+      request.open('GET', 'https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/summary/'+fileName)
+      request.setRequestHeader('Content-Disposition', 'attachement;filename='+fileName)
+      request.onload = function(){
+        var binaryData = []; 
+        binaryData.push(this.response); 
+        var url = window.URL.createObjectURL(new Blob(binaryData, {type: "application / zip"}));
+        var a = document.createElement('a')
+        document.body.appendChild(a)
+        a.href = url
+        a.download = fileName
+        a.click()
+        setSpinning(false)
+        setIEResource(fileName)
+      }
+      request.send()
     }
-    for(const idx in tempExclusionResource){
-      str += '\n' + 'EXCLUSION' + ',' + tempExclusionResource[idx].nct + ',"' + tempExclusionResource[idx].category +  '","'
-                  + tempExclusionResource[idx].raw + '","' + tempExclusionResource[idx].standardized + '","' 
-                  + tempExclusionResource[idx].value + '","'
-                  + tempExclusionResource[idx].modifier +  '","' + tempExclusionResource[idx].lower + '","' 
-                  + tempExclusionResource[idx].upper + '","' + tempExclusionResource[idx].units +  '","'
-                  + tempExclusionResource[idx].time +  '"'
-    }
-
-    let exportContent = "\uFEFF";
-    let blob = new Blob([exportContent + str], {
-      type: "text/plain;charset=utf-8"
-    });
-
-    const date = Date().split(" ");
-    const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
-    FileSaver.saveAs(blob, `IE_Resource_${dateStr}.csv`);
   }
 
   const downloadAverage = async () => {
@@ -2107,7 +2179,35 @@ const ScenarioPage = (props) => {
                     <Step title="Add Schedule of Events"/>
                 </Steps>
             </Col>
-            <Col span={10} className={`center ${ collapsible ? "none-click" : "" }`} >
+            {/* delete this Col for showing  Enrollment Feasibility*/}
+             <Col span={10} className={`center ${ collapsible ? "none-click" : "" }`} >
+                {activeTabKey === '1'?(
+                    <>
+                        <Button type="primary" className="step-btn" onClick={() => setActiveTabKey('2')}>
+                            NEXT:EXCLUSION CRITERIA
+                        </Button>
+                    </>
+                ):(activeTabKey === '2'&&(processStep === 0?(
+                    <>
+                        <Button type="primary" className="step-btn" onClick={() => setProcessStep(1)}>
+                            NEXT:ADD SCHEDULE OF EVENTS
+                        </Button>
+                        <Button className="view-btn step-btn" onClick={() => setActiveTabKey('1')}>
+                            PREV:INCLUSION CRITERIA
+                        </Button>
+                    </>):(
+                      <>
+                      <Button type="primary" className="step-btn"  onClick={()=> setSubmitType(2)}>
+                          SAVE AND FINISH LATER
+                      </Button>
+                      <Button className="view-btn step-btn" onClick={() => setSubmitType(1)}>
+                          PREV:EXCLUSION CRITERIA
+                      </Button>
+                  </>
+                    )
+                ))}
+            </Col>
+            {/* <Col span={10} className={`center ${ collapsible ? "none-click" : "" }`} >
                 {activeTabKey === '1'?(
                     <>
                         <Button type="primary" className="step-btn" onClick={() => setActiveTabKey('2')}>
@@ -2143,7 +2243,7 @@ const ScenarioPage = (props) => {
                         </Button>
                     </>
                 )))}
-            </Col>
+            </Col> */}
             
         </Row>
       </div>
@@ -2736,7 +2836,7 @@ const ScenarioPage = (props) => {
                 </Col>
               </Row>
             </TabPane>
-            <TabPane tab="Enrollment Feasibility" key="3" disabled={collapsible}>
+            {/* <TabPane tab="Enrollment Feasibility" key="3" disabled={collapsible}>
             <Row>
                 <Col span={5}>
                 </Col>
@@ -2800,7 +2900,7 @@ const ScenarioPage = (props) => {
                 </Col>
                 <Col span={5}></Col>
               </Row>
-            </TabPane>
+            </TabPane> */}
           </Tabs>
         </div>
       </div>
