@@ -119,10 +119,8 @@ const ScenarioPage = (props) => {
     const [chartTitle, setChartTitle] = useState('Patients Eligible - 80K(16% of Dataset)')
     const [visibleSOA, setVisibleSOA] = useState(false)
     const [soaResource, setSOAResource] = useState([])
-    const [ieResource, setIEResource] = useState(false)
+    const [ieResource, setIEResource] = useState('')
     const [avgResource, setAvgResource] = useState(false)
-    const [inclusionResource, setInclusionResource] = useState([])
-    const [exclusionResource, setExclusionResource] = useState([])
     const [inclusionResourceAvg, setInclusionResourceAvg] = useState([])
     const [exclusionResourceAvg, setExclusionResourceAvg] = useState([])
 
@@ -2059,55 +2057,37 @@ const ScenarioPage = (props) => {
   }
 
   const downloadIE = async () => {
-    let tempInclusionResource = []
-    let tempExclusionResource = []
-    if(!ieResource){
+    if(ieResource == ''){
       setSpinning(true)
       const resp = await getIEResource(similarHistoricalTrials);
       if (resp.statusCode == 200) {
-        console.log(JSON.parse(resp.body));
+        var num = resp.body.lastIndexOf('/')+1
+        let fileName = resp.body.substr(num)
 
-        setSpinning(false)
-        setIEResource(true)
-        setInclusionResource(JSON.parse(resp.body).inResult)
-        setExclusionResource(JSON.parse(resp.body).exResult)
-        tempInclusionResource = JSON.parse(resp.body).inResult
-        tempExclusionResource = JSON.parse(resp.body).exResult
+        downloadFile(fileName)
       }
     } else {
-      tempInclusionResource = inclusionResource
-      tempExclusionResource = exclusionResource
+      downloadFile(ieResource)
     }
 
-    //export
-    let str = 'INDIVIDUAL PROTOCOL'
-    str += '\n' + 'I/E' + ',' + 'NCT ID' + ',' + 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Value' + ','
-                + 'Modifier (If Applicable)' + ',' + 'Lower Limit' + ',' + 'Upper Limit' + ',' + 'Units' + ',' + 'Time'
-    for(const id in tempInclusionResource){
-      str += '\n' + 'INCLUSION' + ',' + tempInclusionResource[id].nct + ',"' + tempInclusionResource[id].category +  '","'
-                  + tempInclusionResource[id].raw + '","' + tempInclusionResource[id].standardized + '","' 
-                  + tempInclusionResource[id].value + '","'
-                  + tempInclusionResource[id].modifier +  '","' + tempInclusionResource[id].lower + '","' 
-                  + tempInclusionResource[id].upper + '","' + tempInclusionResource[id].units +  '","'
-                  + tempInclusionResource[id].time +  '"'
+    function downloadFile(fileName) {
+      var request = new XMLHttpRequest()
+      request.open('GET', 'https://iso-data-zone.s3.amazonaws.com/iso-service-dev/summary/'+fileName)
+      request.setRequestHeader('Content-Disposition', 'attachement;filename='+fileName)
+      request.onload = function(){
+        var binaryData = []; 
+        binaryData.push(this.response); 
+        var url = window.URL.createObjectURL(new Blob(binaryData, {type: "application / zip"}));
+        var a = document.createElement('a')
+        document.body.appendChild(a)
+        a.href = url
+        a.download = fileName
+        a.click()
+        setSpinning(false)
+        setIEResource(fileName)
+      }
+      request.send()
     }
-    for(const idx in tempExclusionResource){
-      str += '\n' + 'EXCLUSION' + ',' + tempExclusionResource[idx].nct + ',"' + tempExclusionResource[idx].category +  '","'
-                  + tempExclusionResource[idx].raw + '","' + tempExclusionResource[idx].standardized + '","' 
-                  + tempExclusionResource[idx].value + '","'
-                  + tempExclusionResource[idx].modifier +  '","' + tempExclusionResource[idx].lower + '","' 
-                  + tempExclusionResource[idx].upper + '","' + tempExclusionResource[idx].units +  '","'
-                  + tempExclusionResource[idx].time +  '"'
-    }
-
-    let exportContent = "\uFEFF";
-    let blob = new Blob([exportContent + str], {
-      type: "text/plain;charset=utf-8"
-    });
-
-    const date = Date().split(" ");
-    const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
-    FileSaver.saveAs(blob, `IE_Resource_${dateStr}.csv`);
   }
 
   const downloadAverage = async () => {
