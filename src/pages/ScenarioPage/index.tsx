@@ -2071,22 +2071,9 @@ const ScenarioPage = (props) => {
     }
 
     function downloadFile(fileName) {
-      var request = new XMLHttpRequest()
-      request.open('GET', 'https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/summary/'+fileName)
-      request.setRequestHeader('Content-Disposition', 'attachement;filename='+fileName)
-      request.onload = function(){
-        var binaryData = []; 
-        binaryData.push(this.response); 
-        var url = window.URL.createObjectURL(new Blob(binaryData, {type: "application / zip"}));
-        var a = document.createElement('a')
-        document.body.appendChild(a)
-        a.href = url
-        a.download = fileName
-        a.click()
-        setSpinning(false)
-        setIEResource(fileName)
-      }
-      request.send()
+      window.open('https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/summary/'+fileName, '_blank')
+      setSpinning(false)
+      setIEResource(fileName)
     }
   }
 
