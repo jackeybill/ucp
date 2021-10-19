@@ -19,7 +19,7 @@ const { Panel } = Collapse;
 const { TabPane } = Tabs;
 const { Step } = Steps;
 
-const frequencyFilter = [80, 100]
+const frequencyFilter = [0, 100]
 const inActiveChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA']
 const activeChartColors = ['#E53500', '#F27A26', '#F5924D', '#FBD0B3']
 const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2020}

@@ -75,6 +75,7 @@ const ScheduleEvents = (props) => {
   );
   const [editNumbers, setEditNumbers] = useState({visitNumber: 9, weekNumber: 26});
   const [weeks, setWeeks] = useState([1,4,7,10,13,16,19,22,26])
+  // SOA event frequency
   const [minV, setMinV] = useState(80)
   const [maxV, setMaxV] = useState(100)
   const [visibleSlider, setVisibleSlider] = useState(false)
