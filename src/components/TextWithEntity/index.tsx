@@ -430,7 +430,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
       id: `m-${tempWordsCollection[startWordObjIdx].id}`,
       type: "mark", //'span'
       text: "",
-      category: currentLabel,
+      category: "",
       children: selectedWordObj,
       score:1,
     };

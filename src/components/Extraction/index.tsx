@@ -232,6 +232,7 @@ const Extraction = (props: any, ref) => {
     if (!currentLabel) return;
     const tempWordsCollection = wordsCollection.slice(0);
     tempWordsCollection[targetIdx].category = currentLabel;
+    setCurrentLabel("")
     tempWordsCollection[targetIdx].score = currentScore;
     updateWordsCollection(tempWordsCollection);
 
