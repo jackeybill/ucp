@@ -6,10 +6,11 @@ import * as createActions from "../../../actions/createTrial.js";
 
 import "./index.scss";
 
-
 const TrialEndpoits = (props: any) => {
   const [primary, setPrimary] = useState(props.newTrial.primary_endpoints);
-  const [secondary, setSecondary] = useState(props.newTrial.secondary_endpoints);
+  const [secondary, setSecondary] = useState(
+    props.newTrial.secondary_endpoints
+  );
   const [tertiary, setTertiary] = useState(props.newTrial.tertiary_endpoints);
   const [primaryValue, setPrimaryValue] = useState("");
   const [secondaryValue, setSecondaryValue] = useState("");
@@ -27,23 +28,26 @@ const TrialEndpoits = (props: any) => {
       const tmp = primary.slice(0);
       tmp.push(primaryValue);
       setPrimary(tmp);
+      setPrimaryValue("");
       props.createTrial({
-        primary_endpoints:tmp,
-      })
+        primary_endpoints: tmp,
+      });
     } else if (key == "secondary") {
       const tmp = secondary.slice(0);
       tmp.push(secondaryValue);
       setSecondary(tmp);
+      setSecondaryValue("");
       props.createTrial({
-        secondary_endpoints: tmp,    
-      })
+        secondary_endpoints: tmp,
+      });
     } else if (key == "tertiary") {
       const tmp = tertiary.slice(0);
       tmp.push(tertiaryValue);
       setTertiary(tmp);
-      props.createTrial({ 
-        tertiary_endpoints:tmp
-      })
+      setTertiaryValue("");
+      props.createTrial({
+        tertiary_endpoints: tmp,
+      });
     }
   };
 
@@ -52,23 +56,23 @@ const TrialEndpoits = (props: any) => {
       const tmp = primary.slice(0);
       tmp.splice(idx, 1);
       setPrimary(tmp);
-       props.createTrial({
-        primary_endpoints:tmp,
-      })
+      props.createTrial({
+        primary_endpoints: tmp,
+      });
     } else if (key == "secondary") {
       const tmp = secondary.slice(0);
       tmp.splice(idx, 1);
       setSecondary(tmp);
       props.createTrial({
-        secondary_endpoints: tmp,    
-      })
+        secondary_endpoints: tmp,
+      });
     } else if (key == "tertiary") {
       const tmp = tertiary.slice(0);
       tmp.splice(idx, 1);
       setTertiary(tmp);
-      props.createTrial({ 
-        tertiary_endpoints:tmp
-      })
+      props.createTrial({
+        tertiary_endpoints: tmp,
+      });
     }
   };
 
@@ -76,10 +80,14 @@ const TrialEndpoits = (props: any) => {
     <div className="trial-endpoints-cotainer">
       <div className="endpoints-item">
         <div className="add-box">
-          <span className="endpoint-title">
-            Primary Endpoints 
+          <span className="endpoint-title">Primary Endpoints</span>
+          <span
+            className={`count count-icon ${
+              primary.length > 0 ? "active-count" : "inactive-count"
+            }`}
+          >
+            {primary.length}
           </span>
-          <span className={`count count-icon ${primary.length>0?"active-count":"inactive-count"}`}>{primary.length}</span>
           <div className="add-endpoint">
             <Input
               allowClear
@@ -87,7 +95,6 @@ const TrialEndpoits = (props: any) => {
               value={primaryValue}
               style={{ width: 200, height: 30 }}
               onChange={(e) => handleChange("primary", e)}
-              
             />
             <Button type="primary" onClick={() => handleAdd("primary")}>
               ADD
@@ -108,10 +115,14 @@ const TrialEndpoits = (props: any) => {
       </div>
       <div className="endpoints-item">
         <div className="add-box">
-          <span className="endpoint-title">
-            Secondary Endpoints
+          <span className="endpoint-title">Secondary Endpoints</span>
+          <span
+            className={`count count-icon ${
+              secondary.length > 0 ? "active-count" : "inactive-count"
+            }`}
+          >
+            {secondary.length}
           </span>
-          <span className={`count count-icon ${secondary.length>0?"active-count":"inactive-count"}`}>{secondary.length}</span>
           <div className="add-endpoint">
             <Input
               allowClear
@@ -121,7 +132,7 @@ const TrialEndpoits = (props: any) => {
               onChange={(e) => handleChange("secondary", e)}
             />
             <Button type="primary" onClick={() => handleAdd("secondary")}>
-            ADD
+              ADD
             </Button>
           </div>
         </div>
@@ -139,10 +150,14 @@ const TrialEndpoits = (props: any) => {
       </div>
       <div className="endpoints-item">
         <div className="add-box">
-          <span className="endpoint-title">
-            Tertiary/Exploratory Endpoints
+          <span className="endpoint-title">Tertiary/Exploratory Endpoints</span>
+          <span
+            className={`count count-icon ${
+              tertiary.length > 0 ? "active-count" : "inactive-count"
+            }`}
+          >
+            {tertiary.length}
           </span>
-          <span className={`count count-icon ${tertiary.length>0?"active-count":"inactive-count"}`}>{tertiary.length}</span>
           <div className="add-endpoint">
             <Input
               allowClear
@@ -152,7 +167,7 @@ const TrialEndpoits = (props: any) => {
               onChange={(e) => handleChange("tertiary", e)}
             />
             <Button type="primary" onClick={() => handleAdd("tertiary")}>
-            ADD
+              ADD
             </Button>
           </div>
         </div>
@@ -172,16 +187,11 @@ const TrialEndpoits = (props: any) => {
   );
 };
 
-
 const mapDispatchToProps = (dispatch) => ({
   createTrial: (val) => dispatch(createActions.createTrial(val)),
 });
 
 const mapStateToProps = (state) => ({
   newTrial: state.trialReducer,
-
 });
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TrialEndpoits);
+export default connect(mapStateToProps, mapDispatchToProps)(TrialEndpoits);
