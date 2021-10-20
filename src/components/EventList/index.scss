@@ -110,7 +110,7 @@
 
       .events-wrapper {
         display: flex;
-        flex: 1.5;
+        flex: 1.26;
         font-size: 14px;
 
         .custom-event{
@@ -219,6 +219,7 @@
           padding: 5px 0;
         }
         .cost {
+          font-weight: 700;
           // padding-left: 20px;
         }
       }

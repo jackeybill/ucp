@@ -587,7 +587,7 @@ const EventList = (props) => {
               <div className="colunm-row week-row e-row">
                 <div className="f-2">My Events</div>
                 <div className="f-2">Trial Endpoint</div>
-                <div className="f-1-small sortable-item">Cost per patient
+                <div className="f-1-small sortable-item">Cost/patient  
                 <span className="sort-icon-wrapper">
                     <CaretUpOutlined onClick={() => setSort("ascend")}  style={{color:sort=="ascend"?"#ca4a04":"rgb(85,85,85)"}}/>
                     <CaretDownOutlined onClick={ ()=>setSort("descend")} style={{color:sort=="descend"?"#ca4a04":"rgb(85,85,85)"}}/>
@@ -612,7 +612,10 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${LABS} (${labs.length})`} {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,LABS)}>Add Event</span> } 
+                    <span style={{width: "183px", display:"inline-block"}}>
+                    {`${LABS} (${labs.length})`} 
+                    </span>
+                    {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,LABS)}>Add Event</span> } 
                   </div>
                   <div className="cost">
                   $ {getTotalCost(labs)}
@@ -695,7 +698,10 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${PHYSICAL_EXAMINATION} (${examination.length})`} {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,PHYSICAL_EXAMINATION)}>Add Event</span> }
+                    <span style={{width: "183px", display:"inline-block"}}>
+                    {`${PHYSICAL_EXAMINATION} (${examination.length})`}
+                    </span>
+                     {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,PHYSICAL_EXAMINATION)}>Add Event</span> }
                   </div>
                   <div className="cost">
                     $ {getTotalCost(examination)}
@@ -778,7 +784,10 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${PROCEDURES} (${procedures.length})`} {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,PROCEDURES)}>Add Event</span>}
+                  <span style={{width: "183px", display:"inline-block"}}>
+                    {`${PROCEDURES} (${procedures.length})`} 
+                  </span>   
+                    {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,PROCEDURES)}>Add Event</span>}
                   </div>
                   <div className="cost">
                      $ {getTotalCost(procedures)}
@@ -862,7 +871,10 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${QUESTIONNAIRES} (${questionnaire.length})`} {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,QUESTIONNAIRES)}>Add Event</span>}
+                    <span style={{width: "183px", display:"inline-block"}}>
+                    {`${QUESTIONNAIRES} (${questionnaire.length})`}
+                    </span>
+                    {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,QUESTIONNAIRES)}>Add Event</span>}
                   </div>
                   <div className="cost">
                      $ {getTotalCost(questionnaire)}                 
@@ -946,7 +958,10 @@ const EventList = (props) => {
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    {`${STUDY_PROCEDURES} (${studyProcedures.length})`} {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,STUDY_PROCEDURES)}>Add Event</span>}
+                    <span style={{width: "183px", display:"inline-block"}}>
+                    {`${STUDY_PROCEDURES} (${studyProcedures.length})`}
+                    </span> 
+                    {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,STUDY_PROCEDURES)}>Add Event</span>}
                   </div>
                   <div className="cost">
                    $ {getTotalCost(studyProcedures)}   
