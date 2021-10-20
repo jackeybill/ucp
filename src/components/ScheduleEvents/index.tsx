@@ -452,6 +452,8 @@ const ScheduleEvents = (props) => {
         'Finished': eventCriteria.Finished,
         'WeekNumber': editNumbers.weekNumber
       }))
+      console.log("eventCriteria.TotalCost",eventCriteria.TotalCost);
+      
       return;
     }
     setPatientChartColor(aChartColors)
@@ -632,12 +634,16 @@ const ScheduleEvents = (props) => {
     }
   }
 
+  function roundFun(value, n) {
+      return Math.round(value*Math.pow(10,n))/Math.pow(10,n);
+  }
+
   function formatCostAvg(totalCost, divisor){
     if(totalCost === 0){
       return 0
     } else {
       let avg = Math.ceil(totalCost/divisor*1000)
-      return avg/1000
+      return roundFun(avg/1000, 2)
     }
   }
   function formatBurdenAvg(totalCost, divisor){
