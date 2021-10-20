@@ -67,49 +67,69 @@ const Dropzone = (props: any) => {
       if (f.type !== "application/pdf") {
         continue;
       }
-      const base64 = await toBase64(f);
+      const base64 = await toBase64(f);  
+      const fileBytes = base64.split(",")[1]
+      const byteLength = base64.split(",")[1].length
+      console.log("File byte length: " + byteLength);
+
       if (nctID === "") {
         nctID = f.name.split(".")[0].toString()
       }
-      // if (protocolName === "") {
-      //   protocolName = f.name
-      // }
-      const res = await uploadFile(nctID, protocolName, f.name, PATH, base64.split(",")[1]);
-      console.log(res);
-      
-      if (res.body === "success") {
-        // await sleep(5000)
-        let extractedRes = null;
-        let times = 1;
-        do {
-          console.log(`waiting ${10 + 10 * times}s`);
-          await sleep(10000 + times * 5000 *2);
-          times++;
-          extractedRes = await extractText(PATH + f.name);
-          try {
-            const result = JSON.parse(extractedRes.body);
-            // console.log("--upload new file--", result);
-            const availableTabs: string[] = [];
-            form.setFieldsValue({
-              nctID: nctID === ""?f.name.split(".")[0].toString():nctID,
-              protocolName: protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
-            });
-            props.readFile({
-              file: result,
-              protocolName:protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
-              fileName:f.name,
-            });
-            fileList.push({ 'nctID': nctID, 'protocolName': protocolName, filename: f.name, result, availableTabs });
-            // props.history.push("/protocol-sections");            
-          } catch (e) {
-            console.error(e);
-          }
-          if (times > 5) {
-            setshowError(true);
-            break;
-          }
-        } while (extractedRes.statusCode !== 200);
+      // split file every 5MB if file larger than 5MB
+      const byteBenchmark= 1024*1024*5
+      let res ;
+
+      if(byteLength>byteBenchmark){
+        const fileParts = []      
+        const parts = Math.ceil(byteLength/byteBenchmark) 
+        for(let i = 0; i<=parts-1;i++){
+          const section = fileBytes.slice(byteBenchmark*i,byteBenchmark*(i+1))
+          fileParts.push(section)
+        }
+        console.log('file splited:',fileParts.join("").length)
+
+        for(let i = 0; i<fileParts.length;i++){
+          res = await uploadFile(nctID, protocolName, f.name, PATH, fileParts[i], `${i}-${fileParts.length}`);
+        }
+
+      }else{
+        res = await uploadFile(nctID, protocolName, f.name, PATH, fileBytes);
       }
+      console.log(res);
+        
+        if (res.body === "success") {
+          // await sleep(5000)
+          let extractedRes = null;
+          let times = 1;
+          do {
+            console.log(`waiting ${10 + 10 * times}s`);
+            await sleep(10000 + times * 5000 *2);
+            times++;
+            extractedRes = await extractText(PATH + f.name);
+            try {
+              const result = JSON.parse(extractedRes.body);
+              // console.log("--upload new file--", result);
+              const availableTabs: string[] = [];
+              form.setFieldsValue({
+                nctID: nctID === ""?f.name.split(".")[0].toString():nctID,
+                protocolName: protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
+              });
+              props.readFile({
+                file: result,
+                protocolName:protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
+                fileName:f.name,
+              });
+              fileList.push({ 'nctID': nctID, 'protocolName': protocolName, filename: f.name, result, availableTabs });
+              // props.history.push("/protocol-sections");            
+            } catch (e) {
+              console.error(e);
+            }
+            if (times > 5) {
+              setshowError(true);
+              break;
+            }
+          } while (extractedRes.statusCode !== 200);
+        }
     }
     setLoading(false);
   }, []);
