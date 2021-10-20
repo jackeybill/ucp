@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Tabs, Radio, Space, Input, Button } from "antd";
+import React, { useState} from "react";
+import { Input, Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
 import * as createActions from "../../../actions/createTrial.js";
