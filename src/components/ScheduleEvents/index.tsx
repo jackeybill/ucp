@@ -83,7 +83,7 @@ const ScheduleEvents = (props) => {
   });
   const [weeks, setWeeks] = useState([1,4,7,10,13,16,19,22,26])
   const [visits, setVisits] = useState([])
-  const [minV, setMinV] = useState(80)
+  const [minV, setMinV] = useState(0)
   const [maxV, setMaxV] = useState(100)
   const [visibleSlider, setVisibleSlider] = useState(false)
   const [eventCriteria, setEventCriteria] = useReducer(
