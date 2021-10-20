@@ -33,8 +33,8 @@ const defaultCostValue = [
 const defaultBurdenValue = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 const initialNumber = {
-  visitNumber: 8,
-  weekNumber: 26
+  visitNumber: 0,
+  weekNumber: 0
 }
 
 const initEventCriteria = {
@@ -73,13 +73,13 @@ const ScheduleEvents = (props) => {
   const [activeCollapse, setActiveCollapse] = useState(['1'])
   const [numbers, setNumbers] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    { visitNumber: eventsConfigure?.Visits || 9,
-      weekNumber: eventsConfigure.Weeks?eventsConfigure.Weeks[eventsConfigure.Weeks?.length-1]: 26
+    { visitNumber: eventsConfigure?.Visits || 0,
+      weekNumber: eventsConfigure.Weeks?eventsConfigure.Weeks[eventsConfigure.Weeks?.length-1]: 0
      }
   );
   const [editNumbers, setEditNumbers] = useState({
-    visitNumber: eventsConfigure?.Visits || 9,
-    weekNumber:eventsConfigure.Weeks?eventsConfigure.Weeks[eventsConfigure.Weeks?.length-1]: 26
+    visitNumber: eventsConfigure?.Visits || 0,
+    weekNumber:eventsConfigure.Weeks?eventsConfigure.Weeks[eventsConfigure.Weeks?.length-1]: 0
   });
   const [weeks, setWeeks] = useState([1,4,7,10,13,16,19,22,26])
   const [visits, setVisits] = useState([])
@@ -181,6 +181,18 @@ const ScheduleEvents = (props) => {
   }
 
   const onStepWeek = (value: number, info: { offset: number, type: 'up' | 'down' }) => {
+    setNumbers({
+      ['weekNumber']: value
+    });
+  }
+
+  const onChangeVisit = (value: number) => {
+    setNumbers({
+      ['visitNumber']: value
+    });
+  }
+  
+  const onChangeWeek = (value: number) => {
     setNumbers({
       ['weekNumber']: value
     });
@@ -1366,11 +1378,11 @@ const ScheduleEvents = (props) => {
         <br/>
         <Row className="modal-filed">
           <Col span={12} className="label"><span>Number of Visits</span></Col>
-          <Col span={12} className="input-number"><InputNumber min={1} step={1} onStep={onStepVisit} value={numbers.visitNumber} /></Col>
+          <Col span={12} className="input-number"><InputNumber min={1} step={1} onStep={onStepVisit} onChange={onChangeVisit} value={numbers.visitNumber} /></Col>
         </Row>
         <Row className="modal-filed">
           <Col span={12} className="label"><span>Number of Weeks</span></Col>
-          <Col span={12} className="input-number"><InputNumber min={1} step={1} onStep={onStepWeek} value={numbers.weekNumber} /></Col>
+          <Col span={12} className="input-number"><InputNumber min={1} step={1} onStep={onStepWeek} onChange={onChangeWeek} value={numbers.weekNumber} /></Col>
         </Row>
         <Row style={{justifyContent: 'center', paddingTop: '20px'}}>
           <Button type="primary" className="step-btn create-btn" onClick={handleOk}>CREATE</Button>
