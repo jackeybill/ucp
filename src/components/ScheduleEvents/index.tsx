@@ -99,6 +99,7 @@ const ScheduleEvents = (props) => {
   const [burdenXAxis, setBurdenXAxis] = useState(['1', '2', '3', '4', '5', '6', '7', '8', '9'])
   const [showTooltip, setShowTooltip] = useState(false)
   const [submitType, setSubmitType] = useState(0)
+  const [totalBurden, setTotalBurden] = useState(0)
 
   //Event Libs
   //Original data from backend
@@ -188,6 +189,7 @@ const ScheduleEvents = (props) => {
             setPatientRate('{p|$'+ eventsConfigure.TotalCost +'K}\n{'+eventsConfigure.CostRate + '|' + eventsConfigure.CostRate + '}')
             setCostData(eventsConfigure.CostData)
             setBurdenData(eventsConfigure.BurdenData)
+            setTotalBurden(sumOfArr(eventsConfigure.BurdenData))
             setBurdenXAxis(eventsConfigure.BurdenXAxis)
             if(eventsConfigure.CostRate.length > 0){
               setShowTooltip(true)
@@ -235,6 +237,16 @@ const ScheduleEvents = (props) => {
     return filteredLibs
   }
 
+  const sumOfArr = (arr) => {
+    if(Array.isArray(arr)){
+       let  arrSum = 0
+       arr.forEach((item,index) => {
+        arrSum+=item
+       })
+       return arrSum
+    } 
+}
+
   const panelHeader = () => {
     return (
         <div className="event-panelHeader">
@@ -256,7 +268,7 @@ const ScheduleEvents = (props) => {
 
   const burdenOption = {
     title : {
-      text: 'Patient Burden',
+      text: 'Patient Burden Total:' + totalBurden,
       subtext: burdenSubTitle,
       x:'left',
       y:'center',
@@ -583,6 +595,7 @@ const ScheduleEvents = (props) => {
     setPatientRate('{p|$'+ formatCostAvg(totalCost, 1000) +'K}\n{' +costBreakdown+ '|' + costBreakdown + '}')
     setCostData(tempCostData)
     setBurdenData(tempBurdenData)
+    setTotalBurden(sumOfArr(tempBurdenData))
     setBurdenXAxis(tempBurdenXAxis)
     setShowTooltip(true)
 
