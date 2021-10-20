@@ -99,6 +99,7 @@ const ScheduleEvents = (props) => {
   const [costSubTitle, setCostSubTitle] = useState('')
   const [showPatientLabel, setShowPatientLabel] = useState(false)
   const [patientRate, setPatientRate] = useState('{p|$9.4K}\n{good|GOOD}')
+  const [totalBurden, setTotalBurden] = useState(0)
 
   //Patirnt Burden Chart
   const [burdenData, setBurdenData] = useState(defaultBurdenValue)
@@ -184,6 +185,16 @@ const ScheduleEvents = (props) => {
       ['weekNumber']: value
     });
   }
+
+  const sumOfArr = (arr) => {
+    if(Array.isArray(arr)){
+       let  arrSum = 0
+       arr.forEach((item,index) => {
+        arrSum+=item
+       })
+       return arrSum
+    } 
+}
 
   function excluCallback(key) {
   }
@@ -276,6 +287,7 @@ const ScheduleEvents = (props) => {
             setPatientRate('{p|$'+ eventsConfigure.TotalCost +'K}\n{'+eventsConfigure.CostRate + '|' + eventsConfigure.CostRate + '}')
             setCostData(eventsConfigure.CostData)
             setBurdenData(eventsConfigure.BurdenData)
+            setTotalBurden(sumOfArr(eventsConfigure.BurdenData))
             setBurdenXAxis(eventsConfigure.BurdenXAxis)
             //init Activities by Modality chart data
            
@@ -371,7 +383,7 @@ const ScheduleEvents = (props) => {
 
   const burdenOption = {
     title : {
-      text: 'Patient Burden',
+      text: 'Patient Burden Total:'+totalBurden,
       subtext: burdenSubTitle,
       x:'center',
       y:'25%',
@@ -800,6 +812,7 @@ const ScheduleEvents = (props) => {
     setPatientRate('{p|$'+ formatCostAvg(totalCost, 1000) +'K}\n{' +costBreakdown+ '|' + costBreakdown + '}')
     setCostData(tempCostData)
     setBurdenData(tempBurdenData)
+    setTotalBurden(sumOfArr(tempBurdenData))
     setBurdenXAxis(tempBurdenXAxis)
     setShowTooltip(true)
 
