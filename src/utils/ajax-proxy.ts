@@ -1,14 +1,14 @@
 import { BACKEND_HOST, TOPIC_ANALYSIS, RELATIONSHIP, PA_HOST, PA_HOST_EMAIL, PWC_LOGIN_URL } from '../constants'
 import moment from 'moment';
 
-export const uploadFile = async (nctID: string, protocolName: string, filename: string, path: string, base64: any) => {
+export const uploadFile = async (nctID: string, protocolName: string, filename: string, path: string, base64: any,part?:any) => {
   const response = await fetch(BACKEND_HOST, {
     method: 'POST',
     headers: {
       'Access-Control-Request-Method': 'POST',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ 'nctID': nctID, 'protocolName': protocolName, 'file': filename, 'path': path, 'name': base64 })
+    body: JSON.stringify({ 'nctID': nctID, 'protocolName': protocolName, 'file': filename, 'path': path, 'name': base64,'part':part })
   })
 
   return await response.json();
