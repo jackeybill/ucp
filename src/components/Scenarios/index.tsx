@@ -24,6 +24,9 @@ const SceneriosDashbaord = (props: any) => {
   const [scenarioType, setScenarioType] = useState();
   const [scenarioId, setScenarioId] = useState('');
   const [editFlag, setEditFlag] = useState(false);
+  const [CostAvg, setCostAvg] = useState('');
+  const [BurdenAvg, setBurdenAvg] = useState('');
+  const [CostAvgValue, setCostAvgValue] = useState('');
   const [scenario, setScenario] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     { ...initialStates }
@@ -32,7 +35,32 @@ const SceneriosDashbaord = (props: any) => {
  
   useEffect(() => {
     setScenarioList(JSON.parse(JSON.stringify(props.record.scenarios)))
+
+    const getAvgCost = async () => {
+      if(props.record.CostAvg === undefined || props.record.CostAvg === 0){
+        const response = await getEventAverageCost(props.record.similarHistoricalTrials);
+        if(response.statusCode === 200){
+          setCostAvg(JSON.parse(response.body).Cost)
+          setBurdenAvg(JSON.parse(response.body).PB)
+          setCostAvgValue('$' + formatCostAvg(props.record.CostAvg,2) +'K')
+        }
+      } else {
+        setCostAvg(props.record.CostAvg)
+        setBurdenAvg(props.record.BurdenAvg)
+        setCostAvgValue('$' + formatCostAvg(props.record.CostAvg,1000) +'K')
+      }
+    }
+    getAvgCost();
   }, [props.record.scenarios])
+
+  function formatCostAvg(totalCost, divisor){
+    if(totalCost === 0){
+      return 0
+    } else {
+      let avg = Math.ceil(totalCost/divisor*1000)
+      return avg/1000
+    }
+  }
 
   const editScenario = (s) =>{
     setScenarioId(s['scenario_id'])
@@ -79,11 +107,8 @@ const SceneriosDashbaord = (props: any) => {
       const tempTrial = props.record
       tempTrial.scenarios = tempScenarios
       if(tempTrial.CostAvg === undefined || tempTrial.CostAvg === 0){
-        const response = await getEventAverageCost(tempTrial.similarHistoricalTrials);
-        if(response.statusCode === 200){
-          tempTrial.CostAvg = JSON.parse(response.body).Cost
-          tempTrial.BurdenAvg = JSON.parse(response.body).PB
-        }
+        tempTrial.CostAvg = CostAvg
+        tempTrial.BurdenAvg = BurdenAvg
       }
 
       const resp = await updateStudy(tempTrial);
@@ -245,12 +270,12 @@ const SceneriosDashbaord = (props: any) => {
                                <span className={`status ${s["screen_failure_rate_state"]}`}>{s["screen_failure_rate_state"]}</span>
                             </div>
                             <div>
-                              {s["patient_burden"]}                          
-                               <span className={`status ${s["patient_burden_state"]}`}>{s["patient_burden_state"]}</span>
+                              {s["Schedule of Events"]["patient_burden"]}                  
+                               <span className={`status ${s["Schedule of Events"]["patient_burden_rate"]}`}>{s["Schedule of Events"]["patient_burden_rate"]}</span>
                             </div>
                             <div>
-                              {s["cost"]}                        
-                               <span className={`status ${s["cost_state"]}`}>{s["cost_state"]}</span>
+                            {s["Schedule of Events"]["TotalCost"]?(<span>${s["Schedule of Events"]["TotalCost"]}K</span>):null}                  
+                               <span className={`status ${s["Schedule of Events"]["CostRate"]}`}>{s["Schedule of Events"]["CostRate"]}</span>
                             </div>
                             <div>
                               {
@@ -298,8 +323,8 @@ const SceneriosDashbaord = (props: any) => {
                   <div className="item-values average">
                     <div>{props.record['Therapeutic Area Average'].protocol_amendment_rate }</div>
                     <div>{props.record['Therapeutic Area Average'].screen_failure_rate }</div>
-                    <div>{props.record['Therapeutic Area Average'].patient_burden }</div>
-                    <div>{props.record['Therapeutic Area Average'].cost}</div>
+                    <div>{Number(BurdenAvg.toString().match(/^\d+(?:\.\d{0,2})?/))}</div>
+                    <div>{CostAvgValue}</div>
                     <div></div>
                   </div>
                 </div>

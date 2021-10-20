@@ -19,7 +19,7 @@ const { Panel } = Collapse;
 const { TabPane } = Tabs;
 const { Step } = Steps;
 
-const frequencyFilter = [80, 100]
+const frequencyFilter = [0, 100]
 const inActiveChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA']
 const activeChartColors = ['#E53500', '#F27A26', '#F5924D', '#FBD0B3']
 const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2020}
@@ -119,10 +119,8 @@ const ScenarioPage = (props) => {
     const [chartTitle, setChartTitle] = useState('Patients Eligible - 80K(16% of Dataset)')
     const [visibleSOA, setVisibleSOA] = useState(false)
     const [soaResource, setSOAResource] = useState([])
-    const [ieResource, setIEResource] = useState(false)
+    const [ieResource, setIEResource] = useState('')
     const [avgResource, setAvgResource] = useState(false)
-    const [inclusionResource, setInclusionResource] = useState([])
-    const [exclusionResource, setExclusionResource] = useState([])
     const [inclusionResourceAvg, setInclusionResourceAvg] = useState([])
     const [exclusionResourceAvg, setExclusionResourceAvg] = useState([])
 
@@ -221,7 +219,7 @@ const ScenarioPage = (props) => {
       if(resp.statusCode == 200){
           const tempRecord = JSON.parse(JSON.stringify(resp.body))
           setTrialRecord(tempRecord)
-          setTrialTitle(tempRecord['trial_title'])
+          setTrialTitle(tempRecord['trial_alias'])
           if(tempRecord.similarHistoricalTrials !== undefined){
             setSimilarHistoricalTrials(tempRecord.similarHistoricalTrials)
           }
@@ -558,55 +556,21 @@ const ScenarioPage = (props) => {
       if(item.Value === ''){
         tempStr = '-'
       } else if (item.Value.avg_value != '' && item.Value.avg_value != 0) {
-        tempStr = Number(item.Value.avg_value) + " " + item.Value.units
+        tempStr = Number(item.Value.avg_value.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
       } else if (item.Value.avg_lower == 0 && item.Value.avg_upper != 0) {
-        tempStr = "< "+ Number(item.Value.avg_upper)+ " " + item.Value.units
+        tempStr = "< "+ Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
       } else if (item.Value.avg_lower != 0 && item.Value.avg_upper == 0) {
-        tempStr = "> "+ Number(item.Value.avg_lower)+ " " + item.Value.units
+        tempStr = "> "+ Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
       } else if (item.Value.avg_lower != 0 && item.Value.avg_upper != 0) {
         if (Number(item.Value.avg_lower) == Number(item.Value.avg_upper)){
-          tempStr = Number(item.Value.avg_upper) + " " + item.Value.units
-        } else {tempStr = Number(item.Value.avg_lower)+ " - " + Number(item.Value.avg_upper) + " " + item.Value.units}
+          tempStr = Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+        } else {
+          tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " - " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+        }
       } else{
         tempStr = '-'
       }
-      // else {
-      //   var value = item.Value
-      //   if(value instanceof Array){
-      //     if(value.length === 3){
-      //       tempStr = formatNum(value[0]) + ' - ' + formatNum(value[1]) + value[2]
-      //     } else if(value[0] === Number(value[0])){
-      //       tempStr = formatNum(value[0])
-      //       if(value.length > 1){
-      //         tempStr += ' - ' + formatNum(value[1])
-      //       }
-      //     } else {
-      //       var id = value[0].lastIndexOf('.')
-      //       var a = value[0]
-      //       if(id > -1 && id + 2 < a.length){
-      //         a = a.substr(0, id + 3)
-      //       }
-      //       tempStr = a
-      //       if(value.length > 1){
-      //         tempStr += formatNum(value[1])
-      //       }
-      //     }
-      //   } else if(value === Number(value)){
-      //     tempStr = value.toFixed(2)+''
-      //   } else {
-      //     tempStr = value
-      //   }
-      // }
       return tempStr
-    }
-
-    function formatNum(value){
-      var str = value.toString()
-      var id = str.lastIndexOf('.')
-      if(id > -1){
-        str = str.substr(0, id)
-      }
-      return str
     }
 
     const handleExcluOptionSelect = (item, activeType, id, key) =>{
@@ -1817,6 +1781,7 @@ const ScenarioPage = (props) => {
       }
 
       let tempBurdenData = []
+      let patient_burden = 0
       for(const m in burdenMatrixList){
         const visitMatrix = burdenMatrixList[m].map((max) => {
           return max > 0 ? 1 : 0
@@ -1830,6 +1795,16 @@ const ScenarioPage = (props) => {
           currentVisitScore += visitMatrix[c] * visitDimensionalScore[c].Value + excessMatrix[c]
         }
         tempBurdenData.push(currentVisitScore)
+        patient_burden += currentVisitScore
+      }
+
+      let patient_burden_rate = 'GOOD'
+      if (patient_burden > 0 && patient_burden <= 400) {
+        patient_burden_rate = 'GOOD'
+      } else if (patient_burden > 400 && patient_burden <= 600) {
+        patient_burden_rate = 'FAIR'
+      } else if (patient_burden > 600){
+        patient_burden_rate = 'POOR'
       }
 
       let tempCostData = [
@@ -1852,12 +1827,14 @@ const ScenarioPage = (props) => {
       }
 
       specificScenario['Schedule of Events'] = Object.assign(scheduleOfEvents,{
-        'TotalCost': formatCostAvg(totalCost, 1000),
+        'TotalCost': '' + formatCostAvg(totalCost, 1000),
         'CostRate': costBreakdown,
         'CostData': tempCostData,
         'BurdenData': tempBurdenData,
         'BurdenXAxis': tempBurdenXAxis,
-        'Finished': true
+        'Finished': true,
+        'patient_burden': patient_burden,
+        'patient_burden_rate': patient_burden_rate
       })
       return specificScenario
     }
@@ -2080,53 +2057,24 @@ const ScenarioPage = (props) => {
   }
 
   const downloadIE = async () => {
-    let tempInclusionResource = []
-    let tempExclusionResource = []
-    if(!ieResource){
+    if(ieResource == ''){
       setSpinning(true)
       const resp = await getIEResource(similarHistoricalTrials);
       if (resp.statusCode == 200) {
-        setSpinning(false)
-        setIEResource(true)
-        setInclusionResource(JSON.parse(resp.body).inResult)
-        setExclusionResource(JSON.parse(resp.body).exResult)
-        tempInclusionResource = JSON.parse(resp.body).inResult
-        tempExclusionResource = JSON.parse(resp.body).exResult
+        var num = resp.body.lastIndexOf('/')+1
+        let fileName = resp.body.substr(num)
+
+        downloadFile(fileName)
       }
     } else {
-      tempInclusionResource = inclusionResource
-      tempExclusionResource = exclusionResource
+      downloadFile(ieResource)
     }
 
-    //export
-    let str = 'INDIVIDUAL PROTOCOL'
-    str += '\n' + 'I/E' + ',' + 'NCT ID' + ',' + 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Value' + ','
-                + 'Modifier (If Applicable)' + ',' + 'Lower Limit' + ',' + 'Upper Limit' + ',' + 'Units' + ',' + 'Time'
-    for(const id in tempInclusionResource){
-      str += '\n' + 'INCLUSION' + ',' + tempInclusionResource[id].nct + ',"' + tempInclusionResource[id].category +  '","'
-                  + tempInclusionResource[id].raw + '","' + tempInclusionResource[id].standardized + '","' 
-                  + tempInclusionResource[id].value + '","'
-                  + tempInclusionResource[id].modifier +  '","' + tempInclusionResource[id].lower + '","' 
-                  + tempInclusionResource[id].upper + '","' + tempInclusionResource[id].units +  '","'
-                  + tempInclusionResource[id].time +  '"'
+    function downloadFile(fileName) {
+      window.open('https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/summary/'+fileName, '_blank')
+      setSpinning(false)
+      setIEResource(fileName)
     }
-    for(const idx in tempExclusionResource){
-      str += '\n' + 'EXCLUSION' + ',' + tempExclusionResource[idx].nct + ',"' + tempExclusionResource[idx].category +  '","'
-                  + tempExclusionResource[idx].raw + '","' + tempExclusionResource[idx].standardized + '","' 
-                  + tempExclusionResource[idx].value + '","'
-                  + tempExclusionResource[idx].modifier +  '","' + tempExclusionResource[idx].lower + '","' 
-                  + tempExclusionResource[idx].upper + '","' + tempExclusionResource[idx].units +  '","'
-                  + tempExclusionResource[idx].time +  '"'
-    }
-
-    let exportContent = "\uFEFF";
-    let blob = new Blob([exportContent + str], {
-      type: "text/plain;charset=utf-8"
-    });
-
-    const date = Date().split(" ");
-    const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
-    FileSaver.saveAs(blob, `IE_Resource_${dateStr}.csv`);
   }
 
   const downloadAverage = async () => {
