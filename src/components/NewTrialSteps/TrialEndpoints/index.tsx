@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Tabs, Radio, Space, Input, Button } from "antd";
+import React, { useState} from "react";
+import { Input, Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
 import * as createActions from "../../../actions/createTrial.js";
@@ -27,6 +27,7 @@ const TrialEndpoits = (props: any) => {
       const tmp = primary.slice(0);
       tmp.push(primaryValue);
       setPrimary(tmp);
+      setPrimaryValue("");
       props.createTrial({
         primary_endpoints:tmp,
       })
@@ -34,6 +35,7 @@ const TrialEndpoits = (props: any) => {
       const tmp = secondary.slice(0);
       tmp.push(secondaryValue);
       setSecondary(tmp);
+      setSecondaryValue("");
       props.createTrial({
         secondary_endpoints: tmp,    
       })
@@ -41,6 +43,7 @@ const TrialEndpoits = (props: any) => {
       const tmp = tertiary.slice(0);
       tmp.push(tertiaryValue);
       setTertiary(tmp);
+      setTertiaryValue("");
       props.createTrial({ 
         tertiary_endpoints:tmp
       })
