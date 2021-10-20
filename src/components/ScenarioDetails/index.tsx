@@ -8,8 +8,8 @@ import EventList from '../EventList';
 
 const { TabPane } = Tabs;
 const initialNumber = {
-    visitNumber: 9,
-    weekNumber: 26
+    visitNumber: 0,
+    weekNumber: 0
 }
 
 const CATEGORY_LABS = 'Labs';
