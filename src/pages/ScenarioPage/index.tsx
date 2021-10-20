@@ -33,7 +33,7 @@ const panelHeader = () => {
                 <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
                 <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
                 <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
-                <div className="item-desc"><span className="bar-item item4"></span><span>Medical</span></div>
+                <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
             </div>
         </div>
     );
@@ -43,7 +43,7 @@ const defaultChartValue = [
   {value: 0, name: 'Labs / Tests'},
   {value: 0, name: 'Intervention'},
   {value: 0, name: 'Demographics'},
-  {value: 0, name: 'Medical'}
+  {value: 0, name: 'Medical Condition'}
 ]
 
 const initialTrial = {
@@ -254,13 +254,13 @@ const ScenarioPage = (props) => {
                   {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
                   {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
                   {value: formatNumber(inclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
-                  {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
+                  {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical Condition'}
               ])
               setScreenRateData([
                   {value: formatNumber(inclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
                   {value: formatNumber(inclu.Intervention.screen_failure_rate), name: 'Intervention'},
                   {value: formatNumber(inclu.Demographics.screen_failure_rate), name: 'Demographics'},
-                  {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
+                  {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical Condition'}
               ])
       
               var tempScoreA = ''
@@ -294,13 +294,13 @@ const ScenarioPage = (props) => {
                   {value: formatNumber(exclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
                   {value: formatNumber(exclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
                   {value: formatNumber(exclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
-                  {value: formatNumber(exclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
+                  {value: formatNumber(exclu['Medical Condition'].protocol_amendment_rate), name: 'Medical Condition'}
               ])
               setExcluScreenRateData([
                   {value: formatNumber(exclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
                   {value: formatNumber(exclu.Intervention.screen_failure_rate), name: 'Intervention'},
                   {value: formatNumber(exclu.Demographics.screen_failure_rate), name: 'Demographics'},
-                  {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
+                  {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical Condition'}
               ])
       
                   setExcluAmend_avg_rate(tempScoreA)
@@ -1622,13 +1622,13 @@ const ScenarioPage = (props) => {
           {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
           {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
           {value: formatNumber(inclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
-          {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
+          {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical Condition'}
         ])
         setScreenRateData([
           {value: formatNumber(inclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
           {value: formatNumber(inclu.Intervention.screen_failure_rate), name: 'Intervention'},
           {value: formatNumber(inclu.Demographics.screen_failure_rate), name: 'Demographics'},
-          {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
+          {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical Condition'}
         ])
   
         var tempScoreA = ''
@@ -1662,13 +1662,13 @@ const ScenarioPage = (props) => {
           {value: formatNumber(exclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
           {value: formatNumber(exclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
           {value: formatNumber(exclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
-          {value: formatNumber(exclu['Medical Condition'].protocol_amendment_rate), name: 'Medical'}
+          {value: formatNumber(exclu['Medical Condition'].protocol_amendment_rate), name: 'Medical Condition'}
         ])
         setExcluScreenRateData([
           {value: formatNumber(exclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
           {value: formatNumber(exclu.Intervention.screen_failure_rate), name: 'Intervention'},
           {value: formatNumber(exclu.Demographics.screen_failure_rate), name: 'Demographics'},
-          {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical'}
+          {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical Condition'}
         ])
           setExcluAmend_avg_rate(tempScoreA)
           setExcluScreen_avg_rate(tempScoreB)
@@ -1838,13 +1838,16 @@ const ScenarioPage = (props) => {
       })
       return specificScenario
     }
-
+    function roundFun(value, n) {
+        return Math.round(value*Math.pow(10,n))/Math.pow(10,n);
+    }
+  
     function formatCostAvg(totalCost, divisor){
       if(totalCost === 0){
         return 0
       } else {
         let avg = Math.ceil(totalCost/divisor*1000)
-        return avg/1000
+        return roundFun(avg/1000, 2)
       }
     }
 
@@ -1984,7 +1987,7 @@ const ScenarioPage = (props) => {
   }
 
   const onInclusionChartClick = (e) =>{
-    if(e.name === 'Medical'){
+    if(e.name === 'Medical Condition'){
       setDefaultActiveKey(['3'])
     } else if(e.name === 'Labs / Tests'){
       setDefaultActiveKey(['5'])
@@ -1996,7 +1999,7 @@ const ScenarioPage = (props) => {
   }
 
   const onExclusionChartClick = (e) =>{
-    if(e.name === 'Medical'){
+    if(e.name === 'Medical Condition'){
       setExcluDefaultActiveKey(['3'])
     } else if(e.name === 'Labs / Tests'){
       setExcluDefaultActiveKey(['5'])
