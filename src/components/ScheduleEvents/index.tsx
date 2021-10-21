@@ -141,7 +141,8 @@ const ScheduleEvents = (props) => {
       name: 'Visit Number',
       nameLocation: "middle", 
       type: 'category',
-      data: visits
+      data: visits,
+      nameRotate: 0, nameGap: 20,
    },
    yAxis: {
       type: 'value'
@@ -266,7 +267,7 @@ const ScheduleEvents = (props) => {
       setShowConfigure(true)
     }
     setCostSubTitle('Average from Similar Historical\nTrials - $' + formatCostAvg(props.record.CostAvg, 1000) + 'K / Patient')
-    setBurdenSubTitle('Average from similar\nHistorical Trials - ' + Number(props.record.BurdenAvg.toString().match(/^\d+(?:\.\d{0,2})?/)))
+    setBurdenSubTitle('Average from similar Historical Trials - ' + Number(props.record.BurdenAvg.toString().match(/^\d+(?:\.\d{0,2})?/)))
 
     const getStandardEventsLib = async () => {
       var resp = await getStandardEvents();
@@ -435,7 +436,7 @@ const ScheduleEvents = (props) => {
           name: 'Visit Number',
           data: burdenXAxis,
           nameLocation: "middle", 
-          nameRotate: 0, nameGap: 20,
+          nameRotate: 0, nameGap: 21,
           axisTick: {
               alignWithLabel: true
           }
