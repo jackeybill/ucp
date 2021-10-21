@@ -277,16 +277,58 @@ const ScheduleEvents = (props) => {
     );
   };
 
+  // Add total number and Good/fair/poor with color for version 1 only
+  let totalBurdenStatus = 'GOOD'   
+  let totalBurdenStatusColor = '{GOOD|GOOD}'
+  if (totalBurden > 0 && totalBurden <= 400) {
+    totalBurdenStatus = 'GOOD'
+    totalBurdenStatusColor = '{GOOD|GOOD}'
+  } else if (totalBurden > 400 && totalBurden <= 600) {
+    totalBurdenStatus = '{FAIR|FAIR}'
+  } else if (totalBurden > 600){
+    totalBurdenStatus = '{POOR|POOR}'
+  }                 
+  
+  // Add total number and Good/fair/poor with color for version 1 only
   const burdenOption = {
     title : {
-      text: 'Patient Burden Total:' + totalBurden,
+      // textAlign: 'left',
+      // textVerticalAlign: 'top', 
+      text: '{a|Patient Burden Total}' + '\n' + '\n' +'{p|' + totalBurden + '}'+'\n' + totalBurdenStatusColor,
       subtext: burdenSubTitle,
       x:'left',
-      y:'center',
+      y:'top',
       textStyle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#333'
+        rich: {
+          a: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            color: '#333',
+          },
+          p: {
+            color: '#999',
+            fontSize: 20,
+            backgroundColor: "white"
+          },
+          GOOD: {
+            color: labelColors.GOOD,
+            fontSize: 14,
+            fontWeight:'bold',
+            backgroundColor: "white"
+          },
+          FAIR: {
+            color: labelColors.FAIR,
+            fontSize: 14,
+            fontWeight:'bold',
+            backgroundColor: "white"
+          },
+          POOR: {
+            color: labelColors.POOR,
+            fontSize: 14,
+            fontWeight:'bold',
+            backgroundColor: "white"
+          }
+        }
       },
       subtextStyle: {
         fontSize: 14,
