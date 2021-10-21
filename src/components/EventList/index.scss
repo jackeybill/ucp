@@ -52,16 +52,22 @@
         }
       }
       .colunm-row {
-        font-weight: 600;
+        font-weight: 500;
         flex: 1.5;
         .f-1-small {
+          flex: 0.5;
+        }
+        .f-2-small {
           flex: 0.5;
         }
         .f-1 {
           flex: 1;
         }
         .f-2 {
-          flex: 2;
+          flex: 2.4;
+        }
+        .f-3 {
+          flex: 2.4;
         }
       }
     }
@@ -84,7 +90,7 @@
         }
       }
       .colunm.td {
-        font-weight: 600;
+        font-weight: 500;
         min-width: 50px;
       }
     }
@@ -132,7 +138,6 @@
         .cost-td{
           display: flex;
           align-items: center;
-
           .ant-input{
             margin-right: 2px;
           }
@@ -152,18 +157,24 @@
           }
         }
         .f-1-small {
-          flex: 0.5;
+          flex: 0.28;
+        }
+        .f-2-small {
+          flex: 0.62;
         }
         .f-1 {
           flex: 1;
         }
         .f-2 {
-          flex: 2;
+          flex: 1.44;
+        }
+        .f-3 {
+          flex: 1.36;
         }
       }
 
       .status-row {
-        flex: 1;
+        flex: 0.84;
         display: flex;
 
         .td {

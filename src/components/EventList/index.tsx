@@ -586,14 +586,14 @@ const EventList = (props) => {
             <div className="head-row">
               <div className="colunm-row week-row e-row">
                 <div className="f-2">My Events</div>
-                <div className="f-2">Trial Endpoint</div>
+                <div className="f-3">Trial Endpoint</div>
                 <div className="f-1-small sortable-item">Cost/patient  
-                <span className="sort-icon-wrapper">
-                    <CaretUpOutlined onClick={() => setSort("ascend")}  style={{color:sort=="ascend"?"#ca4a04":"rgb(85,85,85)"}}/>
-                    <CaretDownOutlined onClick={ ()=>setSort("descend")} style={{color:sort=="descend"?"#ca4a04":"rgb(85,85,85)"}}/>
-                </span>
+                  <span className="sort-icon-wrapper">
+                      <CaretUpOutlined onClick={() => setSort("ascend")}  style={{color:sort=="ascend"?"#ca4a04":"rgb(85,85,85)"}}/>
+                      <CaretDownOutlined onClick={ ()=>setSort("descend")} style={{color:sort=="descend"?"#ca4a04":"rgb(85,85,85)"}}/>
+                  </span>
                 </div>
-                <div className="f-1-small">Total Visits</div>
+                <div className="f-2-small">Total Visits</div>
               </div>
               <div className="week-row e-row number">
                 <div className="colunm td ">Weeks</div>
@@ -635,7 +635,7 @@ const EventList = (props) => {
                 return (
                   <div className="event-item" key={`labs_${idx}`}>
                     <div className="events-wrapper e-row">
-                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>                      
+                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-3`}>                      
                         {
                           viewOnly?evt["Standard Event"]:(
                             <>
@@ -655,7 +655,7 @@ const EventList = (props) => {
                           viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
                         }                     
                       </div>
-                      <div className="cost-td td f-1-small">
+                      <div className="cost-td td f-2-small">
                         {
                           viewOnly?`$ ${evt["Dummy Cost"]}`:(
                             <>
@@ -721,7 +721,7 @@ const EventList = (props) => {
                 return (
                   <div className="event-item" key={`exam_${idx}`}>
                     <div className="events-wrapper e-row">
-                      <div className={`${evt.Custom?"custom-event":""} my-event-td td f-2`}>
+                      <div className={`${evt.Custom?"custom-event":""} my-event-td td f-3`}>
                         {
                           viewOnly?evt["Standard Event"]:(
                             <>
@@ -741,7 +741,7 @@ const EventList = (props) => {
                           viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
                         } 
                       </div>
-                      <div className="cost-td td f-1-small">
+                      <div className="cost-td td f-2-small">
                         {
                           viewOnly?`$ ${evt["Dummy Cost"]}`:(
                             <>
@@ -807,7 +807,7 @@ const EventList = (props) => {
                 return (
                   <div className="event-item" key={`procedure_${idx}`}>
                     <div className="events-wrapper e-row">
-                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
+                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-3`}>
                       {
                         viewOnly?evt["Standard Event"]:(
                           <>
@@ -827,7 +827,7 @@ const EventList = (props) => {
                           viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
                         } 
                       </div>
-                      <div className="cost-td td f-1-small">
+                      <div className="cost-td td f-2-small">
                         {
                           viewOnly?`$ ${evt["Dummy Cost"]}`:(
                             <>
@@ -894,7 +894,7 @@ const EventList = (props) => {
                 return (
                   <div className="event-item" key={`question_${idx}`}>
                     <div className="events-wrapper e-row">
-                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
+                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-3`}>
                       {
                         viewOnly?evt["Standard Event"]:(
                           <>
@@ -914,7 +914,7 @@ const EventList = (props) => {
                           viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
                         } 
                       </div>
-                      <div className="cost-td td f-1-small">
+                      <div className="cost-td td f-2-small">
                         {
                           viewOnly?`$ ${evt["Dummy Cost"]}`:(
                             <>
@@ -981,7 +981,7 @@ const EventList = (props) => {
                 return (
                   <div className="event-item" key={`study_${idx}`}>
                     <div className="events-wrapper e-row">
-                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-2`}>
+                      <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-3`}>
                       {
                         viewOnly?evt["Standard Event"]:(
                           <>
@@ -1002,7 +1002,7 @@ const EventList = (props) => {
                           viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
                         } 
                       </div>
-                      <div className="cost-td td f-1-small">
+                      <div className="cost-td td f-2-small">
                         {
                           viewOnly?`$ ${evt["Dummy Cost"]}`:(
                             <>
