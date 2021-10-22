@@ -100,6 +100,7 @@ const ScenarioPage = (props) => {
 
     const [scenarioId, setScenarioId] = useState('')
     const [editFlag, setEditFlag] = useState(false)
+    const [avgFileKey, setAvgFileKey] = useState('')
     const [scenarioType, setScenarioType] = useState('')
     const [activeEnrollmentTabKey, setActiveEnrollmentTabKey] = useState('1')
     const [activeTabKey, setActiveTabKey] = useState('1')
@@ -357,6 +358,7 @@ const ScenarioPage = (props) => {
           // }
           setPageLoading(false)
             if (resp.statusCode == 200) {
+                setAvgFileKey(resp.csvKey)
                 // const response = JSON.parse(resp.body)
                 const response = resp.body
                 console.log("criteria result: ", response);
@@ -2081,63 +2083,66 @@ const ScenarioPage = (props) => {
   }
 
   const downloadAverage = async () => {
-    let tempInclusionResourceAvg = []
-    let tempExclusionResourceAvg = []
-    if(!avgResource){
-      setSpinning(true)
-      const resp = await getAverage(similarHistoricalTrials);
-      if (resp.statusCode == 200) {
-        setSpinning(false)
-        setAvgResource(true)
-        setInclusionResourceAvg(JSON.parse(resp.body).inResult)
-        setExclusionResourceAvg(JSON.parse(resp.body).exResult)
-        tempInclusionResourceAvg = JSON.parse(resp.body).inResult
-        tempExclusionResourceAvg = JSON.parse(resp.body).exResult
-      }
-    } else {
-      tempInclusionResourceAvg = inclusionResourceAvg
-      tempExclusionResourceAvg = exclusionResourceAvg
-    }
+    var num = avgFileKey.lastIndexOf('/')+1
+    let fileName = avgFileKey.substr(num)
+    window.open('https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/summary/'+fileName, '_blank')
+    // let tempInclusionResourceAvg = []
+    // let tempExclusionResourceAvg = []
+    // if(!avgResource){
+    //   setSpinning(true)
+    //   const resp = await getAverage(similarHistoricalTrials);
+    //   if (resp.statusCode == 200) {
+    //     setSpinning(false)
+    //     setAvgResource(true)
+    //     setInclusionResourceAvg(JSON.parse(resp.body).inResult)
+    //     setExclusionResourceAvg(JSON.parse(resp.body).exResult)
+    //     tempInclusionResourceAvg = JSON.parse(resp.body).inResult
+    //     tempExclusionResourceAvg = JSON.parse(resp.body).exResult
+    //   }
+    // } else {
+    //   tempInclusionResourceAvg = inclusionResourceAvg
+    //   tempExclusionResourceAvg = exclusionResourceAvg
+    // }
 
-    //export
-    let str = 'I/E' + ','  + 'NCT ID' + ','+ 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Snomed' + ',' + 'Average Value' + ',' + 'Average Lower Limit' + ',' + 'Average Upper Limit' + ',' + 'Units'
-    for(const standardized in tempInclusionResourceAvg){
-      for(const criteria in tempInclusionResourceAvg[standardized]){
-        str += '\n' + 'INCLUSION' + ',"' 
-                    + tempInclusionResourceAvg[standardized][criteria].nct + '","'
-                    + tempInclusionResourceAvg[standardized][criteria].category + '","' 
-                    + tempInclusionResourceAvg[standardized][criteria].raw + '","' 
-                    + tempInclusionResourceAvg[standardized][criteria].standardized + '","' 
-                    + tempInclusionResourceAvg[standardized][criteria].snomed + '","' 
-                    + (tempInclusionResourceAvg[standardized][criteria].avg_value === 0?"":tempInclusionResourceAvg[standardized][criteria].avg_value) + '","'
-                    + (tempInclusionResourceAvg[standardized][criteria].avg_lower === 0? "":tempInclusionResourceAvg[standardized][criteria].avg_lower) + '","' 
-                    + (tempInclusionResourceAvg[standardized][criteria].avg_upper ===0?"":tempInclusionResourceAvg[standardized][criteria].avg_upper)  + '","'
-                    + tempInclusionResourceAvg[standardized][criteria].units + '"'
-      }
-    }
-    for(const standardized in tempExclusionResourceAvg){
-      for(const criteria in tempExclusionResourceAvg[standardized]){
-        str += '\n' + 'EXCLUSION' + ',"' 
-        + tempExclusionResourceAvg[standardized][criteria].nct + '","' 
-        + tempExclusionResourceAvg[standardized][criteria].category + '","' 
-        + tempExclusionResourceAvg[standardized][criteria].raw + '","'
-        + tempExclusionResourceAvg[standardized][criteria].standardized + '","' 
-        + tempExclusionResourceAvg[standardized][criteria].snomed + '","' 
-        + (tempExclusionResourceAvg[standardized][criteria].avg_value === 0? "":tempExclusionResourceAvg[standardized][criteria].avg_value) + '","' 
-        + (tempExclusionResourceAvg[standardized][criteria].avg_lower === 0?"":tempExclusionResourceAvg[standardized][criteria].avg_lower) + '","'
-        + (tempExclusionResourceAvg[standardized][criteria].avg_upper===0?"":tempExclusionResourceAvg[standardized][criteria].avg_upper) + '","'
-        + tempExclusionResourceAvg[standardized][criteria].units +  '"'
-      }
-    }
+    // //export
+    // let str = 'I/E' + ','  + 'NCT ID' + ','+ 'Category' + ',' + 'Raw Entity' + ',' + 'Standardized Entity' + ',' + 'Snomed' + ',' + 'Average Value' + ',' + 'Average Lower Limit' + ',' + 'Average Upper Limit' + ',' + 'Units'
+    // for(const standardized in tempInclusionResourceAvg){
+    //   for(const criteria in tempInclusionResourceAvg[standardized]){
+    //     str += '\n' + 'INCLUSION' + ',"' 
+    //                 + tempInclusionResourceAvg[standardized][criteria].nct + '","'
+    //                 + tempInclusionResourceAvg[standardized][criteria].category + '","' 
+    //                 + tempInclusionResourceAvg[standardized][criteria].raw + '","' 
+    //                 + tempInclusionResourceAvg[standardized][criteria].standardized + '","' 
+    //                 + tempInclusionResourceAvg[standardized][criteria].snomed + '","' 
+    //                 + (tempInclusionResourceAvg[standardized][criteria].avg_value === 0?"":tempInclusionResourceAvg[standardized][criteria].avg_value) + '","'
+    //                 + (tempInclusionResourceAvg[standardized][criteria].avg_lower === 0? "":tempInclusionResourceAvg[standardized][criteria].avg_lower) + '","' 
+    //                 + (tempInclusionResourceAvg[standardized][criteria].avg_upper ===0?"":tempInclusionResourceAvg[standardized][criteria].avg_upper)  + '","'
+    //                 + tempInclusionResourceAvg[standardized][criteria].units + '"'
+    //   }
+    // }
+    // for(const standardized in tempExclusionResourceAvg){
+    //   for(const criteria in tempExclusionResourceAvg[standardized]){
+    //     str += '\n' + 'EXCLUSION' + ',"' 
+    //     + tempExclusionResourceAvg[standardized][criteria].nct + '","' 
+    //     + tempExclusionResourceAvg[standardized][criteria].category + '","' 
+    //     + tempExclusionResourceAvg[standardized][criteria].raw + '","'
+    //     + tempExclusionResourceAvg[standardized][criteria].standardized + '","' 
+    //     + tempExclusionResourceAvg[standardized][criteria].snomed + '","' 
+    //     + (tempExclusionResourceAvg[standardized][criteria].avg_value === 0? "":tempExclusionResourceAvg[standardized][criteria].avg_value) + '","' 
+    //     + (tempExclusionResourceAvg[standardized][criteria].avg_lower === 0?"":tempExclusionResourceAvg[standardized][criteria].avg_lower) + '","'
+    //     + (tempExclusionResourceAvg[standardized][criteria].avg_upper===0?"":tempExclusionResourceAvg[standardized][criteria].avg_upper) + '","'
+    //     + tempExclusionResourceAvg[standardized][criteria].units +  '"'
+    //   }
+    // }
 
-    let exportContent = "\uFEFF";
-    let blob = new Blob([exportContent + str], {
-      type: "text/plain;charset=utf-8"
-    });
+    // let exportContent = "\uFEFF";
+    // let blob = new Blob([exportContent + str], {
+    //   type: "text/plain;charset=utf-8"
+    // });
 
-    const date = Date().split(" ");
-    const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
-    FileSaver.saveAs(blob, `IE_Average_${dateStr}.csv`);
+    // const date = Date().split(" ");
+    // const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
+    // FileSaver.saveAs(blob, `IE_Average_${dateStr}.csv`);
   }
 
     return (
