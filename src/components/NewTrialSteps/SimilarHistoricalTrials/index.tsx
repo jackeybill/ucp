@@ -196,6 +196,13 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     if(tempIndication.indexOf('Type 2 Diabetes') > -1){
       tempIndication.push('Diabetes Mellitus Type 2')
     }
+    let tempPediatric = this.state.pediatric
+    if (tempPediatric == 'YES'){
+      tempPediatric = true
+    } else if (tempPediatric == 'NO'){
+      tempPediatric = false
+    }
+    
     const filteredData = datasource.filter((d) => {
       const date = d['start_date'].split('-')[0]
       return (
@@ -211,8 +218,8 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         (tempIndication.length > 0
           ? tempIndication.indexOf(d.indication)>-1
           : true) &&
-        (this.state.pediatric != "" && this.state.pediatric != "All"
-          ? d.pediatric == this.state.pediatric
+        (tempPediatric != "" && tempPediatric != "All"
+          ? d.pediatric == tempPediatric
           : true) &&  
         date>=this.state.dateFrom && date<=this.state.dateTo
       );
