@@ -22,7 +22,7 @@ const { Step } = Steps;
 const frequencyFilter = [5, 100]
 const inActiveChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA']
 const activeChartColors = ['#E53500', '#F27A26', '#F5924D', '#FBD0B3']
-const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2020}
+const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2025}
 
 
 const panelHeader = () => {

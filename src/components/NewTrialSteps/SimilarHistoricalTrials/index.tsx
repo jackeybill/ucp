@@ -54,7 +54,7 @@ interface HistoricalProps {
   historyTrial?: any;
 }
 const min = 1990;
-const max = 2020;
+const max = 2025;
 const marks = {
   1990: "1990",
   1995: "1995",
@@ -63,6 +63,7 @@ const marks = {
   2010: "2010",
   2015: "2015",
   2020: "2020",
+  2025: "2025",
 };
 
 const sponsorChartColor = [
@@ -105,7 +106,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         : this.props.newTrial.indication,
     pediatric: this.props.newTrial.pediatric_study || "",
     dateFrom: 1990,
-    dateTo: 2020,
+    dateTo: 2025,
     selectedRowKeys: this.props.newTrial.similarHistoricalTrials,
     spinning: false,
     data: [],
