@@ -224,6 +224,8 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         date>=this.state.dateFrom && date<=this.state.dateTo
       );
     });
+    console.log("filteredData---",filteredData);
+    
     const statusData = this.getChartData(filteredData, "study_status");
     const sponsorData = this.getChartData(filteredData, "sponsor");
     this.setState({
