@@ -838,14 +838,26 @@ const ScheduleEvents = (props) => {
     let weeksArr = [];
     if(resetWeeks){
       //Re-generate whole weeks when no change in SOA
+      
+      var quotient = Math.floor(numbers.weekNumber/numbers.visitNumber)
       weeksArr.push(1)
-      let week = Math.floor((numbers.weekNumber-1) / (numbers.visitNumber-1));
-      let sum = 1;
-      for (var i = 1; i <= numbers.visitNumber-1; i++) {
-        sum = sum + week;
-        if (sum > numbers.weekNumber || i === numbers.visitNumber - 1) sum = numbers.weekNumber;
-        weeksArr.push(sum)
+      if (numbers.visitNumber > 2){
+        for(let num = 2; num < numbers.visitNumber; num ++){
+          weeksArr.push(num*(quotient + 1) - 1)
+        }
       }
+      if (numbers.visitNumber > 1){
+        weeksArr.push(numbers.weekNumber)
+      }
+
+      // weeksArr.push(1)
+      // let week = Math.floor((numbers.weekNumber-1) / (numbers.visitNumber-1));
+      // let sum = 1;
+      // for (var i = 1; i <= numbers.visitNumber-1; i++) {
+      //   sum = sum + week;
+      //   if (sum > numbers.weekNumber || i === numbers.visitNumber - 1) sum = numbers.weekNumber;
+      //   weeksArr.push(sum)
+      // }
     } else {
       //Keep weeks options as much as possiable after SOA changed
       let week = 0;
