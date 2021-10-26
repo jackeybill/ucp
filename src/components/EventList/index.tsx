@@ -73,6 +73,8 @@ const EventList = (props) => {
   const [sort,setSort] = useState("")
   const [weeks, setWeeks] = useState([])
   const [visits, setVisits] = useState([])
+  const [weeksFlex, setWeeksFlex] = useState(1)
+  const [visitsFlex, setVisitsFlex] = useState(1)
   const [expandKeys, setExpandKeys] = useState([])
   let [labs, setLabs] = useState(props.labs||[]);
   let [examination, setExamination] = useState(props.examination||[])
@@ -107,11 +109,13 @@ const EventList = (props) => {
 
   useEffect(() => {
     setWeeks(props.weeks)
+    setWeeksFlex(1/(props.weeks.length+1))
     getVisits()
   }, [visitNumber,weekNumber])
 
   useEffect(()=>{
     setWeeks(props.weeks)
+    setWeeksFlex(1/(props.weeks.length+1))
     updateCondition()
   },[props.weeks])
 
@@ -393,6 +397,7 @@ const EventList = (props) => {
       visitArr.push(i+1)
     }
     setVisits(visitArr)
+    setVisitsFlex(visitArr.length/(visitArr.length+1))
   }
 
   const endpointsSelector = (evt,idx) => {
@@ -438,6 +443,7 @@ const EventList = (props) => {
     const tmpWeeks = weeks.slice(0)
     tmpWeeks[idx] = Number(e.target.value)
     setWeeks(tmpWeeks)
+    setWeeksFlex(1/(tmpWeeks.length+1))
   }
 
   const getTotalCost = (array) => {
@@ -819,10 +825,12 @@ const EventList = (props) => {
     const temp = visits.slice(0)
     temp.push(visits.length+1)
     setVisits(temp)
+    setVisitsFlex(temp.length/(temp.length+1))
     // update weeks
     const newWeeks = weeks.slice(0)
     newWeeks.splice(idx+1,0,'')
     setWeeks(newWeeks)
+    setWeeksFlex(1/(newWeeks.length+1))
     // update all conditions
     setLabs(  insertCondition(labs,idx) )
     setExamination(insertCondition(examination,idx))
@@ -914,9 +922,9 @@ const EventList = (props) => {
               </div>
               <div className="head-bottom-container">
               <div className="e-row number">
-                <div className="colunm td row-title ">Weeks</div>
-                <div className="week-row-wrapper">
-                <div className="weeks-container">              
+                <div className="colunm td row-title" style={{flex:weeksFlex}}>Weeks</div>
+                <div className="week-row-wrapper" style={{flex:visitsFlex}}>
+                  <div className="weeks-container">              
                   {
                     weeks.map((week, idx) => {
                       return viewOnly?<span className="td num-cell" key={`week_span_${idx}`}>{week}</span>: <Input className="td" key={`week_${idx}`} value={week} onChange={(e)=>onWeekChange(e,idx)} />                  

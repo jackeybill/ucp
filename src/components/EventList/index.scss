@@ -38,7 +38,7 @@
           display: flex;
           flex:1;
           .row-title{
-            font-weight: 600;
+            font-weight: 500;
           }
           .e-row.number{
             display: flex;
@@ -128,7 +128,7 @@
       border-right: 1px solid #eeeeee;
       div {
         flex: 1;
-        padding: 5px 0 5px 10px;
+        padding: 3px;
         border-right: 1px solid #eeeeee;
         &:last-child {
           border-right: none;
@@ -151,7 +151,7 @@
       display: flex;
       .td {    
         text-align: center;
-        padding: 0 2px !important;
+        //padding: 0 2px !important;
       }
       .num-cell{
         flex:1;
