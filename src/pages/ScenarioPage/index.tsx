@@ -1,3 +1,4 @@
+// this is for splitoutSOA
 import React, { useState, useEffect, useReducer} from 'react';
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
