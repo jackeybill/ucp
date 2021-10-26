@@ -1023,18 +1023,43 @@ const ScheduleEvents = (props) => {
     }
     let weeksArr = [];
     if(resetWeeks){
+      let tempBurdenXAxis = []
+      for(var num = 1; num <= numbers.visitNumber; num++){
+        tempBurdenXAxis.push(num)
+      }
+      setBurdenXAxis(tempBurdenXAxis)
       //Re-generate whole weeks when no change in SOA
-      
-      var quotient = Math.floor(numbers.weekNumber/numbers.visitNumber)
-      weeksArr.push(1)
-      if (numbers.visitNumber > 2){
-        for(let num = 2; num < numbers.visitNumber; num ++){
-          weeksArr.push(num*(quotient + 1) - 1)
+      if (numbers.weekNumber < numbers.visitNumber){
+        for(var num = 0; num < numbers.visitNumber - numbers.weekNumber + 1; num ++){
+          weeksArr.push(1)
+        }
+        var size = weeksArr.length
+        for(var num = 1; num <= numbers.visitNumber - size; num ++){
+          weeksArr.push(num + 1)
+        }
+      } else if (numbers.weekNumber == numbers.visitNumber){
+        for (let num = 1; num <= numbers.weekNumber; num ++){
+          weeksArr.push(num)
+        }
+      } else {
+        var quotient = Math.floor(numbers.weekNumber/numbers.visitNumber)
+        weeksArr.push(1)
+        if (numbers.visitNumber > 2){
+          if ((numbers.visitNumber - 1) * (quotient + 1) - 1 >= numbers.weekNumber){
+            quotient = quotient - ((numbers.visitNumber - 1) * (quotient + 1) - numbers.weekNumber) / numbers.visitNumber
+          }
+          for(let num = 2; num < numbers.visitNumber; num ++){
+            weeksArr.push(Math.floor(num * (quotient + 1) - 1))
+          }
+        }
+        if (numbers.visitNumber > 1){
+          weeksArr.push(numbers.weekNumber)
         }
       }
-      if (numbers.visitNumber > 1){
-        weeksArr.push(numbers.weekNumber)
-      }
+      
+      
+      
+      
 
       // weeksArr.push(1)
       // let week = Math.floor((numbers.weekNumber-1) / (numbers.visitNumber-1));
