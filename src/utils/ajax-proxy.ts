@@ -384,7 +384,7 @@ export const getSummaryListByNctId = async (nctIdList) => {
 }
 
 // replace for getSummaryListByNctId
-export const getCriteriaLibByNctId = async (nct_list) => {
+export const getCriteriaLibByNctId = async (nct_list, trialId) => {
   const response = await fetch(criteria_url, {
     method: 'POST',
   headers: {
@@ -393,7 +393,8 @@ export const getCriteriaLibByNctId = async (nct_list) => {
   },
   body: JSON.stringify({
       "findCriteriaLib": {
-        "nctList": nct_list
+        "nctList": nct_list,
+        "trialId": trialId
       }
     })
   })
