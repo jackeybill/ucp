@@ -1,4 +1,4 @@
-import React, { useState, } from "react";
+import React, { useState, useEffect } from "react";
 import { withRouter } from 'react-router';
 import { Select, Collapse,Modal,Input,Tooltip} from "antd";
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -117,10 +117,15 @@ const panelContent = (props, record, onClick) => {
 
 
 const TrailList = (props: any) => {
-  const { data } = props
+  // const { data } = props
   const [phase, setPhase] = useState('All')
+  const [data, setData] = useState(props.data)
   const [area, setArea] = useState('')
   const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    setData(props.data)
+  }, [props])
 
   const handlePhaseChange = (value) => {
     setPhase(value)
@@ -151,7 +156,7 @@ const TrailList = (props: any) => {
             expandIcon={({ isActive }) => <DownOutlined style={{ color: '#CA4A04' }} rotate={isActive ? 180 : 0} />}          >
             {data.length > 0 && data.map((d, idx) => {
               return (
-                <Panel header={panelHeader(props,d)} key={idx}>
+                <Panel header={panelHeader(props,d)} key={d["_id"]}>
                   {panelContent(props, d, showModal)}
                 </Panel>
               );

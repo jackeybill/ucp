@@ -281,11 +281,12 @@ const SceneriosDashbaord = (props: any) => {
                             {s["Schedule of Events"]["TotalCost"]?(<span>${s["Schedule of Events"]["TotalCost"]}K</span>):null}                  
                                <span className={`status ${s["Schedule of Events"]["CostRate"]}`}>{s["Schedule of Events"]["CostRate"]}</span>
                             </div>
-                            <div>
+                            <div className="button-not-show-wrapper">
                               {
                                 noEdit==undefined ? (
                                   <Button
                                     size="small"
+                                    className="button-not-show"
                                     onClick={() => editScenario(s)}
                                   >
                                     EDIT SCENARIO
