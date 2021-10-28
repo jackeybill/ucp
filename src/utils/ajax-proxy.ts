@@ -330,6 +330,25 @@ export const getTrialList = async () => {
   return await response.json();
 }
 
+export const DeleteTrialList = async (id) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "module": "criteria",
+      "method": "delStudy",
+      "body": {
+        "id": id
+      }
+    })
+  })
+
+  return await response.json();
+}
+
 export const addStudy = async (params:any) => {
   const response = await fetch(criteria_url, {
     method: 'POST',

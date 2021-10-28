@@ -2,6 +2,7 @@ import React, { useState, } from "react";
 import { withRouter } from 'react-router';
 import { Select, Collapse,Modal,Input,Tooltip} from "antd";
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { DeleteTrialList } from '../../utils/ajax-proxy'
 import "./index.scss";
 const { Panel } = Collapse;
 
@@ -65,7 +66,15 @@ const panelHeader = (props, record) => {
   );
 };
 
+const DeleteTrialListByID = async (id) => {
+    const resp = await DeleteTrialList(id);
+      if (resp.statusCode == 200) {
+       console.log("delete successfully:",id);
+      }
+}
+
 const panelContent = (record, onClick) => {
+
   return (
     <div className="trial-panelBody">
       <div>
@@ -101,6 +110,10 @@ const panelContent = (record, onClick) => {
         <span className="key">Study Country</span><br/>
         <span className="value"> {record["study_country"] || "-"}</span>
       </div>
+      <div>
+        <span className="delete-btn" onClick={()=>DeleteTrialListByID(record["_id"])}>DELETE TRIAL</span>
+      </div>
+
       <div>
         {/* <span className="key">Endpoints</span><br/>
         <span className="value"> <span className="view-endpoint" onClick={onClick}>View Endpoints (12)</span></span> */}
