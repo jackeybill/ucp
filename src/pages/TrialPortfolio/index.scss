@@ -22,8 +22,10 @@
   .list-top {
     display: flex;
     margin-bottom: 30px;
-    padding: 0 100px;
+    padding: 20px 0px;
     align-items: flex-end;
+    max-width: 90%;
+    margin: auto;
     .count {
       flex: 1;
       font-size: 32px;
@@ -110,6 +112,7 @@
   border-left: 1px solid #d9d9d9;
   margin-top: 20px;
   padding-left: 20px;
+  margin-right: 0!important;
 }
 .add-btn {
   background-color: $theme-color;
