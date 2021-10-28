@@ -350,7 +350,7 @@ const ScenarioPage = (props) => {
           var resp
           // if(nctIdList != undefined && nctIdList instanceof Array && nctIdList.length > 0){
             console.log("input",props.location.state.similarHistoricalTrials);
-            resp = await getCriteriaLibByNctId(props.location.state.similarHistoricalTrials);
+            resp = await getCriteriaLibByNctId(props.location.state.similarHistoricalTrials, props.location.state.trial_id);
             // console.log("criteria",resp);
           // } else {
           //   resp = await getSummaryDefaultList();
