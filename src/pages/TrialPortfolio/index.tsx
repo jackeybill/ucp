@@ -32,6 +32,7 @@ import ScenarioDetails from "../../components/ScenarioDetails";
 import { getTrialList, addStudy, updateStudy, getIndicationList, getStudy} from "../../utils/ajax-proxy";
 import bgDotPic from "../../assets/dots.svg";
 import { Therapeutic_Area_Map } from "../../utils/area-map";
+import { DeleteTrialList } from '../../utils/ajax-proxy'
 
 import "./index.scss";
 
@@ -196,6 +197,36 @@ const TrialPortfolio = (props) => {
     setShowDetails(true);
     setTrial(JSON.parse(JSON.stringify(record)));
   };
+
+  const onDeleteTrial = async (e, id) => {
+    const resp = await DeleteTrialList(id);
+    if (resp.statusCode == 200) {
+      console.log("delete successfully: ",id);
+      // refresh and get the new list
+      const fetchList = async () => {
+        setLoading(true);
+        const resp = await getTrialList();
+        setLoading(false);
+        if (resp.statusCode == 200) {
+          const source = resp.body;
+          setRawData(source);
+          console.log("trial new list: ", source);
+          const inProgressArr = source.filter((d) => {
+            return d.status && d.status.toUpperCase() == "IN PROGRESS";
+          });
+          const completedArr = source.filter((d) => {
+            return d.status && d.status.toUpperCase() == "COMPLETED";
+          });
+          setCount({
+            inProgress: inProgressArr.length,
+            completed: completedArr.length,
+          });
+        }
+      };
+      fetchList()
+    }
+}
+
 
   const handleCancel = () => {
     setStep(0)
@@ -425,7 +456,7 @@ const TrialPortfolio = (props) => {
             spinning={loading}
             indicator={<LoadingOutlined style={{ color: "#ca4a04" }} />}
           >
-            <TrialList data={data} onViewTrial={onViewTrial} />
+            <TrialList data={data} onViewTrial={onViewTrial} onDeleteTrial={onDeleteTrial}/>
           </Spin>
         </>
       ) : (
