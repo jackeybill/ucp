@@ -95,7 +95,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     current: 1,
     pageSize: 5,
     pageSizeOptions: ["5", "10", "20", "50", "100"],
-    sideBar: 6,
+    sideBar: 5,
     showFilter: true,
     studyType: this.props.newTrial.study_type || "",
     studyPhase: this.props.newTrial.study_phase || "",
@@ -280,7 +280,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         {
           type: "pie",
           center: ["30%", "35%"],
-          radius: ["20%", "50%"],
+          radius: ["20%", "40%"],
           avoidLabelOverlap: false,
           label: {
             show: false,
@@ -332,7 +332,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         {
           type: "pie",
           center: ["30%", "35%"],
-          radius: ["20%", "50%"],
+          radius: ["20%", "40%"],
           avoidLabelOverlap: false,
           label: {
             show: false,
@@ -512,7 +512,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
               </div>
               <div className="chart-wrapper">
                 <div className="chart">
-                  <ReactECharts option={this.getOptionOne()}></ReactECharts>
+                  <div className="my-echart-wrapper"><ReactECharts option={this.getOptionOne()}></ReactECharts></div>
                   <div className="my-legend-wrapper">
                     {this.state.sponsorChartData
                       .sort((a, b) => {
@@ -545,7 +545,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 <div className="chart">
                   {this.state.showStatusChart ? (
                     <>
-                      <ReactECharts option={this.getOptionTwo()}></ReactECharts>
+                      <div className="my-echart-wrapper"><ReactECharts option={this.getOptionTwo()}></ReactECharts></div>
                       <div className="my-legend-wrapper">
                         {this.state.statusChartData
                           .sort((a, b) => {

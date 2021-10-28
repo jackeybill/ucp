@@ -12,8 +12,8 @@
   
   .filter-item {
     margin-bottom: 25px;
-    padding-left: 20px;
-    padding-right: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
     &.find-trial-btn-wrapper{
       text-align: center;
       button.ant-btn{
@@ -131,7 +131,35 @@
   padding-top: 5px;
   display: flex;
   .chart {
-    flex: 2;
+    flex: 0.5;
+    display: flex;
+
+    .my-echart-wrapper {
+      width: 200px;
+      height: 200px;
+      overflow: hidden;
+      margin:0;
+    }
+    .my-legend-wrapper{
+      margin-top: 45px;
+      margin-left: -50px;
+
+      .custom-legend{
+        .my_legend{
+          display: inline-block;
+          width: 26px;
+          height: 6px;
+          border-radius: 1px;
+          margin-right: 4px;
+        }
+        .my_legend_text{
+          color: #666666;
+          font-size: 10px;
+          font-style:normal;
+        }
+      }
+
+    }
   }
 }
 .summary-count {
@@ -149,23 +177,4 @@
   }
 }
 
-.my-legend-wrapper{
-  margin-top: -80px;
-  padding-left: 30px;
 
-  .custom-legend{
-    .my_legend{
-      display: inline-block;
-      width: 26px;
-      height: 6px;
-      border-radius: 1px;
-      margin-right: 4px;
-    }
-    .my_legend_text{
-      color: #666666;
-      font-size: 10px;
-      font-style:normal;
-    }
-  }
-
-}
