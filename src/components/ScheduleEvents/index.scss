@@ -54,6 +54,14 @@
                 color:#333333;
             }
         }
+
+        .eventLib {
+            .ant-collapse-item:last-child > .ant-collapse-content {
+                border-radius: 0 0 2px 2px;
+                height: 300px;
+                overflow: scroll;
+            }
+        }
     }
 }
 
