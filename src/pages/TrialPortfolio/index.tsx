@@ -118,6 +118,7 @@ const TrialPortfolio = (props) => {
   const [area, setArea] = useState("All");
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [drawerloading, setDrawerloading] = useState(false);
   const [indicationList, setIndicationList] = useState([])
   const [viewScenario, setViewScenario] = useState({viewScenarioDetails: false, scnarioId: ''})
 
@@ -160,9 +161,17 @@ const TrialPortfolio = (props) => {
     }
   }
 
+  const sleep = (time: number) => {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  };
+
   const handleOk = async () => {
+    setDrawerloading(true)
     const resp = await addStudy(props.newTrial);
+    // wait 180 sec to wait for auto built
+    await sleep(10000);
     if (resp.statusCode == 200) {
+      setDrawerloading(false)
       setVisible(false);
       const trialId = resp.body;
       message.success("Create successfully");
@@ -498,49 +507,52 @@ const TrialPortfolio = (props) => {
         </div>
       )}
 
-      <Drawer
-        title="New Trial"
-        placement="right"
-        closable={true}
-        onClose={handleCancel}
-        visible={visible}
-        footer={
-          <div className="action-btn-footer">
-            <div className="left-action">
-              <Button size="small" type="text" onClick={handleCancel}>Cancel</Button>
-              {step > 0 && step <=(timeline.length-1)? <span className="go-prev-step" onClick={()=>setStep(step-1)}><LeftOutlined />{ timeline[step-1]}</span>:null}
-            </div>          
-            {
-              <Button  size="small" type="primary" className="create-update-btn" onClick={step>=(timeline.length-1)?handleOk:handleNextStep}>
-                {
-                  step>=(timeline.length-1)? "Create Trial":`Next Step: ${timeline[step+1]}`
-                }            
-              </Button>
-            }
+     
+        <Drawer
+          title="New Trial"
+          placement="right"
+          closable={true}
+          onClose={handleCancel}
+          visible={visible}
+          footer={
+            <div className="action-btn-footer">
+              <div className="left-action">
+                <Button size="small" type="text" onClick={handleCancel}>Cancel</Button>
+                {step > 0 && step <=(timeline.length-1)? <span className="go-prev-step" onClick={()=>setStep(step-1)}><LeftOutlined />{ timeline[step-1]}</span>:null}
+              </div>          
+              {
+                <Button  size="small" type="primary" className="create-update-btn" onClick={step>=(timeline.length-1)?handleOk:handleNextStep}>
+                  {
+                    step>=(timeline.length-1)? "Create Trial":`Next Step: ${timeline[step+1]}`
+                  }            
+                </Button>
+              }
+            </div>
+          }
+        >
+          <div className="new-trial-wrapper">
+            <div className="navigation-bar">
+              <Steps
+                current={step}
+                progressDot={(dot, { status, index }) => (
+                <span>
+                  {dot}
+                </span>
+              )}>
+                {timeline.map((t, idx) =><Step title={t} key={t}/>)}
+              </Steps>
+            </div>
+            <div className={`main-content ${step === 2 ? 'similar-table' : ''}`}>
+              {step != 2 ? (<><span className="title">{timeline[step]}</span></>):(<></>)}
+              {step==0 && <TrialSummary handleNewTrialInputChange={handleNewTrialInputChange} handleNewTrialSelectChange={ handleNewTrialSelectChange} newTrial={newTrial} indicationList={ indicationList}/>}
+              {step==1 && <TrialEndpoints />}
+              {step == 2 && <SimilarHistoricalTrials indicationList={ indicationList}/>}
+              {step==3 &&  <Spin spinning={drawerloading}
+            indicator={<LoadingOutlined style={{ color: "#ca4a04" }}/>} ><TeamMembers/> </Spin>}     
+            </div>
           </div>
-        }
-      >
-        <div className="new-trial-wrapper">
-          <div className="navigation-bar">
-            <Steps
-              current={step}
-              progressDot={(dot, { status, index }) => (
-               <span>
-                {dot}
-              </span>
-            )}>
-              {timeline.map((t, idx) =><Step title={t} key={t}/>)}
-            </Steps>
-          </div>
-          <div className={`main-content ${step === 2 ? 'similar-table' : ''}`}>
-            {step != 2 ? (<><span className="title">{timeline[step]}</span></>):(<></>)}
-            {step==0 && <TrialSummary handleNewTrialInputChange={handleNewTrialInputChange} handleNewTrialSelectChange={ handleNewTrialSelectChange} newTrial={newTrial} indicationList={ indicationList}/>}
-            {step==1 && <TrialEndpoints />}
-            {step == 2 && <SimilarHistoricalTrials indicationList={ indicationList}/>}
-            {step==3 && <TeamMembers/>}     
-          </div>
-        </div>
-      </Drawer>
+        </Drawer>
+     
     </div>
   );
 };

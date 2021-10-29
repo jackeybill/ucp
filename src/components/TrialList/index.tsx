@@ -102,7 +102,7 @@ const panelContent = (props, record, onClick) => {
         <span className="value"> {record["study_country"] || "-"}</span>
       </div>
       <div>
-        <span className="delete-btn" onClick={(e)=>props.onDeleteTrial(e,record["_id"])}>DELETE TRIAL</span>
+        {/* <span className="delete-btn" onClick={(e)=>props.onDeleteTrial(e,record["_id"])}>DELETE TRIAL</span> */}
       </div>
 
       {/* <div>
