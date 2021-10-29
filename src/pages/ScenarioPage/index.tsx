@@ -445,17 +445,9 @@ const ScenarioPage = (props) => {
         setMedCondition(originMedCondition.filter((d) => {
             return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
         }))
-        console.log("med frequency", originMedCondition.filter((d) => {
-          return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
-      }));
-        
         setDemographics(originDemographics.filter((d) => {
             return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
         }))
-        console.log("demo frequency",originDemographics.filter((d) => {
-          return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
-      }));
-        
         setLabTest(originLabTest.filter((d) => {
             return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
         }))
