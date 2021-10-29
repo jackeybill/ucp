@@ -445,9 +445,17 @@ const ScenarioPage = (props) => {
         setMedCondition(originMedCondition.filter((d) => {
             return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
         }))
+        console.log("med frequency", originMedCondition.filter((d) => {
+          return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
+      }));
+        
         setDemographics(originDemographics.filter((d) => {
             return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
         }))
+        console.log("demo frequency",originDemographics.filter((d) => {
+          return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
+      }));
+        
         setLabTest(originLabTest.filter((d) => {
             return d.Frequency * 100 >= value[0] && d.Frequency * 100 <= value[1];
         }))
@@ -2322,7 +2330,7 @@ const ScenarioPage = (props) => {
                               <div className="library box">
                                 <span>Demographics</span>
                                 <br />
-                                {demographics.map((demographic, idx) => {                              
+                                {demographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {                              
                                   return (
                                     <CriteriaOption
                                       selectedEle = {demographicsElements}
@@ -2341,7 +2349,7 @@ const ScenarioPage = (props) => {
                               <div className="library box">
                                 <span>Medical Condition</span>
                                 <br />
-                                {medCondition.map((medCon, idx) => {
+                                {medCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
                                   return (
                                     <CriteriaOption
                                       selectedEle = {medConditionElements}
@@ -2360,7 +2368,7 @@ const ScenarioPage = (props) => {
                               <div className="library box">
                                 <span>Intervention</span>
                                 <br />
-                                {intervention.map((intervent, idx) => {
+                                {intervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {
                                    
                                   return (
                                     <CriteriaOption
@@ -2380,7 +2388,7 @@ const ScenarioPage = (props) => {
                               <div className="library box lastOne">
                                 <span>Lab / Test</span>
                                 <br />
-                                {labTest.map((lib, idx) => {
+                                {labTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
                                  
                                   return (
                                     <CriteriaOption
@@ -2603,7 +2611,7 @@ const ScenarioPage = (props) => {
                               <div className="library box">
                                 <span>Demographics</span>
                                 <br />
-                                {excluDemographics.map((demographic, idx) => {
+                                {excluDemographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {
                                   const activeType = excluDemographicsElements.find(e=> e['Eligibility Criteria']==demographic.Text) ?1:0
                                   return (
                                     <CriteriaOption
@@ -2623,7 +2631,7 @@ const ScenarioPage = (props) => {
                               <div className="library box">
                                 <span>Medical Condition</span>
                                 <br />
-                                {excluMedCondition.map((medCon, idx) => {
+                                {excluMedCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
                                  
                                   return (
                                     <CriteriaOption
@@ -2643,7 +2651,7 @@ const ScenarioPage = (props) => {
                                <div className="library box">
                                 <span>Intervention</span>
                                 <br />
-                                {excluIntervention.map((intervent, idx) => {
+                                {excluIntervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {
                                   
                                   return (
                                     <CriteriaOption
@@ -2663,7 +2671,7 @@ const ScenarioPage = (props) => {
                               <div className="library box lastOne">
                                 <span>Lab / Test</span>
                                 <br />
-                                {excluLabTest.map((lib, idx) => {
+                                {excluLabTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
                                   
                                   return (
                                     <CriteriaOption
