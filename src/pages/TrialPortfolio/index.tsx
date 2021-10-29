@@ -169,7 +169,7 @@ const TrialPortfolio = (props) => {
     setDrawerloading(true)
     const resp = await addStudy(props.newTrial);
     // wait 180 sec to wait for auto built
-    await sleep(10000);
+    await sleep(180000);
     if (resp.statusCode == 200) {
       setDrawerloading(false)
       setVisible(false);
