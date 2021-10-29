@@ -117,6 +117,7 @@ const TrialPortfolio = (props) => {
   const [area, setArea] = useState("All");
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [drawerloading, setDrawerloading] = useState(false);
   const [indicationList, setIndicationList] = useState([])
   const [viewScenario, setViewScenario] = useState({viewScenarioDetails: false, scnarioId: ''})
 
@@ -159,9 +160,17 @@ const TrialPortfolio = (props) => {
     }
   }
 
+  const sleep = (time: number) => {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  };
+  
   const handleOk = async () => {
+    setDrawerloading(true)
     const resp = await addStudy(props.newTrial);
+    // wait 180 sec to wait for auto built
+    await sleep(180000);
     if (resp.statusCode == 200) {
+      setDrawerloading(false)
       setVisible(false);
       const trialId = resp.body;
       message.success("Create successfully");
@@ -174,7 +183,7 @@ const TrialPortfolio = (props) => {
       setLoading(true);
       const result = await getTrialList();
       setShowDetails(true);
-
+  
       setLoading(false);
       const latestTrial =
       result.body && result.body.find((i) => i["_id"] == trialId);
@@ -182,6 +191,7 @@ const TrialPortfolio = (props) => {
       setNewTrial(initialStates);
     }
   };
+  
 
   const handleUpdate = async () => {
     const resp = await updateStudy(trial);
@@ -506,7 +516,8 @@ const TrialPortfolio = (props) => {
             {step==0 && <TrialSummary handleNewTrialInputChange={handleNewTrialInputChange} handleNewTrialSelectChange={ handleNewTrialSelectChange} newTrial={newTrial} indicationList={ indicationList}/>}
             {step==1 && <TrialEndpoints />}
             {step == 2 && <SimilarHistoricalTrials indicationList={ indicationList}/>}
-            {step==3 && <TeamMembers/>}     
+            {step==3 &&  <Spin spinning={drawerloading}
+            indicator={<LoadingOutlined style={{ color: "#ca4a04" }}/>} ><TeamMembers/> </Spin>}   
           </div>
         </div>
       </Drawer>
