@@ -2150,12 +2150,12 @@ const ScenarioPage = (props) => {
       <Spin spinning={pageLoading} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
       <div>
         <Row className="process-container">
-            <Col span={2} className="center">
+            <Col flex="100px" className="center">
                 <div className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
                     <LeftOutlined /> &nbsp;Trial Page
                 </div>
             </Col>
-            <Col span={4} className="scenario-header center">
+            <Col flex="240px" className="scenario-header center">
               <Row>
               <Col span={24}>
                 <Row className="item-translate">
@@ -2167,13 +2167,13 @@ const ScenarioPage = (props) => {
                 </Col>
                 </Row>
             </Col>
-            <Col span={8} className="center" style={{paddingLeft: '10px'}}>
+            <Col flex="420px" className="center" style={{paddingLeft: '10px'}}>
                 <Steps progressDot current={processStep} size="small" >
                     <Step title="Add Inclusion / Exclusion Criteria"/>
                     <Step title="Add Schedule of Events"/>
                 </Steps>
             </Col>
-            <Col span={10} className={`center ${ collapsible ? "none-click" : "" }`} >
+            <Col flex="auto" className={`center ${ collapsible ? "none-click" : "" }`} >
                 {activeTabKey === '1'?(
                     <>
                         <Button type="primary" className="step-btn" onClick={() => setActiveTabKey('2')}>
@@ -2247,7 +2247,7 @@ const ScenarioPage = (props) => {
           <Tabs onChange={changeActiveTabKey} activeKey={activeTabKey} centered>
             <TabPane tab="Inclusion Criteria" key="1">
               <Row>
-                <Col span={criteriaLib} style={{backgroundColor: '#F8F8F8'}}>
+                <Col span={criteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '340px', minWidth: '340px'}}>
                   <Row style={{backgroundColor: '#F8F8F8'}}>
                     <Col span={24}>
                       <div className="item-header">
@@ -2274,7 +2274,7 @@ const ScenarioPage = (props) => {
                         </Col>
                         <Col span={8} style={{textAlign:'right'}}>
                           <Row>
-                          <Col span={24}><span className="frequency">CRITERIA FREQUENCY</span></Col>
+                          <Col span={24}><span className="frequency" style={{ display: "block",width: "110px" }}>CRITERIA FREQUENCY</span></Col>
                           </Row>
                           <Row style={{width:'100%'}}>
                           <Col span={24}>
@@ -2415,7 +2415,7 @@ const ScenarioPage = (props) => {
                     </Col>
                   </Row>
                 </Col>
-                <Col span={24 - criteriaLib} className={`${ collapsible ? "none-click" : "" } main-content-right`}>
+                <Col flex="auto" className={`${ collapsible ? "none-click" : "" } main-content-right`}>
                   <Row style={{ paddingTop: '10px' }}>
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>
@@ -2528,7 +2528,7 @@ const ScenarioPage = (props) => {
             </TabPane>
             <TabPane tab="Exclusion Criteria" key="2" disabled={collapsible}>
               <Row>
-                <Col span={excluCriteriaLib} style={{backgroundColor: '#F8F8F8'}}>
+                <Col span={excluCriteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '340px', minWidth: '340px'}}>
                   <Row style={{backgroundColor: '#F8F8F8'}}>
                     <Col span={24}>
                       <div className="item-header">
@@ -2555,7 +2555,7 @@ const ScenarioPage = (props) => {
                         </Col>
                         <Col span={8} style={{textAlign:'right'}}>
                           <Row>
-                          <Col span={24}><span className="frequency">CRITERIA FREQUENCY</span></Col>
+                          <Col span={24}><span className="frequency" style={{ display: "block",width: "110px" }}>CRITERIA FREQUENCY</span></Col>
                           </Row>
                           <Row style={{width:'100%'}}>
                           <Col span={24}>
@@ -2698,7 +2698,7 @@ const ScenarioPage = (props) => {
                     </Col>
                   </Row>
                 </Col>
-                <Col span={24 - excluCriteriaLib} className={`${ excluCollapsible ? "none-click" : "" } main-content-right`}>
+                <Col flex="auto" className={`${ excluCollapsible ? "none-click" : "" } main-content-right`}>
                   <Row style={{ paddingTop: '10px' }}>
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>

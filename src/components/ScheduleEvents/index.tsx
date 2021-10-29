@@ -1170,7 +1170,7 @@ const ScheduleEvents = (props) => {
         <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
       </div>
       <Row>
-        <Col span={eventLib} className="event-left-container">
+        <Col span={eventLib} className="event-left-container" style={{maxWidth: '340px', minWidth: '340px'}}>
           <Row style={{backgroundColor: '#F8F8F8'}}>
             <Col span={24}>
               <div className="item-header">
@@ -1206,7 +1206,7 @@ const ScheduleEvents = (props) => {
                 </Col>
                 <Col span={8} style={{textAlign:'right', paddingRight:'10px', fontSize:'14px'}}>
                   <Row>
-                  <Col span={24}><span className="frequency">EVENT FREQUENCY</span></Col>
+                  <Col span={24}><span className="frequency" style={{ display: "block",width: "100px" }}>EVENT FREQUENCY</span></Col>
                   </Row>
                   <Row style={{width:'100%'}}>
                   <Col span={24}>
