@@ -284,20 +284,20 @@ const SceneriosDashbaord = (props: any) => {
                             <div className="button-not-show-wrapper">
                               {
                                 noEdit==undefined ? (
-                                  <Button
-                                    size="small"
+                                  <button
+                                    
                                     className="button-not-show"
                                     onClick={() => editScenario(s)}
                                   >
                                     EDIT SCENARIO
-                                  </Button>
+                                  </button>
                                 ) : (
-                                  <Button
-                                    size="small"
+                                  <button
+                                    className="button-not-show"
                                     onClick={() => viewScenario(s)}
                                   >
                                     VIEW SCENARIO
-                                  </Button>
+                                  </button>
                                 )
                               }
                             </div>

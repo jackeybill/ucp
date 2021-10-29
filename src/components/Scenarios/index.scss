@@ -180,8 +180,15 @@
                 }
               }
               .button-not-show-wrapper {
+                position: relative;
                 .button-not-show {
-                  
+                  position: absolute;
+                  left: -800px;
+                  width: 980px;
+                  height: 60px!important;
+                  border-color: transparent;
+                  background-color: transparent;
+                  color: transparent;
                 }
               }
             }
