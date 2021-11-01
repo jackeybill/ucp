@@ -72,6 +72,8 @@ const TrialDetails = (props) => {
             {editable ? (
               <Select
                 defaultValue={record["study_phase"]}
+                mode="multiple"
+                allowClear
                 style={{ width: 200 }}
                 onChange={(e) => onSelectChange("study_phase", e)}
               >
@@ -84,7 +86,21 @@ const TrialDetails = (props) => {
                 })}
               </Select>
             ) : (
-              <span className="readonly-value">{record["study_phase"] || "-"}</span>
+              <span className="readonly-value">
+                {!record["study_phase"] && "-"}
+                {
+                    typeof record["study_phase"] =='string' && record["study_phase"]
+                  }
+                  {
+                    typeof record["study_phase"] == 'object' ? (
+                      <>
+                        {record["study_phase"] && record["study_phase"].length > 0 && record["study_phase"].map((i, idx) => {
+                          return idx < record["study_phase"].length - 1 ? i + ',' : i
+                        })}
+                      </>
+                    ):''
+                  } 
+              </span>
             )}
           </div>
           <div className="trial-item">
@@ -92,6 +108,8 @@ const TrialDetails = (props) => {
             {editable ? (
               <Select
                 defaultValue={record["study_type"]}
+                mode="multiple"
+                allowClear
                 style={{ width: 200 }}
                 onChange={(e) => onSelectChange("study_type", e)}
               >
@@ -104,7 +122,21 @@ const TrialDetails = (props) => {
                 })}
               </Select>
             ) : (
-              <span className="readonly-value">{record["study_type"] || "-"}</span>
+              <span className="readonly-value">
+                {!record["study_type"] && "-"}
+                {
+                    typeof record["study_type"] =='string' && record["study_type"]
+                  }
+                  {
+                    typeof record["study_type"] == 'object' ? (
+                      <>
+                        {record["study_type"] && record["study_type"].length > 0 && record["study_type"].map((i, idx) => {
+                          return idx < record["study_type"].length - 1 ? i + ',' : i
+                        })}
+                      </>
+                    ):''
+                  }  
+              </span>
             )}
           </div>
           <div className="trial-item">
