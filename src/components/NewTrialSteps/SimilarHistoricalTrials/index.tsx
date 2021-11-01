@@ -187,6 +187,8 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     this.setState({
       [key]: v,
     });
+    console.log(key, v);
+    
   };
 
   handleLegendFormatter = (chartData, legenName) => {
@@ -217,12 +219,12 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
           ? tempIndication.indexOf(d.indication) > -1
           : true) &&
         (this.state.pediatric != "" && this.state.pediatric != "All"
-          ? d.pediatric == this.state.pediatric
+          ? d.pediatric+'' == this.state.pediatric
           : true) &&
         date >= this.state.dateFrom &&
         date <= this.state.dateTo
       );
-    });
+    });    
     const statusData = this.getChartData(filteredData, "study_status");
     const sponsorData = this.getChartData(filteredData, "sponsor");
     this.setState({
@@ -470,13 +472,16 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 style={{ width: "100%" }}
                 onChange={(e) => this.onSelectChange("pediatric", e)}
               >
-                {["All", "YES", "NO"].map((o) => {
+                {/* {["All", "YES", "NO"].map((o) => {
                   return (
                     <Option value={o} key={o}>
                       {o}
                     </Option>
                   );
-                })}
+                })} */}
+                 <Option value="All" key="All">All</Option> 
+                 <Option value="true" key="true">YES</Option> 
+                 <Option value="false" key="false">NO</Option>
               </Select>
             </div>
             <div className="filter-item">

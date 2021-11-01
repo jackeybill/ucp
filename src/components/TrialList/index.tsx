@@ -95,7 +95,7 @@ const panelContent = (props, record, onClick) => {
       </div>
       <div>
         <span className="key">Pediatric Study</span><br/>
-        <span className="value"> {record["pediatric_study"] || "-"}</span>
+        <span className="value"> {record["pediatric_study"]=="false"?"NO":(record["pediatric_study"]=="true"?"YES": "-") || "-"}</span>
       </div>
       <div>
         <span className="key">Study Country</span><br/>

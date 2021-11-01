@@ -159,8 +159,8 @@ const TrialSummary = (props) => {
                     handleNewTrialSelectChange("pediatric_study", v)
                   }
                 >
-                  <Option value="YES">YES</Option>
-                  <Option value="NO">NO</Option>
+                  <Option value="true">YES</Option>
+                  <Option value="false">NO</Option>
                 </Select>
               </div>
               <div className="trial-item">

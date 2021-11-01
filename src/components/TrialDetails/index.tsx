@@ -15,6 +15,8 @@ const TrialDetails = (props) => {
   const onEdit = () => {
     // setDisabled(false)
     setEditable(true);
+    console.log(record);
+    
   };
   const handleSave = async () => {
     await onSave();
@@ -135,11 +137,11 @@ const TrialDetails = (props) => {
                 style={{ width: 200 }}
                 onChange={(e) => onSelectChange("pediatric_study", e)}
               >
-                <Option value="YES">YES</Option>
-                <Option value="NO">NO</Option>
+                <Option value="true">YES</Option>
+                <Option value="false">NO</Option>
               </Select>
             ) : (
-              <span className="readonly-value">{record["pediatric_study"] || "-"}</span>
+              <span className="readonly-value">{record["pediatric_study"]=="false"?"NO":(record["pediatric_study"]=="true"?"YES": "-") || "-"}</span>
             )}
           </div>
           <div className="trial-item">
