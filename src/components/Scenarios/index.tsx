@@ -2,7 +2,7 @@ import React, { useState, useReducer,useEffect } from "react";
 import { withRouter } from "react-router";
 import { Button, Row, Col, Input, Drawer, Radio } from "antd";
 import { InfoCircleOutlined} from "@ant-design/icons";
-import { updateStudy,getStudy,getEventAverageCost } from "../../utils/ajax-proxy";
+import { updateStudy,getStudy} from "../../utils/ajax-proxy";
 import "./index.scss";
 
 const { TextArea } = Input;
@@ -36,21 +36,11 @@ const SceneriosDashbaord = (props: any) => {
   useEffect(() => {
     setScenarioList(JSON.parse(JSON.stringify(props.record.scenarios)))
 
-    const getAvgCost = async () => {
-      if(props.record.CostAvg === undefined || props.record.CostAvg === 0){
-        const response = await getEventAverageCost(props.record.similarHistoricalTrials);
-        if(response.statusCode === 200){
-          setCostAvg(JSON.parse(response.body).Cost)
-          setBurdenAvg(JSON.parse(response.body).PB)
-          setCostAvgValue('$' + formatCostAvg(props.record.CostAvg,2) +'K')
-        }
-      } else {
-        setCostAvg(props.record.CostAvg)
-        setBurdenAvg(props.record.BurdenAvg)
-        setCostAvgValue('$' + formatCostAvg(props.record.CostAvg,1000) +'K')
-      }
+    if(props.record.CostAvg != undefined){
+      setCostAvg(props.record.CostAvg)
+      setBurdenAvg(props.record.BurdenAvg)
+      setCostAvgValue('$' + formatCostAvg(props.record.CostAvg,1000) +'K')
     }
-    getAvgCost();
   }, [props.record.scenarios])
 
   function roundFun(value, n) {

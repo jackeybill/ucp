@@ -174,6 +174,7 @@ const TrialPortfolio = (props) => {
       let dataPreparationRes = false
       let retryTimes = 0
       do {
+        await sleep(20000);
         dataPreparationRes = await checkTrialDataPreparation(trialId);
         retryTimes += 1
         if (dataPreparationRes){
@@ -196,8 +197,6 @@ const TrialPortfolio = (props) => {
           result.body && result.body.find((i) => i["_id"] == trialId);
           setTrial(JSON.parse(JSON.stringify(latestTrial)));
           setNewTrial(initialStates);
-        } else{
-          await sleep(20000);
         }
       } while (!dataPreparationRes && retryTimes <= 20);
       if (!dataPreparationRes && retryTimes > 20){
