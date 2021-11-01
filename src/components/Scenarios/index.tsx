@@ -180,7 +180,7 @@ const SceneriosDashbaord = (props: any) => {
   }
 
   const noEdit = props.record.scenarios.find(sce=>sce.rationale!=undefined)
-  console.log( props.record)
+  console.log( props)
   return (
     <div className="scenarios-container">
       <div className="container-top">What would you like to explore today?</div>

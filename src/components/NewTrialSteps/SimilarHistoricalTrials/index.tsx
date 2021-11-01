@@ -52,6 +52,7 @@ interface HistoricalProps {
   shouldFetch?: boolean;
   fetchHistory?: any;
   historyTrial?: any;
+  handleNewTrialSelectChangeHistory?:any;
 }
 const min = 1990;
 const max = 2025;
@@ -187,8 +188,10 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     this.setState({
       [key]: v,
     });
-    console.log(key, v);
-    
+    key==="studyPhase"&&this.props.handleNewTrialSelectChangeHistory("study_phase", v)
+    key==="studyType"&&this.props.handleNewTrialSelectChangeHistory("study_type", v)
+    key==="pediatric"&&this.props.handleNewTrialSelectChangeHistory("pediatric_study", v)
+    key==="studyStatus"&&this.props.handleNewTrialSelectChangeHistory("study_status", v)
   };
 
   handleLegendFormatter = (chartData, legenName) => {
