@@ -29,7 +29,7 @@ import SimilarHistoricalTrials from '../../components/NewTrialSteps/SimilarHisto
 import Scenarios from "../../components/Scenarios";
 import TrialSummary from '../../components/NewTrialSteps/TrialSummary';
 import ScenarioDetails from "../../components/ScenarioDetails";
-import { getTrialList, addStudy, updateStudy, getIndicationList, getStudy} from "../../utils/ajax-proxy";
+import { getTrialList, addStudy, updateStudy, getIndicationList, getStudy, checkTrialDataPreparation} from "../../utils/ajax-proxy";
 import bgDotPic from "../../assets/dots.svg";
 import { Therapeutic_Area_Map } from "../../utils/area-map";
 import { DeleteTrialList } from '../../utils/ajax-proxy'
@@ -168,28 +168,42 @@ const TrialPortfolio = (props) => {
   const handleOk = async () => {
     setDrawerloading(true)
     const resp = await addStudy(props.newTrial);
-    // wait 180 sec to wait for auto built
-    await sleep(180000);
+    console.log('Create trial response: ' + resp)
+    // detect if trial data preparation is ready: 1. criteria lib with frequency and average; 2. mean cost
     if (resp.statusCode == 200) {
-      setDrawerloading(false)
-      setVisible(false);
       const trialId = resp.body;
-      message.success("Create successfully");
-      props.createTrial(initialTrial)
-      props.fetchHistory({
-        shouldFetch: true,
-        historyData:[]
-      })
-      setStep(0)
-      setLoading(true);
-      const result = await getTrialList();
-      setShowDetails(true);
+      let dataPreparationRes = false
+      let retryTimes = 0
+      do {
+        dataPreparationRes = await checkTrialDataPreparation(trialId);
+        retryTimes += 1
+        if (dataPreparationRes){
+          setDrawerloading(false)
+          setVisible(false);
+          
+          message.success("Create successfully");
+          props.createTrial(initialTrial)
+          props.fetchHistory({
+            shouldFetch: true,
+            historyData:[]
+          })
+          setStep(0)
+          setLoading(true);
+          const result = await getTrialList();
+          setShowDetails(true);
 
-      setLoading(false);
-      const latestTrial =
-      result.body && result.body.find((i) => i["_id"] == trialId);
-      setTrial(JSON.parse(JSON.stringify(latestTrial)));
-      setNewTrial(initialStates);
+          setLoading(false);
+          const latestTrial =
+          result.body && result.body.find((i) => i["_id"] == trialId);
+          setTrial(JSON.parse(JSON.stringify(latestTrial)));
+          setNewTrial(initialStates);
+        } else{
+          await sleep(20000);
+        }
+      } while (!dataPreparationRes && retryTimes <= 20);
+      if (!dataPreparationRes && retryTimes > 20){
+        message.error('No response for over 6 minutes, please call assist.')
+      }
     }
   };
 

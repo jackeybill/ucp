@@ -366,6 +366,22 @@ export const addStudy = async (params:any) => {
   return await response.json();
 }
 
+export const checkTrialDataPreparation = async (trialId) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "checkTrialDataPreparation": {
+        "trialId": trialId
+      }})
+  })
+
+  return await response.json();
+}
+
 export const getSummaryDefaultList = async () => {
   const response = await fetch(criteria_url, {
     method: 'POST',
