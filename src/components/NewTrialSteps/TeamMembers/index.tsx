@@ -51,7 +51,7 @@ const TeamMembers = (props) => {
             allowClear
             placeholder="Enter user name"
             value={id}
-            style={{ width: "100%", height: 30 }}
+            style={{ width: "100%", height: 40 }}
             onChange={(e) => handleInputChange(e)}
           />
         </div>
@@ -59,8 +59,9 @@ const TeamMembers = (props) => {
           <label>SELECT ROLE</label>
           <Select
             value={role}
+            size={"large"}
             placeholder="Select"
-            style={{ width: "100%" }}
+            style={{ width: "100%", fontSize: "14px" }}
             onChange={handleSelectChange}
           >
             {roleList.map((role) => {
@@ -72,7 +73,7 @@ const TeamMembers = (props) => {
             })}
           </Select>
         </div>
-        <Button type="primary" onClick={handleAdd}>
+        <Button type="primary" onClick={handleAdd} style={{height: "40px",padding: "5px 15px"}}>
           Add
         </Button>
       </div>

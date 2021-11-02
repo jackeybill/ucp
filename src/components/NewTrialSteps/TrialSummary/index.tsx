@@ -31,7 +31,8 @@ const TrialSummary = (props) => {
             <div className="trial-item">
               <label htmlFor="">Trial Alias</label>
               <Input
-                style={{ width: "100%", height: 30 }}
+                style={{ width: "100%", height: "40px"}}
+                size="large"
                 onChange={(v) => handleNewTrialInputChange("trial_alias", v)}
                 value={newTrial["trial_alias"]}
               />
@@ -50,9 +51,10 @@ const TrialSummary = (props) => {
                 <label>Therapeutic Area</label>
                 <Select
                   defaultValue="All"
+                  size="large"
                   value={newTrial["therapeutic_area"]}
                   showSearch
-                  style={{ width: 250 }}
+                  style={{ width: 430, fontSize: "14px" }}
                   onChange={(v) =>
                     handleNewTrialSelectChange("therapeutic_area", v)
                   }
@@ -75,10 +77,11 @@ const TrialSummary = (props) => {
                 <label htmlFor="">Indication</label>
                 <Select
                   defaultValue=""
-                mode="multiple"
-                allowClear
+                  size="large"
+                  mode="multiple"
+                  allowClear
                   value={newTrial["indication"]}
-                  style={{ width: 250 }}
+                  style={{ width: 430, fontSize: "14px"  }}
                   onChange={(v) => handleNewTrialSelectChange("indication", v)}
               >
                   {props.indicationList.map((t) => {
@@ -96,7 +99,8 @@ const TrialSummary = (props) => {
               <div className="trial-item">
                 <label htmlFor="">Trial Title</label>
                 <Input
-                  style={{ width: 250, height: 30 }}
+                  style={{ width: 430, height: "40px"}}
+                  size="large"
                   onChange={(e) => handleNewTrialInputChange("trial_title", e)}
                   value={newTrial["trial_title"]}
                 />
@@ -105,10 +109,11 @@ const TrialSummary = (props) => {
                 <label htmlFor="">Study Type</label>
                 <Select
                   defaultValue="All"
+                  size="large"
                   mode="multiple"
                   allowClear
                   value={newTrial["study_type"]}
-                  style={{ width: 250 }}
+                  style={{ width: 430, fontSize: "14px"  }}
                   onChange={(v) => handleNewTrialSelectChange("study_type", v)}
                 >
                   {study_types.map((t) => {
@@ -125,7 +130,8 @@ const TrialSummary = (props) => {
               <div className="trial-item">
                 <label htmlFor="">Molecule Name</label>
                 <Input
-                  style={{ width: 250, height: 30 }}
+                  style={{ width: 430, height: "40px"}}
+                  size="large"
                   onChange={(v) =>
                     handleNewTrialInputChange("molecule_name", v)
                   }
@@ -136,10 +142,11 @@ const TrialSummary = (props) => {
                 <label htmlFor="">Study Phase</label>
                 <Select
                   defaultValue="All"
+                  size="large"
                   mode="multiple"
                   allowClear
                   value={newTrial["study_phase"]}
-                  style={{ width: 250 }}
+                  style={{ width: 430, fontSize: "14px"  }}
                   onChange={(v) => handleNewTrialSelectChange("study_phase", v)}
                 >
                   {phase_options.map((o) => {
@@ -157,8 +164,9 @@ const TrialSummary = (props) => {
                 <label htmlFor="">Pediatric Study</label>
                 <Select
                   defaultValue="All"
+                  size="large"
                   value={newTrial["pediatric_study"]}
-                  style={{ width: 250 }}
+                  style={{ width: 430, fontSize: "14px"  }}
                   onChange={(v) =>
                     handleNewTrialSelectChange("pediatric_study", v)
                   }
@@ -171,8 +179,9 @@ const TrialSummary = (props) => {
                 <label htmlFor="">Study Country</label>
                 <Select
                   defaultValue="All"
+                  size="large"
                   value={newTrial["study_country"]}
-                  style={{ width: 250 }}
+                  style={{ width: 430, fontSize: "14px"  }}
                   onChange={(v) =>
                     handleNewTrialSelectChange("study_country", v)
                   }

@@ -88,7 +88,7 @@ const TrialEndpoits = (props: any) => {
               allowClear
               placeholder="Add Trial Endpoints"
               value={primaryValue}
-              style={{ width: 200, height: 30 }}
+              style={{ width: 200, height: 40 }}
               onChange={(e) => handleChange("primary", e)}
               
             />
@@ -120,7 +120,7 @@ const TrialEndpoits = (props: any) => {
               allowClear
               placeholder="Add Trial Endpoints"
               value={secondaryValue}
-              style={{ width: 200, height: 30 }}
+              style={{ width: 200, height: 40 }}
               onChange={(e) => handleChange("secondary", e)}
             />
             <Button type="primary" onClick={() => handleAdd("secondary")}>
@@ -151,7 +151,7 @@ const TrialEndpoits = (props: any) => {
               allowClear
               placeholder="Add Trial Endpoints"
               value={tertiaryValue}
-              style={{ width: 200, height: 30 }}
+              style={{ width: 200, height: 40 }}
               onChange={(e) => handleChange("tertiary", e)}
             />
             <Button type="primary" onClick={() => handleAdd("tertiary")}>
