@@ -70,7 +70,7 @@ export const study_status = [
 "Withheld",
 "Temporarily not available",
 "Recruiting",
-"Active",
+"Active, not recruiting",
 "Not recruiting",
 "Not yet recruiting",
 "No longer available",
