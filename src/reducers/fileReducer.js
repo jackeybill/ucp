@@ -6,7 +6,8 @@ const initialState = {
     updatedSection: {},
     labels:[],
     protocolName:"",
-    fileName:""
+    fileName:"",
+    disabledButton:true
 }
 
 const fileReducer = (state = initialState, action) => {

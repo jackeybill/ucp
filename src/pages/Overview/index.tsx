@@ -237,13 +237,19 @@ const Overview = (props: any) => {
           </span>
           <Button
             type="primary"
-            onClick={() => props.history.push({
+            disabled={props.fileReader.disabledButton}
+            onClick={() => {
+              props.history.push({
               pathname: "/protocol-sections",
               state: {
                 status: "Not started",
                 title: props.fileReader.protocolName !== ""? props.fileReader.protocolName: props.fileReader.fileName
               }
-            })}
+            })
+            props.readFile({
+              disabledButton:true
+            });
+          }}
           >
             START EXTRACTION
           </Button>
