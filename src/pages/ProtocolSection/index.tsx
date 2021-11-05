@@ -57,8 +57,8 @@ const showStatusCircle = (text) => {
 }
 
 const ProtocolSection = (props: any) => {
-  if (!props.fileReader.file.txt)
-    window.location.href = window.location.origin + "/overview";
+  // if (!props.fileReader.file.txt)
+  //   window.location.href = window.location.origin + "/overview";
 
   const activeTabKey = props.fileReader.activeTabKey;
   const fileName =
