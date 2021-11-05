@@ -691,7 +691,7 @@ const EventList = (props) => {
           }
         }       
       }
-      if(!isOptimized && Boolean(condition[columnId].modality)) {
+      if(!isOptimized) {
         // only if the selected modality is one of its avaliable modalities.      
        if(avaliableModalityNames.indexOf(columnModality[columnId])>-1) condition[columnId].modality=columnModality[columnId]   
       } 
