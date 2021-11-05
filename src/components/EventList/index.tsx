@@ -674,9 +674,7 @@ const EventList = (props) => {
     })
     .filter(ele=>Object.values(ele)[0]!==0 ) //0 means not avaliable
     .map( item=>Object.keys(item)[0])
-    console.log(avaliableModalityNames)
     return avaliableModalityNames
-
   }
 
   const updateColumnModality = (tmpCategories, columnId, isOptimized=false, descModality=[]) =>{
@@ -684,7 +682,7 @@ const EventList = (props) => {
     tmpCategories.forEach( e=>{
       const condition= e.condition
       let avaliableModalityNames = getAvaliableModalityNames(e.modality)
-      if(isOptimized){
+      if(isOptimized&& Boolean(condition[columnId].modality)){
         // if the most common modality is not avaliable for this event, then use second common one...
         for(let i=0; i<descModality.length; i++){
           if(avaliableModalityNames.indexOf(descModality[i])>-1){
@@ -756,6 +754,7 @@ const EventList = (props) => {
     }else{
       modalityCollection[element.modality].push(element)
     }
+    console.log("modalityCollection",modalityCollection);
     
     modality_options.forEach( option=>{
       if(Object.keys(modalityCollection).indexOf(option.name)==-1){
@@ -771,24 +770,24 @@ const EventList = (props) => {
     })
    
     // fill the blank
-    let tmpLabs = labs.slice(0);  
-    tmpLabs=updateColumnModality(tmpLabs,idx,true,descModality)
+    let tmpLabs = {};  
+    tmpLabs=updateColumnModality(JSON.parse(JSON.stringify(labs)),idx,true,descModality)
     setLabs(tmpLabs)
 
-    let tmpExamination = examination.slice(0); 
-    tmpExamination =updateColumnModality(tmpExamination,idx,true,descModality)
+    let tmpExamination = {}; 
+    tmpExamination =updateColumnModality(JSON.parse(JSON.stringify(examination)),idx,true,descModality)
     setExamination(tmpExamination)      
     
-    let tmpProcedures = procedures.slice(0);
-    tmpProcedures =updateColumnModality(tmpProcedures,idx,true,descModality)
+    let tmpProcedures = {};
+    tmpProcedures =updateColumnModality(JSON.parse(JSON.stringify(procedures)),idx,true,descModality)
     setProcedures(tmpProcedures )       
       
-    let tmpQuestionnaire = questionnaire.slice(0);  
-    tmpQuestionnaire =updateColumnModality(tmpQuestionnaire,idx,true,descModality)
+    let tmpQuestionnaire = {};  
+    tmpQuestionnaire =updateColumnModality(JSON.parse(JSON.stringify(questionnaire)),idx,true,descModality)
     setQuestionnaire(tmpQuestionnaire)    
   
-    let tmpStudyProcedures = studyProcedures.slice(0); 
-    tmpStudyProcedures =updateColumnModality(tmpStudyProcedures,idx,true,descModality)
+    let tmpStudyProcedures = {}; 
+    tmpStudyProcedures =updateColumnModality(JSON.parse(JSON.stringify(studyProcedures)),idx,true,descModality)
     setStudyProcedures(tmpStudyProcedures) 
   })
   }
