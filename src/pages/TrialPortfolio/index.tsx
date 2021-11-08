@@ -96,8 +96,8 @@ const initialStates = {
   therapeutic_area: "",
   indication: [],
   trial_alias: "",
-  study_type: "",
-  study_phase: "",
+  study_type: [],
+  study_phase: [],
   molecule_name: "",
   pediatric_study: "",
   study_country: "",
@@ -156,6 +156,9 @@ const TrialPortfolio = (props) => {
   const handleNextStep = async () => {
     setStep(step + 1)
     if (step + 1 == 1) {
+      props.createTrial(newTrial)
+    }
+    if (step + 1 == 3) {
       props.createTrial(newTrial)
     }
   }
@@ -528,7 +531,7 @@ const TrialPortfolio = (props) => {
             {step != 2 ? (<><span className="title">{timeline[step]}</span></>):(<></>)}
             {step==0 && <TrialSummary handleNewTrialInputChange={handleNewTrialInputChange} handleNewTrialSelectChange={ handleNewTrialSelectChange} newTrial={newTrial} indicationList={ indicationList}/>}
             {step==1 && <TrialEndpoints />}
-            {step == 2 && <SimilarHistoricalTrials indicationList={ indicationList}/>}
+            {step == 2 && <SimilarHistoricalTrials indicationList={ indicationList} handleNewTrialSelectChangeHistory={ handleNewTrialSelectChange}/>}
             {step==3 &&  <Spin spinning={drawerloading}
             indicator={<LoadingOutlined style={{ color: "#ca4a04" }}/>} ><TeamMembers/> </Spin>}   
           </div>

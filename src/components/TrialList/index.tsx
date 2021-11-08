@@ -19,7 +19,21 @@ const panelHeader = (props, record) => {
       <span className="update-time">Last updated {record.updateDate||'-'}</span>
       </div>
       <div>{record["molecule_name"] || "-"}</div>
-      <div>{record["study_phase"] || "-"}</div>
+      <div>
+        {!record["study_phase"] && "-"}
+        {
+            typeof record["study_phase"] =='string' && record["study_phase"]
+          }
+          {
+            typeof record["study_phase"] == 'object' ? (
+              <>
+                {record["study_phase"] && record["study_phase"].length > 0 && record["study_phase"].map((i, idx) => {
+                  return idx < record["study_phase"].length - 1 ? i + ',' : i
+                })}
+              </>
+            ):''
+          } 
+      </div>      
       <div>{record["therapeutic_area"] || "-"}</div>
       {/* <div className="module_status_item">{record["module_status"] || "1/4"}
         <Tooltip placement="bottom"
@@ -91,11 +105,25 @@ const panelContent = (record, onClick) => {
       </div>
       <div>
         <span className="key">Study Type</span><br/>
-        <span className="value"> {record["study_type"] || "-"}</span>
-      </div>
+        <span className="value">
+           {!record["study_type"] && "-"}
+           {
+            typeof record["study_type"] =='string' && record["study_type"]
+          }
+          {
+            typeof record["study_type"] == 'object' ? (
+              <>
+                {record["study_type"] && record["study_type"].length > 0 && record["study_type"].map((i, idx) => {
+                  return idx < record["study_type"].length - 1 ? i + ',' : i
+                })}
+              </>
+            ):''
+          } 
+           </span>    
+        </div>
       <div>
         <span className="key">Pediatric Study</span><br/>
-        <span className="value"> {record["pediatric_study"] || "-"}</span>
+        <span className="value"> {record["pediatric_study"]=="false"?"NO":(record["pediatric_study"]=="true"?"YES": "-") || "-"}</span>      
       </div>
       <div>
         <span className="key">Study Country</span><br/>

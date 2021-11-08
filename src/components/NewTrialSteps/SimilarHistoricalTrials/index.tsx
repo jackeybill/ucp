@@ -47,7 +47,8 @@ interface HistoricalProps {
   indicationList?: any;
   shouldFetch?: boolean;
   fetchHistory?: any;
-  historyTrial?:any
+  historyTrial?:any;
+  handleNewTrialSelectChangeHistory?:any;
 }
 const min = 1990;
 const max = 2025;
@@ -95,9 +96,9 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     pageSizeOptions: ["5", "10", "20", "50", "100"],
     sideBar: 6,
     showFilter: true,
-    studyType: this.props.newTrial.study_type||"",
-    studyPhase: this.props.newTrial.study_phase||"",
-    studyStatus: "",
+    studyType: this.props.newTrial.study_type || [],
+    studyPhase: this.props.newTrial.study_phase || [],
+    studyStatus: [],
     indication: this.props.newTrial.indication.length === 0 ? this.props.indicationList : this.props.newTrial.indication,
     pediatric: this.props.newTrial.pediatric_study||"",
     dateFrom: 1990,
@@ -181,6 +182,10 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     this.setState({
       [key]: v,
     });
+    key==="studyPhase"&&this.props.handleNewTrialSelectChangeHistory("study_phase", v)
+    key==="studyType"&&this.props.handleNewTrialSelectChangeHistory("study_type", v)
+    key==="pediatric"&&this.props.handleNewTrialSelectChangeHistory("pediatric_study", v)
+    key==="studyStatus"&&this.props.handleNewTrialSelectChangeHistory("study_status", v)
   };
 
   handleLegendFormatter = (chartData, legenName) => {  
@@ -207,20 +212,20 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
     const filteredData = datasource.filter((d) => {
       const date = d['start_date'].split('-')[0]
       return (
-        (this.state.studyPhase != "" && this.state.studyPhase != "All"
-          ? d.study_phase.indexOf(this.state.studyPhase)>-1
+        (this.state.studyPhase.indexOf("All") == -1 && this.state.studyPhase.length > 0
+          ? this.state.studyPhase.indexOf(d.study_phase) > -1
           : true) &&
-        (this.state.studyType != "" && this.state.studyType != "All"
-          ? d.study_type == this.state.studyType
+          ( this.state.studyType.indexOf("All") == -1 && this.state.studyType.length > 0
+          ? this.state.studyType.indexOf(d.study_type) > -1
           : true) &&
-        (this.state.studyStatus != "" && this.state.studyStatus != "All"
-          ? d['study_status'] == this.state.studyStatus
+          ( this.state.studyStatus.indexOf("All") == -1 && this.state.studyStatus.length > 0
+          ? this.state.studyStatus.indexOf(d["study_status"]) > -1
           : true) &&
         (tempIndication.length > 0
           ? tempIndication.indexOf(d.indication)>-1
           : true) &&
         (tempPediatric != "" && tempPediatric != "All"
-          ? d.pediatric == tempPediatric
+          ? d.pediatric+'' == tempPediatric
           : true) &&  
         date>=this.state.dateFrom && date<=this.state.dateTo
       );
@@ -235,7 +240,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       sponsorChartData: sponsorData,
     });
 
-    if (this.state.studyStatus != "" && this.state.studyStatus != "All") {
+    if (this.state.studyStatus && this.state.studyStatus.indexOf("All") > -1) {
       this.setState({
         showStatusChart:false
       })
@@ -406,7 +411,9 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 <div className="filter-item">
                   <label>STUDY PHASE</label>
                   <Select
-                    value={this.state.studyPhase||"All"}
+                    mode="multiple"
+                    allowClear
+                    value={this.state.studyPhase || ["All"]}
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("studyPhase", e)}
                   >
@@ -423,7 +430,9 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 <div className="filter-item">
                   <label>STUDY TYPE</label>
                   <Select
-                    value={this.state.studyType||"All"}
+                    mode="multiple"
+                    allowClear
+                    value={this.state.studyType || ["All"]}
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("studyType", e)}
                   >
@@ -439,7 +448,9 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 <div className="filter-item">
                   <label>STUDY STATUS</label>
                   <Select
-                    value={this.state.studyStatus||"All"}
+                    mode="multiple"
+                    allowClear
+                    value={this.state.studyStatus || ["All"]}
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("studyStatus", e)}
                   >
@@ -478,13 +489,16 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                     style={{ width: "100%" }}
                     onChange={(e) => this.onSelectChange("pediatric", e)}
                   >
-                    {["All", "YES", "NO"].map((o) => {
+                    {/* {["All", "YES", "NO"].map((o) => {
                       return (
                         <Option value={o} key={o}>
                           {o}
                         </Option>
                       );
-                    })}
+                    })} */}
+                      <Option value="All" key="All">All</Option> 
+                      <Option value="true" key="true">YES</Option> 
+                      <Option value="false" key="false">NO</Option>
                   </Select>
                 </div>
                 <div className="filter-item">

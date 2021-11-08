@@ -105,6 +105,8 @@ const TrialSummary = (props) => {
                 <label htmlFor="">Study Type</label>
                 <Select
                   defaultValue="All"
+                  mode="multiple"
+                  allowClear
                   value={newTrial["study_type"]}
                   style={{ width: 250 }}
                   onChange={(v) => handleNewTrialSelectChange("study_type", v)}
@@ -134,6 +136,8 @@ const TrialSummary = (props) => {
                 <label htmlFor="">Study Phase</label>
                 <Select
                   defaultValue="All"
+                  mode="multiple"
+                  allowClear
                   value={newTrial["study_phase"]}
                   style={{ width: 250 }}
                   onChange={(v) => handleNewTrialSelectChange("study_phase", v)}
@@ -159,8 +163,8 @@ const TrialSummary = (props) => {
                     handleNewTrialSelectChange("pediatric_study", v)
                   }
                 >
-                  <Option value="YES">YES</Option>
-                  <Option value="NO">NO</Option>
+                  <Option value="true">YES</Option>
+                  <Option value="false">NO</Option>
                 </Select>
               </div>
               <div className="trial-item">
