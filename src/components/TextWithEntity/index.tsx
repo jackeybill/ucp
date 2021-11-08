@@ -463,7 +463,9 @@ const TextWithEntity = (props: TextWithEntityIF) => {
         id="pdf-content"
         onClick={showTooltip ? (e) => handleKeyDown(e) : () => {}}
       >
-        {wordsCollection && wordsCollection.length && wordsCollection.map((word: any, index: number) => {
+        {wordsCollection && wordsCollection.length && wordsCollection.filter((word: any, index: number)=>{
+          return word.text !== ""
+        }).map((word: any, index: number) => {
           if (word.type == "span") {
             return (
               <span
