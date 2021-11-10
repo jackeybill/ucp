@@ -566,9 +566,12 @@ const ScenarioPage = (props) => {
       } else if (item.Value.avg_lower != 0 && item.Value.avg_upper != 0) {
         // if (Number(item.Value.avg_lower) == Number(item.Value.avg_upper)){
         //   tempStr = Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
-        // } else {
+        if(item.Text.toString() === "vital signs"){
+          console.log(item.Text,": ", item.Value);
+          tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+        } else {
         tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " - " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
-        // }
+        }
       } else{
         tempStr = '-'
       }
