@@ -471,6 +471,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
               <span
                 id={word.id}
                 key={index}
+                dangerouslySetInnerHTML={{ __html: `${word.text? word.text : ''}&nbsp;`}}
                 className={`${
                   searchTxt &&
                   word.text.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
@@ -478,7 +479,6 @@ const TextWithEntity = (props: TextWithEntityIF) => {
                     : ""
                 }`}
               >
-                {word.text? word.text : ''}&nbsp;
               </span>
             );
           }
