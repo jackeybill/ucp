@@ -2068,7 +2068,7 @@ const ScenarioPage = (props) => {
   const downloadIE = async () => {
     if(ieResource == ''){
       setSpinning(true)
-      const resp = await getIEResource(similarHistoricalTrials);
+      const resp = await getIEResource(similarHistoricalTrials, props.location.state.trial_id);
       if (resp.statusCode == 200) {
         var num = resp.body.lastIndexOf('/')+1
         let fileName = resp.body.substr(num)

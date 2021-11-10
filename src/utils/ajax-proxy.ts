@@ -551,7 +551,7 @@ export const getSOAResource = async (nctids) => {
   return await response.json();
 }
 
-export const getIEResource = async (nctids) => {
+export const getIEResource = async (nctids, trialId) => {
   const response = await fetch(criteria_url, {
     method: 'POST',
     headers: {
@@ -560,7 +560,8 @@ export const getIEResource = async (nctids) => {
     },
     body: JSON.stringify({
       "findIeItem": {
-        "nctList": nctids
+        "nctList": nctids,
+        "trialId": trialId
       }
     })
   })
