@@ -12,6 +12,10 @@ omopMapping = {}
 
 OMOP_SNOMED = '1_snomed_term'
 
+
+# def remove_mark_for_omop_empty():
+#     label['type'] = 'span'
+
 def generate_label_empty_entities(content):
     all_words = str(content.strip()).split(' ')
     index = 0
@@ -27,10 +31,13 @@ def generate_label_by_start_end(data, hashcode):
     result = copy.copy(data)
     body = data[hashcode]
     # path_names = ['includeAllText', 'inclusionCriteria', 'exclusionCriteria', 'protocolTitle', 'scheduleActivities', 'briefSummary','objectivesEndpointsEstimands']
-    path_names = ['inclusionCriteria', 'exclusionCriteria', 'protocolTitle', 'scheduleActivities', 'briefSummary',
-                  'objectivesEndpointsEstimands']
+    #path_names = ['exclusionCriteria']
+    path_names = ['inclusionCriteria', 'exclusionCriteria', 'protocolTitle', 'scheduleActivities', 'briefSummary','objectivesEndpointsEstimands']
 
     for path_name in path_names:
+        if not path_name in body:
+            continue
+        
         if len(body[path_name]) == 0:
             continue
         
@@ -51,6 +58,7 @@ def generate_label_by_start_end(data, hashcode):
                             column['comprehendMedical'][name]['label'] = generate_label_empty_entities(content)
                             continue
                         model_entities = column['comprehendMedical'][name]['Entities']
+                        print('old model_entities=', model_entities)
                         model_entities = process_entity(column['comprehendMedical'][name]['Entities'])
                         nnode_result = getNodeResult(name, content, model_entities)
                         column['comprehendMedical'][name]['label'] = nnode_result
@@ -65,7 +73,7 @@ def generate_label_by_start_end(data, hashcode):
                                 column['comprehendMedical'][name]['Entities'] = []
                                 column['comprehendMedical'][name]['Summary'] = {}
                             
-                            # print(name)
+                            print(name)
                             if name not in column['comprehendMedical'] or 'Entities' not in \
                                     column['comprehendMedical'][name] or len(
                                     column['comprehendMedical'][name]['Entities']) == 0:
@@ -86,8 +94,6 @@ def generate_label_by_start_end(data, hashcode):
         
 
         for name in ['ICD-10-CM', 'RxNorm', 'Entities']:
-            # print(name)
-            
             if name in body[path_name][0]['comprehendMedical'] and 'Entities' in \
                     body[path_name][0]['comprehendMedical'][name] and len(
                     body[path_name][0]['comprehendMedical'][name]['Entities']) == 0:
@@ -107,10 +113,11 @@ def generate_label_by_start_end(data, hashcode):
             model_entities = process_entity(body[path_name][0]['comprehendMedical'][name]['Entities'])
             
             nnode_result = getNodeResult(name, content, model_entities)
-            # result[hashcode][path_name][0]['comprehendMedical'][name]['label'] = node_result
+            # if 'protocolTitle' == path_name:
+            #     print(body[path_name][0]['comprehendMedical'][name]['Entities'])
+            #     print('===========================')
+            #     print(nnode_result)
             result[hashcode][path_name][0]['comprehendMedical'][name]['label'] = nnode_result
-            
-            # result[hashcode][path_name][0]['content'] = content
     
     return result
 
@@ -143,7 +150,8 @@ def process_entity(items):
                     sameItemIndex.append(subitemIndex)
                     
             if item['BeginOffset'] > subitem['BeginOffset'] and item['EndOffset'] <= subitem['EndOffset']:
-                excludeIndexs.append(id)
+                if item['Text'] in subitem['Text']:
+                    excludeIndexs.append(id)
             subitemIndex += 1
         if len(sameItemIndex) > 0:
             sameWordIndex.append(sameItemIndex)
@@ -223,6 +231,9 @@ def getNodeResult(name, content, model_entities):
     skip_ids = []
     exclude_ids = []
     node_result = []
+    all_words = str(content.strip()).split(' ')
+    print('name=', name, '; all_words=', all_words, ';model_entities=', model_entities)
+    
     for model_entity in model_entities:
         # filter out the Category='TIME_EXPRESSION' in 'ICD-10-CM'
         if name == 'ICD-10-CM' and model_entity['Category'] == 'TIME_EXPRESSION':
@@ -251,9 +262,15 @@ def getNodeResult(name, content, model_entities):
             if len(attributes) > 2:
                 for attr in attributes:
                     attrBeginOffset = int(attr['BeginOffset'])
+                    # while len(str(content)[attrBeginOffset - 1: attrBeginOffset].strip()) > 0:
+                    #     attrBeginOffset = attrBeginOffset - 1
+                    
                     attrEndOffset = int(attr['EndOffset'])
+                    
+                    # while len(str(content)[attrEndOffset: attrEndOffset + 1].strip()) > 0:
+                    #     attrEndOffset = attrEndOffset + 1
 
-                    if lastAttrEndOffset == attrBeginOffset: #or lastAttrEndOffset == attrBeginOffset - 1:
+                    if lastAttrEndOffset == attrBeginOffset or lastAttrEndOffset == attrBeginOffset - 1:
                         item = attributes_new[-1]
                         item['EndOffset'] = attrEndOffset
                         item['Text'] = item['Text'] + attr['Text']
@@ -263,7 +280,7 @@ def getNodeResult(name, content, model_entities):
                     lastAttrEndOffset = attrEndOffset
             else:
                 attributes_new = attributes
-            
+            print('attributes_new=', attributes_new)
             for attr in attributes_new:
             # for attr in attributes:
                 # if attr['Type'] == 'TEST_VALUE' or attr['Type'] == 'TEST_UNIT':
@@ -290,14 +307,20 @@ def getNodeResult(name, content, model_entities):
                     attrStartIndex = attrStartIndex + 1
                 attrWord = str(content)[attrBeginOffset: attrEndOffset]
                 if attrText.strip() in attrWord.strip():
-                    if '/' + attrText.strip() == attrWord:
-                        attrText = attrWord
+                    # if '/' + attrText.strip() == attrWord:
+                    attrText = attrWord
                     for words in str(attrText).split(' '):
+                    # for words in str(attrWord).split(' '):
                         if attrStartIndexInit > attrStartIndex:
                             attrStartIndexInit = attrStartIndex
                         # print(all_words_content[started_index])
                         if maxIndex > attrStartIndex:
                             attrStartIndex = maxIndex
+                        print('all_words[',attrStartIndex,']=', all_words[attrStartIndex])
+                        print('words=', str(words).strip())
+                        # Skip the one word has two child, like 7% has 7 and % for NCT02240680
+                        if all_words[attrStartIndex] != str(words).strip():
+                            continue;
                         attrChildrens.append({'type': 'span', 'id': attrStartIndex, 'text': str(words).strip()})
                         skip_ids.append(attrStartIndex)
                         attrStartIndex += 1
@@ -372,7 +395,7 @@ def getNodeResult(name, content, model_entities):
                        'text': model_entity['Text'], "score": dict(model_entity).get('Score'),
                        'children': childrens}
 
-        # print(marked_item)
+        print(marked_item)
         if name == 'ICD-10-CM' and 'ICD10CMConcepts' in model_entity:
             if len(model_entity['ICD10CMConcepts']) >= 2:
                 rows = model_entity['ICD10CMConcepts']
@@ -392,15 +415,12 @@ def getNodeResult(name, content, model_entities):
 
         node_result.append(marked_item)
         # childrens = []
-    # print(skip_ids)
+    print('skip_ids=', skip_ids)
     # all_words = str(content).split(' ')
-    # print(name + ' label: ')
-    # print(node_result)
+    print(name + ' label: ')
+    print(node_result)
     
     temp_result = node_result
-    # print('^^^^^^^^^^^^^')
-    # print(node_result)
-    # print('^^^^^^^^^^^^^')
     rep_index = []
     ii = 0
     for ir in node_result:
@@ -410,7 +430,7 @@ def getNodeResult(name, content, model_entities):
                 continue
             for cirr in irr['children']: 
                 if str(id) == ('m-' + str(cirr['id'])):
-                    # print('get the item in child' + str(id))
+                    print('get the item in child' + str(id))
                     rep_index.append(ii)
                     
         ii +=1
@@ -424,14 +444,13 @@ def getNodeResult(name, content, model_entities):
         iin +=1
     
     node_result = node_result_
+    #print('all mark node......node_result=', node_result)
     
-    all_words = str(content.strip()).split(' ')
-    # print(all_words)
     index = 0
     nnode_result = []
     for item in all_words:
         if index in skip_ids:
-            # print(index)
+            #print(index)
             for it in node_result:
                 if it['id'] == 'm-' + str(index):
                     nnode_result.append(it)
@@ -449,6 +468,7 @@ def getNodeResult(name, content, model_entities):
 def processMedDRA(data, hashcode):
     """
     """
+    MEDDRA_LABEL = 'MEDICAL_CONDITION'
     body = data[hashcode]
     path_names = ['inclusionCriteria', 'exclusionCriteria', 'protocolTitle', 'scheduleActivities', 'briefSummary',
                   'objectivesEndpointsEstimands']
@@ -456,6 +476,9 @@ def processMedDRA(data, hashcode):
     ENDPOINT_NAME = 'mosaic-meddra-coding'
     for path_name in path_names:
         # InclusionCriteria
+        if not path_name in body:
+            continue
+        
         if len(body[path_name]) == 0:
             continue
         #############################################################
@@ -486,14 +509,14 @@ def processMedDRA(data, hashcode):
                             mosaic_result['results'][0]['preds'][0]['SOC'] = mosaic_result['results'][0]['preds'][0]['BS']
                             del mosaic_result['results'][0]['preds'][0]['BS']
                             label['Concepts'] = mosaic_result['results'][0]['preds']
-                            label['category'] = 'ADVERSE_EVENT'
+                            label['category'] = MEDDRA_LABEL
                             summary_count += 1
                         label_datas_new.append(label)
                     medDRA['label'] = label_datas_new
-                    medDRA['Summary'] = {"ADVERSE_EVENT": summary_count}
+                    medDRA['Summary'] = { MEDDRA_LABEL: summary_count}
                     entities = []
                     for entity in medDRA['Entities']:
-                        entity['Category'] = 'ADVERSE_EVENT'
+                        entity['Category'] = MEDDRA_LABEL
                         entities.append(entity)
                     medDRA['Entities'] = entities
                     column['comprehendMedical']['MedDRA'] = medDRA
@@ -524,14 +547,14 @@ def processMedDRA(data, hashcode):
                                 mosaic_result['results'][0]['preds'][0]['SOC'] = mosaic_result['results'][0]['preds'][0]['BS']
                                 del mosaic_result['results'][0]['preds'][0]['BS']
                                 label['Concepts'] = mosaic_result['results'][0]['preds']
-                                label['category'] = 'ADVERSE_EVENT'
+                                label['category'] = MEDDRA_LABEL
                                 summary_count += 1
                             label_datas_new.append(label)
                         medDRA['label'] = label_datas_new
-                        medDRA['Summary'] = {"ADVERSE_EVENT": summary_count}
+                        medDRA['Summary'] = { MEDDRA_LABEL: summary_count}
                         entities = []
                         for entity in medDRA['Entities']:
-                            entity['Category'] = 'ADVERSE_EVENT'
+                            entity['Category'] = MEDDRA_LABEL
                             entities.append(entity)
                         medDRA['Entities'] = entities
                         column['comprehendMedical']['MedDRA'] = medDRA
@@ -562,17 +585,17 @@ def processMedDRA(data, hashcode):
                 mosaic_result['results'][0]['preds'][0]['SOC'] = mosaic_result['results'][0]['preds'][0]['BS']
                 del mosaic_result['results'][0]['preds'][0]['BS']
                 label['Concepts'] = mosaic_result['results'][0]['preds']
-                label['category'] = 'ADVERSE_EVENT'
+                label['category'] = MEDDRA_LABEL
                 summary_count += 1
             label_datas_new.append(label)
         
         
         medDRA['label'] = label_datas_new
-        medDRA['Summary'] = {"ADVERSE_EVENT": summary_count}
+        medDRA['Summary'] = { MEDDRA_LABEL: summary_count}
         
         entities = []
         for entity in medDRA['Entities']:
-            entity['Category'] = 'ADVERSE_EVENT'
+            entity['Category'] = MEDDRA_LABEL
             entities.append(entity)
         medDRA['Entities'] = entities
         
@@ -590,6 +613,9 @@ def processOmop(data, hashcode):
     for path_name in path_names:
         print(path_name)
         # InclusionCriteria
+        if not path_name in body:
+            continue
+        
         if len(body[path_name]) == 0:
             continue
         
@@ -612,48 +638,30 @@ def processOmop(data, hashcode):
                         if 'children' in label:
                             children_index = 0
                             concepts = []
-                            # for item in label['children']:
-                                
-                            #     source_word = item['text']
-                            #     payload = json.dumps({'term': source_word, 'model': 'omop'})
-                            #     # print('omop source_word:' + payload)
-                            #     try:
-                            #         if not source_word in omopMapping:
-                            #             response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
-                            #                                               ContentType='application/json',
-                            #                                               Body=payload)
-                            #             omopMapping[source_word] = json.loads(response['Body'].read().decode())
-                            #             model_result = omopMapping[source_word]
-                            #         else:
-                            #             model_result = omopMapping[source_word]
-                            #     except Exception as e:
-                            #         print("omop model error")
-                            #         continue
-                                
-                            #     if source_word in model_result[source_word] and '1_omop_term' in model_result[source_word][source_word]:
-                            #         omop_term = model_result[source_word][source_word]['1_omop_term']
-                            #         if str(omop_term) == 'nan' or len(omop_term.strip()) == 0:
-                            #             continue
-                            #         concepts.append(omop_term)
-                            #         label['children'][children_index]['term'] = omop_term
-                            #         summary_count += 1
-                            #     children_index += 1
-                                
-                            # label['Concepts'] = [{'Description': x} for x in concepts]
+                            
                             source_word = ' '.join([x['text'] for x in label['children']])
-                            payload = json.dumps({'term': source_word, 'model': 'omop'})
-                            try:
-                                if not source_word in omopMapping:
-                                    response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
-                                                                       ContentType='application/json',
-                                                                       Body=payload)
-                                    omopMapping[source_word] = json.loads(response['Body'].read().decode())
-                                    model_result = omopMapping[source_word]
-                                else:
-                                    model_result = omopMapping[source_word]
-                            except Exception as e:
-                                print("omop model error")
-                                continue
+
+                            oldResult = s3_client.get_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json')['Body']
+                            oldResult = json.loads(oldResult.read())
+                            if source_word in oldResult:
+                                model_result = oldResult[source_word]
+                            else:
+                                payload = json.dumps({'term': source_word, 'model': 'omop'})
+                                try:
+                                    if not source_word in omopMapping:
+                                        response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
+                                                                           ContentType='application/json',
+                                                                           Body=payload)
+                                        omopMapping[source_word] = json.loads(response['Body'].read().decode())
+                                        model_result = omopMapping[source_word]
+                                    else:
+                                        model_result = omopMapping[source_word]
+                                except Exception as e:
+                                    print("omop model error")
+                                    continue
+                            oldResult[source_word] = model_result
+                            s3_client.put_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json',Body=json.dumps(oldResult))
+
                             
                             if source_word in model_result[source_word] and '1_omop_term' in model_result[source_word][source_word]:
                                 omop_term = model_result[source_word][source_word]['1_omop_term']
@@ -684,40 +692,15 @@ def processOmop(data, hashcode):
                             if 'children' in label:
                                 children_index = 0
                                 concepts = []
-                                # for item in label['children']:
-                                #     source_word = item['text']
-                                #     payload = json.dumps({'term': source_word, 'model': 'omop'})
-                                #     try:
-                                #         if not source_word in omopMapping:
-                                #             response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
-                                #                                               ContentType='application/json',
-                                #                                               Body=payload)
-                                #             omopMapping[source_word] = json.loads(response['Body'].read().decode())
-                                #             model_result = omopMapping[source_word]
-                                #         else:
-                                #             model_result = omopMapping[source_word]
-                                #     except Exception as e:
-                                #         print("omop model error")
-                                #         continue
-                                #     # mosaic_result = json.loads(response['Body'].read().decode())
-                                #     # mosaic_result['results'][0]['preds'][0]['SOC'] = mosaic_result['results'][0]['preds'][0]['BS']
-                                #     # del mosaic_result['results'][0]['preds'][0]['BS']
-                                #     # label['Concepts'] = mosaic_result['results'][0]['preds']
-                                #     # label['category'] = 'ADVERSE_EVENT'
-                                #     # summary_count += 1
-                                    
-                                #     if source_word in model_result[source_word] and '1_omop_term' in model_result[source_word][source_word]:
-                                #         omop_term = model_result[source_word][source_word]['1_omop_term']
-                                #         if str(omop_term) == 'nan' or len(omop_term.strip()) == 0:
-                                #             continue
-                                #         concepts.append(omop_term)
-                                #         label['children'][children_index]['term'] = omop_term
-                                #         # print('' + json.dumps(label))
-                                #         summary_count += 1
-                                #     children_index += 1
-                                # label['Concepts'] = [{'Description': x} for x in concepts]
+
                                 
-                                source_word = ' '.join([x['text'] for x in label['children']])
+                            source_word = ' '.join([x['text'] for x in label['children']])
+
+                            oldResult = s3_client.get_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json')['Body']
+                            oldResult = json.loads(oldResult.read())
+                            if source_word in oldResult:
+                                model_result = oldResult[source_word]
+                            else:
                                 payload = json.dumps({'term': source_word, 'model': 'omop'})
                                 try:
                                     if not source_word in omopMapping:
@@ -731,12 +714,14 @@ def processOmop(data, hashcode):
                                 except Exception as e:
                                     print("omop model error")
                                     continue
+                            oldResult[source_word] = model_result
+                            s3_client.put_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json',Body=json.dumps(oldResult))
                                 
-                                if source_word in model_result[source_word] and '1_omop_term' in model_result[source_word][source_word]:
-                                    omop_term = model_result[source_word][source_word]['1_omop_term']
-                                    if str(omop_term) == 'nan' or len(omop_term.strip()) == 0:
-                                        continue
-                                    label['Concepts'] = [{'Description': omop_term}]
+                            if source_word in model_result[source_word] and '1_omop_term' in model_result[source_word][source_word]:
+                                omop_term = model_result[source_word][source_word]['1_omop_term']
+                                if str(omop_term) == 'nan' or len(omop_term.strip()) == 0:
+                                    continue
+                                label['Concepts'] = [{'Description': omop_term}]
                                 
                             label_datas_new.append(label)
                         cmEntities['label'] = label_datas_new
@@ -758,33 +743,53 @@ def processOmop(data, hashcode):
         label_datas_new = []
         summary_count = 0
         for label in label_datas:
-            if 'children' in label:
-                source_word = ' '.join([x['text'] for x in label['children']])
-                payload = json.dumps({'term': source_word, 'model': 'omop'})
-                try:
-                    if not source_word in omopMapping:
-                        response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
-                                                           ContentType='application/json',
-                                                           Body=payload)
-                        omopMapping[source_word] = json.loads(response['Body'].read().decode())
-                        model_result = omopMapping[source_word]
-                    else:
-                        model_result = omopMapping[source_word]
-                        
-                    if source_word in model_result[source_word] and '1_omop_term' in model_result[source_word][source_word]:
-                        omop_term = model_result[source_word][source_word]['1_omop_term']
-                        if str(omop_term) == 'nan' or str(omop_term).lower() == 'nan' or len(str(omop_term).strip()) == 0:
-                            label_datas_new.append(label)
-                            continue
-                        label['Concepts'] = [{'Description': omop_term}]
-                        # print(source_word + ' omop result:' + omop_term)
-                        # print(label)
-                except Exception as e:
-                    print("omop model error")
-                    continue
-
-            label_datas_new.append(label)
             
+            if 'children' in label:
+                try:
+                    source_word = ' '.join([x['text'] for x in label['children']])
+    
+                    oldResult = s3_client.get_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json')['Body']
+                    oldResult = json.loads(oldResult.read())
+                    if source_word in oldResult:
+                        model_result = oldResult[source_word]
+                    else:
+                        payload = json.dumps({'term': source_word, 'model': 'omop'})
+                        try:
+                            if not source_word in omopMapping:
+                                response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
+                                                                   ContentType='application/json',
+                                                                   Body=payload)
+                                omopMapping[source_word] = json.loads(response['Body'].read().decode())
+                                model_result = omopMapping[source_word]
+                            else:
+                                model_result = omopMapping[source_word]
+                            
+                            
+                        except Exception as e:
+                            print("omop model error")
+                            continue
+                    oldResult[source_word] = model_result
+                    s3_client.put_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json',Body=json.dumps(oldResult))
+                    
+                    try:
+                        if source_word in model_result and source_word in model_result[source_word] and '1_omop_term' in model_result[source_word][source_word]:
+                            omop_term = model_result[source_word][source_word]['1_omop_term']
+                            if str(omop_term) == 'nan' or str(omop_term).lower() == 'nan' or len(str(omop_term).strip()) == 0:
+                                label_datas_new.append(label)
+                                continue
+                            label['Concepts'] = [{'Description': omop_term}]
+                    except Exception as e:
+                        print(e)
+                except Exception as e:
+                    print(e)
+            label_datas_new.append(label)
+        
+        for i in label_datas_new:
+            if 'Concepts' not in i and i['type'] == 'mark':
+                if 'm-' in i['id']:
+                    i['id'] = i['id'][2:]
+                i['type'] = 'span'
+        
         omop['label'] = label_datas_new
         data[hashcode][path_name][0]['comprehendMedical']['Omop'] = omop
     return data
@@ -795,28 +800,35 @@ def callOmop(source_word):
     Call Omop model to get result
     """
     ENDPOINT_NAME = 'omop'
-    payload = json.dumps({'term': source_word, 'model': 'omop'})
-    try:
-        if not source_word in omopMapping:
-            response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
-                                               ContentType='application/json',
-                                               Body=payload)
-            omopMapping[source_word] = json.loads(response['Body'].read().decode())
-            model_result = omopMapping[source_word]
-        else:
-            model_result = omopMapping[source_word]
-    except Exception as e:
-        print("omop model error")
-        return '',''
-    # model_result = json.loads(response['Body'].read().decode())
+    oldResult = s3_client.get_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json')['Body']
+    oldResult = json.loads(oldResult.read())
+    if source_word in oldResult and len(oldResult[source_word]) > 0:
+        model_result = oldResult[source_word]
+    else:
+        payload = json.dumps({'term': source_word, 'model': 'omop'})
+        try:
+            if not source_word in omopMapping:
+                response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
+                                                   ContentType='application/json',
+                                                   Body=payload)
+                omopMapping[source_word] = json.loads(response['Body'].read().decode())
+                model_result = omopMapping[source_word]
+            else:
+                model_result = omopMapping[source_word]
+        except Exception as e:
+            print("omop model error")
+    oldResult[source_word] = model_result
+    s3_client.put_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json',Body=json.dumps(oldResult))
     omop_term = ''
     snomed_term = ''
-    if source_word in model_result[source_word] and '1_omop_term' in model_result[source_word][source_word]:
-        omop_term = model_result[source_word][source_word]['1_omop_term']
-        
-    if source_word in model_result[source_word] and '1_snomed_term' in model_result[source_word][source_word]:
-        snomed_term = model_result[source_word][source_word]['1_snomed_term']
-    
+    try:
+        if source_word in model_result[source_word] and '1_omop_term' in model_result[source_word][source_word]:
+            omop_term = model_result[source_word][source_word]['1_omop_term']
+            
+        if source_word in model_result[source_word] and '1_snomed_term' in model_result[source_word][source_word]:
+            snomed_term = model_result[source_word][source_word]['1_snomed_term']
+    except Exception as e:
+        print(e)
     if str(omop_term) == 'nan':
         omop_term = ''
     if str(snomed_term) == 'nan':
@@ -850,6 +862,10 @@ def processSnomed(data, hashcode):
     ENDPOINT_NAME='omop'
     for path_name in path_names:
         # InclusionCriteria
+        
+        if not path_name in body:
+            continue
+        
         if len(body[path_name]) == 0:
             continue
         
@@ -875,24 +891,27 @@ def processSnomed(data, hashcode):
                             children_index = 0
                             concepts = []
                             for item in label['children']:
-                                
                                 source_word = item['text']
-                                payload = json.dumps({'term': source_word, 'model': 'omop'})
-                                try:
-                                    if not source_word in omopMapping:
-                                        response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
-                                                                           ContentType='application/json',
-                                                                           Body=payload)
-                                        omopMapping[source_word] = json.loads(response['Body'].read().decode())
-                                        model_result = omopMapping[source_word]
-                                    else:
-                                        model_result = omopMapping[source_word]
-                                except Exception as e:
-                                    print("omop model error")
-                                    continue
-                                # print('omop source_word:' + payload)
-                                # model_result = json.loads(response['Body'].read().decode())
-                                # print('model_result: '+ json.dumps(model_result))
+                                oldResult = s3_client.get_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json')['Body']
+                                oldResult = json.loads(oldResult.read())
+                                if source_word in oldResult:
+                                    model_result = oldResult[source_word]
+                                else:
+                                    payload = json.dumps({'term': source_word, 'model': 'omop'})
+                                    try:
+                                        if not source_word in omopMapping:
+                                            response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
+                                                                               ContentType='application/json',
+                                                                               Body=payload)
+                                            omopMapping[source_word] = json.loads(response['Body'].read().decode())
+                                            model_result = omopMapping[source_word]
+                                        else:
+                                            model_result = omopMapping[source_word]
+                                    except Exception as e:
+                                        print("omop model error")
+                                        continue
+                                oldResult[source_word] = model_result
+                                s3_client.put_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json',Body=json.dumps(oldResult))
                                 if source_word in model_result[source_word] and OMOP_SNOMED in model_result[source_word][source_word]:
                                     omop_term = model_result[source_word][source_word][OMOP_SNOMED]
                                     if str(omop_term) == 'nan':
@@ -935,50 +954,29 @@ def processSnomed(data, hashcode):
                             if 'children' in label:
                                 children_index = 0
                                 concepts = []
-                                # for item in label['children']:
-                                    
-                                #     source_word = item['text']
-                                #     payload = json.dumps({'term': source_word, 'model': 'omop'})
-                                #     try:
-                                #         if not source_word in omopMapping:
-                                #             response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
-                                #                                               ContentType='application/json',
-                                #                                               Body=payload)
-                                #             omopMapping[source_word] = json.loads(response['Body'].read().decode())
-                                #             model_result = omopMapping[source_word]
-                                #         else:
-                                #             model_result = omopMapping[source_word]
-                                #     except Exception as e:
-                                #         print("omop model error")
-                                #         continue
-                                #     # print('omop source_word:' + payload)
-                                #     # model_result = json.loads(response['Body'].read().decode())
-                                #     # print('model_result: '+ json.dumps(model_result))
-                                #     if source_word in model_result[source_word] and '1_snomed_term' in model_result[source_word][source_word]:
-                                #         omop_term = model_result[source_word][source_word]['1_snomed_term']
-                                #         if str(omop_term) == 'nan' or len(omop_term.strip()) == 0:
-                                #             continue
-                                #         concepts.append(omop_term)
-                                #         label['children'][children_index]['term'] = omop_term
-                                        
-                                #     children_index += 1
-                                
-                                # label['Concepts'] = [{'Description': x} for x in concepts]
                                 
                                 source_word = ' '.join([x['text'] for x in label['children']])
-                                payload = json.dumps({'term': source_word, 'model': 'omop'})
-                                try:
-                                    if not source_word in omopMapping:
-                                        response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
-                                                                           ContentType='application/json',
-                                                                           Body=payload)
-                                        omopMapping[source_word] = json.loads(response['Body'].read().decode())
-                                        model_result = omopMapping[source_word]
-                                    else:
-                                        model_result = omopMapping[source_word]
-                                except Exception as e:
-                                    print("omop model error")
-                                    continue
+        
+                                oldResult = s3_client.get_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json')['Body']
+                                oldResult = json.loads(oldResult.read())
+                                if source_word in oldResult:
+                                    model_result = oldResult[source_word]
+                                else:
+                                    payload = json.dumps({'term': source_word, 'model': 'omop'})
+                                    try:
+                                        if not source_word in omopMapping:
+                                            response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
+                                                                               ContentType='application/json',
+                                                                               Body=payload)
+                                            omopMapping[source_word] = json.loads(response['Body'].read().decode())
+                                            model_result = omopMapping[source_word]
+                                        else:
+                                            model_result = omopMapping[source_word]
+                                    except Exception as e:
+                                        print("omop model error")
+                                        continue
+                                oldResult[source_word] = model_result
+                                s3_client.put_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json',Body=json.dumps(oldResult))
                                 
                                 if source_word in model_result[source_word] and '1_snomed_term' in model_result[source_word][source_word]:
                                     omop_term = model_result[source_word][source_word]['1_snomed_term']
@@ -1014,59 +1012,48 @@ def processSnomed(data, hashcode):
         summary_count = 0
         for label in label_datas:
             if 'children' in label:
-                children_index = 0
-                concepts = []
-                
-                # for item in label['children']:
-                #     source_word = item['text']
-                #     payload = json.dumps({'term': source_word, 'model': 'omop'})
-                #     try:
-                #         if not source_word in omopMapping:
-                #             response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
-                #                                               ContentType='application/json',
-                #                                               Body=payload)
-                #             omopMapping[source_word] = json.loads(response['Body'].read().decode())
-                #             model_result = omopMapping[source_word]
-                #         else:
-                #             model_result = omopMapping[source_word]
-                #     except Exception as e:
-                #         print("omop model error")
-                #         continue
-                #     if source_word in model_result[source_word] and '1_snomed_term' in model_result[source_word][source_word]:
-                #         omop_term = model_result[source_word][source_word]['1_snomed_term']
-                #         if str(omop_term) == 'nan' or len(omop_term.strip()) == 0:
-                #             continue
-                #         concepts.append(omop_term)
-                #         # concepts.append({'Description': omop_term})
-                #         label['children'][children_index]['term'] = omop_term
-                    
-                #     children_index += 1
-                # label['Concepts'] = [{'Description': x, 'Score' : 1.00, 'Code': ''} for x in concepts]
-                
-                source_word = ' '.join([x['text'] for x in label['children']])
-                payload = json.dumps({'term': source_word, 'model': 'omop'})
                 try:
-                    if not source_word in omopMapping:
-                        response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
-                                                           ContentType='application/json',
-                                                           Body=payload)
-                        omopMapping[source_word] = json.loads(response['Body'].read().decode())
-                        model_result = omopMapping[source_word]
+                    children_index = 0
+                    concepts = []
+                    source_word = ' '.join([x['text'] for x in label['children']])
+    
+                    oldResult = s3_client.get_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json')['Body']
+                    oldResult = json.loads(oldResult.read())
+                    if source_word in oldResult:
+                        model_result = oldResult[source_word]
                     else:
-                        model_result = omopMapping[source_word]
+                        payload = json.dumps({'term': source_word, 'model': 'omop'})
+                        try:
+                            if not source_word in omopMapping:
+                                response = runtime.invoke_endpoint(EndpointName=ENDPOINT_NAME,
+                                                                   ContentType='application/json',
+                                                                   Body=payload)
+                                omopMapping[source_word] = json.loads(response['Body'].read().decode())
+                                model_result = omopMapping[source_word]
+                            else:
+                                model_result = omopMapping[source_word]
+                        except Exception as e:
+                            print("omop model error")
+                            continue
+                    oldResult[source_word] = model_result
+                    s3_client.put_object(Bucket='iso-data-zone', Key='iso-service-dev/omopModel/cacheResult.json',Body=json.dumps(oldResult))
+                    
+                    if source_word in model_result[source_word] and '1_snomed_term' in model_result[source_word][source_word]:
+                        omop_term = model_result[source_word][source_word]['1_snomed_term']
+                        if str(omop_term) == 'nan' or len(omop_term.strip()) == 0:
+                            label['type'] = 'span'
+                            label_datas_new.append(label)
+                            continue
+                        label['Concepts'] = [{'Description': omop_term}]
                 except Exception as e:
-                    print("omop model error")
-                    continue
-                
-                if source_word in model_result[source_word] and '1_snomed_term' in model_result[source_word][source_word]:
-                    omop_term = model_result[source_word][source_word]['1_snomed_term']
-                    if str(omop_term) == 'nan' or len(omop_term.strip()) == 0:
-                        label_datas_new.append(label)
-                        continue
-                    label['Concepts'] = [{'Description': omop_term}]
+                    print(e)
             
             label_datas_new.append(label)
         
+        # if not results then remove mark
+        for i in label_datas_new:
+            if 'Concepts' not in i and i['type'] == 'mark':
+                i['type'] = 'span'
         
         omop['label'] = label_datas_new
         
@@ -1078,7 +1065,7 @@ def processSnomed(data, hashcode):
 
 
 def update_json(bucket, key, body):
-    # print('update_json')
+    print('update_json(), bucket=', bucket, ';key=',key)
     # print(body)
     response = s3_client.put_object(Bucket=bucket, Key=key, Body=json.dumps(body))
 
@@ -1092,6 +1079,9 @@ def format_entities(d, hashcode):
     for path_name in path_names:
         
         # InclusionCriteria
+        if not path_name in body:
+            continue
+        
         if len(body[path_name]) == 0:
             continue
         
@@ -1142,20 +1132,28 @@ def format_entities(d, hashcode):
                                     if i['BeginOffset'] == j['BeginOffset'] and i['EndOffset'] == j['EndOffset'] and i['Id'] == j['Id']:
                                         continue
                                     if i['BeginOffset'] >= j['BeginOffset'] and i['EndOffset'] <= j['EndOffset']:
-                                        item['Attributes'].remove(j)
+                                        # item['Attributes'].remove(j)
+                                        # for test
+                                        if j['Text'] in i['Text']: 
+                                            item['Attributes'].remove(j)
+                                        # end test
                             subChildList.extend(item['Attributes'])
             
                     for i in subChildList:
                         for item in result:
                             if item['BeginOffset'] > i['BeginOffset'] and item['EndOffset'] <= i['EndOffset']:
-                                result.remove(item)
+                                # result.remove(item)
+                                if item['Text'] in i['Text']:
+                                    result.remove(item)
                             
                     for i in result:
                         for j in result:
                             if 'Attributes' in j:
                                 for su in j['Attributes']:
                                     if su['BeginOffset'] >= i['BeginOffset'] and su['EndOffset'] <= i['EndOffset']:
-                                        j['Attributes'].remove(su)
+                                        # j['Attributes'].remove(su)
+                                        if su['Text'] in i['Text']:
+                                            j['Attributes'].remove(su)
                     
                     for i in result:
                         for j in result:
@@ -1343,12 +1341,16 @@ def format_entities(d, hashcode):
                             continue
                         if i['BeginOffset'] >= j['BeginOffset'] and i['EndOffset'] <= j['EndOffset']:
                             item['Attributes'].remove(j)
+                            # if j['Text'] in i['Text']: 
+                                # item['Attributes'].remove(j)
                 subChildList.extend(item['Attributes'])
 
         for i in subChildList:
             for item in result:
                 if item['BeginOffset'] > i['BeginOffset'] and item['EndOffset'] <= i['EndOffset']:
                     result.remove(item)
+                    # if item['Text'] in i['Text']:
+                        # result.remove(item)
             
                 
         for i in result:
@@ -1356,7 +1358,9 @@ def format_entities(d, hashcode):
                 if 'Attributes' in j:
                     for su in j['Attributes']:
                         if su['BeginOffset'] >= i['BeginOffset'] and su['EndOffset'] <= i['EndOffset']:
-                            j['Attributes'].remove(su)
+                            # j['Attributes'].remove(su)
+                            if su['Text'] in i['Text']:
+                                j['Attributes'].remove(su)
         
         for i in result:
             for j in result:
@@ -1364,6 +1368,8 @@ def format_entities(d, hashcode):
                     for su in j['Attributes']:
                         if i['BeginOffset'] >= su['BeginOffset'] and i['EndOffset'] < su['EndOffset']:
                             result.remove(i)
+                            # if i['Test'] in su['Text']:
+                                # result.remove(i)
                         # if i['BeginOffset'] >= su['BeginOffset'] and i['EndOffset'] <= su['EndOffset']:
                         #     result.remove(i)
         
@@ -1372,7 +1378,7 @@ def format_entities(d, hashcode):
     return d
 
 def updateIeSummary(nctId):
-    ieSummaryObj = s3_client.get_object(Bucket='ucp-filebucket-dev', Key='summary/ieSummary.json')['Body']
+    ieSummaryObj = s3_client.get_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/ieSummary.json')['Body']
     ieSummaryObj = json.loads(ieSummaryObj.read())
     for ie in ieSummaryObj:
         ieOfNct = ieSummaryObj[ie][nctId]
@@ -1381,7 +1387,7 @@ def updateIeSummary(nctId):
                 if entity['rawText'] in ieMapping:
                     entity['snomedTerm'] = ieMapping[entity['rawText']]['snomedTerm']
                     entity['omopTerm'] = ieMapping[entity['rawText']]['snomedTerm']
-    s3_client.put_object(Bucket='ucp-filebucket-dev', Key='summary/ieSummary.json', Body=json.dumps(ieSummaryObj))
+    s3_client.put_object(Bucket='iso-data-zone', Key='iso-service-dev/summary/ieSummary.json', Body=json.dumps(ieSummaryObj))
         
     
 def getNctId(key):
@@ -1389,6 +1395,25 @@ def getNctId(key):
     file = os.path.split(key)[1]
     return file.split('.')[0]
 
+def removeEmptyItem(nctID):
+    if not nctID:
+        return
+    dynamodb = boto3.resource('dynamodb')
+    tbl = dynamodb.Table('study_protocol')
+    fileName = nctID+'.pdf'
+    response = tbl.get_item(
+        Key={
+            'file_name': fileName
+        }
+    )
+    dbItem  = response['Item']
+    
+    if 'nctID' not in dbItem:
+        response = tbl.delete_item(
+            Key={
+                'file_name': fileName
+            }
+        )
 
 def load_json_data(bucket, key):
     obj = s3_client.get_object(Bucket=bucket, Key=key)
@@ -1399,7 +1424,10 @@ def load_json_data(bucket, key):
             continue
 
         # data_p = using_new_format_for_label_edit(data, sub)
+        print('sub=', sub)
+        #('data=', data)
         data_aws = generate_label_by_start_end(data, sub)
+        #break
         # print("add label:")
         # print(data_aws)
         data_aws_med = processMedDRA(data_aws, sub)
@@ -1407,17 +1435,18 @@ def load_json_data(bucket, key):
         data_aws_snomed = processSnomed(data_aws_omop, sub)
         new_format_data = format_entities(data_aws_snomed, sub)
         update_json(bucket, key, new_format_data)
-        updateIeSummary(getNctId(key))
+        nctId = getNctId(key)
+        updateIeSummary(nctId)
+        removeEmptyItem(nctId)
         break
-
 
 def lambda_handler(event, context):
     # return testMe()
-    
-
-    bucket = 'ucp-filebucket-dev'
+    print("event: {}".format(event))
+    bucket = 'iso-data-zone'
     # key = 'iso-service-dev/input/data/WWQC-POL-6.3 Test Method Validation v7.pdf.json'
     load_json_data(event['bucket'], event['key'])
+    #removeEmptyItem('NCT02848833')
     return {
         'statusCode': 200,
         'body': json.dumps('Finished!')
