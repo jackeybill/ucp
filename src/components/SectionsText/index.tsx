@@ -16,6 +16,7 @@ interface SectionTextIF {
 interface EndpointParagraphIF{
   name:string;
   text:string;
+  rawtext:string;
   type:string;
 }
 
@@ -145,7 +146,7 @@ const SectionText = (props: SectionTextIF) => {
                             props.file[key][s][0].raw && Object.values(props.file[key][s][0].raw.content).map((paragraph:EndpointParagraphIF,idx:number)=>{
                               // console.log( paragraph.text)
                               // const formattedText = paragraph.text&&paragraph.text.replace("\n",`<br/>&nbsp;&nbsp;&nbsp;&nbsp;<i class="my_symble">&#8226</i>&nbsp;&nbsp;`) || ""                          
-                              const formattedText = paragraph.text&&paragraph.text || ""                          
+                              const formattedText = paragraph.rawtext&&paragraph.rawtext || ""                          
                               return(  
                                 <div className={paragraph.type==="heading"?"heading":"body"} key={idx}> 
                                   <div className="paragraph-name">{paragraph.name}</div>
