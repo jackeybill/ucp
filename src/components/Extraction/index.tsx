@@ -32,7 +32,8 @@ interface markIF {
 }
 const { TabPane } = Tabs;
 const { Option } = Select;
-const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA","Omop","Snomed"];
+// const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA","Omop","Snomed"];
+const entityOptions = ["Entities", "ICD-10-CM", "RxNorm","Omop","Snomed"];
 
 
 
