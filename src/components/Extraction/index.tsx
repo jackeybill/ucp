@@ -30,7 +30,8 @@ interface markIF {
 }
 const { TabPane } = Tabs;
 const { Option } = Select;
-const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA"];
+// const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA"];
+const entityOptions = ["Entities", "ICD-10-CM", "RxNorm"];
 
 const Extraction = (props: any, ref) => {
   // if (!props.fileReader.file.txt) {

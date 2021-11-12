@@ -32,7 +32,8 @@ interface markIF {
 }
 const { TabPane } = Tabs;
 const { Option } = Select;
-const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA"];
+// const entityOptions = ["Entities", "ICD-10-CM", "RxNorm", "MedDRA"];
+const entityOptions = ["Entities", "ICD-10-CM", "RxNorm"];
 const headData = ["Screening",	"Treatment Period", "Post Treatment", "Early Termination","Follow-Ups"]
 const categoryType = ["LABS", "PHYSICAL_EXAMINATION", "PROCEDURES", "STUDY_PROCEDURES", "QUESTIONNAIRES", "ACTIVITY"]
  // filter the [object] matched the table cell
