@@ -698,84 +698,126 @@ const ScheduleEvents = (props) => {
     }
 
     let labeTotalCost = 0
-    for(const a in scheduleOfEvents[CATEGORY_LABS].entities) {
-      labeTotalCost += Number(scheduleOfEvents[CATEGORY_LABS].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_LABS].entities[a].totalVisit
-      if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length > 0){
-        for(let b = 0; b < scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length; b ++){
-          if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition[b].modality!==""){
-            let tempBurdenMatrix = []
-            burdenMatrixList[b].map((item, idx) =>{
-              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_LABS].entities[a].soaWeights[idx])
-            })
-            burdenMatrixList.splice(b, 1, tempBurdenMatrix)
-          }
-        }
-      }
-    }
-
     let examinationTotalCost = 0
-    for(const a in scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities) {
-      examinationTotalCost += Number(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].totalVisit
-      if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length > 0){
-        for(let b = 0; b < scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length; b ++){
-          if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition[b].modality!==""){
-            let tempBurdenMatrix = []
-            burdenMatrixList[b].map((item, idx) =>{
-              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].soaWeights[idx])
-            })
-            burdenMatrixList.splice(b, 1, tempBurdenMatrix)
-          }
-        }
-      }
-    }
-
     let proceduresTotalCost = 0
-    for(const a in scheduleOfEvents[CATEGORY_PROCEDURES].entities) {
-      proceduresTotalCost += Number(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].totalVisit
-      if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length > 0){
-        for(let b = 0; b < scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length; b ++){
-          if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition[b].modality!==""){
-            let tempBurdenMatrix = []
-            burdenMatrixList[b].map((item, idx) =>{
-              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].soaWeights[idx])
-            })
-            burdenMatrixList.splice(b, 1, tempBurdenMatrix)
-          }
-        }
-      }
-    }
-
     let questionairesTotalCost = 0
-    for(const a in scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities) {
-      questionairesTotalCost += Number(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].totalVisit
-      if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length > 0){
-        for(let b = 0; b < scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length; b ++){
-          if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition[b].modality!==""){
-            let tempBurdenMatrix = []
-            burdenMatrixList[b].map((item, idx) =>{
-              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].soaWeights[idx])
-            })
-            burdenMatrixList.splice(b, 1, tempBurdenMatrix)
-          }
-        }
-      }
-    }
-
     let studyTotalCost = 0
-    for(const a in scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities) {
-      studyTotalCost += Number(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].totalVisit
-      if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length > 0){
-        for(let b = 0; b < scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length; b ++){
-          if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition[b].modality!==""){
-            let tempBurdenMatrix = []
-            burdenMatrixList[b].map((item, idx) =>{
-              tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].soaWeights[idx])
-            })
-            burdenMatrixList.splice(b, 1, tempBurdenMatrix)
+    var categoryList = [CATEGORY_LABS, CATEGORY_PHYSICAL_EXAMINATION, CATEGORY_QUESTIONNAIRES, CATEGORY_PROCEDURES, CATEGORY_STUDY_PROCEDURES]
+    for(const categoryIndex in categoryList){
+      var category = categoryList[categoryIndex]
+      let tempTotalCost = 0
+      for(const a in scheduleOfEvents[category].entities) {
+        labeTotalCost += Number(scheduleOfEvents[category].entities[a]['Dummy Cost']) * scheduleOfEvents[category].entities[a].totalVisit
+        if(scheduleOfEvents[category].entities[a].condition.length > 0){
+          for(let b = 0; b < scheduleOfEvents[category].entities[a].condition.length; b ++){
+            if(scheduleOfEvents[category].entities[a].condition[b].modality!==""){
+              let tempBurdenMatrix = []
+              burdenMatrixList[b].map((item, idx) =>{
+                //When modality is "Hospital", which means the item havs "Hospital Dependency"
+                //Need to correct the dimension Value in SOA weight, change the value to 1
+                let dimensionValue = scheduleOfEvents[category].entities[a].soaWeights[idx]
+                if (idx == 1 && scheduleOfEvents[category].entities[a].condition[b].modality=="Hospital"){
+                  dimensionValue = 1
+                }
+                tempBurdenMatrix.push(item + dimensionValue)
+              })
+              burdenMatrixList.splice(b, 1, tempBurdenMatrix)
+            }
           }
         }
       }
+
+      if(category == CATEGORY_LABS){
+        labeTotalCost = tempTotalCost
+      } else if (category == CATEGORY_PHYSICAL_EXAMINATION){
+        examinationTotalCost = tempTotalCost
+      } else if (category == CATEGORY_QUESTIONNAIRES){
+        questionairesTotalCost = tempTotalCost
+      } else if (category == CATEGORY_PROCEDURES){
+        proceduresTotalCost = tempTotalCost
+      } else if (category == CATEGORY_STUDY_PROCEDURES){
+        studyTotalCost = tempTotalCost
+      } 
     }
+    // let labeTotalCost = 0
+    // for(const a in scheduleOfEvents[CATEGORY_LABS].entities) {
+    //   labeTotalCost += Number(scheduleOfEvents[CATEGORY_LABS].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_LABS].entities[a].totalVisit
+    //   if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length > 0){
+    //     for(let b = 0; b < scheduleOfEvents[CATEGORY_LABS].entities[a].condition.length; b ++){
+    //       if(scheduleOfEvents[CATEGORY_LABS].entities[a].condition[b].modality!==""){
+    //         let tempBurdenMatrix = []
+    //         burdenMatrixList[b].map((item, idx) =>{
+    //           tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_LABS].entities[a].soaWeights[idx])
+    //         })
+    //         burdenMatrixList.splice(b, 1, tempBurdenMatrix)
+    //       }
+    //     }
+    //   }
+    // }
+
+    // let examinationTotalCost = 0
+    // for(const a in scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities) {
+    //   examinationTotalCost += Number(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].totalVisit
+    //   if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length > 0){
+    //     for(let b = 0; b < scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition.length; b ++){
+    //       if(scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].condition[b].modality!==""){
+    //         let tempBurdenMatrix = []
+    //         burdenMatrixList[b].map((item, idx) =>{
+    //           tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PHYSICAL_EXAMINATION].entities[a].soaWeights[idx])
+    //         })
+    //         burdenMatrixList.splice(b, 1, tempBurdenMatrix)
+    //       }
+    //     }
+    //   }
+    // }
+
+    // let proceduresTotalCost = 0
+    // for(const a in scheduleOfEvents[CATEGORY_PROCEDURES].entities) {
+    //   proceduresTotalCost += Number(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].totalVisit
+    //   if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length > 0){
+    //     for(let b = 0; b < scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition.length; b ++){
+    //       if(scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].condition[b].modality!==""){
+    //         let tempBurdenMatrix = []
+    //         burdenMatrixList[b].map((item, idx) =>{
+    //           tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_PROCEDURES].entities[a].soaWeights[idx])
+    //         })
+    //         burdenMatrixList.splice(b, 1, tempBurdenMatrix)
+    //       }
+    //     }
+    //   }
+    // }
+
+    // let questionairesTotalCost = 0
+    // for(const a in scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities) {
+    //   questionairesTotalCost += Number(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].totalVisit
+    //   if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length > 0){
+    //     for(let b = 0; b < scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition.length; b ++){
+    //       if(scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].condition[b].modality!==""){
+    //         let tempBurdenMatrix = []
+    //         burdenMatrixList[b].map((item, idx) =>{
+    //           tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_QUESTIONNAIRES].entities[a].soaWeights[idx])
+    //         })
+    //         burdenMatrixList.splice(b, 1, tempBurdenMatrix)
+    //       }
+    //     }
+    //   }
+    // }
+
+    // let studyTotalCost = 0
+    // for(const a in scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities) {
+    //   studyTotalCost += Number(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a]['Dummy Cost']) * scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].totalVisit
+    //   if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length > 0){
+    //     for(let b = 0; b < scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition.length; b ++){
+    //       if(scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].condition[b].modality!==""){
+    //         let tempBurdenMatrix = []
+    //         burdenMatrixList[b].map((item, idx) =>{
+    //           tempBurdenMatrix.push(item + scheduleOfEvents[CATEGORY_STUDY_PROCEDURES].entities[a].soaWeights[idx])
+    //         })
+    //         burdenMatrixList.splice(b, 1, tempBurdenMatrix)
+    //       }
+    //     }
+    //   }
+    // }
 
     let tempBurdenData = []
     let patient_burden = 0
