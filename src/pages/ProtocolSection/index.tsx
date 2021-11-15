@@ -233,7 +233,7 @@ const ProtocolSection = (props: any) => {
           let textOfICD10CMConcepts = []
           item.ICD10CMConcepts.forEach((item, index, arr)=> {
             if(item.Description) {
-              textOfICD10CMConcepts.push("Description: " + item.Description + " Code: " + item.Code+ " Score: " + item.Score)
+              textOfICD10CMConcepts.push("Description: '" + item.Description + "' Code: " + item.Code+ " Score: " + item.Score)
             }
           }) 
           item.ICD10CMConcepts = textOfICD10CMConcepts.join("; ")
@@ -242,7 +242,7 @@ const ProtocolSection = (props: any) => {
           let textOfMedDRAConcepts = []
           item.MedDRAConcepts.forEach((item, index, arr)=> {
             if(item.Description) {
-              textOfMedDRAConcepts.push("Description: " + item.Description + " Code: " + item.Code+ " Score: " + item.Score)
+              textOfMedDRAConcepts.push("Description: '" + item.Description + "' Code: " + item.Code+ " Score: " + item.Score)
             }
           }) 
           item.MedDRAConcepts = textOfMedDRAConcepts.join("; ")
@@ -255,7 +255,7 @@ const ProtocolSection = (props: any) => {
           let textOfRxNormConcepts = []
           item.RxNormConcepts.forEach((item, index, arr)=> {
             if(item.Description) {
-              textOfRxNormConcepts.push("Description: " + item.Description + " Code: " + item.Code+ " Score: " + item.Score)
+              textOfRxNormConcepts.push("Description: '" + item.Description + "' Code: " + item.Code+ " Score: " + item.Score)
             }
           }) 
           item.RxNormConcepts = textOfRxNormConcepts.join("; ")
