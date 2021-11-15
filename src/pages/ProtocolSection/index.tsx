@@ -77,6 +77,7 @@ const ProtocolSection = (props: any) => {
   const protocolTitleText = props.location.state && props.location.state.title;
 
   const [entities, setEntities] = useState([]);
+  const [comprehendMedical, setComprehendMedical] = useState([]);
   const [protocolSection, setProtocolSection] = useState("sections");
   const [sections, setSections] = useState(initSelectedSections);
   const [activeSection, setActiveSection] = useState("");
@@ -116,8 +117,10 @@ const ProtocolSection = (props: any) => {
     if (props.location.pathname == "/extraction") {
       if (entity && activeSection && file[key][activeSection][0] && file[key][activeSection][0].comprehendMedical[entity]) {
         setEntities(file[key][activeSection][0] && file[key][activeSection][0].comprehendMedical[entity].Entities)
+        setComprehendMedical(file[key][activeSection][0] && file[key][activeSection][0].comprehendMedical)
       } else if (entity && activeSection && file[key][activeSection][0] && file[key][activeSection][0].table) {
         setEntities(file[key][activeSection][0] && file[key][activeSection][0].table)
+        setComprehendMedical(file[key][activeSection][0] && file[key][activeSection][0].table)
       }
       if(activeSection=="scheduleActivities"){
         file[key][activeSection][0].pageNo && setPageNum(file[key][activeSection][0].pageNo)
@@ -217,9 +220,50 @@ const ProtocolSection = (props: any) => {
     }
   };
 
-  const changeEntiesforCSV = (rawarr) => {
-    let arr = JSON.parse(JSON.stringify(rawarr))   
-    let newArr = arr.map((item, index, arr)=> {
+  const changeEntiesforCSV = (rawarr, comprehendMedical) => {
+    let arr = JSON.parse(JSON.stringify(rawarr))  
+    // Add three fields into the api result from front-end
+    // let ICD10Field = []
+    // let RxnormField = []
+    // let arrAddingField = []
+    // let ICD10 = JSON.parse(JSON.stringify(comprehendMedical["ICD-10-CM"].Entities)) || []
+    // let Rxnorm = JSON.parse(JSON.stringify(comprehendMedical["RxNorm"].Entities)) || []
+    // JSON.parse(JSON.stringify(arr)).forEach(function(currentValueX, index, arrX){
+    //   ICD10Field.push(ICD10.filter(function(currentValueY, indey, arrY){
+    //     return currentValueY.BeginOffset === currentValueX.BeginOffset
+    //   }))
+    //   RxnormField.push(Rxnorm.filter(function(currentValueZ, indez, arrZ){
+    //     return currentValueZ.BeginOffset === currentValueX.BeginOffset
+    //   }))
+    // })
+    // console.log("ICD10Field",ICD10Field);
+    // console.log("RxnormField",RxnormField);
+    // JSON.parse(JSON.stringify(arr)).forEach(function(currentValueX, index, arrX){
+    //   ICD10Field.forEach(function(currentValueY, indey, arrY){  
+    //     if (!currentValueY[0]) {
+    //       currentValueX.ICD10CMConcepts = []
+    //        // [{Description: 'Essential (primary) hypertension', Code: 'I10', Score: 0.7167153358459473}]
+    //     } else if(currentValueY[0].BeginOffset === currentValueX.BeginOffset) {
+    //       currentValueX.ICD10CMConcepts = currentValueY[0].ICD10CMConcepts 
+    //     }  else {
+    //       currentValueX.ICD10CMConcepts = ["ssss"]
+    //     }           
+    //   })
+    //   RxnormField.forEach(function(currentValueZ, indez, arrZ){                  
+    //     if (!currentValueZ[0]) {
+    //       currentValueX.RxNormConcepts = []
+    //     } else if(currentValueZ[0].BeginOffset === currentValueX.BeginOffset) {
+    //       currentValueX.RxNormConcepts = currentValueZ[0].RxNormConcepts
+    //     } else {
+    //       currentValueX.RxNormConcepts = ["tttt"]
+    //     }
+    //   })
+    //   arrAddingField.push(currentValueX)
+    // })
+    // console.log("arr before mapping",arrAddingField);
+    
+    // let newArr = JSON.parse(JSON.stringify(arrAddingField)).map((item, index, arr)=> {
+    let newArr = arr.map((item, index, arr)=> { 
       if (item.Traits || item.SubChild || item.Attributes || item.ICD10CMConcepts ||item.RxNormConcepts ||item.MedDRAConcepts) {
         if(item.Traits&&Array.isArray(item.Traits)&&item.Traits.length !== 0){
           let textOfTraits = []
@@ -228,7 +272,7 @@ const ProtocolSection = (props: any) => {
               textOfTraits.push(item.Name)
             }
           }) 
-          item.Traits = textOfTraits.join(";")
+          item.Traits = textOfTraits.join("; ")
         }
         if(item.SubChild&&Array.isArray(item.SubChild)&&item.SubChild.length !== 0){
           let textOfSubChild = []
@@ -237,7 +281,7 @@ const ProtocolSection = (props: any) => {
               textOfSubChild.push(item.Text)
             }
           }) 
-          item.SubChild = textOfSubChild.join(";")
+          item.SubChild = textOfSubChild.join("; ")
         }
         if(item.Attributes&&Array.isArray(item.Attributes)&&item.Attributes.length !== 0){
           let textOfAttributes = []
@@ -246,7 +290,11 @@ const ProtocolSection = (props: any) => {
               textOfAttributes.push(item.Text)
             }
           }) 
-          item.Attributes = textOfAttributes.join(";")
+          item.Attributes = textOfAttributes.join("; ")
+        }
+        if(item.icd&&item.icd.length !== 0){
+          item.icd = item.icd.Description
+          // item.icd = "Description: '" + item.icd.Description + "'; Code: " + item.icd.Code+ "; Score: " + item.icd.Score + ";"
         }
         if(item.ICD10CMConcepts&&Array.isArray(item.ICD10CMConcepts)&&item.ICD10CMConcepts.length !== 0){
           let textOfICD10CMConcepts = []
@@ -265,6 +313,10 @@ const ProtocolSection = (props: any) => {
             }
           }) 
           item.MedDRAConcepts = textOfMedDRAConcepts.join("; ")
+        }
+        if(item.rx&&item.rx.length !== 0){
+          item.rx = item.rx.Description
+          // item.rx = "Description: '" + item.rx.Description + "'; Code: " + item.rx.Code+ "; Score: " + item.rx.Score + ";"
         }
         if(item.RxNormConcepts&&Array.isArray(item.RxNormConcepts)&&item.RxNormConcepts.length !== 0){
           let textOfRxNormConcepts = []
@@ -288,7 +340,7 @@ const ProtocolSection = (props: any) => {
           return e == "CSV" ? (
             <Menu.Item key={e}>
               <CSVLink
-                data={ entities ? changeEntiesforCSV(entities) : []}
+                data={ entities ? changeEntiesforCSV(entities, comprehendMedical) : []}
                 filename={fname + ".csv"}
               >
                 CSV
@@ -461,7 +513,7 @@ const ProtocolSection = (props: any) => {
                     <>
                       <DownloadOutlined />
                       <CSVLink
-                        data={entities ? changeEntiesforCSV(entities) : []}
+                        data={entities ? changeEntiesforCSV(entities, comprehendMedical) : []}
                         filename={fname + ".csv"}
                       >
                         CSV
