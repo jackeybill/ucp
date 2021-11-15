@@ -57,8 +57,8 @@ const showStatusCircle = (text) => {
 }
 
 const ProtocolSection = (props: any) => {
-  // if (!props.fileReader.file.txt)
-  //   window.location.href = window.location.origin + "/overview";
+  if (!props.fileReader.file.txt)
+    window.location.href = window.location.origin + "/overview";
 
   const activeTabKey = props.fileReader.activeTabKey;
   const fileName =
@@ -196,7 +196,7 @@ const ProtocolSection = (props: any) => {
 
   const changeEntiesforCSV = (rawarr) => {
     let arr = JSON.parse(JSON.stringify(rawarr))   
-    let newArr = arr.map((item, index, arr)=> {
+    let newArr = arr.map((item, index, arr)=> { 
       if (item.Traits || item.SubChild || item.Attributes || item.ICD10CMConcepts ||item.RxNormConcepts ||item.MedDRAConcepts) {
         if(item.Traits&&Array.isArray(item.Traits)&&item.Traits.length !== 0){
           let textOfTraits = []
@@ -205,7 +205,7 @@ const ProtocolSection = (props: any) => {
               textOfTraits.push(item.Name)
             }
           }) 
-          item.Traits = textOfTraits.join(";")
+          item.Traits = textOfTraits.join("; ")
         }
         if(item.SubChild&&Array.isArray(item.SubChild)&&item.SubChild.length !== 0){
           let textOfSubChild = []
@@ -214,7 +214,7 @@ const ProtocolSection = (props: any) => {
               textOfSubChild.push(item.Text)
             }
           }) 
-          item.SubChild = textOfSubChild.join(";")
+          item.SubChild = textOfSubChild.join("; ")
         }
         if(item.Attributes&&Array.isArray(item.Attributes)&&item.Attributes.length !== 0){
           let textOfAttributes = []
@@ -223,34 +223,42 @@ const ProtocolSection = (props: any) => {
               textOfAttributes.push(item.Text)
             }
           }) 
-          item.Attributes = textOfAttributes.join(";")
+          item.Attributes = textOfAttributes.join("; ")
+        }
+        if(item.icd&&item.icd.length !== 0){
+          item.icd = item.icd.Description
+          // item.icd = "Description: '" + item.icd.Description + "'; Code: " + item.icd.Code+ "; Score: " + item.icd.Score + ";"
         }
         if(item.ICD10CMConcepts&&Array.isArray(item.ICD10CMConcepts)&&item.ICD10CMConcepts.length !== 0){
           let textOfICD10CMConcepts = []
           item.ICD10CMConcepts.forEach((item, index, arr)=> {
             if(item.Description) {
-              textOfICD10CMConcepts.push(item.Description)
+              textOfICD10CMConcepts.push("Description: " + item.Description + " Code: " + item.Code+ " Score: " + item.Score)
             }
           }) 
-          item.ICD10CMConcepts = textOfICD10CMConcepts.join(";")
+          item.ICD10CMConcepts = textOfICD10CMConcepts.join("; ")
         }
         if(item.MedDRAConcepts&&Array.isArray(item.MedDRAConcepts)&&item.MedDRAConcepts.length !== 0){
           let textOfMedDRAConcepts = []
           item.MedDRAConcepts.forEach((item, index, arr)=> {
             if(item.Description) {
-              textOfMedDRAConcepts.push(item.Description)
+              textOfMedDRAConcepts.push("Description: " + item.Description + " Code: " + item.Code+ " Score: " + item.Score)
             }
           }) 
-          item.MedDRAConcepts = textOfMedDRAConcepts.join(";")
+          item.MedDRAConcepts = textOfMedDRAConcepts.join("; ")
+        }
+        if(item.rx&&item.rx.length !== 0){
+          item.rx = item.rx.Description
+          // item.rx = "Description: '" + item.rx.Description + "'; Code: " + item.rx.Code+ "; Score: " + item.rx.Score + ";"
         }
         if(item.RxNormConcepts&&Array.isArray(item.RxNormConcepts)&&item.RxNormConcepts.length !== 0){
           let textOfRxNormConcepts = []
           item.RxNormConcepts.forEach((item, index, arr)=> {
             if(item.Description) {
-              textOfRxNormConcepts.push(item.Description)
+              textOfRxNormConcepts.push("Description: " + item.Description + " Code: " + item.Code+ " Score: " + item.Score)
             }
           }) 
-          item.RxNormConcepts = textOfRxNormConcepts.join(";")
+          item.RxNormConcepts = textOfRxNormConcepts.join("; ")
         }
       } 
       return item

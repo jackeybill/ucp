@@ -34,9 +34,9 @@ const { Option } = Select;
 const entityOptions = ["Entities", "ICD-10-CM", "RxNorm"];
 
 const Extraction = (props: any, ref) => {
-  // if (!props.fileReader.file.txt) {
-  //   window.location.href = window.location.origin + "/overview";
-  // }
+  if (!props.fileReader.file.txt) {
+    window.location.href = window.location.origin + "/overview";
+  }
   const initEntity = entityOptions[0];
   const allEntity = "Entities";
   const { activeSection } = props;
