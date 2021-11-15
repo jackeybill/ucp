@@ -53,9 +53,10 @@ const matchWord = (iten, searchTxt) => {
 }
 
 const ExtractionTable = (props: any, ref) => {
-  // if (!props.fileReader.file.txt) {
-  //   window.location.href = window.location.origin + "/overview";
-  // }
+    // need this to refresh page
+  if (!props.fileReader.file.txt) {
+    window.location.href = window.location.origin + "/overview";
+  }
   const initEntity = entityOptions[0];
   const allEntity = "Entities";
   const { activeSection } = props;

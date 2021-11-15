@@ -59,8 +59,9 @@ const showStatusCircle = (text) => {
 }
 
 const ProtocolSection = (props: any) => {
-  // if (!props.fileReader.file.txt)
-  //   window.location.href = window.location.origin + "/overview";
+  // need this to refresh in the page other than home page
+  if (!props.fileReader.file.txt)
+    window.location.href = window.location.origin + "/overview";
 
   const activeTabKey = props.fileReader.activeTabKey;
   const fileName =
@@ -251,28 +252,28 @@ const ProtocolSection = (props: any) => {
           let textOfICD10CMConcepts = []
           item.ICD10CMConcepts.forEach((item, index, arr)=> {
             if(item.Description) {
-              textOfICD10CMConcepts.push(item.Description)
+              textOfICD10CMConcepts.push("Description: " + item.Description + " Code: " + item.Code+ " Score: " + item.Score)
             }
           }) 
-          item.ICD10CMConcepts = textOfICD10CMConcepts.join(";")
+          item.ICD10CMConcepts = textOfICD10CMConcepts.join("; ")
         }
         if(item.MedDRAConcepts&&Array.isArray(item.MedDRAConcepts)&&item.MedDRAConcepts.length !== 0){
           let textOfMedDRAConcepts = []
           item.MedDRAConcepts.forEach((item, index, arr)=> {
             if(item.Description) {
-              textOfMedDRAConcepts.push(item.Description)
+              textOfMedDRAConcepts.push("Description: " + item.Description + " Code: " + item.Code+ " Score: " + item.Score)
             }
           }) 
-          item.MedDRAConcepts = textOfMedDRAConcepts.join(";")
+          item.MedDRAConcepts = textOfMedDRAConcepts.join("; ")
         }
         if(item.RxNormConcepts&&Array.isArray(item.RxNormConcepts)&&item.RxNormConcepts.length !== 0){
           let textOfRxNormConcepts = []
           item.RxNormConcepts.forEach((item, index, arr)=> {
             if(item.Description) {
-              textOfRxNormConcepts.push(item.Description)
+              textOfRxNormConcepts.push("Description: " + item.Description + " Code: " + item.Code+ " Score: " + item.Score)
             }
           }) 
-          item.RxNormConcepts = textOfRxNormConcepts.join(";")
+          item.RxNormConcepts = textOfRxNormConcepts.join("; ")
         }
       } 
       return item
