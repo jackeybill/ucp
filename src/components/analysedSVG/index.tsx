@@ -25,15 +25,16 @@ const flattenAttributeIntoEntities = (inputData: any, result?: any, parentId?: n
   return result
 }
 
-const removeBoldSign = (str1: any) => {
-  while (str1.indexOf('<b>') !== -1) {
-    str1 = str1.replace('<b>', '');
-  }
-  while (str1.indexOf('</b>') !== -1) {
-    str1 = str1.replace('</b>', '');
-  }
-  return str1
-}
+// const removeBoldSign = (str1: any) => {
+//   str1.replace('. \\n<b>Objectives', '<b>Objectives')
+//   while (str1.indexOf('<b>') !== -1) {
+//     str1 = str1.replace('<b>', '');
+//   }
+//   while (str1.indexOf('</b>') !== -1) {
+//     str1 = str1.replace('</b>', '');
+//   }
+//   return str1
+// }
 
 export interface SvgComponentProps {
   entityData: any;
@@ -283,7 +284,8 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
 
   render() {
     const { entityData } = this.props;
-    let content = removeBoldSign(this.props.content) + '\n'
+    // let content = removeBoldSign(this.props.content) + '\n'
+    let content = this.props.content + '\n'
     let entities = flattenAttributeIntoEntities(entityData.Entities||[])
 
 
