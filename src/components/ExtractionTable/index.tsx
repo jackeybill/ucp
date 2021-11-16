@@ -611,7 +611,7 @@ const ExtractionTable = (props: any, ref) => {
                                         ):
                                         (
                                           <td>
-                                            {renderPlainText(iten)}
+                                            {renderPlainTextForFirstColumn(iten)}
                                           </td>
                                         )
                                       ) :(
@@ -779,7 +779,7 @@ const ExtractionTable = (props: any, ref) => {
                                       ):
                                       (
                                         <td onClick={()=>{handleAddUnderline(iten)}}>
-                                          {renderPlainText(iten)}
+                                          {renderPlainTextForFirstColumn(iten)}
                                         </td>
                                       )
                                     ):(
@@ -838,7 +838,7 @@ const ExtractionTable = (props: any, ref) => {
                                       ):
                                       (
                                         <td onClick={()=>{handleAddUnderline(iten)}}>
-                                          {renderPlainText(iten)}
+                                          {renderPlainTextForFirstColumn(iten)}
                                         </td>
                                       )
                                     ):(
