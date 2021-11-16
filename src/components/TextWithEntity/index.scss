@@ -244,6 +244,9 @@ mark {
   .key-word {
     border-bottom: 2px solid #ededed;
   }
+  .nocolor {
+    border-color: transparent;
+  }
   .CHEMICAL {
     border-color: $CHEMICAL;
   }

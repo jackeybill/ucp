@@ -195,6 +195,106 @@ const renderMark = (markParams, entity) => {
   );
 };
 
+const renderMarkNoColor = (markParams, entity) => {
+  const {
+    word,
+    searchTxt,
+    showConfidence = false,
+    showConcepts = false,
+    concepts = [],
+  } = markParams;
+
+  let term = word.children.map(c => {
+    return c.term||""
+  }).join(' ')
+
+  if (showConcepts && concepts.length > 0) {
+    let text = word.children.map(c => {
+      return c.text
+    }).join(' ')  
+    if (text.indexOf(",") > -1) text = text.slice(0, text.length - 1) 
+    return (
+      <Tooltip key={word.id} placement="right" title={renderConcepts(concepts, text, entity)}>
+        <mark
+          key={word.children[0].id}
+          id={word.id}
+          className={`id_${word.category}`}
+        >
+          {word.children.map((child,idx) => {
+            return (
+              <span
+                id={child.id}
+                key={idx}
+                className={`key-word ${word.category} ${
+                  searchTxt &&
+                  word.text.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
+                    ? "matched-word"
+                    : ""
+                }`}
+              >
+                {child.text}{" "}
+              </span>
+            );
+          })}
+          <span
+            id={word.id}
+            key={`cate-${word.id}`}
+            className={`cate-label ${
+              searchTxt &&
+              word.category.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
+                ? "matched-word"
+                : ""
+            }`}
+          >
+            {formatWord(word.category)}&nbsp; 
+          </span>
+        </mark>
+      </Tooltip>
+    );
+  }
+  return (
+    <mark
+      key={word.id}
+      id={word.id}
+      className={`id_${word.category} ${
+        showConfidence?(word.score && word.score.toFixed(2) * 100>=80 ? "suc" : "warn"):""
+      }`}
+    >
+      {word.children.map((child) => {
+        child.text.indexOf('\t')!=-1 && child.text.replace('\n','<br/>')
+        return (
+          <span
+            id={child.id}
+            key={child.id}
+            className={`key-word nocolor ${
+              searchTxt &&
+              word.text.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
+                ? "matched-word"
+                : ""
+            }`}
+          >
+            {child.text}{" "}
+          </span>
+        );
+      })}
+      <span
+        id={word.id}
+        key={`cate-${word.id}`}
+        style={{color: "transparent"}}
+        className={`cate-label ${
+          searchTxt &&
+          word.category.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
+            ? "matched-word"
+            : ""
+        }`}
+      >
+        {formatWord(word.category)}&nbsp;
+      </span>
+      </mark>
+      
+  );
+};
+
 const renderTooltipTitle = (
   word,
   currentId,
@@ -498,28 +598,13 @@ const TextWithEntity = (props: TextWithEntityIF) => {
               }
             }
             if (activeType && word.category != activeType) {
-              return (
-                <>
-                  {word.children.map((child,idx) => {
-                    return (
-                      <span
-                        id={child.id}
-                        key={idx}
-                        className={`key-word ${
-                          searchTxt &&
-                          word.text
-                            .toLowerCase()
-                            .indexOf(searchTxt.toLowerCase()) > -1
-                            ? "matched-word"
-                            : ""
-                        } `}
-                      >
-                        {child.text}{" "}
-                      </span>
-                    );
-                  })}
-                </>
-              );
+              const markParams = {
+                concepts: word.Concepts,
+                word,
+                searchTxt,
+                showConcepts: true,
+              };
+              return <> {renderMarkNoColor(markParams,entity)}</>;
             }
           }
         })}
