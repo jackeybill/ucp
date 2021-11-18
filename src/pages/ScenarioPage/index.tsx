@@ -2320,7 +2320,7 @@ const ScenarioPage = (props) => {
                       )}
                       <Row>
                         <Col span={24}>
-                          <div className="content-outer">
+                          <div className="content-outer content-sidebar">
                             <div className="content-over">
                               <div className="library box">
                                 <span>Demographics</span>
@@ -2601,7 +2601,7 @@ const ScenarioPage = (props) => {
                       )}
                       <Row>
                         <Col span={24}>
-                          <div className="content-outer">
+                          <div className="content-outer content-sidebar">
                             <div className="content-over">
                               <div className="library box">
                                 <span>Demographics</span>
