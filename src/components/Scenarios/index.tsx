@@ -243,12 +243,12 @@ const SceneriosDashbaord = (props: any) => {
                       <div>Screen Failure Rate</div>
                       <div>Patient Burden</div>
                       <div>Cost</div>
-                      <div></div>
+                      {/* <div></div> */}
                     </div>
                   </div>
-                  {props.record.scenarios.map((s, idx) => {
+                  {noEdit==undefined ? (props.record.scenarios.map((s, idx) => {
                     return (
-                      <div className="item-wrapper" key={s["scenario_id"] + idx}>
+                      <div className="item-wrapper"  style={{cursor:"pointer"}} onClick={() => editScenario(s)} key={s["scenario_id"] + idx}>
                         <div className="scenario-item">
                           <div className="title">
                             <p>{s["scenario_name"]}</p>
@@ -271,7 +271,7 @@ const SceneriosDashbaord = (props: any) => {
                             {s["Schedule of Events"]["TotalCost"]?(<span>${s["Schedule of Events"]["TotalCost"]}K</span>):null}                  
                                <span className={`status ${s["Schedule of Events"]["CostRate"]}`}>{s["Schedule of Events"]["CostRate"]}</span>
                             </div>
-                            <div className="button-not-show-wrapper">
+                            {/* <div className="button-not-show-wrapper">
                               {
                                 noEdit==undefined ? (
                                   <button
@@ -290,7 +290,7 @@ const SceneriosDashbaord = (props: any) => {
                                   </button>
                                 )
                               }
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                         {s.hasOwnProperty("rationale") && s['rationale'] != "" && (
@@ -300,8 +300,63 @@ const SceneriosDashbaord = (props: any) => {
                           </div>
                         )}
                       </div>
-                    );
-                  })}
+                    )
+                  })):(props.record.scenarios.map((s, idx) => {
+                    return (
+                      <div className="item-wrapper" style={{cursor:"pointer"}} onClick={() => viewScenario(s)} key={s["scenario_id"] + idx}>
+                        <div className="scenario-item">
+                          <div className="title">
+                            <p>{s["scenario_name"]}</p>
+                            <span>{s["scenario_description"]}</span>
+                          </div>
+                          <div className="item-values">
+                            <div>
+                              {s["protocol_amendment_rate"]}                 
+                              <span className={`status ${s["protocol_amendment_rate_state"]}`}>{s["protocol_amendment_rate_state"]}</span>                          
+                            </div>
+                            <div>
+                              {s["screen_failure_rate"]}                         
+                               <span className={`status ${s["screen_failure_rate_state"]}`}>{s["screen_failure_rate_state"]}</span>
+                            </div>
+                            <div>
+                              {s["Schedule of Events"]["patient_burden"]}                  
+                               <span className={`status ${s["Schedule of Events"]["patient_burden_rate"]}`}>{s["Schedule of Events"]["patient_burden_rate"]}</span>
+                            </div>
+                            <div>
+                            {s["Schedule of Events"]["TotalCost"]?(<span>${s["Schedule of Events"]["TotalCost"]}K</span>):null}                  
+                               <span className={`status ${s["Schedule of Events"]["CostRate"]}`}>{s["Schedule of Events"]["CostRate"]}</span>
+                            </div>
+                            {/* <div className="button-not-show-wrapper">
+                              {
+                                noEdit==undefined ? (
+                                  <button
+                                    
+                                    className="button-not-show"
+                                    onClick={() => editScenario(s)}
+                                  >
+                                    EDIT SCENARIO
+                                  </button>
+                                ) : (
+                                  <button
+                                    className="button-not-show"
+                                    onClick={() => viewScenario(s)}
+                                  >
+                                    VIEW SCENARIO
+                                  </button>
+                                )
+                              }
+                            </div> */}
+                          </div>
+                        </div>
+                        {s.hasOwnProperty("rationale") && s['rationale'] != "" && (
+                          <div className="rationale-content">
+                            <span>Rationale</span>
+                            <p>{s.rationale}</p>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  }))}
                 </div>
               </div>
             )
@@ -320,7 +375,7 @@ const SceneriosDashbaord = (props: any) => {
                     <div>{props.record['Therapeutic Area Average'].screen_failure_rate }</div>
                     <div>{Number(BurdenAvg.toString().match(/^\d+(?:\.\d{0,2})?/))}</div>
                     <div>{CostAvgValue}</div>
-                    <div></div>
+                    {/* <div></div> */}
                   </div>
                 </div>
               </div>        
