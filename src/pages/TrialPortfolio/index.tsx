@@ -44,9 +44,9 @@ const { Step } = Steps;
 const backgroundPic = {
   background: "url(" + bgDotPic + ")",
   backgroundRepeat: "no-repeat",
-  backgroundSize: "45%",
+  backgroundSize: "48%",
   backgroundColor: "#dedede",
-  backgroundPosition: "bottom 50px right 250px",
+  backgroundPosition: "bottom 50px right 220px",
 };
 
 export const phase_options = [
@@ -395,31 +395,33 @@ const TrialPortfolio = (props) => {
     <div className="trial-portfolio-container">
       {!showDetails ? (
         <>
-          <div className="upper" style={backgroundPic}>
-            <span className="small-trial">MY TRIALS</span>
-            <p className="title">Hello {username},</p>
-            <span className="sub-title">
-              Here is a glance at your trial portfolio.
-            </span>
-            <div className="action-part">
-              <div className="status-filter">
-                <div
-                  className={`in-progress item ${
-                    status == "IN PROGRESS" ? "active" : ""
-                  }`}
-                  onClick={() => setStatus("IN PROGRESS")}
-                >
-                  <span className="number">{count.inProgress}</span>
-                  <span className="status">IN PROGRESS</span>
-                </div>
-                <div
-                  className={`complete item ${
-                    status == "COMPLETED" ? "active" : ""
-                  }`}
-                  onClick={() => setStatus("COMPLETED")}
-                >
-                  <span className="number">{count.completed}</span>
-                  <span className="status">COMPLETE</span>
+          <div className="upper-wrapper">
+            <div className="upper" style={backgroundPic}>
+              <span className="small-trial">MY TRIALS</span>
+              <p className="title">Hello {username},</p>
+              <span className="sub-title">
+                Here is a glance at your trial portfolio.
+              </span>
+              <div className="action-part">
+                <div className="status-filter">
+                  <div
+                    className={`in-progress item ${
+                      status == "IN PROGRESS" ? "active" : ""
+                    }`}
+                    onClick={() => setStatus("IN PROGRESS")}
+                  >
+                    <span className="number">{count.inProgress}</span>
+                    <span className="status">IN PROGRESS</span>
+                  </div>
+                  <div
+                    className={`complete item ${
+                      status == "COMPLETED" ? "active" : ""
+                    }`}
+                    onClick={() => setStatus("COMPLETED")}
+                  >
+                    <span className="number">{count.completed}</span>
+                    <span className="status">COMPLETE</span>
+                  </div>
                 </div>
               </div>
             </div>

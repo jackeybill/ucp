@@ -175,7 +175,7 @@ const TrailList = (props: any) => {
           <div className="col-item">THERAPEUTIC AREA</div>
           {/* <div className="col-item">MODULE STATUS</div> */}
           <div className="col-item">TRIAL STATUS</div>
-          <div className="col-item"></div>
+          <div className="col-item">   </div>
         </div>
         <div>
           <Collapse

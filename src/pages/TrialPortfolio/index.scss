@@ -50,8 +50,12 @@
       }
     }
   }
-  .upper {
-    padding: 20px 100px 0px 100px;
+  .upper-wrapper {
+    background-color: rgb(222, 222, 222);
+    .upper {
+    padding: 20px 0 0px 0;
+    width: 90%;
+    margin: auto;
     
     .title {
       font-size: 32px;
@@ -105,6 +109,8 @@
       }
     }
   }
+  }
+  
 }
 .add-new-trial {
   display: flex;
