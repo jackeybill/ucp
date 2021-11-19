@@ -278,6 +278,9 @@
             .content-outer{
                 overflow-y:hidden;
                 // height: calc(100vh - 431px);
+                .sectionPanel {
+                    overflow-y: scroll;
+                }
             }
 
             .content-sidebar{
@@ -479,6 +482,7 @@
                 border-left: 1px solid #ddd;
                 border-right: 1px solid #ddd;
                 padding:5px 20px;
+                // position: fixed;
     
                 bUtton{
                     float:right;
@@ -486,7 +490,7 @@
     
                 .list-columns{
                     display: flex;
-                    padding: 5px 20px;
+                    padding: 5px 0 5px 50px;
     
                     div {
                         flex: 1 1;
@@ -505,9 +509,12 @@
                 // width: calc(100% + 20px);
                 width:100%;
                 height: calc(100vh - 605px);
-                overflow-y:scroll;
+                // overflow-y:scroll;
                 box-sizing: content-box;
-    
+                .sectionPanel {
+                    overflow-y: scroll;
+                    height: calc(100vh - 637px);
+                }
                 .right-icon{
                     float: right;
                     min-width:30px;
@@ -516,6 +523,10 @@
             }
     
             .collapse-inner.taller{
+                .sectionPanel {
+                    overflow-y: scroll;
+                    height: calc(100vh - 462px);
+                }
                 // height:400px;
                 height: calc(100vh - 431px);
             }
@@ -523,6 +534,10 @@
             .collapse-inner.taller.collapsed{
                 // height:230px
                 height: calc(100vh - 605px);
+                .sectionPanel {
+                    overflow-y: scroll;
+                    height: calc(100vh - 437px);
+                }
             }
     
             .enrollment-right-section{

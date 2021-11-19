@@ -2488,7 +2488,7 @@ const ScenarioPage = (props) => {
                               <div className="criteria-list">
                                 <div className="list-columns">
                                   <Row>
-                                    <Col span={3}><div className="col-item">S/No.</div></Col>
+                                    <Col span={2}><div className="col-item">S/No.</div></Col>
                                     <Col span={7}><div className="col-item">Eligibility Criteria</div></Col>
                                     <Col span={7}><div className="col-item">Values</div></Col>
                                     <Col span={7}><div className="col-item">Timeframe</div></Col>
@@ -2771,7 +2771,7 @@ const ScenarioPage = (props) => {
                               <div className="criteria-list">
                                 <div className="list-columns">
                                   <Row>
-                                    <Col span={3}><div className="col-item">S/No.</div></Col>
+                                    <Col span={2}><div className="col-item">S/No.</div></Col>
                                     <Col span={7}><div className="col-item">Eligibility Criteria</div></Col>
                                     <Col span={7}><div className="col-item">Values</div></Col>
                                     <Col span={7}><div className="col-item">Timeframe</div></Col>
