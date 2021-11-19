@@ -528,7 +528,8 @@
             .enrollment-right-section{
                 height: calc(100vh - 203px);
                 overflow-y: scroll;
-                margin-bottom: 38px;
+                padding-bottom: 38px;
+                box-sizing: border-box;
                 span.chart-title {
                     font-size: 16px;
                     color: #000;
