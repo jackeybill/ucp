@@ -502,7 +502,8 @@
             }
     
             .collapse-inner{
-                width: calc(100% + 20px);
+                // width: calc(100% + 20px);
+                width:100%;
                 height: calc(100vh - 605px);
                 overflow-y:scroll;
                 box-sizing: content-box;
@@ -525,6 +526,9 @@
             }
     
             .enrollment-right-section{
+                height: calc(100vh - 203px);
+                overflow-y: scroll;
+                margin-bottom: 38px;
                 span.chart-title {
                     font-size: 16px;
                     color: #000;
