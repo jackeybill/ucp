@@ -909,7 +909,7 @@ const EventList = (props) => {
 
             <div className="head-row">
               <div className="colunm-row week-row e-row">
-                <div className="f-2">My Events</div>
+                <div className="f-2">   My Events</div>
                 <div className="f-3">Trial Endpoint</div>
                 <div className="f-1-small sortable-item">Cost/patient  
                   <span className="sort-icon-wrapper">
