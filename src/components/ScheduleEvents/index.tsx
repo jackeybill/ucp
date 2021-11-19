@@ -486,7 +486,8 @@ const ScheduleEvents = (props) => {
       x:'left',
       y:'37%',
       orient: 'vertical',
-      itemHeight: 7,
+      itemHeight: 9,
+      itemWidth: 9,
       textStyle: {
         fontSize: 12,
         color: '#333'
