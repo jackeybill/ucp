@@ -69,7 +69,7 @@ const ScheduleEvents = (props) => {
   const eventsConfigure = scenario['Schedule of Events']
   const [hiddeTags, setHiddeTags] = useState(true)
   const [showConfigure, setShowConfigure] = useState(false)
-  const [eventLib, setEventLib] = useState(6)
+  const [eventLib, setEventLib] = useState("340px")
   const [activeCollapse, setActiveCollapse] = useState(['1'])
   const [numbers, setNumbers] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -1208,12 +1208,12 @@ const ScheduleEvents = (props) => {
 
   return (
     <div className="tab-container">
-      <div className={`side-toolbar ${eventLib > 0 ? 'hidden' : ''}`} onClick={()=> setEventLib(6)}>
+      <div className={`side-toolbar ${eventLib !== "0px" ? 'hidden' : ''}`} onClick={()=> setEventLib("340px")}>
         <div className="panel-label">Event Library</div>
         <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
       </div>
       <Row>
-        <Col span={eventLib} className="event-left-container" style={{maxWidth: '340px', minWidth: '340px'}}>
+        <Col flex={eventLib} className={`event-left-container ${eventLib === "0px" ? 'hidden' : ''}`}>
           <Row style={{backgroundColor: '#F8F8F8'}}>
             <Col span={24}>
               <div className="item-header">
@@ -1228,7 +1228,7 @@ const ScheduleEvents = (props) => {
                   </Col>
                   <Col span={2}>
                   <Tooltip title={'Collapse Event Library'}>
-                    <CloseOutlined className="right-icon" onClick={() => setEventLib(0)}></CloseOutlined>
+                    <CloseOutlined className="right-icon" onClick={() => setEventLib("0px")}></CloseOutlined>
                   </Tooltip>
                   </Col>
                 </Row>
@@ -1365,7 +1365,7 @@ const ScheduleEvents = (props) => {
             </Col>
           </Row>
         </Col>
-        <Col span={24 - eventLib} className="event-right-container">
+        <Col flex="auto" className="event-right-container">
           <div style={{ padding: '10px 20px 0px 20px' }}>
             <Row>
               <Col span={24}><span className="tab-title">Schedule of Events</span></Col>
