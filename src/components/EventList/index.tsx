@@ -892,12 +892,12 @@ const EventList = (props) => {
         }   
       </div>
 
-      <div className="event-dashboard">
+      <div className="event-dashboard" style={{overflowX:"scroll"}}>
         <div className="dashboard-head">
           <div className="event-list-head">
-            <div className="head-row">
-              <div className="colunm-row e-row"></div>
-              <div className="visit-row e-row number">
+            <div className="head-row" style={{position:"relative"}}>
+              <div className="colunm-row e-row" style={{position:"absolute",left:"0",top:"0",width:"634px",height:"100%"}}></div>
+              <div className="visit-row e-row number" style={{paddingLeft:"634px"}}>
                 <div className="colunm td">Visits</div>
                 {
                   visits.map((v)=>{
@@ -907,65 +907,69 @@ const EventList = (props) => {
               </div>
             </div>
 
-            <div className="head-row">
-              <div className="colunm-row week-row e-row">
-                <div className="f-2">   My Events</div>
-                <div className="f-3">Trial Endpoint</div>
-                <div className="f-1-small sortable-item">Cost/patient  
+            <div className="head-row" style={{position:"relative"}}>
+              <div className="colunm-row week-row e-row" style={{position:"absolute",left:"0",top:"0",width:"634px",height:"100%"}}>
+                <div className="f-2-new" style={{width:"233px", height:"100%",}}>My Events</div>
+                <div className="f-3" style={{width:"236.8px", height:"100%",}}>Trial Endpoint</div>
+                <div className="f-1-small sortable-item" style={{width:"110.8px", height:"100%",}}>Cost/patient  
                   <span className="sort-icon-wrapper">
                       <CaretUpOutlined onClick={() => setSort("ascend")}  style={{color:sort=="ascend"?"#ca4a04":"rgb(85,85,85)"}}/>
                       <CaretDownOutlined onClick={ ()=>setSort("descend")} style={{color:sort=="descend"?"#ca4a04":"rgb(85,85,85)"}}/>
                   </span>
                 </div>
-                <div className="f-2-small">Total Visits</div>
+                <div className="f-2-small" style={{width:"56.4px", height:"100%",}}>Total Visits</div>
               </div>
-              <div className="head-bottom-container">
-              <div className="e-row number">
-                <div className="colunm td row-title" style={{flex:weeksFlex}}>Weeks</div>
-                <div className="week-row-wrapper" style={{flex:visitsFlex}}>
-                  <div className="weeks-container">              
+              <div className="head-bottom-container" style={{paddingLeft:"634px"}}>
+                <div className="e-row number">
+                  <div className="colunm td row-title" style={{flex:weeksFlex}}>Weeks</div>
+                  <div className="week-row-wrapper" style={{flex:visitsFlex}}>
+                    <div className="weeks-container">              
+                    {
+                      weeks.map((week, idx) => {
+                        return viewOnly?
+                          <span className="td num-cell" key={`week_span_${idx}`}>{week}</span>: 
+                          <Input className="td cell-input" key={`week_${idx}`} value={week} onChange={(e)=>onWeekChange(e,idx)} />                  
+                      })
+                    }               
+                  </div>      
+                  <div className="column-action-container">              
                   {
-                    weeks.map((week, idx) => {
-                      return viewOnly?<span className="td num-cell" key={`week_span_${idx}`}>{week}</span>: <Input className="td" key={`week_${idx}`} value={week} onChange={(e)=>onWeekChange(e,idx)} />                  
+                    visits.map( (visit,idx)=>{
+                      return(
+                        <div className="td num-cell" key={idx}>
+                          <Tooltip                        
+                            title={
+                              <ModalityList
+                              idx={idx}                           
+                              isColumnBatch={true}                           
+                              columnModality={columnModality} 
+                              insertColumn={insertColumn}
+                              />
+                          }
+                        color="#ffffff"                    
+                        >
+                        <PlusCircleOutlined /> 
+                        </Tooltip> 
+                        </div>                 
+                      )
                     })
-                  }               
-                </div>      
-                <div className="column-action-container">              
-                {
-                  visits.map( (visit,idx)=>{
-                    return(
-                      <div className="td num-cell" key={idx}>
-                        <Tooltip                        
-                          title={
-                            <ModalityList
-                            idx={idx}                           
-                            isColumnBatch={true}                           
-                            columnModality={columnModality} 
-                            insertColumn={insertColumn}
-                            />
-                        }
-                      color="#ffffff"                    
-                      >
-                      <PlusCircleOutlined /> 
-                      </Tooltip> 
-                      </div>                 
-                    )
-                  })
-                }                    
-              </div>  
-              </div>          
-              </div>
+                  }                    
+                </div>  
+                </div>          
+                </div>
               </div>          
             </div>
           </div>
         </div>
-        <Collapse defaultActiveKey={["1"]} activeKey={expandKeys}  onChange={callback}>
+        <Collapse className="clearfix" defaultActiveKey={["1"]} activeKey={expandKeys}  onChange={callback}>
           <Panel
+            className="collapse-container clearfix"
+            forceRender={true}
             header={
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    <span style={{width: "183px", display:"inline-block"}}>
+                    <span style={{width: "186px", display:"inline-block"}}>
                       {`${LABS} (${labs.length})`} 
                     </span>
                     
@@ -973,10 +977,10 @@ const EventList = (props) => {
                   </div>
                   <div className="cost">
                   $ {getTotalCost(labs)}
-                    </div>
+                  </div>
                   <div></div>
                 </div>
-                <div></div>
+                <div className="event-title-right"></div>
               </div>
             }
             key="1"
@@ -994,7 +998,11 @@ const EventList = (props) => {
                           viewOnly?evt["Standard Event"]:(
                             <>
                             {
-                              !evt.Custom?evt["Standard Event"]:(
+                              !evt.Custom?(
+                                <Tooltip title={evt["Standard Event"]}>
+                                  {evt["Standard Event"]}
+                                </Tooltip>
+                              ):(
                                 <>
                                   <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(LABS,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,LABS,idx,"Standard Event")} />
                                 </>
@@ -1057,11 +1065,13 @@ const EventList = (props) => {
             </div>
           </Panel>
           <Panel
+            className="collapse-container"
+            forceRender={true}
             header={
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    <span style={{width: "183px", display:"inline-block"}}>
+                    <span style={{width: "186px", display:"inline-block"}}>
                       {`${PHYSICAL_EXAMINATION} (${examination.length})`}
                     </span>
                      {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,PHYSICAL_EXAMINATION)}>Add Event</span> }
@@ -1071,7 +1081,7 @@ const EventList = (props) => {
                   </div> 
                   <div></div>           
                 </div>
-                <div></div>
+                <div className="event-title-right"></div>
               </div>
             }
             key="2"
@@ -1089,7 +1099,11 @@ const EventList = (props) => {
                           viewOnly?evt["Standard Event"]:(
                             <>
                             {
-                              !evt.Custom?evt["Standard Event"]:(
+                              !evt.Custom?(
+                                <Tooltip title={evt["Standard Event"]}>
+                                  {evt["Standard Event"]}
+                                </Tooltip>
+                              ):(
                                 <>
                                   <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(PHYSICAL_EXAMINATION,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,PHYSICAL_EXAMINATION,idx,"Standard Event")} />
                                 </>
@@ -1172,12 +1186,14 @@ const EventList = (props) => {
               })}
             </div>
           </Panel>
-           <Panel
+          <Panel
+            className="collapse-container"
+            forceRender={true}
             header={
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    <span style={{width: "183px", display:"inline-block"}}>
+                    <span style={{width: "186px", display:"inline-block"}}>
                         {`${PROCEDURES} (${procedures.length})`}
                     </span>
                      {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,PROCEDURES)}>Add Event</span>}
@@ -1187,7 +1203,7 @@ const EventList = (props) => {
                     </div>
                   <div></div>
                 </div>
-                <div></div>
+                <div className="event-title-right"></div>
               </div>
             }
             key="3"
@@ -1205,7 +1221,11 @@ const EventList = (props) => {
                         viewOnly?evt["Standard Event"]:(
                           <>
                             {
-                            !evt.Custom?evt["Standard Event"]:(
+                            !evt.Custom?(
+                              <Tooltip title={evt["Standard Event"]}>
+                                {evt["Standard Event"]}
+                              </Tooltip>
+                            ):(
                               <>
                                 <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(PROCEDURES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,PROCEDURES,idx,"Standard Event")} />
                               </>
@@ -1271,12 +1291,14 @@ const EventList = (props) => {
               })}
             </div>
           </Panel>
-           <Panel
+          <Panel
+            className="collapse-container"
+            forceRender={true}
             header={
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    <span style={{width: "183px", display:"inline-block"}}>
+                    <span style={{width: "186px", display:"inline-block"}}>
                       {`${QUESTIONNAIRES} (${questionnaire.length})`}
                     </span>
                      {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,QUESTIONNAIRES)}>Add Event</span>}
@@ -1286,7 +1308,7 @@ const EventList = (props) => {
                     </div>
                   <div></div>
                 </div>
-                <div></div>
+                <div className="event-title-right"></div>
               </div>
             }
             key="4"
@@ -1304,7 +1326,11 @@ const EventList = (props) => {
                         viewOnly?evt["Standard Event"]:(
                           <>
                             {
-                              !evt.Custom?evt["Standard Event"]:(
+                              !evt.Custom?(
+                                <Tooltip title={evt["Standard Event"]}>
+                                  {evt["Standard Event"]}
+                                </Tooltip>
+                              ):(
                                 <>
                                   <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(QUESTIONNAIRES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,QUESTIONNAIRES,idx,"Standard Event")} />
                                 </>
@@ -1367,12 +1393,14 @@ const EventList = (props) => {
               })}
             </div>
           </Panel>
-           <Panel
+          <Panel
+            className="collapse-container"
+            forceRender={true}
             header={
               <div className="event-panel-head">
                 <div className="event-title e-row">
                   <div className="name">
-                    <span style={{width: "183px", display:"inline-block"}}>
+                    <span style={{width: "186px", display:"inline-block"}}>
                       {`${STUDY_PROCEDURES} (${studyProcedures.length})`} 
                     </span>
                     {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,STUDY_PROCEDURES)}>Add Event</span>}
@@ -1382,7 +1410,7 @@ const EventList = (props) => {
                     </div>
                   <div></div>
                 </div>
-                <div></div>
+                <div className="event-title-right"></div>
               </div>
             }
             key="5"
@@ -1400,7 +1428,11 @@ const EventList = (props) => {
                         viewOnly?evt["Standard Event"]:(
                           <>
                            {
-                            !evt.Custom?evt["Standard Event"]:(
+                            !evt.Custom?(
+                              <Tooltip title={evt["Standard Event"]}>
+                                {evt["Standard Event"]}
+                              </Tooltip>
+                            ):(
                               <>
                                 <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(STUDY_PROCEDURES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,STUDY_PROCEDURES,idx,"Standard Event")} />
                               </>
