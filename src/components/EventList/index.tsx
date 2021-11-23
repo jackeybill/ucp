@@ -880,7 +880,7 @@ const EventList = (props) => {
     )
   }
   return (
-    <div className="event-list-container">
+    <div className="event-list-container" style={{position: "relative"}}>
       <div className="container-top">
         <span>Schedule of Events</span>
         {
@@ -891,8 +891,616 @@ const EventList = (props) => {
           )
         }   
       </div>
+      {!viewOnly&&(
+        <div className="fix-left-column">
+          <div className="event-dashboard" style={{overflowX:"hidden",overflowY:"hidden"}}>
+            <div className="dashboard-head">
+              <div className="event-list-head">
+                <div className="head-row" style={{position:"relative"}}>
+                  <div className="colunm-row e-row" style={{position:"absolute",left:"0",top:"0",width:"634px",height:"33px"}}></div>
+                  <div className="visit-row e-row number" style={{paddingLeft:"634px",height:"33px"}}>
+                    <div className="colunm td">Visits</div>
+                    {
+                      visits.map((v)=>{
+                        return <div className="td num-cell" key={v}>{v}</div>
+                      })
+                    }
+                  </div>
+                </div>
 
-      <div className="event-dashboard" style={{overflowX:"scroll"}}>
+                <div className="head-row" style={{position:"relative"}}>
+                  <div className="colunm-row week-row e-row" style={{position:"absolute",left:"0",top:"0",width:"634px",height:"66px"}}>
+                    <div className="f-2-new" style={{width:"233px", height:"100%",}}>My Events</div>
+                    <div className="f-3" style={{width:"236.8px", height:"100%",}}>Trial Endpoint</div>
+                    <div className="f-1-small sortable-item" style={{width:"110.8px", height:"100%",}}>Cost/patient  
+                      <span className="sort-icon-wrapper">
+                          <CaretUpOutlined onClick={() => setSort("ascend")}  style={{color:sort=="ascend"?"#ca4a04":"rgb(85,85,85)"}}/>
+                          <CaretDownOutlined onClick={ ()=>setSort("descend")} style={{color:sort=="descend"?"#ca4a04":"rgb(85,85,85)"}}/>
+                      </span>
+                    </div>
+                    <div className="f-2-small" style={{width:"56.4px", height:"100%",}}>Total Visits</div>
+                  </div>
+                  <div className="head-bottom-container" style={{paddingLeft:"634px",height: "66px"}}>
+                    <div className="e-row number">
+                      <div className="colunm td row-title" style={{flex:weeksFlex}}>Weeks</div>
+                      <div className="week-row-wrapper" style={{flex:visitsFlex}}>
+                        <div className="weeks-container">              
+                        {
+                          weeks.map((week, idx) => {
+                            return viewOnly?
+                              <span className="td num-cell" key={`week_span_${idx}`}>{week}</span>: 
+                              <Input className="td cell-input" key={`week_${idx}`} value={week} onChange={(e)=>onWeekChange(e,idx)} />                  
+                          })
+                        }               
+                      </div>      
+                      <div className="column-action-container">              
+                      {
+                        visits.map( (visit,idx)=>{
+                          return(
+                            <div className="td num-cell" key={idx}>
+                              <Tooltip                        
+                                title={
+                                  <ModalityList
+                                  idx={idx}                           
+                                  isColumnBatch={true}                           
+                                  columnModality={columnModality} 
+                                  insertColumn={insertColumn}
+                                  />
+                              }
+                            color="#ffffff"                    
+                            >
+                            <PlusCircleOutlined /> 
+                            </Tooltip> 
+                            </div>                 
+                          )
+                        })
+                      }                    
+                    </div>  
+                    </div>          
+                    </div>
+                  </div>          
+                </div>
+              </div>
+            </div>
+            <Collapse className="clearfix" defaultActiveKey={["1"]} activeKey={expandKeys}  onChange={callback}>
+              <Panel
+                className="collapse-container clearfix"
+                forceRender={true}
+                header={
+                  <div className="event-panel-head">
+                    <div className="event-title e-row">
+                      <div className="name">
+                        <span style={{width: "186px", display:"inline-block"}}>
+                          {`${LABS} (${labs.length})`} 
+                        </span>
+                        
+                        {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,LABS)}>Add Event</span> } 
+                      </div>
+                      <div className="cost">
+                      $ {getTotalCost(labs)}
+                      </div>
+                      <div></div>
+                    </div>
+                    <div className="event-title-right"></div>
+                  </div>
+                }
+                key="1"
+              >
+                <div className="shedule-of-event-panel-body">
+                  {labs.sort((a, b) => {
+                    return onSort(a,b)
+                    })
+                    .map((evt, idx) => {
+                    return (
+                      <div className="event-item" key={`labs_${idx}`}>
+                        <div className="events-wrapper e-row">
+                          <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-3`}>                      
+                            {
+                              viewOnly?evt["Standard Event"]:(
+                                <>
+                                {
+                                  !evt.Custom?(
+                                    <Tooltip title={evt["Standard Event"]}>
+                                      {evt["Standard Event"]}
+                                    </Tooltip>
+                                  ):(
+                                    <>
+                                      <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(LABS,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,LABS,idx,"Standard Event")} />
+                                    </>
+                                  )                       
+                                }
+                                </>
+                              )
+                            }            
+                          </div>
+                          <div className="endpoint-td td f-2">
+                            {
+                              viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
+                            }                     
+                          </div>
+                          <div className="cost-td td f-2-small">
+                            {
+                              viewOnly?`$ ${evt["Dummy Cost"]}`:(
+                                <>
+                                {
+                                  !evt.Custom?`$${evt["Dummy Cost"]}`:<>$ <Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,LABS,idx,"Dummy Cost")} /></>
+                                  } 
+                                </>
+                              )
+                            }                   
+                          </div>
+                          <div className="visits-td td f-1-small">{evt.totalVisit}</div>
+                        </div>
+                        <div className="status-row e-row">
+                          <div className="colunm td">
+                          <Tooltip  
+                            title={<ModalityList evt={evt}   category={LABS} isRowBatch={true} rowModality={rowModality}/>}
+                            color="#ffffff"                     
+                            >
+                            <PlusCircleOutlined /> 
+                            </Tooltip> 
+
+                          </div>                   
+                            {evt.condition.length > 0 &&
+                              evt.condition.map((con, idx) => {
+                                const targetItem =modality_options.find(m=>m.name==con.modality)   
+                                return (
+                                  <div className="td" key={`labs_event_${idx}`}>
+                                    <span
+                                      className={`${viewOnly?'viewOnly':''} incon-wrapper`}
+                                    >
+                                      <Tooltip  
+                                      title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}                              
+                                      color="#ffffff"                                                          
+                                      >
+                                    {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                    </Tooltip>  
+                                    </span>
+                                  </div>
+                                );
+                              })}                        
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Panel>
+              <Panel
+                className="collapse-container"
+                forceRender={true}
+                header={
+                  <div className="event-panel-head">
+                    <div className="event-title e-row">
+                      <div className="name">
+                        <span style={{width: "186px", display:"inline-block"}}>
+                          {`${PHYSICAL_EXAMINATION} (${examination.length})`}
+                        </span>
+                        {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,PHYSICAL_EXAMINATION)}>Add Event</span> }
+                      </div>
+                      <div className="cost">
+                        $ {getTotalCost(examination)}
+                      </div> 
+                      <div></div>           
+                    </div>
+                    <div className="event-title-right"></div>
+                  </div>
+                }
+                key="2"
+              >
+                <div className="shedule-of-event-panel-body">
+                  {examination.sort((a, b) => {
+                    return onSort(a,b)
+                    })
+                    .map((evt, idx) => {
+                    return (
+                      <div className="event-item" key={`exam_${idx}`}>
+                        <div className="events-wrapper e-row">
+                          <div className={`${evt.Custom?"custom-event":""} my-event-td td f-3`}>
+                            {
+                              viewOnly?evt["Standard Event"]:(
+                                <>
+                                {
+                                  !evt.Custom?(
+                                    <Tooltip title={evt["Standard Event"]}>
+                                      {evt["Standard Event"]}
+                                    </Tooltip>
+                                  ):(
+                                    <>
+                                      <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(PHYSICAL_EXAMINATION,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,PHYSICAL_EXAMINATION,idx,"Standard Event")} />
+                                    </>
+                                  )                       
+                                }  
+                                </>
+                              )
+                            }                
+                          </div>
+                          <div className="endpoint-td td f-2">
+                          {
+                              viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
+                            } 
+                          </div>
+                          <div className="cost-td td f-2-small">
+                            {
+                              viewOnly?`$ ${evt["Dummy Cost"]}`:(
+                                <>
+                                {
+                                  !evt.Custom?`$${evt["Dummy Cost"]}`:<>$ <Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,PHYSICAL_EXAMINATION,idx,"Dummy Cost")} /></>
+                                  } 
+                                </>
+                              )
+                            } 
+                          </div>
+                          <div className="visits-td td f-1-small">{evt.totalVisit}</div>
+                        </div>
+                        <div className="status-row e-row">
+                          <div className="colunm td">
+                          <Tooltip  
+                            title={<ModalityList evt={evt}  category={PHYSICAL_EXAMINATION} isRowBatch={true} rowModality={rowModality}/>}
+                            color="#ffffff"  
+                            // visible={true}                        
+                            >
+                            <PlusCircleOutlined /> 
+                            </Tooltip> 
+
+                          </div>
+                          {/* {evt.condition.length > 0 &&
+                            evt.condition.map((con, idx) => {
+                              return (
+                                <div className="td" key={`exam_event_${idx}`}>
+                                  <span
+                                    className="incon-wrapper"
+                                    onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                  >
+                                    {con.checked ? (
+                                      <CheckCircleFilled />
+                                    ) : (
+                                      <CheckCircleTwoTone twoToneColor="#ddd" />
+                                    )}
+                                  </span>
+                                </div>
+                              );
+                            })} */}
+                            {evt.condition.length > 0 &&
+                              evt.condition.map((con, idx) => {
+                              const targetItem =modality_options.find(m=>m.name==con.modality)                        
+                              return (
+                                <div className="td" key={`exam_event_${idx}`}>
+                                  <span
+                                    className="incon-wrapper"
+                                    // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                  >
+                                    <Tooltip  
+                                      title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}
+                                      // trigger="click"
+                                      color="#ffffff"
+                                      // visible={}                                
+                                      >
+                                    {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                    </Tooltip>                                                                                     
+                                  </span>
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Panel>
+              <Panel
+                className="collapse-container"
+                forceRender={true}
+                header={
+                  <div className="event-panel-head">
+                    <div className="event-title e-row">
+                      <div className="name">
+                        <span style={{width: "186px", display:"inline-block"}}>
+                            {`${PROCEDURES} (${procedures.length})`}
+                        </span>
+                        {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,PROCEDURES)}>Add Event</span>}
+                      </div>
+                      <div className="cost">
+                        $ {getTotalCost(procedures)}
+                        </div>
+                      <div></div>
+                    </div>
+                    <div className="event-title-right"></div>
+                  </div>
+                }
+                key="3"
+              >
+                <div className="shedule-of-event-panel-body">
+                  {procedures.sort((a, b) => {
+                    return onSort(a,b)
+                  })
+                    .map((evt, idx) => {
+                    return (
+                      <div className="event-item" key={`procedure_${idx}`}>
+                        <div className="events-wrapper e-row">
+                          <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-3`}>
+                          {
+                            viewOnly?evt["Standard Event"]:(
+                              <>
+                                {
+                                !evt.Custom?(
+                                  <Tooltip title={evt["Standard Event"]}>
+                                    {evt["Standard Event"]}
+                                  </Tooltip>
+                                ):(
+                                  <>
+                                    <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(PROCEDURES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,PROCEDURES,idx,"Standard Event")} />
+                                  </>
+                                )                       
+                                }
+                              </>
+                            )
+                          }                            
+                          </div>
+                          <div className="endpoint-td td f-2">
+                          {
+                              viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
+                            } 
+                          </div>
+                          <div className="cost-td td f-2-small">
+                            {
+                              viewOnly?`$ ${evt["Dummy Cost"]}`:(
+                                <>
+                                {
+                                  !evt.Custom?`$${evt["Dummy Cost"]}`:<>$ <Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,PROCEDURES,idx,"Dummy Cost")} /></>
+                                  } 
+                                </>
+                              )
+                            }  
+                            
+                          </div>
+                          <div className="visits-td td f-1-small">{evt.totalVisit}</div>
+                        </div>
+                        <div className="status-row e-row">
+                          <div className="colunm td">
+                          <Tooltip  
+                            title={<ModalityList evt={evt}   category={PROCEDURES} isRowBatch={true} rowModality={rowModality}/>}
+                            color="#ffffff"  
+                            // visible={true}                        
+                            >
+                            <PlusCircleOutlined /> 
+                            </Tooltip> 
+                          </div>
+                          {evt.condition.length > 0 &&
+                            evt.condition.map((con, idx) => {
+                              const targetItem =modality_options.find(m=>m.name==con.modality)                        
+                              return (
+                                <div className="td" key={`procedure_event_${idx}`}>
+                                  <span
+                                    className="incon-wrapper"
+                                    // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                  >
+                                    <Tooltip  
+                                      title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}
+                                      // trigger="click"
+                                      color="#ffffff"
+                                      // visible={}                                
+                                      >
+                                    {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                    </Tooltip> 
+                                  </span>
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Panel>
+              <Panel
+                className="collapse-container"
+                forceRender={true}
+                header={
+                  <div className="event-panel-head">
+                    <div className="event-title e-row">
+                      <div className="name">
+                        <span style={{width: "186px", display:"inline-block"}}>
+                          {`${QUESTIONNAIRES} (${questionnaire.length})`}
+                        </span>
+                        {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,QUESTIONNAIRES)}>Add Event</span>}
+                      </div>
+                      <div className="cost">
+                        $ {getTotalCost(questionnaire)}                 
+                        </div>
+                      <div></div>
+                    </div>
+                    <div className="event-title-right"></div>
+                  </div>
+                }
+                key="4"
+              >
+                <div className="shedule-of-event-panel-body">
+                  {questionnaire.sort((a, b) => {
+                    return onSort(a,b)
+                    })
+                    .map((evt, idx) => {
+                    return (
+                      <div className="event-item" key={`question_${idx}`}>
+                        <div className="events-wrapper e-row">
+                          <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-3`}>
+                          {
+                            viewOnly?evt["Standard Event"]:(
+                              <>
+                                {
+                                  !evt.Custom?(
+                                    <Tooltip title={evt["Standard Event"]}>
+                                      {evt["Standard Event"]}
+                                    </Tooltip>
+                                  ):(
+                                    <>
+                                      <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(QUESTIONNAIRES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,QUESTIONNAIRES,idx,"Standard Event")} />
+                                    </>
+                                  )                       
+                                }  
+                              </>
+                            )
+                          }         
+                          </div>
+                          <div className="endpoint-td td f-2">
+                          {
+                              viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
+                            } 
+                          </div>
+                          <div className="cost-td td f-2-small">
+                            {
+                              viewOnly?`$ ${evt["Dummy Cost"]}`:(
+                                <>
+                                {
+                                  !evt.Custom?`$${evt["Dummy Cost"]}`:<>$ <Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,QUESTIONNAIRES,idx,"Dummy Cost")} /></>
+                                  } 
+                                </>
+                              )
+                            }  
+
+                          </div>
+                          <div className="visits-td td f-1-small">{evt.totalVisit}</div>
+                        </div>
+                        <div className="status-row e-row">
+                          <div className="colunm td">
+                          <Tooltip  
+                            title={<ModalityList evt={evt}  category={QUESTIONNAIRES} isRowBatch={true} rowModality={rowModality}/>}
+                            color="#ffffff"                       
+                            >
+                            <PlusCircleOutlined /> 
+                            </Tooltip> 
+                          </div>
+                          {evt.condition.length > 0 &&
+                            evt.condition.map((con, idx) => {
+                              const targetItem =modality_options.find(m=>m.name==con.modality)                        
+                              return (
+                                <div className="td" key={`question_event_${idx}`}>
+                                  <span
+                                    className="incon-wrapper"
+                                    // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                  >
+                                    <Tooltip  
+                                      title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}                            
+                                      color="#ffffff"                                               
+                                      >
+                                    {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                    </Tooltip> 
+                                  </span>
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Panel>
+              <Panel
+                className="collapse-container"
+                forceRender={true}
+                header={
+                  <div className="event-panel-head">
+                    <div className="event-title e-row">
+                      <div className="name">
+                        <span style={{width: "186px", display:"inline-block"}}>
+                          {`${STUDY_PROCEDURES} (${studyProcedures.length})`} 
+                        </span>
+                        {!viewOnly&&<span className="add-event" onClick={(e)=>onAddEvent(e,STUDY_PROCEDURES)}>Add Event</span>}
+                      </div>
+                      <div className="cost">
+                      $ {getTotalCost(studyProcedures)}   
+                        </div>
+                      <div></div>
+                    </div>
+                    <div className="event-title-right"></div>
+                  </div>
+                }
+                key="5"
+              >
+                <div className="shedule-of-event-panel-body">
+                  {studyProcedures.sort((a, b) => {
+                    return onSort(a,b)
+                    })
+                    .map((evt, idx) => {
+                    return (
+                      <div className="event-item" key={`study_${idx}`}>
+                        <div className="events-wrapper e-row">
+                          <div className={`${evt.Custom?"custom-event ":""}my-event-td td f-3`}>
+                          {
+                            viewOnly?evt["Standard Event"]:(
+                              <>
+                              {
+                                !evt.Custom?(
+                                  <Tooltip title={evt["Standard Event"]}>
+                                    {evt["Standard Event"]}
+                                  </Tooltip>
+                                ):(
+                                  <>
+                                    <MinusCircleOutlined onClick={()=>onRemoveCustomEvent(STUDY_PROCEDURES,idx)}/> <Input value={evt["Standard Event"]} onChange={(e)=>onCustomEventNameChange(e,STUDY_PROCEDURES,idx,"Standard Event")} />
+                                  </>
+                                )                       
+                              }   
+                              </>
+                            )
+                          }  
+                          
+                          </div>
+                          <div className="endpoint-td td f-2">
+                            {
+                              viewOnly? <span>{evt.endpoint}</span>: endpointsSelector(evt,idx)
+                            } 
+                          </div>
+                          <div className="cost-td td f-2-small">
+                            {
+                              viewOnly?`$ ${evt["Dummy Cost"]}`:(
+                                <>
+                                {
+                                  !evt.Custom?`$${evt["Dummy Cost"]}`:<>$ <Input value={evt["Dummy Cost"]} onChange={(e)=>onCustomEventNameChange(e,STUDY_PROCEDURES,idx,"Dummy Cost")} /></>
+                                  } 
+                                </>
+                              )
+                            }  
+                          </div>
+                          <div className="visits-td td f-1-small">{evt.totalVisit}</div>
+                        </div>
+                        <div className="status-row e-row">
+                          <div className="colunm td">
+                          <Tooltip  
+                            title={<ModalityList evt={evt}  category={STUDY_PROCEDURES} isRowBatch={true} rowModality={rowModality}/>}
+                            color="#ffffff"                         
+                            >
+                            <PlusCircleOutlined /> 
+                            </Tooltip> 
+                          </div>
+                          {evt.condition.length > 0 &&
+                            evt.condition.map((con, idx) => {
+                              const targetItem =modality_options.find(m=>m.name==con.modality)                        
+                              return (
+                                <div className="td" key={`study_event_${idx}`}>
+                                  <span
+                                    className="incon-wrapper"
+                                    onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                  >
+                                    <Tooltip  
+                                      title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}                          
+                                      color="#ffffff"                                           
+                                      >
+                                    {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                    </Tooltip> 
+                                  </span>
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Panel>
+            </Collapse>
+          </div>
+        </div>
+      )}
+      <div className="event-dashboard" style={{overflowX:"scroll",overflowY:"hidden"}}>
         <div className="dashboard-head">
           <div className="event-list-head">
             <div className="head-row" style={{position:"relative"}}>

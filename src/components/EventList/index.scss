@@ -9,6 +9,15 @@
        clear: both;
    }
 
+  .fix-left-column {
+    position: absolute;
+    top:55px;
+    left:0px;
+    z-index:99;
+    width: 634px;
+    background-color: #fff;
+
+  }
   .ant-collapse {
     border: none;
     width: 100%;
@@ -45,7 +54,6 @@
     }  
   }
   
-
   .container-top {
     padding: 10px;
     display: flex;
