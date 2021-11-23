@@ -119,7 +119,7 @@
           .column-action-container{
             display: flex;
             .td{
-              
+              height: 32px;
               border-right: 1px solid #eeeeee;
               padding: 5px 0;
               text-align: center;
@@ -359,6 +359,7 @@
     .ant-collapse-header {
       display: flex;
       align-items: center;
+      height: 35px;
     }
     .event-panel-head {
       display: flex;

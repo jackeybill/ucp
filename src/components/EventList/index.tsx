@@ -896,8 +896,8 @@ const EventList = (props) => {
         <div className="dashboard-head">
           <div className="event-list-head">
             <div className="head-row" style={{position:"relative"}}>
-              <div className="colunm-row e-row" style={{position:"absolute",left:"0",top:"0",width:"634px",height:"100%"}}></div>
-              <div className="visit-row e-row number" style={{paddingLeft:"634px"}}>
+              <div className="colunm-row e-row" style={{position:"absolute",left:"0",top:"0",width:"634px",height:"33px"}}></div>
+              <div className="visit-row e-row number" style={{paddingLeft:"634px",height:"33px"}}>
                 <div className="colunm td">Visits</div>
                 {
                   visits.map((v)=>{
@@ -908,7 +908,7 @@ const EventList = (props) => {
             </div>
 
             <div className="head-row" style={{position:"relative"}}>
-              <div className="colunm-row week-row e-row" style={{position:"absolute",left:"0",top:"0",width:"634px",height:"100%"}}>
+              <div className="colunm-row week-row e-row" style={{position:"absolute",left:"0",top:"0",width:"634px",height:"66px"}}>
                 <div className="f-2-new" style={{width:"233px", height:"100%",}}>My Events</div>
                 <div className="f-3" style={{width:"236.8px", height:"100%",}}>Trial Endpoint</div>
                 <div className="f-1-small sortable-item" style={{width:"110.8px", height:"100%",}}>Cost/patient  
@@ -919,7 +919,7 @@ const EventList = (props) => {
                 </div>
                 <div className="f-2-small" style={{width:"56.4px", height:"100%",}}>Total Visits</div>
               </div>
-              <div className="head-bottom-container" style={{paddingLeft:"634px"}}>
+              <div className="head-bottom-container" style={{paddingLeft:"634px",height: "66px"}}>
                 <div className="e-row number">
                   <div className="colunm td row-title" style={{flex:weeksFlex}}>Weeks</div>
                   <div className="week-row-wrapper" style={{flex:visitsFlex}}>
