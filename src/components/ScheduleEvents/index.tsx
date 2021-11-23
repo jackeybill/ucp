@@ -708,7 +708,7 @@ const ScheduleEvents = (props) => {
       var category = categoryList[categoryIndex]
       let tempTotalCost = 0
       for(const a in scheduleOfEvents[category].entities) {
-        labeTotalCost += Number(scheduleOfEvents[category].entities[a]['Dummy Cost']) * scheduleOfEvents[category].entities[a].totalVisit
+        tempTotalCost += Number(scheduleOfEvents[category].entities[a]['Dummy Cost']) * scheduleOfEvents[category].entities[a].totalVisit
         if(scheduleOfEvents[category].entities[a].condition.length > 0){
           for(let b = 0; b < scheduleOfEvents[category].entities[a].condition.length; b ++){
             if(scheduleOfEvents[category].entities[a].condition[b].modality!==""){
