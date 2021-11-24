@@ -93,14 +93,14 @@ const EventList = (props) => {
   );
 
   useEffect( ()=>{
-    const expandKeysTmp = expandKeys.slice(0)
+    // const expandKeysTmp = expandKeys.slice(0)
+    const expandKeysTmp = JSON.parse(JSON.stringify(expandKeys))
     if (props.labs && props.labs.length>0) expandKeysTmp.push('1')
     if (props.examination && props.examination.length>0) expandKeysTmp.push('2')
     if (props.procedures && props.procedures.length>0) expandKeysTmp.push('3')
     if (props.questionnaire && props.questionnaire.length>0) expandKeysTmp.push('4')
     if (props.studyProcedures && props.studyProcedures.length>0) expandKeysTmp.push('5')
-    setExpandKeys(expandKeysTmp)
-
+    setExpandKeys(Array.from(new Set(expandKeysTmp)))
   },[props.labs, props.examination, props.procedures,props.questionnaire,props.studyProcedures])
 
   useEffect(() => {
