@@ -536,6 +536,52 @@ export const getStandardEvents = async () => {
   return await response.json();
 }
 
+// get Enrollment Feasibility chart data
+export const getPatientFunnelData = async (demographicsElementsData, interventionElementsData, medConditionElementsData, labTestElementsData, excluDemographicsElementsData, excluMedConditionElementsData, excluInterventionElementsData, excluLabTestElementsData) => {
+  console.log({
+    "searchPatientFunnel": {
+      'Inclusion': {
+      'max_age': demographicsElementsData?demographicsElementsData[0].AGE.avg_upper:"",
+      'min_age': demographicsElementsData?demographicsElementsData[0].AGE.avg_lower:"",
+      medical_condition: medConditionElementsData,
+      labs: labTestElementsData
+      },
+      'Exclusion': {
+      'max_age': excluDemographicsElementsData?excluDemographicsElementsData[0].AGE.avg_upper:"",
+      'min_age': excluDemographicsElementsData?excluDemographicsElementsData[0].AGE.avg_lower:"",
+      medical_condition: excluMedConditionElementsData,
+      labs: excluLabTestElementsData
+      }
+      }
+    });
+  
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "searchPatientFunnel": {
+        'Inclusion': {
+        'max_age': demographicsElementsData?demographicsElementsData[0].AGE.avg_upper:"",
+        'min_age': demographicsElementsData?demographicsElementsData[0].AGE.avg_lower:"",
+        medical_condition: medConditionElementsData,
+        labs: labTestElementsData
+        },
+        'Exclusion': {
+        'max_age': excluDemographicsElementsData?excluDemographicsElementsData[0].AGE.avg_upper:"",
+        'min_age': excluDemographicsElementsData?excluDemographicsElementsData[0].AGE.avg_lower:"",
+        medical_condition: excluMedConditionElementsData,
+        labs: excluLabTestElementsData
+        }
+        }
+      })
+  })
+
+  return await response.json();
+}
+
 export const getEventAverageCost = async (nctids) => {
   const response = await fetch(criteria_url, {
     method: 'POST',

@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
 import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer} from "antd";
-import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getCriteriaLibByNctId, getSOAResource, getIEResource, getAverage} from "../../utils/ajax-proxy";
+import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getCriteriaLibByNctId, getSOAResource, getIEResource, getAverage, getPatientFunnelData} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
@@ -483,6 +483,7 @@ const ScenarioPage = (props) => {
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "rawValue": item.Value,
                 "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
@@ -501,6 +502,7 @@ const ScenarioPage = (props) => {
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "rawValue": item.Value,
                 "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
@@ -519,6 +521,7 @@ const ScenarioPage = (props) => {
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "rawValue": item.Value,
                 "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
@@ -537,6 +540,7 @@ const ScenarioPage = (props) => {
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "rawValue": item.Value,
                 "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
@@ -589,6 +593,7 @@ const ScenarioPage = (props) => {
                 // "Values": formatValue(item),
                 // "Timeframe": "-",
                 "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "rawValue": item.Value,
                 "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
@@ -609,6 +614,7 @@ const ScenarioPage = (props) => {
                 // "Values": formatValue(item),
                 // "Timeframe": "-",
                 "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "rawValue": item.Value,
                 "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
@@ -629,6 +635,7 @@ const ScenarioPage = (props) => {
                 // "Values": formatValue(item),
                 // "Timeframe": "-",
                 "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "rawValue": item.Value,
                 "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
@@ -649,6 +656,7 @@ const ScenarioPage = (props) => {
                 // "Values": formatValue(item),
                 // "Timeframe": "-",
                 "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+                "rawValue": item.Value,
                 "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
                 "Frequency":item.Frequency
               }
@@ -679,7 +687,6 @@ const ScenarioPage = (props) => {
         }))
         console.log("demographicsElementsTmp",demographicsElementsTmp);
         
-
         let medConditionElementsTmp = medConditionElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
@@ -1140,6 +1147,7 @@ const ScenarioPage = (props) => {
       ]
     };
 
+    // Enrollment Feasibility chart data
     const raceOption = {
       legend: {
         x:'40%',
@@ -1264,6 +1272,50 @@ const ScenarioPage = (props) => {
           }
       ]
   };
+
+  const getPatientFunnel = async () => {
+    let demographicsElementsData = []
+    let interventionElementsData = []
+    let medConditionElementsData = []
+    let labTestElementsData = []
+    let excluDemographicsElementsData = []
+    let excluMedConditionElementsData = []
+    let excluInterventionElementsData = []
+    let excluLabTestElementsData = []
+
+    function deepCopyAndTransfer (oldobj) {
+      if(oldobj === []) return oldobj
+      // deep copy
+      let criteriaData = JSON.parse(JSON.stringify(oldobj)).map((item)=>{
+        let resObj = {}
+        resObj[item["Eligibility Criteria"]] = item.rawValue
+        return resObj
+      })
+      return criteriaData
+    }
+
+    demographicsElementsData = deepCopyAndTransfer(demographicsElements)
+    interventionElementsData = deepCopyAndTransfer(interventionElements)
+    medConditionElementsData = deepCopyAndTransfer(medConditionElements)
+    labTestElementsData = deepCopyAndTransfer(labTestElements)
+    excluDemographicsElementsData = deepCopyAndTransfer(excluDemographicsElements)
+    demographicsElementsData = deepCopyAndTransfer(demographicsElements)
+    excluMedConditionElementsData = deepCopyAndTransfer(excluMedConditionElements)
+    excluLabTestElementsData = deepCopyAndTransfer(excluLabTestElements)
+
+    console.log("demographicsElementsData",demographicsElementsData);
+    console.log("medConditionElementsData",medConditionElementsData);
+    console.log("labTestElementsData",labTestElementsData);
+  
+    var resp = await getPatientFunnelData(demographicsElementsData, interventionElementsData, medConditionElementsData, labTestElementsData, excluDemographicsElementsData, excluMedConditionElementsData, excluInterventionElementsData, excluLabTestElementsData)
+
+    
+    if (resp.statusCode === 200) {
+      const response = JSON.parse(resp.body)
+      console.log("getPatientFunnelData:",response);
+      
+    }
+  }
 
   const switchTabkey = (key) =>{
     setActiveEnrollmentTabKey(key)
@@ -1988,6 +2040,7 @@ const ScenarioPage = (props) => {
     setActiveTabKey(activeKey)
     if(activeKey === '3'){
       keepUpdatedTrialInfo()
+      getPatientFunnel()
     }
   }
 
@@ -2816,7 +2869,7 @@ const ScenarioPage = (props) => {
                     </Col>
                     <Col flex="auto" className="enrollment-right-section">
                       <Row>
-                        <Col span={24}><span className="tab-title">Enrollment Feasibility</span></Col>
+                        <Col span={24}><span className="tab-title" onClick={()=>{getPatientFunnel()}}>Enrollment Feasibility</span></Col>
                       </Row>
                       <Row>
                         <Col span={24}>
