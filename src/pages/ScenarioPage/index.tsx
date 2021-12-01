@@ -23,6 +23,41 @@ const frequencyFilter = [5, 100]
 const inActiveChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA']
 const activeChartColors = ['#E53500', '#F27A26', '#F5924D', '#FBD0B3']
 const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2025}
+const colorList = {
+  'AMERICAN INDIAN/ALASKA NATIVE': '#E84F22', 
+  'ASIAN': '#F27A26', 
+  'BLACK/AFRICAN AMERICAN': '#F5924D', 
+  'HISPANIC/LATINO': '#FBD6BD', 
+  'MULTI RACE ETHNICITY': '#FDECE0', 
+  'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': '#d04a02', 
+  'OTHER': '#d4520d', 
+  'UNKNOWN': '#d85d1c', 
+  'WHITE': '#de6c30'
+}
+
+let totalData = {
+  name: 'Total',
+  type: 'bar',
+  stack: 'Total',
+  barGap: '-100%',
+  label: {
+      normal: {
+          show: true,
+          position: 'right',
+          textStyle: { color: '#000' },
+          formatter: function(v) {
+              return v.value
+          }
+      }
+  },
+  itemStyle: { 
+      normal: { 
+          color: 'rgba(128, 128, 128, 0)',
+          borderWidth: 1,
+      } 
+  },
+  data: []
+}
 
 
 const panelHeader = () => {
@@ -63,9 +98,103 @@ const initialScenario = {
     "Schedule of Events": {}
 };
 
-let resultdata = [80, 100, 200, 250, 300, 400, 475, 500];
-let femaleFreq = [20, 24, 25, 30, 35, 49, 52, 55];
-let raceFreq = [5, 8, 9, 10, 15, 20, 24, 25];
+
+const initResultOption = {
+  title : {
+    // text: chartTitle,
+    text: '',
+    x:'40%',
+    y:'top',
+    textStyle: {
+      fontSize: 18,
+        fontWeight: 'bold',
+      color: '#333'
+      },
+    // show: (!showLegend)
+  },
+  // legend: {
+  //   show: showLegend
+  // },
+  grid: {
+      left: '3%',
+      right: '4%',
+      top: '8%',
+      bottom: '3%',
+      containLabel: true
+  },
+  xAxis: {
+      type: 'value',
+      axisLabel: {
+          show: false
+      },
+      splitLine:{
+          show:false
+      },
+      axisLine: {
+        show: false
+      },
+      axisTick: {
+          show: false
+      },
+  },
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      // Use axis to trigger tooltip
+      type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+    },
+    formatter: function(params){
+      // eligible patient chart won't show percentage value
+      if(params.length == 2){
+        return params[0].axisValue + ': ' + params[0].value
+      }
+      let total = 0
+      for(let id=0; id<params.length; id ++){
+        if(params[id].seriesName != 'Total'){
+          total += params[id].value
+        }
+      }
+      let html=`
+        <div>
+        <div>${params[0].axisValue}</div>
+        <table>${params.map((item)=>
+          item.seriesName != 'Total'?`
+          <tr>
+            <td>
+              <span style="display:inline-block; width:10px;
+                height:10px;background-color:${item.color};"></span>
+                ${item.seriesName}:
+            </td>
+            <td><span style="margin-left:10px;">${item.value}</span></td>
+            <td>
+              <span style="margin-left:10px;">
+                ${item.value > 0? Math.floor(item.value/total*100)/100 + '%':0}
+            </span></td>
+          </tr>`:'').join("")}
+        </table>
+        <div>Total: ${total}</div>
+        </div>`
+      return html
+    }
+  },
+  yAxis: {
+      type: 'category',
+      axisLine: {
+          show: false
+      },
+      axisTick: {
+          show: false
+      },
+      // data: enrollCriteriaLib
+      data: []
+  },
+  // series: resultData
+  series: []
+};
+
+// let resultdata = [80, 100, 200, 250, 300, 400, 475, 500];
+// let femaleFreq = [20, 24, 25, 30, 35, 49, 52, 55];
+// let raceFreq = [5, 8, 9, 10, 15, 20, 24, 25];
 
 const CATEGORY_LABS = 'Labs';
 const CATEGORY_PHYSICAL_EXAMINATION = 'Physical Examination';
@@ -103,7 +232,7 @@ const ScenarioPage = (props) => {
     const [avgFileKey, setAvgFileKey] = useState('')
     const [scenarioType, setScenarioType] = useState('')
     const [activeEnrollmentTabKey, setActiveEnrollmentTabKey] = useState('1')
-    const [activeTabKey, setActiveTabKey] = useState('1')
+    const [activeTabKey, setActiveTabKey] = useState('3')
     const [processStep, setProcessStep] = useState(0)
     const [submitType, setSubmitType] = useState(0)
     const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState([])
@@ -113,11 +242,11 @@ const ScenarioPage = (props) => {
 
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
-    const [freqColor, setFreqColor] = useState('#EF7A57')
-    const [freqFontColor, setFreqFontColor] = useState('#fff')
-    const [totalData, setTotalData] = useState([])
-    const [freqData, setFreqdata] = useState([])
-    const [chartTitle, setChartTitle] = useState('Patients Eligible - 80K(16% of Dataset)')
+    // const [freqColor, setFreqColor] = useState('#EF7A57')
+    // const [freqFontColor, setFreqFontColor] = useState('#fff')
+    // const [totalData, setTotalData] = useState([])
+    // const [freqData, setFreqdata] = useState([])
+    const [chartTitle, setChartTitle] = useState('')
     const [visibleSOA, setVisibleSOA] = useState(false)
     const [soaResource, setSOAResource] = useState([])
     const [ieResource, setIEResource] = useState('')
@@ -211,6 +340,25 @@ const ScenarioPage = (props) => {
   let [excluInterventionTableData, setExcluInterventionTableData] = useState([])
   let [excluMedConditionTableData, setExcluMedConditionTableData] = useState([])
   let [excluLabTestTableData, setExcluLabTestTableData] = useState([])
+
+  const [eliPatient, setEliPatient] = useState(0)
+  const [rateEliPatient, setRateEliPatient] = useState('')
+  const [rateFeEliPatient, setRateFeEliPatient] = useState('')
+  const [enrollCriteriaLib, setEnrollCriteriaLib] = useState([])
+  // const [eliPatientData, setEliPatientData] = useState([])
+  // const [showLegend, setShowLegend] = useState(false)
+  const [resultData, setResultData] = useState([])
+  const [finalEthnicityData, setFinalEthnicityData] = useState([])
+  const [finalEthnicityCountData, setFinalEthnicityCountData] = useState([])
+  const [enrollmentData, setEnrollmentData] = useState({})
+
+  const [enrollResultOption, setEnrollResultOption] = useState(initResultOption)
+  // const [enrollResultOption, setEnrollResultOption] = useReducer(
+  //   (state, newState) => ({ ...state, ...newState }),
+  //   { ...initResultOption }
+  // );
+  
+  
     //------------------------EXCLUSION CRITERIA CONST END-----------------------------
   
     const getTrialById = async () => {
@@ -326,13 +474,6 @@ const ScenarioPage = (props) => {
       }
   };
     useEffect(() => {
-      let tempData = [];
-      for(let i = 0, l = resultdata.length; i < l; i++){
-          var num = resultdata[i] + 100;
-          tempData.push({'total': resultdata[i]+'K', 'value':num});
-      }
-      setTotalData(tempData)
-
       if(props.location.state.trial_id == undefined || props.location.state.trial_id == ''){
         props.history.push({pathname: '/trials'})
       } else {
@@ -340,6 +481,20 @@ const ScenarioPage = (props) => {
         getTrialById();
       }
     }, []);
+
+    useEffect(() => {
+      // if(props.location.state.trial_id == undefined || props.location.state.trial_id == ''){
+      //   props.history.push({pathname: '/trials'})
+      // } else {
+       
+      //   getTrialById();
+      // }
+      const tempOption = JSON.parse(JSON.stringify(enrollResultOption))
+      tempOption.title.text = chartTitle
+      tempOption.yAxis.data = enrollCriteriaLib
+      tempOption.series = resultData
+      setEnrollResultOption(tempOption)
+    }, [chartTitle, enrollCriteriaLib, resultData]);
 
     useEffect(() => {
 
@@ -1157,20 +1312,21 @@ const ScenarioPage = (props) => {
         textStyle: {
           fontSize: 9
         },
-        formatter: function(name) {
-          let data = raceOption.series[0].data;
-          let total = 0;
-          let tarValue = 0;
-          for (let i = 0, l = data.length; i < l; i++) {
-              total += data[i].value;
-              if (data[i].name == name) {
-                  tarValue = data[i].value;
-              }
-          }
-          let p = (tarValue / total * 100).toFixed(2);
-          return name + ' - ' + p + '%';
-        },
-        data: ['Caucasian','Hispanic','Asian','African American']
+        // formatter: function(name) {
+        //   return name
+          // let data = raceOption.series[0].data;
+          // let total = 0;
+          // let tarValue = 0;
+          // for (let i = 0, l = data.length; i < l; i++) {
+          //     total += data[i].value;
+          //     if (data[i].name == name) {
+          //         tarValue = data[i].value;
+          //     }
+          // }
+          // let p = (tarValue / total * 100).toFixed(2);
+          // return name + ' - ' + p + '%';
+        // },
+        data: finalEthnicityData
       },
       series: [{
         type: 'pie',
@@ -1181,97 +1337,105 @@ const ScenarioPage = (props) => {
           show: false,
         },
         color:['#F27A26', '#F5924D', '#FBD6BD', '#FDECE0'],
-        data: [
-          {value: 75, name: 'Caucasian'},
-          {value: 12, name: 'Hispanic'},
-          {value: 8, name: 'Asian'},
-          {value: 5, name: 'African American'}
-        ]
+        data: finalEthnicityCountData
+        // [
+        //   {value: 75, name: 'Caucasian'},
+        //   {value: 12, name: 'Hispanic'},
+        //   {value: 8, name: 'Asian'},
+        //   {value: 5, name: 'African American'}
+        // ]
       }]
     };
 
-    const resultOption = {
-      title : {
-        text: chartTitle,
-        x:'40%',
-        y:'top',
-        textStyle: {
-          fontSize: 18,
-          fontWeight: 'bold',
-          color: '#333'
-        }
-      },
-      grid: {
-          left: '3%',
-          right: '4%',
-          top: '8%',
-          bottom: '3%',
-          containLabel: true
-      },
-      xAxis: {
-          type: 'value',
-          axisLabel: {
-              show: false
-          },
-          splitLine:{
-              show:false
-          },
-          axisLine: {
-            show: false
-          },
-          axisTick: {
-              show: false
-          },
-      },
-      yAxis: {
-          type: 'category',
-          axisLine: {
-              show: false
-          },
-          axisTick: {
-              show: false
-          },
-          data: [
-          'HbA1c - ≧ 7.0% and ≦ 9.0%',    
-          'Fasting C-peptide - ≧ 0.8 ng/mL', 
-          'TSH - Normal or clinically euthyroid', 
-          'Meformin - Stable dose', 
-          'Type 2 Diabetes', 
-          'Stable body weight - Not charged by more than 5%', 
-          'Gender - Men or nonpregnant women', 
-          'Age - >18']
-      },
-      series: [{
-              name: 'Direct',
-              type: 'bar',
-              stack: 'total',
-              color: freqColor,
-              label: {
-                  show: true,
-                  formatter: function(p) {
-                      return p.data.freq+'%'
-                  },
-                  position: 'insideRight',
-                  color: freqFontColor
-              },
-              data: freqData
-          }, {
-              name: 'total',
-              type: 'bar',
-              stack: 'total',
-              barWidth:'20px',
-              color: '#E84F22',
-              label: {
-                  show: true,
-                  formatter: function(p) {
-                      return p.data.total
-                  },
-                  position: 'insideRight'
-              },
-              data: totalData
-          }
-      ]
-  };
+  //   const resultOption = {
+  //     title : {
+  //       text: chartTitle,
+  //       x:'40%',
+  //       y:'top',
+  //       textStyle: {
+  //         fontSize: 18,
+  //         fontWeight: 'bold',
+  //         color: '#333'
+  //       },
+  //       // show: (!showLegend)
+  //     },
+  //     // legend: {
+  //     //   show: showLegend
+  //     // },
+  //     grid: {
+  //         left: '3%',
+  //         right: '4%',
+  //         top: '8%',
+  //         bottom: '3%',
+  //         containLabel: true
+  //     },
+  //     xAxis: {
+  //         type: 'value',
+  //         axisLabel: {
+  //             show: false
+  //         },
+  //         splitLine:{
+  //             show:false
+  //         },
+  //         axisLine: {
+  //           show: false
+  //         },
+  //         axisTick: {
+  //             show: false
+  //         },
+  //     },
+  //     tooltip: {
+  //       trigger: 'axis',
+  //       axisPointer: {
+  //         // Use axis to trigger tooltip
+  //         type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+  //       },
+  //       formatter: function(params){
+  //         // eligible patient chart won't show percentage value
+  //         if(params.length == 2){
+  //           return params[0].axisValue + ': ' + params[0].value
+  //         }
+  //         let total = 0
+  //         for(let id=0; id<params.length; id ++){
+  //           if(params[id].seriesName != 'Total'){
+  //             total += params[id].value
+  //           }
+  //         }
+  //         let html=`
+  //           <div>
+  //           <div>${params[0].axisValue}</div>
+  //           <table>${params.map((item)=>
+  //             item.seriesName != 'Total'?`
+  //             <tr>
+  //               <td>
+  //                 <span style="display:inline-block; width:10px;
+  //                   height:10px;background-color:${item.color};"></span>
+  //                   ${item.seriesName}:
+  //               </td>
+  //               <td><span style="margin-left:10px;">${item.value}</span></td>
+  //               <td>
+  //                 <span style="margin-left:10px;">
+  //                   ${item.value > 0? Math.floor(item.value/total*100)/100 + '%':0}
+  //               </span></td>
+  //             </tr>`:'').join("")}
+  //           </table>
+  //           <div>Total: ${total}</div>
+  //           </div>`
+  //         return html
+  //       }
+  //     },
+  //     yAxis: {
+  //         type: 'category',
+  //         axisLine: {
+  //             show: false
+  //         },
+  //         axisTick: {
+  //             show: false
+  //         },
+  //         data: enrollCriteriaLib
+  //     },
+  //     series: resultData
+  //   };
 
   const getPatientFunnel = async () => {
     let demographicsElementsData = []
@@ -1306,65 +1470,151 @@ const ScenarioPage = (props) => {
     console.log("demographicsElementsData",demographicsElementsData);
     console.log("medConditionElementsData",medConditionElementsData);
     console.log("labTestElementsData",labTestElementsData);
-  
-    var resp = await getPatientFunnelData(demographicsElementsData, interventionElementsData, medConditionElementsData, labTestElementsData, excluDemographicsElementsData, excluMedConditionElementsData, excluInterventionElementsData, excluLabTestElementsData)
+    
+    var resp = {'total_patient': 30761, 'eli_patient': 26, 'rate_eli_patient': '0.08%', 'fe_eli_patient': 10, 'rate_fe_eli_patient': '38.46%', 'final_ethnicity': ['ASIAN', 'WHITE', 'BLACK/AFRICAN AMERICAN', 'UNKNOWN'], 'final_ethnicity_count': [1, 19, 1, 5], 'final_ethnicity_rate': [2.55, 67.5, 3.85, 11.62], 'criteria': ['age', 'Glucose', 'Hemoglobin', 'Type 1 diabetes mellitus', 'Blood glucose increased', 'Obesity', 'Endocrine disorder', 'Hypertension', 'Renal disorder', 'Autoimmune disorder', 'Systemic lupus erythematosus', 'Rheumatoid arthritis', 'Neuroleptic malignant syndrome', 'Potassium', 'Sodium'], 'count': [11549, 4151, 4149, 4141, 4140, 3733, 3731, 3728, 3631, 3630, 3611, 3557, 3554, 3554, 26], 'count_females': [4785, 1750, 1750, 1747, 1747, 1540, 1539, 1538, 1514, 1514, 1497, 1461, 1460, 1460, 10], 'percent_females': [41.43, 42.16, 42.18, 42.19, 42.2, 41.25, 41.25, 41.26, 41.7, 41.71, 41.46, 41.07, 41.08, 41.08, 38.46], 'percent_ASIAN': [2.55, 2.55, 2.55, 2.56, 2.56, 2.81, 2.81, 2.82, 2.89, 2.89, 2.91, 2.92, 2.93, 2.93, 3.85], 'percent_WHITE': [70.59, 67.53, 67.53, 67.57, 67.56, 67.56, 67.54, 67.54, 67.61, 67.6, 67.63, 67.53, 67.5, 67.5, 73.08], 'percent_BLACK/AFRICAN AMERICAN': [8.23, 10.26, 10.27, 10.24, 10.24, 9.78, 9.78, 9.79, 9.67, 9.67, 9.58, 9.64, 9.65, 9.65, 3.85], 'percent_UNKNOWN': [11.62, 11.68, 11.69, 11.66, 11.67, 11.81, 11.82, 11.8, 11.81, 11.82, 11.85, 11.92, 11.93, 11.93, 19.23], 'percent_OTHER': [2.55, 2.77, 2.77, 2.78, 2.78, 2.89, 2.89, 2.9, 2.89, 2.89, 2.91, 2.81, 2.81, 2.81, 0.0], 'percent_HISPANIC/LATINO': [4.12, 4.87, 4.84, 4.85, 4.86, 4.8, 4.8, 4.8, 4.82, 4.82, 4.82, 4.86, 4.87, 4.87, 0.0], 'percent_MULTI RACE ETHNICITY': [0.23, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.19, 0.19, 0.19, 0.2, 0.2, 0.2, 0.0], 'percent_AMERICAN INDIAN/ALASKA NATIVE': [0.07, 0.07, 0.07, 0.07, 0.07, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.0], 'percent_NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': [0.03, 0.02, 0.02, 0.02, 0.02, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.0], 'ASIAN': [295, 106, 106, 106, 106, 105, 105, 105, 105, 105, 105, 104, 104, 104, 1], 'WHITE': [8153, 2803, 2802, 2798, 2797, 2522, 2520, 2518, 2455, 2454, 2442, 2402, 2399, 2399, 19], 'BLACK/AFRICAN AMERICAN': [951, 426, 426, 424, 424, 365, 365, 365, 351, 351, 346, 343, 343, 343, 1], 'UNKNOWN': [1342, 485, 485, 483, 483, 441, 441, 440, 429, 429, 428, 424, 424, 424, 5], 'OTHER': [294, 115, 115, 115, 115, 108, 108, 108, 105, 105, 105, 100, 100, 100, 0], 'HISPANIC/LATINO': [476, 202, 201, 201, 201, 179, 179, 179, 175, 175, 174, 173, 173, 173, 0], 'MULTI RACE ETHNICITY': [26, 10, 10, 10, 10, 9, 9, 9, 7, 7, 7, 7, 7, 7, 0], 'AMERICAN INDIAN/ALASKA NATIVE': [8, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0], 'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]}
+    setChartTitle('Patients Eligible - ' + resp['eli_patient'] + '(' + resp['rate_eli_patient'] + ' of Dataset)')
+    setEliPatient(resp['eli_patient'])
+    setRateEliPatient(resp['rate_eli_patient'])
+    setRateFeEliPatient(resp['rate_fe_eli_patient'])
+    setEnrollCriteriaLib(resp['criteria'])
+    setFinalEthnicityData(resp['final_ethnicity'])
+    setFinalEthnicityCountData(resp['final_ethnicity_rate'])
+    // setShowLegend(false)
+    setEnrollmentData(resp)
+
+    // const tempSeriesData = [...resultData]
+    // tempSeriesData.length = 0
+    const tempSeriesData = []
+    tempSeriesData.push({
+      name: 'Eligible Patient',
+      type: 'bar',
+      stack: 'total',
+      barWidth:'20px',
+      color: '#E84F22',
+      label: {
+          show: false,
+          formatter: function(p) {
+              return p.data
+          },
+          position: 'insideRight'
+      },
+      data: resp['count']
+    })
+    totalData['data'] = resp['count']
+    tempSeriesData.push(totalData)
+    console.log(tempSeriesData.length)
+    setResultData([...tempSeriesData])
+
+    // var resp = await getPatientFunnelData(demographicsElementsData, interventionElementsData, medConditionElementsData, labTestElementsData, excluDemographicsElementsData, excluMedConditionElementsData, excluInterventionElementsData, excluLabTestElementsData)
 
     
-    if (resp.statusCode === 200) {
-      const response = JSON.parse(resp.body)
-      console.log("getPatientFunnelData:",response);
+    // if (resp.statusCode === 200) {
+    //   const response = JSON.parse(resp.body)
+    //   console.log("getPatientFunnelData:",response);
       
-    }
+    // }
   }
 
-  const switchTabkey = (key) =>{
+  const switchTabkey = async (key) =>{
+    // const tempSeriesData = [...resultData]
+    // tempSeriesData.length = 0
+    // const tempSeriesData = [...resultData]
+    // while(tempSeriesData.length > 0){
+    //   tempSeriesData.splice(0, 1)
+    // }
+    
     setActiveEnrollmentTabKey(key)
     if(key === '1'){
-      setChartTitle('Patients Eligible - 80K(16% of Dataset)')
-      let tempData = [];
-      for(let i = 0, l = resultdata.length; i < l; i++){
-          var num = resultdata[i] + 100;
-          tempData.push({'total': resultdata[i]+'K', 'value':num});
-      }
-      setTotalData(tempData)
-      setFreqdata([])
+      // setShowLegend(false)
+      const tempSeriesData = []
+      setChartTitle('Patients Eligible - ' + eliPatient + '(' + rateEliPatient + ' of Dataset)')
+      tempSeriesData.push({
+        name: 'Eligible Patient',
+        type: 'bar',
+        stack: 'total',
+        // barWidth:'20px',
+        color: '#E84F22',
+        label: {
+            show: false,
+            formatter: function(p) {
+                return p.data
+            },
+            position: 'insideRight'
+        },
+        data: enrollmentData['count']
+      })
+      totalData['data'] = enrollmentData['count']
+    tempSeriesData.push(totalData)
+    console.log(tempSeriesData.length)
+    setResultData(tempSeriesData)
     } else if(key === '2'){
-      setChartTitle('Female patients eligible - 20%')
-      setFreqColor('#EF7A57')
-      setFreqFontColor('#fff')
-
-      let tempData = [];
-      for(let i = 0, l = resultdata.length; i < l; i++){
-          var num = resultdata[i] * (100 - femaleFreq[i]) / 100;
-          tempData.push({'total': resultdata[i]+'K', 'value':num});
-      }
-      setTotalData(tempData)
-
-      let tempData2 = [];
-      for(let i = 0, l = resultdata.length; i < l; i++){
-          var num = resultdata[i] * femaleFreq[i] / 100;
-          tempData2.push({'freq': femaleFreq[i], 'value' : num+100});
-      }
-      setFreqdata(tempData2)
+      // setShowLegend(true)
+      const tempSeriesData1 = []
+      setChartTitle('Female patients eligible - ' + enrollmentData['rate_fe_eli_patient'])
+      const feEliPatient = enrollmentData['count_females']
+      let mEliPatient = feEliPatient.map((item, id) =>{
+        return enrollmentData['count'][id] - item
+      })
+      tempSeriesData1.push({
+          name: 'Female',
+          type: 'bar',
+          stack: 'total',
+          color: '#EF7A57',
+          label: {
+            show: false
+          },
+          emphasis: {
+            focus: 'series'
+          },
+          data: feEliPatient
+        })
+        tempSeriesData1.push({
+          name: 'Male',
+          type: 'bar',
+          stack: 'total',
+          color: '#E84F22',
+          label: {
+            show: false
+          },
+          emphasis: {
+            focus: 'series'
+          },
+          data: mEliPatient
+      })
+      totalData['data'] = enrollmentData['count']
+      tempSeriesData1.push(totalData)
+      console.log(tempSeriesData1.length)
+    setResultData(tempSeriesData1)
     } else {
-      setChartTitle('Race & Ethnicity - Afican American - 5%')
-      setFreqColor('#FDECE0')
-      setFreqFontColor('#333')
-
-      let tempData = [];
-      for(let i = 0, l = resultdata.length; i < l; i++){
-          var num = resultdata[i] * (100 - raceFreq[i]) / 100;
-          tempData.push({'total': resultdata[i]+'K', 'value':num});
+      // setShowLegend(true)
+      const tempSeriesData2 = []
+      const defaultEth = enrollmentData['final_ethnicity'][0]
+      const defaultEthRate = enrollmentData['final_ethnicity_rate'][0]
+      setChartTitle('Race & Ethnicity - ' + defaultEth + ' - ' + defaultEthRate + '%')
+      for(const ckey in enrollmentData){
+        if (ckey.startsWith('percent_') && ckey != 'percent_females'){
+          const cnKey = ckey.replace('percent_', '')
+          tempSeriesData2.push({
+            name: cnKey,
+            type: 'bar',
+            stack: 'total',
+            // color: colorList[cnKey],
+            label: {
+              show: false
+            },
+            emphasis: {
+              focus: 'series'
+            },
+            data: enrollmentData[cnKey]
+          })
+        }
       }
-      setTotalData(tempData)
-
-      let tempData2 = [];
-      for(let i = 0, l = resultdata.length; i < l; i++){
-          var num = resultdata[i] * raceFreq[i] / 100;
-          tempData2.push({'freq': raceFreq[i], 'value' : num+100});
-      }
-      setFreqdata(tempData2)
+      totalData['data'] = enrollmentData['count']
+      tempSeriesData2.push(totalData)
+      console.log(tempSeriesData2.length)
+    setResultData(tempSeriesData2)
     }
+    
   }
     
     const handleCancel = () => {
@@ -2888,8 +3138,8 @@ const ScenarioPage = (props) => {
                           <Row><Col className="tab-item">
                             <Row className="tab-desc">Patients Eligible&nbsp;
                               {activeEnrollmentTabKey === '1'?(<CaretRightOutlined />):(<></>)}</Row>
-                            <Row className="sub-tab-title">80K</Row>
-                            <Row className="tab-desc">16% of Dataset</Row>
+                            <Row className="sub-tab-title">{eliPatient}</Row>
+                            <Row className="tab-desc">{rateEliPatient} of Dataset</Row>
                           </Col></Row>
                         </Col>
                         <Col span={1}></Col>
@@ -2897,7 +3147,7 @@ const ScenarioPage = (props) => {
                           <Row><Col className="tab-item" span={24}>
                             <Row className="tab-desc">Female patients eligible&nbsp;
                                 {activeEnrollmentTabKey === '2'?(<CaretRightOutlined />):(<></>)}</Row>
-                            <Row className="sub-tab-title">20%</Row>
+                            <Row className="sub-tab-title">{rateFeEliPatient}</Row>
                           </Col></Row>
                         </Col>
                         <Col span={1}></Col>
@@ -2911,7 +3161,8 @@ const ScenarioPage = (props) => {
                       </Row>
                       <Row>
                         <Col span={24} className="result-chart">
-                          <ReactECharts option={resultOption} style={{ height: 350}}></ReactECharts>
+                          {/* <ReactECharts option={resultOption} style={{ height: 350}}></ReactECharts> */}
+                          <ReactECharts option={enrollResultOption} style={{ height: 600}}></ReactECharts>
                         </Col>
                       </Row>
                     </Col>
