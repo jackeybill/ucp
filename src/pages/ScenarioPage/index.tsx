@@ -8,7 +8,7 @@ import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
-
+// import copy from 'copy';
 import CriteriaOption from "../../components/CriteriaOption";
 import EditTable from "../../components/EditTable";
 import SelectableTable from "../../components/SelectableTable";
@@ -24,41 +24,16 @@ const inActiveChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA']
 const activeChartColors = ['#E53500', '#F27A26', '#F5924D', '#FBD0B3']
 const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2025}
 const colorList = {
-  'AMERICAN INDIAN/ALASKA NATIVE': '#E84F22', 
-  'ASIAN': '#F27A26', 
-  'BLACK/AFRICAN AMERICAN': '#F5924D', 
-  'HISPANIC/LATINO': '#FBD6BD', 
-  'MULTI RACE ETHNICITY': '#FDECE0', 
-  'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': '#d04a02', 
-  'OTHER': '#d4520d', 
-  'UNKNOWN': '#d85d1c', 
-  'WHITE': '#de6c30'
+  'AMERICAN INDIAN/ALASKA NATIVE': '#CA4A04', 
+  'ASIAN': '#E84F22', 
+  'BLACK/AFRICAN AMERICAN': '#F27A26', 
+  'HISPANIC/LATINO': '#E68700', 
+  'MULTI RACE ETHNICITY': '#F5924D', 
+  'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': '#CA4A044D', 
+  'OTHER': '#FBD6BD', 
+  'UNKNOWN': '#FBD0B3', 
+  'WHITE': '#FDECE0'
 }
-
-let totalData = {
-  name: 'Total',
-  type: 'bar',
-  stack: 'Total',
-  barGap: '-100%',
-  label: {
-      normal: {
-          show: true,
-          position: 'right',
-          textStyle: { color: '#000' },
-          formatter: function(v) {
-              return v.value
-          }
-      }
-  },
-  itemStyle: { 
-      normal: { 
-          color: 'rgba(128, 128, 128, 0)',
-          borderWidth: 1,
-      } 
-  },
-  data: []
-}
-
 
 const panelHeader = () => {
     return (
@@ -97,104 +72,6 @@ const initialScenario = {
     "Enrollment Feasibility": {},
     "Schedule of Events": {}
 };
-
-
-const initResultOption = {
-  title : {
-    // text: chartTitle,
-    text: '',
-    x:'40%',
-    y:'top',
-    textStyle: {
-      fontSize: 18,
-        fontWeight: 'bold',
-      color: '#333'
-      },
-    // show: (!showLegend)
-  },
-  // legend: {
-  //   show: showLegend
-  // },
-  grid: {
-      left: '3%',
-      right: '4%',
-      top: '8%',
-      bottom: '3%',
-      containLabel: true
-  },
-  xAxis: {
-      type: 'value',
-      axisLabel: {
-          show: false
-      },
-      splitLine:{
-          show:false
-      },
-      axisLine: {
-        show: false
-      },
-      axisTick: {
-          show: false
-      },
-  },
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      // Use axis to trigger tooltip
-      type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
-    },
-    formatter: function(params){
-      // eligible patient chart won't show percentage value
-      if(params.length == 2){
-        return params[0].axisValue + ': ' + params[0].value
-      }
-      let total = 0
-      for(let id=0; id<params.length; id ++){
-        if(params[id].seriesName != 'Total'){
-          total += params[id].value
-        }
-      }
-      let html=`
-        <div>
-        <div>${params[0].axisValue}</div>
-        <table>${params.map((item)=>
-          item.seriesName != 'Total'?`
-          <tr>
-            <td>
-              <span style="display:inline-block; width:10px;
-                height:10px;background-color:${item.color};"></span>
-                ${item.seriesName}:
-            </td>
-            <td><span style="margin-left:10px;">${item.value}</span></td>
-            <td>
-              <span style="margin-left:10px;">
-                ${item.value > 0? Math.floor(item.value/total*100)/100 + '%':0}
-            </span></td>
-          </tr>`:'').join("")}
-        </table>
-        <div>Total: ${total}</div>
-        </div>`
-      return html
-    }
-  },
-  yAxis: {
-      type: 'category',
-      axisLine: {
-          show: false
-      },
-      axisTick: {
-          show: false
-      },
-      // data: enrollCriteriaLib
-      data: []
-  },
-  // series: resultData
-  series: []
-};
-
-// let resultdata = [80, 100, 200, 250, 300, 400, 475, 500];
-// let femaleFreq = [20, 24, 25, 30, 35, 49, 52, 55];
-// let raceFreq = [5, 8, 9, 10, 15, 20, 24, 25];
 
 const CATEGORY_LABS = 'Labs';
 const CATEGORY_PHYSICAL_EXAMINATION = 'Physical Examination';
@@ -246,13 +123,12 @@ const ScenarioPage = (props) => {
     // const [freqFontColor, setFreqFontColor] = useState('#fff')
     // const [totalData, setTotalData] = useState([])
     // const [freqData, setFreqdata] = useState([])
-    const [chartTitle, setChartTitle] = useState('')
     const [visibleSOA, setVisibleSOA] = useState(false)
     const [soaResource, setSOAResource] = useState([])
     const [ieResource, setIEResource] = useState('')
-    const [avgResource, setAvgResource] = useState(false)
-    const [inclusionResourceAvg, setInclusionResourceAvg] = useState([])
-    const [exclusionResourceAvg, setExclusionResourceAvg] = useState([])
+    // const [avgResource, setAvgResource] = useState(false)
+    // const [inclusionResourceAvg, setInclusionResourceAvg] = useState([])
+    // const [exclusionResourceAvg, setExclusionResourceAvg] = useState([])
 
     //------------------------INCLUSION CRITERIA CONST START-----------------------------
     //Original libs for filter purpose
@@ -345,20 +221,18 @@ const ScenarioPage = (props) => {
   const [rateEliPatient, setRateEliPatient] = useState('')
   const [rateFeEliPatient, setRateFeEliPatient] = useState('')
   const [enrollCriteriaLib, setEnrollCriteriaLib] = useState([])
-  // const [eliPatientData, setEliPatientData] = useState([])
-  // const [showLegend, setShowLegend] = useState(false)
-  const [resultData, setResultData] = useState([])
   const [finalEthnicityData, setFinalEthnicityData] = useState([])
-  const [finalEthnicityCountData, setFinalEthnicityCountData] = useState([])
-  const [enrollmentData, setEnrollmentData] = useState({})
+  const [ethLegendColor, setEthLegendColor] = useState([])
+  // const [enrollmentData, setEnrollmentData] = useState({})
 
-  const [enrollResultOption, setEnrollResultOption] = useState(initResultOption)
-  // const [enrollResultOption, setEnrollResultOption] = useReducer(
-  //   (state, newState) => ({ ...state, ...newState }),
-  //   { ...initResultOption }
-  // );
+  const [eliPatientChartTitle, setEliPatientChartTitle] = useState('')
+  const [eliPatientResultData, setEliPatientResultData] = useState([])
+  const [fePatientChartTitle, setFePatientChartTitle] = useState('')
+  const [fePatientResultData, setFePatientResultData] = useState([])
+  const [ethPatientChartTitle, setEthPatientChartTitle] = useState('')
+  const [ethPatientResultData, setEthPatientResultData] = useState([])
   
-  
+  const [times, setTimes] = useState(1)
     //------------------------EXCLUSION CRITERIA CONST END-----------------------------
   
     const getTrialById = async () => {
@@ -481,20 +355,6 @@ const ScenarioPage = (props) => {
         getTrialById();
       }
     }, []);
-
-    useEffect(() => {
-      // if(props.location.state.trial_id == undefined || props.location.state.trial_id == ''){
-      //   props.history.push({pathname: '/trials'})
-      // } else {
-       
-      //   getTrialById();
-      // }
-      const tempOption = JSON.parse(JSON.stringify(enrollResultOption))
-      tempOption.title.text = chartTitle
-      tempOption.yAxis.data = enrollCriteriaLib
-      tempOption.series = resultData
-      setEnrollResultOption(tempOption)
-    }, [chartTitle, enrollCriteriaLib, resultData]);
 
     useEffect(() => {
 
@@ -1304,138 +1164,322 @@ const ScenarioPage = (props) => {
 
     // Enrollment Feasibility chart data
     const raceOption = {
-      legend: {
-        x:'40%',
-        y:'10%',
-        orient: 'vertical',
-        itemHeight: 7,
-        textStyle: {
-          fontSize: 9
-        },
-        // formatter: function(name) {
-        //   return name
-          // let data = raceOption.series[0].data;
-          // let total = 0;
-          // let tarValue = 0;
-          // for (let i = 0, l = data.length; i < l; i++) {
-          //     total += data[i].value;
-          //     if (data[i].name == name) {
-          //         tarValue = data[i].value;
-          //     }
-          // }
-          // let p = (tarValue / total * 100).toFixed(2);
-          // return name + ' - ' + p + '%';
-        // },
-        data: finalEthnicityData
+      tooltip: {
+        trigger: 'item',
+        formatter: '{b} - {c} - {d}%'
       },
-      series: [{
-        type: 'pie',
-        center: ['20%', '45%'],
-        radius: ['30%', '70%'],
-        avoidLabelOverlap: false,
-        label: {
-          show: false,
-        },
-        color:['#F27A26', '#F5924D', '#FBD6BD', '#FDECE0'],
-        data: finalEthnicityCountData
-        // [
-        //   {value: 75, name: 'Caucasian'},
-        //   {value: 12, name: 'Hispanic'},
-        //   {value: 8, name: 'Asian'},
-        //   {value: 5, name: 'African American'}
-        // ]
-      }]
+      legend: {
+        x: '40%',
+        y: '10%',
+        orient: 'vertical',
+      itemHeight: 7,
+      textStyle: {
+        fontSize: 9
+      },
+        formatter: function(name) {
+          let data = raceOption.series[0].data;
+          let total = 0
+          for(const d in data){
+            total += data[d].value
+          }
+          let p = 0
+          for (let i = 0, l = data.length; i < l; i++) {
+              if (data[i].name == name) {
+                if(data[i].value >0){
+                  const p = (data[i].value/total * 100).toFixed(2)
+                  return name + ' - ' + p + '%';
+                }else{
+                  return name + ' - 0'
+                }
+              }
+          }
+        }
+      },
+      series: [
+        {
+          name: 'Race & Ethnicity',
+          type: 'pie',
+          center: ['20%', '45%'],
+          radius: ['30%', '70%'],
+          avoidLabelOverlap: false,
+          label: {
+            show: false
+          },
+          color: ethLegendColor,
+          data: finalEthnicityData
+        }
+      ]
     };
 
-  //   const resultOption = {
-  //     title : {
-  //       text: chartTitle,
-  //       x:'40%',
-  //       y:'top',
-  //       textStyle: {
-  //         fontSize: 18,
-  //         fontWeight: 'bold',
-  //         color: '#333'
-  //       },
-  //       // show: (!showLegend)
-  //     },
-  //     // legend: {
-  //     //   show: showLegend
-  //     // },
-  //     grid: {
-  //         left: '3%',
-  //         right: '4%',
-  //         top: '8%',
-  //         bottom: '3%',
-  //         containLabel: true
-  //     },
-  //     xAxis: {
-  //         type: 'value',
-  //         axisLabel: {
-  //             show: false
-  //         },
-  //         splitLine:{
-  //             show:false
-  //         },
-  //         axisLine: {
-  //           show: false
-  //         },
-  //         axisTick: {
-  //             show: false
-  //         },
-  //     },
-  //     tooltip: {
-  //       trigger: 'axis',
-  //       axisPointer: {
-  //         // Use axis to trigger tooltip
-  //         type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
-  //       },
-  //       formatter: function(params){
-  //         // eligible patient chart won't show percentage value
-  //         if(params.length == 2){
-  //           return params[0].axisValue + ': ' + params[0].value
-  //         }
-  //         let total = 0
-  //         for(let id=0; id<params.length; id ++){
-  //           if(params[id].seriesName != 'Total'){
-  //             total += params[id].value
-  //           }
-  //         }
-  //         let html=`
-  //           <div>
-  //           <div>${params[0].axisValue}</div>
-  //           <table>${params.map((item)=>
-  //             item.seriesName != 'Total'?`
-  //             <tr>
-  //               <td>
-  //                 <span style="display:inline-block; width:10px;
-  //                   height:10px;background-color:${item.color};"></span>
-  //                   ${item.seriesName}:
-  //               </td>
-  //               <td><span style="margin-left:10px;">${item.value}</span></td>
-  //               <td>
-  //                 <span style="margin-left:10px;">
-  //                   ${item.value > 0? Math.floor(item.value/total*100)/100 + '%':0}
-  //               </span></td>
-  //             </tr>`:'').join("")}
-  //           </table>
-  //           <div>Total: ${total}</div>
-  //           </div>`
-  //         return html
-  //       }
-  //     },
-  //     yAxis: {
-  //         type: 'category',
-  //         axisLine: {
-  //             show: false
-  //         },
-  //         axisTick: {
-  //             show: false
-  //         },
-  //         data: enrollCriteriaLib
-  //     },
-  //     series: resultData
-  //   };
+    const eliPatientOption = {
+      title : {
+        text: eliPatientChartTitle,
+        x:'40%',
+        y:'top',
+        textStyle: {
+          fontSize: 18,
+          fontWeight: 'bold',
+          color: '#333'
+        },
+        // show: (!showLegend)
+      },
+      // legend: {
+      //   show: showLegend
+      // },
+      grid: {
+          left: '3%',
+          right: '4%',
+          top: '8%',
+          bottom: '3%',
+          containLabel: true
+      },
+      xAxis: {
+          type: 'value',
+          axisLabel: {
+              show: false
+          },
+          splitLine:{
+              show:false
+          },
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+              show: false
+          },
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          // Use axis to trigger tooltip
+          type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+        },
+        formatter: function(params){
+          // eligible patient chart won't show percentage value
+          if(params.length == 2){
+            return params[0].axisValue + ': ' + params[0].value
+          }
+          let total = 0
+          for(let id=0; id<params.length; id ++){
+            if(params[id].seriesName != 'Total'){
+              total += params[id].value
+            }
+          }
+          let html=`
+            <div>
+            <div>${params[0].axisValue}</div>
+            <table>${params.map((item)=>
+              item.seriesName != 'Total'?`
+              <tr>
+                <td>
+                  <span style="display:inline-block; width:10px;
+                    height:10px;background-color:${item.color};"></span>
+                    ${item.seriesName}:
+                </td>
+                <td><span style="margin-left:10px;">${item.value}</span></td>
+                <td>
+                  <span style="margin-left:10px;">
+                    ${item.value > 0? ((item.value / total) * 100).toFixed(2) + '%':0}
+                </span></td>
+              </tr>`:'').join("")}
+            </table>
+            <div>Total: ${total}</div>
+            </div>`
+          return html
+        }
+      },
+      yAxis: {
+          type: 'category',
+          axisLine: {
+              show: false
+          },
+          axisTick: {
+              show: false
+          },
+          data: enrollCriteriaLib
+      },
+      series: eliPatientResultData
+    };
+
+    const fePatientOption = {
+      title : {
+        text: fePatientChartTitle,
+        x:'40%',
+        y:'top',
+        textStyle: {
+          fontSize: 18,
+          fontWeight: 'bold',
+          color: '#333'
+        },
+        // show: (!showLegend)
+      },
+      // legend: {
+      //   show: showLegend
+      // },
+      grid: {
+          left: '3%',
+          right: '4%',
+          top: '8%',
+          bottom: '3%',
+          containLabel: true
+      },
+      xAxis: {
+          type: 'value',
+          axisLabel: {
+              show: false
+          },
+          splitLine:{
+              show:false
+          },
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+              show: false
+          },
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          // Use axis to trigger tooltip
+          type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+        },
+        formatter: function(params){
+          // eligible patient chart won't show percentage value
+          if(params.length == 2){
+            return params[0].axisValue + ': ' + params[0].value
+          }
+          let total = 0
+          for(let id=0; id<params.length; id ++){
+            if(params[id].seriesName != 'Total'){
+              total += params[id].value
+            }
+          }
+          let html=`
+            <div>
+            <div>${params[0].axisValue}</div>
+            <table>${params.map((item)=>
+              item.seriesName != 'Total'?`
+              <tr>
+                <td>
+                  <span style="display:inline-block; width:10px;
+                    height:10px;background-color:${item.color};"></span>
+                    ${item.seriesName}:
+                </td>
+                <td><span style="margin-left:10px;">${item.value}</span></td>
+                <td>
+                  <span style="margin-left:10px;">
+                    ${item.value > 0? ((item.value / total) * 100).toFixed(2) + '%':0}
+                </span></td>
+              </tr>`:'').join("")}
+            </table>
+            <div>Total: ${total}</div>
+            </div>`
+          return html
+        }
+      },
+      yAxis: {
+          type: 'category',
+          axisLine: {
+              show: false
+          },
+          axisTick: {
+              show: false
+          },
+          data: enrollCriteriaLib
+      },
+      series: fePatientResultData
+    };
+
+    const ethPatientOption = {
+      title : {
+        text: ethPatientChartTitle,
+        x:'40%',
+        y:'1%',
+        textStyle: {
+          fontSize: 18,
+          fontWeight: 'bold',
+          color: '#333'
+        },
+        // show: (!showLegend)
+      },
+      // legend: {
+      //   show: showLegend
+      // },
+      grid: {
+          left: '3%',
+          right: '4%',
+          top: '8%',
+          bottom: '3%',
+          containLabel: true
+      },
+      xAxis: {
+          type: 'value',
+          axisLabel: {
+              show: false
+          },
+          splitLine:{
+              show:false
+          },
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+              show: false
+          },
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          // Use axis to trigger tooltip
+          type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+        },
+        formatter: function(params){
+          // eligible patient chart won't show percentage value
+          // if(params.length == 2){
+          //   return params[0].axisValue + ': ' + params[0].value
+          // }
+          let total = 0
+          for(let id=0; id<params.length; id ++){
+            if(params[id].seriesName != 'Total'){
+              total += params[id].value
+            }
+          }
+          let html=`
+            <div>
+            <div>${params[0].axisValue}</div>
+            <table>${params.map((item)=>
+              item.seriesName != 'Total'?`
+              <tr>
+                <td>
+                  <span style="display:inline-block; width:10px;
+                    height:10px;background-color:${item.color};"></span>
+                    ${item.seriesName}:
+                </td>
+                <td><span style="margin-left:10px;">${item.value}</span></td>
+                <td>
+                  <span style="margin-left:10px;">
+                    ${item.value > 0? ((item.value / total) * 100).toFixed(2) + '%':0}
+                </span></td>
+              </tr>`:'').join("")}
+            </table>
+            <div>Total: ${total}</div>
+            </div>`
+          return html
+        }
+      },
+      yAxis: {
+          type: 'category',
+          axisLine: {
+              show: false
+          },
+          axisTick: {
+              show: false
+          },
+          data: enrollCriteriaLib
+      },
+      series: ethPatientResultData
+    };
 
   const getPatientFunnel = async () => {
     let demographicsElementsData = []
@@ -1471,40 +1515,6 @@ const ScenarioPage = (props) => {
     console.log("medConditionElementsData",medConditionElementsData);
     console.log("labTestElementsData",labTestElementsData);
     
-    var resp = {'total_patient': 30761, 'eli_patient': 26, 'rate_eli_patient': '0.08%', 'fe_eli_patient': 10, 'rate_fe_eli_patient': '38.46%', 'final_ethnicity': ['ASIAN', 'WHITE', 'BLACK/AFRICAN AMERICAN', 'UNKNOWN'], 'final_ethnicity_count': [1, 19, 1, 5], 'final_ethnicity_rate': [2.55, 67.5, 3.85, 11.62], 'criteria': ['age', 'Glucose', 'Hemoglobin', 'Type 1 diabetes mellitus', 'Blood glucose increased', 'Obesity', 'Endocrine disorder', 'Hypertension', 'Renal disorder', 'Autoimmune disorder', 'Systemic lupus erythematosus', 'Rheumatoid arthritis', 'Neuroleptic malignant syndrome', 'Potassium', 'Sodium'], 'count': [11549, 4151, 4149, 4141, 4140, 3733, 3731, 3728, 3631, 3630, 3611, 3557, 3554, 3554, 26], 'count_females': [4785, 1750, 1750, 1747, 1747, 1540, 1539, 1538, 1514, 1514, 1497, 1461, 1460, 1460, 10], 'percent_females': [41.43, 42.16, 42.18, 42.19, 42.2, 41.25, 41.25, 41.26, 41.7, 41.71, 41.46, 41.07, 41.08, 41.08, 38.46], 'percent_ASIAN': [2.55, 2.55, 2.55, 2.56, 2.56, 2.81, 2.81, 2.82, 2.89, 2.89, 2.91, 2.92, 2.93, 2.93, 3.85], 'percent_WHITE': [70.59, 67.53, 67.53, 67.57, 67.56, 67.56, 67.54, 67.54, 67.61, 67.6, 67.63, 67.53, 67.5, 67.5, 73.08], 'percent_BLACK/AFRICAN AMERICAN': [8.23, 10.26, 10.27, 10.24, 10.24, 9.78, 9.78, 9.79, 9.67, 9.67, 9.58, 9.64, 9.65, 9.65, 3.85], 'percent_UNKNOWN': [11.62, 11.68, 11.69, 11.66, 11.67, 11.81, 11.82, 11.8, 11.81, 11.82, 11.85, 11.92, 11.93, 11.93, 19.23], 'percent_OTHER': [2.55, 2.77, 2.77, 2.78, 2.78, 2.89, 2.89, 2.9, 2.89, 2.89, 2.91, 2.81, 2.81, 2.81, 0.0], 'percent_HISPANIC/LATINO': [4.12, 4.87, 4.84, 4.85, 4.86, 4.8, 4.8, 4.8, 4.82, 4.82, 4.82, 4.86, 4.87, 4.87, 0.0], 'percent_MULTI RACE ETHNICITY': [0.23, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.19, 0.19, 0.19, 0.2, 0.2, 0.2, 0.0], 'percent_AMERICAN INDIAN/ALASKA NATIVE': [0.07, 0.07, 0.07, 0.07, 0.07, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.0], 'percent_NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': [0.03, 0.02, 0.02, 0.02, 0.02, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.0], 'ASIAN': [295, 106, 106, 106, 106, 105, 105, 105, 105, 105, 105, 104, 104, 104, 1], 'WHITE': [8153, 2803, 2802, 2798, 2797, 2522, 2520, 2518, 2455, 2454, 2442, 2402, 2399, 2399, 19], 'BLACK/AFRICAN AMERICAN': [951, 426, 426, 424, 424, 365, 365, 365, 351, 351, 346, 343, 343, 343, 1], 'UNKNOWN': [1342, 485, 485, 483, 483, 441, 441, 440, 429, 429, 428, 424, 424, 424, 5], 'OTHER': [294, 115, 115, 115, 115, 108, 108, 108, 105, 105, 105, 100, 100, 100, 0], 'HISPANIC/LATINO': [476, 202, 201, 201, 201, 179, 179, 179, 175, 175, 174, 173, 173, 173, 0], 'MULTI RACE ETHNICITY': [26, 10, 10, 10, 10, 9, 9, 9, 7, 7, 7, 7, 7, 7, 0], 'AMERICAN INDIAN/ALASKA NATIVE': [8, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0], 'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]}
-    setChartTitle('Patients Eligible - ' + resp['eli_patient'] + '(' + resp['rate_eli_patient'] + ' of Dataset)')
-    setEliPatient(resp['eli_patient'])
-    setRateEliPatient(resp['rate_eli_patient'])
-    setRateFeEliPatient(resp['rate_fe_eli_patient'])
-    setEnrollCriteriaLib(resp['criteria'])
-    setFinalEthnicityData(resp['final_ethnicity'])
-    setFinalEthnicityCountData(resp['final_ethnicity_rate'])
-    // setShowLegend(false)
-    setEnrollmentData(resp)
-
-    // const tempSeriesData = [...resultData]
-    // tempSeriesData.length = 0
-    const tempSeriesData = []
-    tempSeriesData.push({
-      name: 'Eligible Patient',
-      type: 'bar',
-      stack: 'total',
-      barWidth:'20px',
-      color: '#E84F22',
-      label: {
-          show: false,
-          formatter: function(p) {
-              return p.data
-          },
-          position: 'insideRight'
-      },
-      data: resp['count']
-    })
-    totalData['data'] = resp['count']
-    tempSeriesData.push(totalData)
-    console.log(tempSeriesData.length)
-    setResultData([...tempSeriesData])
-
     // var resp = await getPatientFunnelData(demographicsElementsData, interventionElementsData, medConditionElementsData, labTestElementsData, excluDemographicsElementsData, excluMedConditionElementsData, excluInterventionElementsData, excluLabTestElementsData)
 
     
@@ -1513,108 +1523,204 @@ const ScenarioPage = (props) => {
     //   console.log("getPatientFunnelData:",response);
       
     // }
+    var resp = {}
+    if(times%2 == 0){
+      resp = {'total_patient': 30761, 'eli_patient': 26, 'rate_eli_patient': '0.08%', 'fe_eli_patient': 10, 'rate_fe_eli_patient': '38.46%', 'final_ethnicity': ['ASIAN', 'WHITE', 'BLACK/AFRICAN AMERICAN', 'UNKNOWN'], 'final_ethnicity_count': [1, 19, 1, 5], 'final_ethnicity_rate': [2.55, 67.5, 3.85, 11.62], 'ethnicity_legend': [{'name': 'ASIAN', 'value': 1, 'percent': 2.55}, {'name': 'WHITE', 'value': 19, 'percent': 67.5}, {'name': 'BLACK/AFRICAN AMERICAN', 'value': 1, 'percent': 3.85}, {'name': 'UNKNOWN', 'value': 5, 'percent': 11.62}, {'name': 'OTHER', 'value': 0, 'percent': 0.0}, {'name': 'HISPANIC/LATINO', 'value': 0, 'percent': 0.0}, {'name': 'MULTI RACE ETHNICITY', 'value': 0, 'percent': 0.0}, {'name': 'AMERICAN INDIAN/ALASKA NATIVE', 'value': 0, 'percent': 0.0}, {'name': 'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER', 'value': 0, 'percent': 0.0}], 'criteria': ['age', 'Glucose', 'Hemoglobin', 'Type 1 diabetes mellitus', 'Blood glucose increased', 'Obesity', 'Endocrine disorder', 'Hypertension', 'Renal disorder', 'Autoimmune disorder', 'Systemic lupus erythematosus', 'Rheumatoid arthritis', 'Neuroleptic malignant syndrome', 'Potassium', 'Sodium'], 'count': [11549, 4151, 4149, 4141, 4140, 3733, 3731, 3728, 3631, 3630, 3611, 3557, 3554, 3554, 26], 'count_females': [4785, 1750, 1750, 1747, 1747, 1540, 1539, 1538, 1514, 1514, 1497, 1461, 1460, 1460, 10], 'percent_females': [41.43, 42.16, 42.18, 42.19, 42.2, 41.25, 41.25, 41.26, 41.7, 41.71, 41.46, 41.07, 41.08, 41.08, 38.46], 'percent_ASIAN': [2.55, 2.55, 2.55, 2.56, 2.56, 2.81, 2.81, 2.82, 2.89, 2.89, 2.91, 2.92, 2.93, 2.93, 3.85], 'percent_WHITE': [70.59, 67.53, 67.53, 67.57, 67.56, 67.56, 67.54, 67.54, 67.61, 67.6, 67.63, 67.53, 67.5, 67.5, 73.08], 'percent_BLACK/AFRICAN AMERICAN': [8.23, 10.26, 10.27, 10.24, 10.24, 9.78, 9.78, 9.79, 9.67, 9.67, 9.58, 9.64, 9.65, 9.65, 3.85], 'percent_UNKNOWN': [11.62, 11.68, 11.69, 11.66, 11.67, 11.81, 11.82, 11.8, 11.81, 11.82, 11.85, 11.92, 11.93, 11.93, 19.23], 'percent_OTHER': [2.55, 2.77, 2.77, 2.78, 2.78, 2.89, 2.89, 2.9, 2.89, 2.89, 2.91, 2.81, 2.81, 2.81, 0.0], 'percent_HISPANIC/LATINO': [4.12, 4.87, 4.84, 4.85, 4.86, 4.8, 4.8, 4.8, 4.82, 4.82, 4.82, 4.86, 4.87, 4.87, 0.0], 'percent_MULTI RACE ETHNICITY': [0.23, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.19, 0.19, 0.19, 0.2, 0.2, 0.2, 0.0], 'percent_AMERICAN INDIAN/ALASKA NATIVE': [0.07, 0.07, 0.07, 0.07, 0.07, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.0], 'percent_NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': [0.03, 0.02, 0.02, 0.02, 0.02, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.0], 'ASIAN': [295, 106, 106, 106, 106, 105, 105, 105, 105, 105, 105, 104, 104, 104, 1], 'WHITE': [8153, 2803, 2802, 2798, 2797, 2522, 2520, 2518, 2455, 2454, 2442, 2402, 2399, 2399, 19], 'BLACK/AFRICAN AMERICAN': [951, 426, 426, 424, 424, 365, 365, 365, 351, 351, 346, 343, 343, 343, 1], 'UNKNOWN': [1342, 485, 485, 483, 483, 441, 441, 440, 429, 429, 428, 424, 424, 424, 5], 'OTHER': [294, 115, 115, 115, 115, 108, 108, 108, 105, 105, 105, 100, 100, 100, 0], 'HISPANIC/LATINO': [476, 202, 201, 201, 201, 179, 179, 179, 175, 175, 174, 173, 173, 173, 0], 'MULTI RACE ETHNICITY': [26, 10, 10, 10, 10, 9, 9, 9, 7, 7, 7, 7, 7, 7, 0], 'AMERICAN INDIAN/ALASKA NATIVE': [8, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0], 'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]}
+    } else{
+      resp = {'total_patient': 30761, 'eli_patient': 27, 'rate_eli_patient': '0.09%', 'fe_eli_patient': 10, 'rate_fe_eli_patient': '37.04%', 'final_ethnicity': ['ASIAN', 'WHITE', 'BLACK/AFRICAN AMERICAN', 'UNKNOWN'], 'final_ethnicity_count': [1, 19, 1, 6], 'final_ethnicity_rate': [2.55, 67.53, 3.7, 11.62], 'ethnicity_legend': [{'name': 'ASIAN', 'value': 1, 'percent': 2.55}, {'name': 'WHITE', 'value': 19, 'percent': 67.53}, {'name': 'BLACK/AFRICAN AMERICAN', 'value': 1, 'percent': 3.7}, {'name': 'UNKNOWN', 'value': 6, 'percent': 11.62}, {'name': 'OTHER', 'value': 0, 'percent': 0.0}, {'name': 'HISPANIC/LATINO', 'value': 0, 'percent': 0.0}, {'name': 'MULTI RACE ETHNICITY', 'value': 0, 'percent': 0.0}, {'name': 'AMERICAN INDIAN/ALASKA NATIVE', 'value': 0, 'percent': 0.0}, {'name': 'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER', 'value': 0, 'percent': 0.0}], 'criteria': ['age', 'Glucose', 'Hemoglobin', 'Type 1 diabetes mellitus', 'Blood glucose increased', 'Endocrine disorder', 'Hypertension', 'Renal disorder', 'Autoimmune disorder', 'Systemic lupus erythematosus', 'Rheumatoid arthritis', 'Neuroleptic malignant syndrome', 'Potassium', 'Sodium'], 'count': [11549, 4151, 4149, 4141, 4140, 4137, 4134, 4020, 4019, 3997, 3934, 3931, 3931, 27], 'count_females': [4785, 1750, 1750, 1747, 1747, 1746, 1745, 1713, 1713, 1694, 1650, 1649, 1649, 10], 'percent_females': [41.43, 42.16, 42.18, 42.19, 42.2, 42.2, 42.21, 42.61, 42.62, 42.38, 41.94, 41.95, 41.95, 37.04], 'percent_ASIAN': [2.55, 2.55, 2.55, 2.56, 2.56, 2.56, 2.56, 2.64, 2.64, 2.65, 2.67, 2.67, 2.67, 3.7], 'percent_WHITE': [70.59, 67.53, 67.53, 67.57, 67.56, 67.54, 67.54, 67.71, 67.7, 67.75, 67.67, 67.64, 67.64, 70.37], 'percent_BLACK/AFRICAN AMERICAN': [8.23, 10.26, 10.27, 10.24, 10.24, 10.25, 10.26, 10.02, 10.03, 9.91, 9.91, 9.92, 9.92, 3.7], 'percent_UNKNOWN': [11.62, 11.68, 11.69, 11.66, 11.67, 11.68, 11.66, 11.67, 11.67, 11.71, 11.79, 11.8, 11.8, 22.22], 'percent_OTHER': [2.55, 2.77, 2.77, 2.78, 2.78, 2.78, 2.78, 2.76, 2.76, 2.78, 2.69, 2.7, 2.7, 0.0], 'percent_HISPANIC/LATINO': [4.12, 4.87, 4.84, 4.85, 4.86, 4.86, 4.86, 4.9, 4.9, 4.9, 4.96, 4.96, 4.96, 0.0], 'percent_MULTI RACE ETHNICITY': [0.23, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.0], 'percent_AMERICAN INDIAN/ALASKA NATIVE': [0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.08, 0.08, 0.08, 0.08, 0.0], 'percent_NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': [0.03, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.03, 0.03, 0.03, 0.03, 0.0], 'ASIAN': [295, 106, 106, 106, 106, 106, 106, 106, 106, 106, 105, 105, 105, 1], 'WHITE': [8153, 2803, 2802, 2798, 2797, 2794, 2792, 2722, 2721, 2708, 2662, 2659, 2659, 19], 'BLACK/AFRICAN AMERICAN': [951, 426, 426, 424, 424, 424, 424, 403, 403, 396, 390, 390, 390, 1], 'UNKNOWN': [1342, 485, 485, 483, 483, 483, 482, 469, 469, 468, 464, 464, 464, 6], 'OTHER': [294, 115, 115, 115, 115, 115, 115, 111, 111, 111, 106, 106, 106, 0], 'HISPANIC/LATINO': [476, 202, 201, 201, 201, 201, 201, 197, 197, 196, 195, 195, 195, 0], 'MULTI RACE ETHNICITY': [26, 10, 10, 10, 10, 10, 10, 8, 8, 8, 8, 8, 8, 0], 'AMERICAN INDIAN/ALASKA NATIVE': [8, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0], 'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]}
+    }
+    setTimes(times + 1)
+        
+    // set data for tab info
+    setEliPatient(resp['eli_patient'])
+    setRateEliPatient(resp['rate_eli_patient'])
+
+    setRateFeEliPatient(resp['rate_fe_eli_patient'])
+
+    const tempColor = []
+    for(const e in resp['ethnicity_legend']){
+      tempColor.push(colorList[resp['ethnicity_legend'][e].name])
+    }
+    setEthLegendColor(tempColor)
+    setFinalEthnicityData(resp['ethnicity_legend'])
+
+    // Set criteria lib data as yAxis -- Common
+    setEnrollCriteriaLib(resp['criteria'])
+    let totalData = {
+      name: 'Total',
+      type: 'bar',
+      stack: 'Total',
+      barGap: '-100%',
+      label: {
+          normal: {
+              show: true,
+              position: 'right',
+              textStyle: { color: '#000' },
+              formatter: function(v) {
+                  return v.value
+              }
+          }
+      },
+      itemStyle: { 
+          normal: { 
+              color: 'rgba(128, 128, 128, 0)',
+              borderWidth: 1,
+          } 
+      },
+      data: resp['count']
+    }
+
+    // Set data for chart Eligible Patient
+    setEliPatientChartTitle('Patients Eligible - ' + resp['eli_patient'] + '(' + resp['rate_eli_patient'] + ' of Dataset)')
+    const tempEliPatientSeriesData = []
+    tempEliPatientSeriesData.push({
+      name: 'Eligible Patient',
+      type: 'bar',
+      stack: 'total',
+      // barWidth:'24px',
+      color: '#E84F22',
+      label: {
+          show: false,
+          // formatter: function(p) {
+          //     return p.data
+          // },
+          // position: 'insideRight'
+      },
+      data: resp['count']
+    })
+    tempEliPatientSeriesData.push(totalData)
+    setEliPatientResultData(tempEliPatientSeriesData)
+    
+    // Set data for chart Femaile patients eligible
+    setFePatientChartTitle('Female patients eligible - ' + resp['rate_fe_eli_patient'])
+    const feEliPatient = resp['count_females']
+    let mEliPatient = feEliPatient.map((item, id) =>{
+      return resp['count'][id] - item
+    })
+    const tempFeEliPatientSeriesData = []
+    tempFeEliPatientSeriesData.push({
+        name: 'Female',
+        type: 'bar',
+        stack: 'total',
+        color: '#EF7A57',
+        label: {show: false},
+        emphasis: {focus: 'series'},
+        data: feEliPatient
+    })
+    tempFeEliPatientSeriesData.push({
+        name: 'Male',
+        type: 'bar',
+        stack: 'total',
+        color: '#E84F22',
+        label: {show: false},
+        emphasis: {focus: 'series'},
+        data: mEliPatient
+    })
+    tempFeEliPatientSeriesData.push(totalData)
+    setFePatientResultData(tempFeEliPatientSeriesData)
+
+    // Set data for chart Race & Ethnicities
+    const defaultEth = resp['final_ethnicity'][0]
+    const defaultEthRate = resp['final_ethnicity_rate'][0]
+    setEthPatientChartTitle('Race & Ethnicity - ' + defaultEth + ' - ' + defaultEthRate + '%')
+    const tempEthPatientSeriesData = []
+    for(const ckey in resp){
+      if (ckey.startsWith('percent_') && ckey != 'percent_females'){
+        const cnKey = ckey.replace('percent_', '')
+        tempEthPatientSeriesData.push({
+          name: cnKey,
+          type: 'bar',
+          stack: 'total',
+          color: colorList[cnKey],
+          label: {show: false},
+          emphasis: {focus: 'series'},
+          data: resp[cnKey]
+        })
+      }
+    }
+    tempEthPatientSeriesData.push(totalData)
+    setEthPatientResultData(tempEthPatientSeriesData)
+    setActiveEnrollmentTabKey('1')
   }
 
   const switchTabkey = async (key) =>{
-    // const tempSeriesData = [...resultData]
-    // tempSeriesData.length = 0
-    // const tempSeriesData = [...resultData]
-    // while(tempSeriesData.length > 0){
-    //   tempSeriesData.splice(0, 1)
-    // }
-    
+    // const tempSeriesData = []
     setActiveEnrollmentTabKey(key)
-    if(key === '1'){
-      // setShowLegend(false)
-      const tempSeriesData = []
-      setChartTitle('Patients Eligible - ' + eliPatient + '(' + rateEliPatient + ' of Dataset)')
-      tempSeriesData.push({
-        name: 'Eligible Patient',
-        type: 'bar',
-        stack: 'total',
-        // barWidth:'20px',
-        color: '#E84F22',
-        label: {
-            show: false,
-            formatter: function(p) {
-                return p.data
-            },
-            position: 'insideRight'
-        },
-        data: enrollmentData['count']
-      })
-      totalData['data'] = enrollmentData['count']
-    tempSeriesData.push(totalData)
-    console.log(tempSeriesData.length)
-    setResultData(tempSeriesData)
-    } else if(key === '2'){
-      // setShowLegend(true)
-      const tempSeriesData1 = []
-      setChartTitle('Female patients eligible - ' + enrollmentData['rate_fe_eli_patient'])
-      const feEliPatient = enrollmentData['count_females']
-      let mEliPatient = feEliPatient.map((item, id) =>{
-        return enrollmentData['count'][id] - item
-      })
-      tempSeriesData1.push({
-          name: 'Female',
-          type: 'bar',
-          stack: 'total',
-          color: '#EF7A57',
-          label: {
-            show: false
-          },
-          emphasis: {
-            focus: 'series'
-          },
-          data: feEliPatient
-        })
-        tempSeriesData1.push({
-          name: 'Male',
-          type: 'bar',
-          stack: 'total',
-          color: '#E84F22',
-          label: {
-            show: false
-          },
-          emphasis: {
-            focus: 'series'
-          },
-          data: mEliPatient
-      })
-      totalData['data'] = enrollmentData['count']
-      tempSeriesData1.push(totalData)
-      console.log(tempSeriesData1.length)
-    setResultData(tempSeriesData1)
-    } else {
-      // setShowLegend(true)
-      const tempSeriesData2 = []
-      const defaultEth = enrollmentData['final_ethnicity'][0]
-      const defaultEthRate = enrollmentData['final_ethnicity_rate'][0]
-      setChartTitle('Race & Ethnicity - ' + defaultEth + ' - ' + defaultEthRate + '%')
-      for(const ckey in enrollmentData){
-        if (ckey.startsWith('percent_') && ckey != 'percent_females'){
-          const cnKey = ckey.replace('percent_', '')
-          tempSeriesData2.push({
-            name: cnKey,
-            type: 'bar',
-            stack: 'total',
-            // color: colorList[cnKey],
-            label: {
-              show: false
-            },
-            emphasis: {
-              focus: 'series'
-            },
-            data: enrollmentData[cnKey]
-          })
-        }
-      }
-      totalData['data'] = enrollmentData['count']
-      tempSeriesData2.push(totalData)
-      console.log(tempSeriesData2.length)
-    setResultData(tempSeriesData2)
-    }
-    
+    // if(key === '1'){
+    //   setChartTitle('Patients Eligible - ' + eliPatient + '(' + rateEliPatient + ' of Dataset)')
+    //   tempSeriesData.push({
+    //     name: 'Eligible Patient',
+    //     type: 'bar',
+    //     stack: 'total',
+    //     color: '#E84F22',
+    //     label: {
+    //         show: false,
+    //         formatter: function(p) {
+    //             return p.data
+    //         },
+    //         position: 'insideRight'
+    //     },
+    //     data: enrollmentData['count']
+    //   })
+    // } else if(key === '2'){
+    //   setChartTitle('Female patients eligible - ' + enrollmentData['rate_fe_eli_patient'])
+    //   const feEliPatient = enrollmentData['count_females']
+    //   let mEliPatient = feEliPatient.map((item, id) =>{
+    //     return enrollmentData['count'][id] - item
+    //   })
+    //   tempSeriesData.push({
+    //       name: 'Female',
+    //       type: 'bar',
+    //       stack: 'total',
+    //       color: '#EF7A57',
+    //       label: {
+    //         show: false
+    //       },
+    //       emphasis: {
+    //         focus: 'series'
+    //       },
+    //       data: feEliPatient
+    //     })
+    //     tempSeriesData.push({
+    //       name: 'Male',
+    //       type: 'bar',
+    //       stack: 'total',
+    //       color: '#E84F22',
+    //       label: {
+    //         show: false
+    //       },
+    //       emphasis: {
+    //         focus: 'series'
+    //       },
+    //       data: mEliPatient
+    //   })
+    // } else {
+    //   const defaultEth = enrollmentData['final_ethnicity'][0]
+    //   const defaultEthRate = enrollmentData['final_ethnicity_rate'][0]
+    //   setChartTitle('Race & Ethnicity - ' + defaultEth + ' - ' + defaultEthRate + '%')
+    //   for(const ckey in enrollmentData){
+    //     if (ckey.startsWith('percent_') && ckey != 'percent_females'){
+    //       const cnKey = ckey.replace('percent_', '')
+    //       // const tempColor = colorList[cnKey]
+    //       tempSeriesData.push({
+    //         name: cnKey,
+    //         type: 'bar',
+    //         stack: 'total',
+    //         color: colorList[cnKey],
+    //         label: {
+    //           show: false
+    //         },
+    //         emphasis: {
+    //           focus: 'series'
+    //         },
+    //         data: enrollmentData[cnKey]
+    //       })
+    //     }
+    //   }
+    // }
+    // totalData['data'] = enrollmentData['count']
+    // tempSeriesData.push(totalData)
+    // setResultData(tempSeriesData)
   }
     
     const handleCancel = () => {
@@ -3161,8 +3267,15 @@ const ScenarioPage = (props) => {
                       </Row>
                       <Row>
                         <Col span={24} className="result-chart">
-                          {/* <ReactECharts option={resultOption} style={{ height: 350}}></ReactECharts> */}
-                          <ReactECharts option={enrollResultOption} style={{ height: 600}}></ReactECharts>
+                          {activeEnrollmentTabKey === '1' && (
+                            <ReactECharts option={eliPatientOption} style={{ height: 600}}></ReactECharts>
+                          )}
+                          {activeEnrollmentTabKey === '2' && (
+                            <ReactECharts option={fePatientOption} style={{ height: 600}}></ReactECharts>
+                          )}
+                          {activeEnrollmentTabKey === '3' && (
+                            <ReactECharts option={ethPatientOption} style={{ height: 600}}></ReactECharts>
+                          )}
                         </Col>
                       </Row>
                     </Col>
