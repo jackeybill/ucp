@@ -2,13 +2,12 @@ import React, { useState, useEffect, useReducer} from 'react';
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
-import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer} from "antd";
-import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getCriteriaLibByNctId, getSOAResource, getIEResource, getAverage, getPatientFunnelData} from "../../utils/ajax-proxy";
+import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer} from "antd";
+import {updateStudy, getSimilarhistoricalTrialById, getStudy, getCriteriaLibByNctId, getSOAResource, getIEResource, getPatientFunnelData} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
-// import copy from 'copy';
 import CriteriaOption from "../../components/CriteriaOption";
 import EditTable from "../../components/EditTable";
 import SelectableTable from "../../components/SelectableTable";
@@ -109,7 +108,7 @@ const ScenarioPage = (props) => {
     const [avgFileKey, setAvgFileKey] = useState('')
     const [scenarioType, setScenarioType] = useState('')
     const [activeEnrollmentTabKey, setActiveEnrollmentTabKey] = useState('1')
-    const [activeTabKey, setActiveTabKey] = useState('3')
+    const [activeTabKey, setActiveTabKey] = useState('1')
     const [processStep, setProcessStep] = useState(0)
     const [submitType, setSubmitType] = useState(0)
     const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState([])
@@ -119,16 +118,9 @@ const ScenarioPage = (props) => {
 
     const [showHistorical, setShowHistorical] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
-    // const [freqColor, setFreqColor] = useState('#EF7A57')
-    // const [freqFontColor, setFreqFontColor] = useState('#fff')
-    // const [totalData, setTotalData] = useState([])
-    // const [freqData, setFreqdata] = useState([])
     const [visibleSOA, setVisibleSOA] = useState(false)
     const [soaResource, setSOAResource] = useState([])
     const [ieResource, setIEResource] = useState('')
-    // const [avgResource, setAvgResource] = useState(false)
-    // const [inclusionResourceAvg, setInclusionResourceAvg] = useState([])
-    // const [exclusionResourceAvg, setExclusionResourceAvg] = useState([])
 
     //------------------------INCLUSION CRITERIA CONST START-----------------------------
     //Original libs for filter purpose
@@ -223,7 +215,6 @@ const ScenarioPage = (props) => {
   const [enrollCriteriaLib, setEnrollCriteriaLib] = useState([])
   const [finalEthnicityData, setFinalEthnicityData] = useState([])
   const [ethLegendColor, setEthLegendColor] = useState([])
-  // const [enrollmentData, setEnrollmentData] = useState({})
 
   const [eliPatientChartTitle, setEliPatientChartTitle] = useState('')
   const [eliPatientResultData, setEliPatientResultData] = useState([])
@@ -361,16 +352,8 @@ const ScenarioPage = (props) => {
         const summaryDefaultList = async () => {
           const nctIdList = props.location.state.similarHistoricalTrials
           console.log("nctIdList",nctIdList);
-          
-          var resp
-          // if(nctIdList != undefined && nctIdList instanceof Array && nctIdList.length > 0){
-            console.log("input",props.location.state.similarHistoricalTrials);
-            resp = await getCriteriaLibByNctId(props.location.state.similarHistoricalTrials, props.location.state.trial_id);
-            // console.log("criteria",resp);
-          // } else {
-          //   resp = await getSummaryDefaultList();
-          //   console.log("default",resp);
-          // }
+          console.log("input",props.location.state.similarHistoricalTrials);
+          var resp = await getCriteriaLibByNctId(props.location.state.similarHistoricalTrials, props.location.state.trial_id);
           setPageLoading(false)
             if (resp.statusCode == 200) {
                 setAvgFileKey(resp.csvKey)
@@ -1482,56 +1465,26 @@ const ScenarioPage = (props) => {
     };
 
   const getPatientFunnel = async () => {
-    let demographicsElementsData = []
-    let interventionElementsData = []
-    let medConditionElementsData = []
-    let labTestElementsData = []
-    let excluDemographicsElementsData = []
-    let excluMedConditionElementsData = []
-    let excluInterventionElementsData = []
-    let excluLabTestElementsData = []
-
-    function deepCopyAndTransfer (oldobj) {
-      if(oldobj === []) return oldobj
-      // deep copy
-      let criteriaData = JSON.parse(JSON.stringify(oldobj)).map((item)=>{
-        let resObj = {}
-        resObj[item["Eligibility Criteria"]] = item.rawValue
-        return resObj
-      })
-      return criteriaData
+    let requestBody = {
+      'inclusion': {
+        'demographicsElements': demographicsElements,
+        'medConditionElements': medConditionElements,
+        'interventionElements': interventionElements,
+        'labTestElements': labTestElements
+      },
+      'exclusion': {
+        'demographicsElements': excluDemographicsElements,
+        'medConditionElements': excluMedConditionElements,
+        'interventionElements': excluInterventionElements,
+        'labTestElements': excluLabTestElements
+      }
     }
+    var response = await getPatientFunnelData(requestBody)
+    if (response.statusCode === 200) {
+      const resp = response.body
+      console.log("getPatientFunnelData:",response);
 
-    demographicsElementsData = deepCopyAndTransfer(demographicsElements)
-    interventionElementsData = deepCopyAndTransfer(interventionElements)
-    medConditionElementsData = deepCopyAndTransfer(medConditionElements)
-    labTestElementsData = deepCopyAndTransfer(labTestElements)
-    excluDemographicsElementsData = deepCopyAndTransfer(excluDemographicsElements)
-    demographicsElementsData = deepCopyAndTransfer(demographicsElements)
-    excluMedConditionElementsData = deepCopyAndTransfer(excluMedConditionElements)
-    excluLabTestElementsData = deepCopyAndTransfer(excluLabTestElements)
-
-    console.log("demographicsElementsData",demographicsElementsData);
-    console.log("medConditionElementsData",medConditionElementsData);
-    console.log("labTestElementsData",labTestElementsData);
-    
-    // var resp = await getPatientFunnelData(demographicsElementsData, interventionElementsData, medConditionElementsData, labTestElementsData, excluDemographicsElementsData, excluMedConditionElementsData, excluInterventionElementsData, excluLabTestElementsData)
-
-    
-    // if (resp.statusCode === 200) {
-    //   const response = JSON.parse(resp.body)
-    //   console.log("getPatientFunnelData:",response);
-      
-    // }
-    var resp = {}
-    if(times%2 == 0){
-      resp = {'total_patient': 30761, 'eli_patient': 26, 'rate_eli_patient': '0.08%', 'fe_eli_patient': 10, 'rate_fe_eli_patient': '38.46%', 'final_ethnicity': ['ASIAN', 'WHITE', 'BLACK/AFRICAN AMERICAN', 'UNKNOWN'], 'final_ethnicity_count': [1, 19, 1, 5], 'final_ethnicity_rate': [2.55, 67.5, 3.85, 11.62], 'ethnicity_legend': [{'name': 'ASIAN', 'value': 1, 'percent': 2.55}, {'name': 'WHITE', 'value': 19, 'percent': 67.5}, {'name': 'BLACK/AFRICAN AMERICAN', 'value': 1, 'percent': 3.85}, {'name': 'UNKNOWN', 'value': 5, 'percent': 11.62}, {'name': 'OTHER', 'value': 0, 'percent': 0.0}, {'name': 'HISPANIC/LATINO', 'value': 0, 'percent': 0.0}, {'name': 'MULTI RACE ETHNICITY', 'value': 0, 'percent': 0.0}, {'name': 'AMERICAN INDIAN/ALASKA NATIVE', 'value': 0, 'percent': 0.0}, {'name': 'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER', 'value': 0, 'percent': 0.0}], 'criteria': ['age', 'Glucose', 'Hemoglobin', 'Type 1 diabetes mellitus', 'Blood glucose increased', 'Obesity', 'Endocrine disorder', 'Hypertension', 'Renal disorder', 'Autoimmune disorder', 'Systemic lupus erythematosus', 'Rheumatoid arthritis', 'Neuroleptic malignant syndrome', 'Potassium', 'Sodium'], 'count': [11549, 4151, 4149, 4141, 4140, 3733, 3731, 3728, 3631, 3630, 3611, 3557, 3554, 3554, 26], 'count_females': [4785, 1750, 1750, 1747, 1747, 1540, 1539, 1538, 1514, 1514, 1497, 1461, 1460, 1460, 10], 'percent_females': [41.43, 42.16, 42.18, 42.19, 42.2, 41.25, 41.25, 41.26, 41.7, 41.71, 41.46, 41.07, 41.08, 41.08, 38.46], 'percent_ASIAN': [2.55, 2.55, 2.55, 2.56, 2.56, 2.81, 2.81, 2.82, 2.89, 2.89, 2.91, 2.92, 2.93, 2.93, 3.85], 'percent_WHITE': [70.59, 67.53, 67.53, 67.57, 67.56, 67.56, 67.54, 67.54, 67.61, 67.6, 67.63, 67.53, 67.5, 67.5, 73.08], 'percent_BLACK/AFRICAN AMERICAN': [8.23, 10.26, 10.27, 10.24, 10.24, 9.78, 9.78, 9.79, 9.67, 9.67, 9.58, 9.64, 9.65, 9.65, 3.85], 'percent_UNKNOWN': [11.62, 11.68, 11.69, 11.66, 11.67, 11.81, 11.82, 11.8, 11.81, 11.82, 11.85, 11.92, 11.93, 11.93, 19.23], 'percent_OTHER': [2.55, 2.77, 2.77, 2.78, 2.78, 2.89, 2.89, 2.9, 2.89, 2.89, 2.91, 2.81, 2.81, 2.81, 0.0], 'percent_HISPANIC/LATINO': [4.12, 4.87, 4.84, 4.85, 4.86, 4.8, 4.8, 4.8, 4.82, 4.82, 4.82, 4.86, 4.87, 4.87, 0.0], 'percent_MULTI RACE ETHNICITY': [0.23, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.19, 0.19, 0.19, 0.2, 0.2, 0.2, 0.0], 'percent_AMERICAN INDIAN/ALASKA NATIVE': [0.07, 0.07, 0.07, 0.07, 0.07, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.0], 'percent_NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': [0.03, 0.02, 0.02, 0.02, 0.02, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.0], 'ASIAN': [295, 106, 106, 106, 106, 105, 105, 105, 105, 105, 105, 104, 104, 104, 1], 'WHITE': [8153, 2803, 2802, 2798, 2797, 2522, 2520, 2518, 2455, 2454, 2442, 2402, 2399, 2399, 19], 'BLACK/AFRICAN AMERICAN': [951, 426, 426, 424, 424, 365, 365, 365, 351, 351, 346, 343, 343, 343, 1], 'UNKNOWN': [1342, 485, 485, 483, 483, 441, 441, 440, 429, 429, 428, 424, 424, 424, 5], 'OTHER': [294, 115, 115, 115, 115, 108, 108, 108, 105, 105, 105, 100, 100, 100, 0], 'HISPANIC/LATINO': [476, 202, 201, 201, 201, 179, 179, 179, 175, 175, 174, 173, 173, 173, 0], 'MULTI RACE ETHNICITY': [26, 10, 10, 10, 10, 9, 9, 9, 7, 7, 7, 7, 7, 7, 0], 'AMERICAN INDIAN/ALASKA NATIVE': [8, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0], 'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]}
-    } else{
-      resp = {'total_patient': 30761, 'eli_patient': 27, 'rate_eli_patient': '0.09%', 'fe_eli_patient': 10, 'rate_fe_eli_patient': '37.04%', 'final_ethnicity': ['ASIAN', 'WHITE', 'BLACK/AFRICAN AMERICAN', 'UNKNOWN'], 'final_ethnicity_count': [1, 19, 1, 6], 'final_ethnicity_rate': [2.55, 67.53, 3.7, 11.62], 'ethnicity_legend': [{'name': 'ASIAN', 'value': 1, 'percent': 2.55}, {'name': 'WHITE', 'value': 19, 'percent': 67.53}, {'name': 'BLACK/AFRICAN AMERICAN', 'value': 1, 'percent': 3.7}, {'name': 'UNKNOWN', 'value': 6, 'percent': 11.62}, {'name': 'OTHER', 'value': 0, 'percent': 0.0}, {'name': 'HISPANIC/LATINO', 'value': 0, 'percent': 0.0}, {'name': 'MULTI RACE ETHNICITY', 'value': 0, 'percent': 0.0}, {'name': 'AMERICAN INDIAN/ALASKA NATIVE', 'value': 0, 'percent': 0.0}, {'name': 'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER', 'value': 0, 'percent': 0.0}], 'criteria': ['age', 'Glucose', 'Hemoglobin', 'Type 1 diabetes mellitus', 'Blood glucose increased', 'Endocrine disorder', 'Hypertension', 'Renal disorder', 'Autoimmune disorder', 'Systemic lupus erythematosus', 'Rheumatoid arthritis', 'Neuroleptic malignant syndrome', 'Potassium', 'Sodium'], 'count': [11549, 4151, 4149, 4141, 4140, 4137, 4134, 4020, 4019, 3997, 3934, 3931, 3931, 27], 'count_females': [4785, 1750, 1750, 1747, 1747, 1746, 1745, 1713, 1713, 1694, 1650, 1649, 1649, 10], 'percent_females': [41.43, 42.16, 42.18, 42.19, 42.2, 42.2, 42.21, 42.61, 42.62, 42.38, 41.94, 41.95, 41.95, 37.04], 'percent_ASIAN': [2.55, 2.55, 2.55, 2.56, 2.56, 2.56, 2.56, 2.64, 2.64, 2.65, 2.67, 2.67, 2.67, 3.7], 'percent_WHITE': [70.59, 67.53, 67.53, 67.57, 67.56, 67.54, 67.54, 67.71, 67.7, 67.75, 67.67, 67.64, 67.64, 70.37], 'percent_BLACK/AFRICAN AMERICAN': [8.23, 10.26, 10.27, 10.24, 10.24, 10.25, 10.26, 10.02, 10.03, 9.91, 9.91, 9.92, 9.92, 3.7], 'percent_UNKNOWN': [11.62, 11.68, 11.69, 11.66, 11.67, 11.68, 11.66, 11.67, 11.67, 11.71, 11.79, 11.8, 11.8, 22.22], 'percent_OTHER': [2.55, 2.77, 2.77, 2.78, 2.78, 2.78, 2.78, 2.76, 2.76, 2.78, 2.69, 2.7, 2.7, 0.0], 'percent_HISPANIC/LATINO': [4.12, 4.87, 4.84, 4.85, 4.86, 4.86, 4.86, 4.9, 4.9, 4.9, 4.96, 4.96, 4.96, 0.0], 'percent_MULTI RACE ETHNICITY': [0.23, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.0], 'percent_AMERICAN INDIAN/ALASKA NATIVE': [0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.08, 0.08, 0.08, 0.08, 0.0], 'percent_NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': [0.03, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.03, 0.03, 0.03, 0.03, 0.0], 'ASIAN': [295, 106, 106, 106, 106, 106, 106, 106, 106, 106, 105, 105, 105, 1], 'WHITE': [8153, 2803, 2802, 2798, 2797, 2794, 2792, 2722, 2721, 2708, 2662, 2659, 2659, 19], 'BLACK/AFRICAN AMERICAN': [951, 426, 426, 424, 424, 424, 424, 403, 403, 396, 390, 390, 390, 1], 'UNKNOWN': [1342, 485, 485, 483, 483, 483, 482, 469, 469, 468, 464, 464, 464, 6], 'OTHER': [294, 115, 115, 115, 115, 115, 115, 111, 111, 111, 106, 106, 106, 0], 'HISPANIC/LATINO': [476, 202, 201, 201, 201, 201, 201, 197, 197, 196, 195, 195, 195, 0], 'MULTI RACE ETHNICITY': [26, 10, 10, 10, 10, 10, 10, 8, 8, 8, 8, 8, 8, 0], 'AMERICAN INDIAN/ALASKA NATIVE': [8, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0], 'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]}
-    }
-    setTimes(times + 1)
-        
-    // set data for tab info
+      // set data for tab info
     setEliPatient(resp['eli_patient'])
     setRateEliPatient(resp['rate_eli_patient'])
 
@@ -1620,9 +1573,16 @@ const ScenarioPage = (props) => {
     setFePatientResultData(tempFeEliPatientSeriesData)
 
     // Set data for chart Race & Ethnicities
-    const defaultEth = resp['final_ethnicity'][0]
-    const defaultEthRate = resp['final_ethnicity_rate'][0]
-    setEthPatientChartTitle('Race & Ethnicity - ' + defaultEth + ' - ' + defaultEthRate + '%')
+    let defaultEnthRate = ''
+    let defaultEth = ''
+    if(resp['final_ethnicity'].length > 0){
+      defaultEnthRate = ((resp['final_ethnicity_count'][0] / resp['eli_patient']) * 100).toFixed(2)
+      defaultEth = resp['final_ethnicity'][0]
+      setEthPatientChartTitle('Race & Ethnicity - ' + defaultEth + ' - ' + defaultEnthRate + '%')
+    } else {
+      setEthPatientChartTitle('Race & Ethnicity - null')
+    }
+    
     const tempEthPatientSeriesData = []
     for(const ckey in resp){
       if (ckey.startsWith('percent_') && ckey != 'percent_females'){
@@ -1641,86 +1601,8 @@ const ScenarioPage = (props) => {
     tempEthPatientSeriesData.push(totalData)
     setEthPatientResultData(tempEthPatientSeriesData)
     setActiveEnrollmentTabKey('1')
-  }
-
-  const switchTabkey = async (key) =>{
-    // const tempSeriesData = []
-    setActiveEnrollmentTabKey(key)
-    // if(key === '1'){
-    //   setChartTitle('Patients Eligible - ' + eliPatient + '(' + rateEliPatient + ' of Dataset)')
-    //   tempSeriesData.push({
-    //     name: 'Eligible Patient',
-    //     type: 'bar',
-    //     stack: 'total',
-    //     color: '#E84F22',
-    //     label: {
-    //         show: false,
-    //         formatter: function(p) {
-    //             return p.data
-    //         },
-    //         position: 'insideRight'
-    //     },
-    //     data: enrollmentData['count']
-    //   })
-    // } else if(key === '2'){
-    //   setChartTitle('Female patients eligible - ' + enrollmentData['rate_fe_eli_patient'])
-    //   const feEliPatient = enrollmentData['count_females']
-    //   let mEliPatient = feEliPatient.map((item, id) =>{
-    //     return enrollmentData['count'][id] - item
-    //   })
-    //   tempSeriesData.push({
-    //       name: 'Female',
-    //       type: 'bar',
-    //       stack: 'total',
-    //       color: '#EF7A57',
-    //       label: {
-    //         show: false
-    //       },
-    //       emphasis: {
-    //         focus: 'series'
-    //       },
-    //       data: feEliPatient
-    //     })
-    //     tempSeriesData.push({
-    //       name: 'Male',
-    //       type: 'bar',
-    //       stack: 'total',
-    //       color: '#E84F22',
-    //       label: {
-    //         show: false
-    //       },
-    //       emphasis: {
-    //         focus: 'series'
-    //       },
-    //       data: mEliPatient
-    //   })
-    // } else {
-    //   const defaultEth = enrollmentData['final_ethnicity'][0]
-    //   const defaultEthRate = enrollmentData['final_ethnicity_rate'][0]
-    //   setChartTitle('Race & Ethnicity - ' + defaultEth + ' - ' + defaultEthRate + '%')
-    //   for(const ckey in enrollmentData){
-    //     if (ckey.startsWith('percent_') && ckey != 'percent_females'){
-    //       const cnKey = ckey.replace('percent_', '')
-    //       // const tempColor = colorList[cnKey]
-    //       tempSeriesData.push({
-    //         name: cnKey,
-    //         type: 'bar',
-    //         stack: 'total',
-    //         color: colorList[cnKey],
-    //         label: {
-    //           show: false
-    //         },
-    //         emphasis: {
-    //           focus: 'series'
-    //         },
-    //         data: enrollmentData[cnKey]
-    //       })
-    //     }
-    //   }
-    // }
-    // totalData['data'] = enrollmentData['count']
-    // tempSeriesData.push(totalData)
-    // setResultData(tempSeriesData)
+      
+    }
   }
     
     const handleCancel = () => {
@@ -3240,7 +3122,7 @@ const ScenarioPage = (props) => {
                         </Col>
                       </Row>
                       <Row className="enroll-tab">
-                        <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => switchTabkey('1')}>
+                        <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('1')}>
                           <Row><Col className="tab-item">
                             <Row className="tab-desc">Patients Eligible&nbsp;
                               {activeEnrollmentTabKey === '1'?(<CaretRightOutlined />):(<></>)}</Row>
@@ -3249,7 +3131,7 @@ const ScenarioPage = (props) => {
                           </Col></Row>
                         </Col>
                         <Col span={1}></Col>
-                        <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '2' ? 'active' : ''}`} onClick={() => switchTabkey('2')}>
+                        <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '2' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('2')}>
                           <Row><Col className="tab-item" span={24}>
                             <Row className="tab-desc">Female patients eligible&nbsp;
                                 {activeEnrollmentTabKey === '2'?(<CaretRightOutlined />):(<></>)}</Row>
@@ -3257,7 +3139,7 @@ const ScenarioPage = (props) => {
                           </Col></Row>
                         </Col>
                         <Col span={1}></Col>
-                        <Col span={8} className={`chart-tab ${activeEnrollmentTabKey === '3' ? 'active' : ''}`} onClick={() => switchTabkey('3')}>
+                        <Col span={8} className={`chart-tab ${activeEnrollmentTabKey === '3' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('3')}>
                           <Row><Col className="tab-item chart" span={24}>
                             <Row className="tab-desc">Race & Ethnicity&nbsp;
                                 {activeEnrollmentTabKey === '3'?(<CaretRightOutlined />):(<></>)}</Row>
