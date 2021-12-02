@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
 import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer} from "antd";
-import {updateStudy, getSimilarhistoricalTrialById, getStudy, getCriteriaLibByNctId, getSOAResource, getIEResource, getPatientFunnelData} from "../../utils/ajax-proxy";
+import {updateStudy, getSimilarhistoricalTrialById, getStudy, getCriteriaLibByNctId, getSOAResource, getIEResource, getPatientFunnelData, checkTrialPatientFunnelData} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
@@ -223,7 +223,10 @@ const ScenarioPage = (props) => {
   const [ethPatientChartTitle, setEthPatientChartTitle] = useState('')
   const [ethPatientResultData, setEthPatientResultData] = useState([])
   
-  const [times, setTimes] = useState(1)
+  const [loadPatientFunnel, setLoadPatientFunnel] = useState(false)
+  const [reloadPTData, setReloadPTData] = useState(false)
+  const [initPTData, setInitPTData] = useState(true)
+  const [funnelChartheight, setFunnelChartheight] = useState(200)
     //------------------------EXCLUSION CRITERIA CONST END-----------------------------
   
     const getTrialById = async () => {
@@ -333,8 +336,8 @@ const ScenarioPage = (props) => {
           }
           
           if(tempEditFlag){
-              updateTrial(1)
-              updateTrial(2)
+              updateTrial(1, 2)
+              updateTrial(2, 2)
           }
       }
   };
@@ -669,7 +672,11 @@ const ScenarioPage = (props) => {
       }
     }
 
-  const updateTrial = (type: number) => {
+  const updateTrial = (type: number, res: number) => {
+      // res: 1, update when loading page; 2, update when update criteria
+      if(res == 1){
+        setReloadPTData(true)
+      }
       if (type == 1) {//Inclusion
         
         let demographicsElementsTmp = demographicsElements.map((item,index) =>{
@@ -1212,7 +1219,7 @@ const ScenarioPage = (props) => {
       grid: {
           left: '3%',
           right: '4%',
-          top: '8%',
+          top: '50',
           bottom: '3%',
           containLabel: true
       },
@@ -1464,146 +1471,186 @@ const ScenarioPage = (props) => {
       series: ethPatientResultData
     };
 
-  const getPatientFunnel = async () => {
-    let requestBody = {
-      'inclusion': {
-        'demographicsElements': demographicsElements,
-        'medConditionElements': medConditionElements,
-        'interventionElements': interventionElements,
-        'labTestElements': labTestElements
-      },
-      'exclusion': {
-        'demographicsElements': excluDemographicsElements,
-        'medConditionElements': excluMedConditionElements,
-        'interventionElements': excluInterventionElements,
-        'labTestElements': excluLabTestElements
+    const sleep = (time: number) => {
+      return new Promise((resolve) => setTimeout(resolve, time));
+    };
+
+    const getPatientFunnel = async () => {
+      if (!initPTData && !reloadPTData){
+        return
       }
-    }
-    var response = await getPatientFunnelData(requestBody)
-    if (response.statusCode === 200) {
-      const resp = response.body
-      console.log("getPatientFunnelData:",response);
-
-      // set data for tab info
-    setEliPatient(resp['eli_patient'])
-    setRateEliPatient(resp['rate_eli_patient'])
-
-    setRateFeEliPatient(resp['rate_fe_eli_patient'])
-
-    const tempColor = []
-    for(const e in resp['ethnicity_legend']){
-      tempColor.push(colorList[resp['ethnicity_legend'][e].name])
-    }
-    setEthLegendColor(tempColor)
-    setFinalEthnicityData(resp['ethnicity_legend'])
-
-    // Set criteria lib data as yAxis -- Common
-    setEnrollCriteriaLib(resp['criteria'])
-    let totalData = {
-      name: 'Total',
-      type: 'bar',
-      stack: 'Total',
-      barGap: '-100%',
-      label: {
-          normal: {
-              show: true,
-              position: 'right',
-              textStyle: { color: '#000' },
-              formatter: function(v) {
-                  return v.value
-              }
+      
+      setLoadPatientFunnel(true)
+      let doReSearch = false
+      let response
+      if(initPTData && !reloadPTData){
+        response = await checkTrialPatientFunnelData(props.location.state.trial_id)
+        if(!response){
+          doReSearch = true
+        }
+      }else {
+        doReSearch = true
+      }
+      if(doReSearch){
+        let requestBody = {
+          'trialId': props.location.state.trial_id,
+          'requestBody':{
+            'inclusion': {
+              'demographicsElements': demographicsElements,
+              'medConditionElements': medConditionElements,
+              'interventionElements': interventionElements,
+              'labTestElements': labTestElements
+            },
+            'exclusion': {
+              'demographicsElements': excluDemographicsElements,
+              'medConditionElements': excluMedConditionElements,
+              'interventionElements': excluInterventionElements,
+              'labTestElements': excluLabTestElements
+            }
           }
-      },
-      itemStyle: { 
-          normal: { 
-              color: 'rgba(128, 128, 128, 0)',
-              borderWidth: 1,
-          } 
-      },
-      data: resp['count']
-    }
+        }
+        getPatientFunnelData(requestBody)
+      }
+      let tryTimes = 0
+      while(!response && tryTimes <= 20){
+        if(doReSearch){
+          await sleep(5000);
+        }
+        tryTimes += 1
+        response = await checkTrialPatientFunnelData(props.location.state.trial_id)
+      }
+      if (!response && tryTimes > 20){
+        message.error('No response for searching patient funnel over 100 seconds, please call assist.')
+        return
+      }
+      if (response.statusCode === 200) {
+        const resp = JSON.parse(response.body)
+        console.log("getPatientFunnelData:",response);
 
-    // Set data for chart Eligible Patient
-    setEliPatientChartTitle('Patients Eligible - ' + resp['eli_patient'] + '(' + resp['rate_eli_patient'] + ' of Dataset)')
-    const tempEliPatientSeriesData = []
-    tempEliPatientSeriesData.push({
-      name: 'Eligible Patient',
-      type: 'bar',
-      stack: 'total',
-      // barWidth:'24px',
-      color: '#E84F22',
-      label: {
-          show: false,
-          // formatter: function(p) {
-          //     return p.data
-          // },
-          // position: 'insideRight'
-      },
-      data: resp['count']
-    })
-    tempEliPatientSeriesData.push(totalData)
-    setEliPatientResultData(tempEliPatientSeriesData)
-    
-    // Set data for chart Femaile patients eligible
-    setFePatientChartTitle('Female patients eligible - ' + resp['rate_fe_eli_patient'])
-    const feEliPatient = resp['count_females']
-    let mEliPatient = feEliPatient.map((item, id) =>{
-      return resp['count'][id] - item
-    })
-    const tempFeEliPatientSeriesData = []
-    tempFeEliPatientSeriesData.push({
-        name: 'Female',
-        type: 'bar',
-        stack: 'total',
-        color: '#EF7A57',
-        label: {show: false},
-        emphasis: {focus: 'series'},
-        data: feEliPatient
-    })
-    tempFeEliPatientSeriesData.push({
-        name: 'Male',
-        type: 'bar',
-        stack: 'total',
-        color: '#E84F22',
-        label: {show: false},
-        emphasis: {focus: 'series'},
-        data: mEliPatient
-    })
-    tempFeEliPatientSeriesData.push(totalData)
-    setFePatientResultData(tempFeEliPatientSeriesData)
+        // set data for tab info
+        setEliPatient(resp['eli_patient'])
+        setRateEliPatient(resp['rate_eli_patient'])
 
-    // Set data for chart Race & Ethnicities
-    let defaultEnthRate = ''
-    let defaultEth = ''
-    if(resp['final_ethnicity'].length > 0){
-      defaultEnthRate = ((resp['final_ethnicity_count'][0] / resp['eli_patient']) * 100).toFixed(2)
-      defaultEth = resp['final_ethnicity'][0]
-      setEthPatientChartTitle('Race & Ethnicity - ' + defaultEth + ' - ' + defaultEnthRate + '%')
-    } else {
-      setEthPatientChartTitle('Race & Ethnicity - null')
-    }
-    
-    const tempEthPatientSeriesData = []
-    for(const ckey in resp){
-      if (ckey.startsWith('percent_') && ckey != 'percent_females'){
-        const cnKey = ckey.replace('percent_', '')
-        tempEthPatientSeriesData.push({
-          name: cnKey,
+        setRateFeEliPatient(resp['rate_fe_eli_patient'])
+
+        const tempColor = []
+        for(const e in resp['ethnicity_legend']){
+          tempColor.push(colorList[resp['ethnicity_legend'][e].name])
+        }
+        setEthLegendColor(tempColor)
+        setFinalEthnicityData(resp['ethnicity_legend'])
+
+        // Set criteria lib data as yAxis -- Common
+        setEnrollCriteriaLib(resp['criteria'])
+        setFunnelChartheight(50 + 35 * resp['criteria'].length)
+        let totalData = {
+          name: 'Total',
+          type: 'bar',
+          stack: 'Total',
+          barGap: '-100%',
+          label: {
+              normal: {
+                  show: true,
+                  position: 'right',
+                  textStyle: { color: '#000' },
+                  formatter: function(v) {
+                      return v.value
+                  }
+              }
+          },
+          itemStyle: { 
+              normal: { 
+                  color: 'rgba(128, 128, 128, 0)',
+                  borderWidth: 1,
+              } 
+          },
+          data: resp['count']
+        }
+
+        // Set data for chart Eligible Patient
+        setEliPatientChartTitle('Patients Eligible - ' + resp['eli_patient'] + '(' + resp['rate_eli_patient'] + ' of Dataset)')
+        const tempEliPatientSeriesData = []
+        tempEliPatientSeriesData.push({
+          name: 'Eligible Patient',
           type: 'bar',
           stack: 'total',
-          color: colorList[cnKey],
-          label: {show: false},
-          emphasis: {focus: 'series'},
-          data: resp[cnKey]
+          // barWidth:'24px',
+          color: '#E84F22',
+          label: {
+              show: false,
+              // formatter: function(p) {
+              //     return p.data
+              // },
+              // position: 'insideRight'
+          },
+          data: resp['count']
         })
+        tempEliPatientSeriesData.push(totalData)
+        setEliPatientResultData(tempEliPatientSeriesData)
+        
+        // Set data for chart Femaile patients eligible
+        setFePatientChartTitle('Female patients eligible - ' + resp['rate_fe_eli_patient'])
+        const feEliPatient = resp['count_females']
+        let mEliPatient = feEliPatient.map((item, id) =>{
+          return resp['count'][id] - item
+        })
+        const tempFeEliPatientSeriesData = []
+        tempFeEliPatientSeriesData.push({
+            name: 'Female',
+            type: 'bar',
+            stack: 'total',
+            color: '#EF7A57',
+            label: {show: false},
+            emphasis: {focus: 'series'},
+            data: feEliPatient
+        })
+        tempFeEliPatientSeriesData.push({
+            name: 'Male',
+            type: 'bar',
+            stack: 'total',
+            color: '#E84F22',
+            label: {show: false},
+            emphasis: {focus: 'series'},
+            data: mEliPatient
+        })
+        tempFeEliPatientSeriesData.push(totalData)
+        setFePatientResultData(tempFeEliPatientSeriesData)
+
+        // Set data for chart Race & Ethnicities
+        let defaultEnthRate = ''
+        let defaultEth = ''
+        if(resp['final_ethnicity'].length > 0){
+          defaultEnthRate = ((resp['final_ethnicity_count'][0] / resp['eli_patient']) * 100).toFixed(2)
+          defaultEth = resp['final_ethnicity'][0]
+          setEthPatientChartTitle('Race & Ethnicity - ' + defaultEth + ' - ' + defaultEnthRate + '%')
+        } else {
+          setEthPatientChartTitle('Race & Ethnicity - ' + resp['final_ethnicity'][0] +  ' - 0')
+        }
+        
+        const tempEthPatientSeriesData = []
+        for(const ckey in resp){
+          if (ckey.startsWith('percent_') && ckey != 'percent_females'){
+            const cnKey = ckey.replace('percent_', '')
+            tempEthPatientSeriesData.push({
+              name: cnKey,
+              type: 'bar',
+              stack: 'total',
+              color: colorList[cnKey],
+              label: {show: false},
+              emphasis: {focus: 'series'},
+              data: resp[cnKey]
+            })
+          }
+        }
+        tempEthPatientSeriesData.push(totalData)
+        setEthPatientResultData(tempEthPatientSeriesData)
+        setActiveEnrollmentTabKey('1')
+          
       }
+      setLoadPatientFunnel(false)
+      setReloadPTData(false)
+      setInitPTData(false)
     }
-    tempEthPatientSeriesData.push(totalData)
-    setEthPatientResultData(tempEthPatientSeriesData)
-    setActiveEnrollmentTabKey('1')
-      
-    }
-  }
     
     const handleCancel = () => {
       setShowHistorical(false)
@@ -1707,6 +1754,7 @@ const ScenarioPage = (props) => {
     }
 
     const updateInclusionCriteria = (newData, index) => {
+      setReloadPTData(true)
       switch(index){
         case 2: 
           setDemographicsElements(newData)
@@ -1723,6 +1771,7 @@ const ScenarioPage = (props) => {
     }
 
     const updateExclusionCriteria = (newData, index) => {
+      setReloadPTData(true)
       switch(index){
         case 2: 
          
@@ -2702,7 +2751,7 @@ const ScenarioPage = (props) => {
                   <Row style={{backgroundColor: '#fff'}}>
                     <Col span={24}>
                       <div className="updateTrial">
-                        <Button className="update-btn" onClick={() => updateTrial(1)}>
+                        <Button className="update-btn" onClick={() => updateTrial(1, 1)}>
                           UPDATE MY TRIAL
                         </Button>
                       </div>
@@ -2790,22 +2839,22 @@ const ScenarioPage = (props) => {
                                   <EditTable updateCriteria={updateInclusionCriteria} tableIndex={2}                                
                                     data={demographicsTableData}
                                     defaultActiveKey={defaultActiveKey}
-                                    collapsible={collapsible} panelHeader={"Demographics"} updateTrial={() => updateTrial(1)}                                  
+                                    collapsible={collapsible} panelHeader={"Demographics"} updateTrial={() => updateTrial(1, 1)}                                  
                                   />
                                   <EditTable updateCriteria={updateInclusionCriteria} tableIndex={3}
                                     data={medConditionTableData}
                                     defaultActiveKey={defaultActiveKey}
-                                    collapsible={collapsible} panelHeader={"Medical Condition"} updateTrial={() => updateTrial(1)}                               
+                                    collapsible={collapsible} panelHeader={"Medical Condition"} updateTrial={() => updateTrial(1, 1)}                               
                                   />
                               <EditTable updateCriteria={updateInclusionCriteria} tableIndex={4} 
                                     data={interventionTableData}                                  
                                     defaultActiveKey={defaultActiveKey}
-                                    collapsible={collapsible} panelHeader={"Intervention"} updateTrial={() => updateTrial(1)}                                   
+                                    collapsible={collapsible} panelHeader={"Intervention"} updateTrial={() => updateTrial(1, 1)}                                   
                                   />
                               <EditTable updateCriteria={updateInclusionCriteria} tableIndex={5} 
                                     data={labTestTableData}
                                     defaultActiveKey={defaultActiveKey}
-                                    collapsible={collapsible} panelHeader={"Lab / Test"} updateTrial={() => updateTrial(1)}/>
+                                    collapsible={collapsible} panelHeader={"Lab / Test"} updateTrial={() => updateTrial(1, 1)}/>
                               </div>
                             </div>
                           </div>
@@ -2985,7 +3034,7 @@ const ScenarioPage = (props) => {
                   <Row style={{backgroundColor: '#fff'}}>
                     <Col span={24}>
                       <div className="updateTrial">
-                        <Button className="update-btn" onClick={() => updateTrial(2)}>
+                        <Button className="update-btn" onClick={() => updateTrial(2, 1)}>
                           UPDATE MY TRIAL
                         </Button>
                       </div>
@@ -3097,6 +3146,7 @@ const ScenarioPage = (props) => {
               </Row>
             </TabPane>
             <TabPane tab="Enrollment Feasibility" key="3" disabled={collapsible}>
+            <Spin spinning={loadPatientFunnel} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
             <Row>
                 <Col span={5}>
                 </Col>
@@ -3150,13 +3200,13 @@ const ScenarioPage = (props) => {
                       <Row>
                         <Col span={24} className="result-chart">
                           {activeEnrollmentTabKey === '1' && (
-                            <ReactECharts option={eliPatientOption} style={{ height: 600}}></ReactECharts>
+                            <ReactECharts option={eliPatientOption} style={{ height: funnelChartheight}}></ReactECharts>
                           )}
                           {activeEnrollmentTabKey === '2' && (
-                            <ReactECharts option={fePatientOption} style={{ height: 600}}></ReactECharts>
+                            <ReactECharts option={fePatientOption} style={{ height: funnelChartheight}}></ReactECharts>
                           )}
                           {activeEnrollmentTabKey === '3' && (
-                            <ReactECharts option={ethPatientOption} style={{ height: 600}}></ReactECharts>
+                            <ReactECharts option={ethPatientOption} style={{ height: funnelChartheight}}></ReactECharts>
                           )}
                         </Col>
                       </Row>
@@ -3168,6 +3218,7 @@ const ScenarioPage = (props) => {
                 </Col>
                 <Col span={5}></Col>
               </Row>
+              </Spin>
             </TabPane>
           </Tabs>
         </div>

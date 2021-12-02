@@ -621,6 +621,21 @@ export const getAverage = async (nctids) => {
   return await response.json();
 }
 
+export const checkTrialPatientFunnelData = async (trialId) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "checkTrialPatientFunnelData": {
+        "trialId": trialId
+      }})
+  })
+  return await response.json();
+}
+
 //for test only: Delete All In Progress Trials
 // export const deleteAllStudy = async () => {
 //   const response = await fetch(criteria_url, {
