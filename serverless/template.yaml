@@ -582,16 +582,6 @@ Resources:
       #               Name: suffix
       #               Value: pdf
   
-  MyFileBucketResource:
-    Type: Custom::S3CustomResource 
-    Properties:
-      ServiceToken: !GetAtt AWSLambdaFunction.Arn
-      the_bucket: !Ref MyFileBucket 
-      dirs_to_create: !Ref DirsToCreate  
-  # SQSQueue1:
-  #   Type: AWS::SQS::Queue
-  #   Properties: {}
-
 
 ## --------------   Sagemaker   -------------------- ##
 # Sagemaker
