@@ -52,7 +52,7 @@ Parameters:
 Globals:
   Function:
     Timeout: 60
-    Runtime: python3.7
+    Runtime: python3.8
   
     
 Resources:
