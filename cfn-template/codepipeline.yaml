@@ -21,7 +21,7 @@ Parameters:
     Default: "template.yaml"
   TestingRegion:
     Type: String
-    Default: "us-west-2"
+    Default: "us-east-2"
   TestingStackName:
     Type: String
     Default: "dhair2-serverless-demo"
@@ -39,7 +39,7 @@ Parameters:
     Default: "dhair2-demo-ecr"
   ProdRegion:
     Type: String
-    Default: " us-west-2"
+    Default: "us-east-2"
   ProdStackName:
     Type: String
     Default: "dhair2-demo-stage2"
@@ -124,7 +124,7 @@ Resources:
                 RoleArn: !GetAtt PipelineStackCloudFormationExecutionRole.Arn
                 StackName: !Ref AWS::StackName
                 ChangeSetName: !Sub ${AWS::StackName}-ChangeSet
-                TemplatePath: SourceCodeAsZip::cfn-template/packaged.yaml
+                TemplatePath: SourceCodeAsZip::cfn-template/codepipeline.yaml
                 Capabilities: CAPABILITY_NAMED_IAM
                 ParameterOverrides: !Sub |
                   {
