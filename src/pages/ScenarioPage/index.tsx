@@ -560,25 +560,60 @@ const ScenarioPage = (props) => {
       console.log(item.Text, item.Value);
       
       var tempStr
-      if(item.Value === ''){
-        tempStr = '-'
-      } else if (item.Value.avg_value != '' && item.Value.avg_value != 0) {
-        tempStr = Number(item.Value.avg_value.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
-      } else if (item.Value.avg_lower == 0 && item.Value.avg_upper != 0) {
-        tempStr = "< "+ Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
-      } else if (item.Value.avg_lower != 0 && item.Value.avg_upper == 0) {
-        tempStr = "> "+ Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
-      } else if (item.Value.avg_lower != 0 && item.Value.avg_upper != 0) {
-        // if (Number(item.Value.avg_lower) == Number(item.Value.avg_upper)){
-        //   tempStr = Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
-        if(item.Text.toString() === "vital signs"){
-          console.log(item.Text,": ", item.Value);
-          tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+      if(item.Text.toString() === "vital signs" && item.BP_value){
+        console.log(item.Text,": ", item.BP_value);
+        // < 150/95 mmhg
+        if (item.BP_value.avg_dbp_lower == 0 && item.BP_value.avg_sbp_lower == 0 && item.BP_value.avg_dbp_upper != 0 && item.BP_value.avg_sbp_upper != 0) {
+          tempStr = "< "+ Number(item.BP_value.avg_sbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
+        // > 150/95 mmhg
+        } else if (item.BP_value.avg_dbp_lower != 0 && item.BP_value.avg_sbp_lower != 0 && item.BP_value.avg_dbp_upper == 0 && item.BP_value.avg_sbp_upper == 0) {
+          tempStr = "> " +  Number(item.BP_value.avg_sbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
+        // 180/90 - 200/95 mmhg
+        } else if (item.BP_value.avg_dbp_lower != 0 && item.BP_value.avg_sbp_lower != 0 && item.BP_value.avg_dbp_upper != 0 && item.BP_value.avg_sbp_upper != 0) {
+          tempStr = Number(item.BP_value.avg_sbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/)) + " - " + Number(item.BP_value.avg_sbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
         } else {
-        tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " - " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+          tempStr = '-'
         }
-      } else{
-        tempStr = '-'
+      } else {
+          if(item.Value === ''){
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = '-'
+            }
+          } else if (item.Value.avg_value != '' && item.Value.avg_value != 0) {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = Number(item.Value.avg_value.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+            }
+          } else if (item.Value.avg_lower == 0 && item.Value.avg_upper != 0) {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = "< "+ Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
+            }
+          } else if (item.Value.avg_lower != 0 && item.Value.avg_upper == 0) {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = "> "+ Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
+            }
+          } else if (item.Value.avg_lower != 0 && item.Value.avg_upper != 0) {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              // if (Number(item.Value.avg_lower) == Number(item.Value.avg_upper)){
+              //   tempStr = Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+              tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " - " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+            } 
+          } else {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = '-' 
+            }
+          }
       }
       return tempStr
     }
