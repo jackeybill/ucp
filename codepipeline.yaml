@@ -498,6 +498,7 @@ Resources:
                   - "s3:PutObject"
                 Resource:
                   - !Sub "arn:aws:s3:::${PipelineArtifactsBucket}/*"
+                  - !Sub "arn:aws:s3:::${TestingArtifactBucket}/*"          
         - PolicyName: AssumeStagePipExecutionRoles
           PolicyDocument:
             Version: "2012-10-17"
