@@ -36,7 +36,7 @@ Parameters:
     Default: "dhair2-s3-demo"
   TestingImageRepository:
     Type: String
-    Default: "dhair2-demo-ecr"
+    Default: "build-python3.8"
   ProdRegion:
     Type: String
     Default: "us-east-2"
