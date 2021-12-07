@@ -31,3 +31,4 @@ phases:
                     --s3-bucket ${TESTING_ARTIFACT_BUCKET}
                     --region ${TESTING_REGION}
                     --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
+                    --parameter-overrides ' Stage=feature,AppIdentity=ucp'
