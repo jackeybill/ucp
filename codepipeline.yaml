@@ -33,7 +33,7 @@ Parameters:
     Default: "dhairw2-cfn-role"
   TestingArtifactBucket:
     Type: String
-    Default: cloudformation-status-bucket"
+    Default: "cloudformation-status-bucket"
   TestingImageRepository:
     Type: String
     Default: "public.ecr.aws/sam/build-python3.8:latest"
