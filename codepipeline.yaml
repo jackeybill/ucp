@@ -555,9 +555,9 @@ Resources:
           - Name: TESTING_REGION
             Value: !Ref TestingRegion
           - Name: TESTING_PIPELINE_EXECUTION_ROLE
-            Value: !Ref CodePipelineServiceRole
+            Value: !GetAtt CodePipelineServiceRole.Arn
           - Name: TESTING_CLOUDFORMATION_EXECUTION_ROLE
-            Value: !Ref CodePipelineServiceRole
+            Value: !GetAtt CodePipelineServiceRole.Arn
           - Name: TESTING_ARTIFACT_BUCKET
             Value: !Ref TestingArtifactBucket
           - Name: TESTING_IMAGE_REPOSITORY
