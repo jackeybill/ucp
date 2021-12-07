@@ -36,7 +36,7 @@ Parameters:
     Default: "dhair2-s3-demo"
   TestingImageRepository:
     Type: String
-    Default: "build-python3.8"
+    Default: "public.ecr.aws/sam/build-python3.8:latest"
   ProdRegion:
     Type: String
     Default: "us-east-2"
@@ -54,7 +54,7 @@ Parameters:
     Default: "dhair2-demo-s3-2"
   ProdImageRepository:
     Type: String
-    Default: "dhair2-demo-ecr"
+    Default: "public.ecr.aws/sam/build-python3.8:latest"
   # CodeStarConnectionArn and FeatureGitBranch are required for pipelines for feature branches
   CodeStarConnectionArn:
     Type: String
