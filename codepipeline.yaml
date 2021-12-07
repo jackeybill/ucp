@@ -393,7 +393,6 @@ Resources:
                 Resource:
                   - Fn::Sub: ${PipelineArtifactsBucket.Arn}/*
                   - Fn::Sub: "arn:aws:s3:::${TestingArtifactBucket}/*"
-
         - PolicyName: CodePipelineCodeBuildAndCloudformationAccess
           PolicyDocument:
             Version: "2012-10-17"
@@ -554,10 +553,10 @@ Resources:
             Value: !Ref SamTemplate
           - Name: TESTING_REGION
             Value: !Ref TestingRegion
-          - Name: TESTING_PIPELINE_EXECUTION_ROLE
-            Value: !GetAtt CodePipelineServiceRole.Arn
-          - Name: TESTING_CLOUDFORMATION_EXECUTION_ROLE
-            Value: !GetAtt CodePipelineServiceRole.Arn
+          # - Name: TESTING_PIPELINE_EXECUTION_ROLE
+          #   Value: !GetAtt CodePipelineServiceRole.Arn
+          # - Name: TESTING_CLOUDFORMATION_EXECUTION_ROLE
+          #   Value: !GetAtt CodePipelineServiceRole.Arn
           - Name: TESTING_ARTIFACT_BUCKET
             Value: !Ref TestingArtifactBucket
           - Name: TESTING_IMAGE_REPOSITORY
@@ -637,68 +636,68 @@ Resources:
 
 
 #Pipeline Role
-  CodePipelineServiceRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - codepipeline.amazonaws.com
-            Action: 'sts:AssumeRole'
-      Path: /
-      Policies:
-        - PolicyName: AWS-CodePipeline-Service
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - 'codecommit:CancelUploadArchive'
-                  - 'codecommit:GetBranch'
-                  - 'codecommit:GetCommit'
-                  - 'codecommit:GetUploadArchiveStatus'
-                  - 'codecommit:UploadArchive'
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - 'codedeploy:CreateDeployment'
-                  - 'codedeploy:GetApplicationRevision'
-                  - 'codedeploy:GetDeployment'
-                  - 'codedeploy:GetDeploymentConfig'
-                  - 'codedeploy:RegisterApplicationRevision'
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - 'codebuild:BatchGetBuilds'
-                  - 'codebuild:StartBuild'
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - 'lambda:InvokeFunction'
-                  - 'lambda:ListFunctions'
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - 'iam:PassRole'
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - 'elasticbeanstalk:*'
-                  - 'logs:*'
-                  - 'ec2:*'
-                  - 'elasticloadbalancing:*'
-                  - 'autoscaling:*'
-                  - 'cloudwatch:*'
-                  - 's3:*'
-                  - 'sns:*'
-                  - 'cloudformation:*'
-                  - 'rds:*'
-                  - 'sqs:*'
-                  - 'ecs:*'
-                Resource: '*'
+  # CodePipelineServiceRole:
+  #   Type: 'AWS::IAM::Role'
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: 2012-10-17
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service:
+  #               - codepipeline.amazonaws.com
+  #           Action: 'sts:AssumeRole'
+  #     Path: /
+  #     Policies:
+  #       - PolicyName: AWS-CodePipeline-Service
+  #         PolicyDocument:
+  #           Version: 2012-10-17
+  #           Statement:
+  #             - Effect: Allow
+  #               Action:
+  #                 - 'codecommit:CancelUploadArchive'
+  #                 - 'codecommit:GetBranch'
+  #                 - 'codecommit:GetCommit'
+  #                 - 'codecommit:GetUploadArchiveStatus'
+  #                 - 'codecommit:UploadArchive'
+  #               Resource: '*'
+  #             - Effect: Allow
+  #               Action:
+  #                 - 'codedeploy:CreateDeployment'
+  #                 - 'codedeploy:GetApplicationRevision'
+  #                 - 'codedeploy:GetDeployment'
+  #                 - 'codedeploy:GetDeploymentConfig'
+  #                 - 'codedeploy:RegisterApplicationRevision'
+  #               Resource: '*'
+  #             - Effect: Allow
+  #               Action:
+  #                 - 'codebuild:BatchGetBuilds'
+  #                 - 'codebuild:StartBuild'
+  #               Resource: '*'
+  #             - Effect: Allow
+  #               Action:
+  #                 - 'lambda:InvokeFunction'
+  #                 - 'lambda:ListFunctions'
+  #               Resource: '*'
+  #             - Effect: Allow
+  #               Action:
+  #                 - 'iam:PassRole'
+  #               Resource: '*'
+  #             - Effect: Allow
+  #               Action:
+  #                 - 'elasticbeanstalk:*'
+  #                 - 'logs:*'
+  #                 - 'ec2:*'
+  #                 - 'elasticloadbalancing:*'
+  #                 - 'autoscaling:*'
+  #                 - 'cloudwatch:*'
+  #                 - 's3:*'
+  #                 - 'sns:*'
+  #                 - 'cloudformation:*'
+  #                 - 'rds:*'
+  #                 - 'sqs:*'
+  #                 - 'ecs:*'
+  #               Resource: '*'
 Outputs:
   CodeStarConnectionArn:
     Condition: CreateConnection

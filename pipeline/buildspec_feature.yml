@@ -23,7 +23,7 @@ phases:
 
       # - aws cloudformation package --template-file serverless/template.yaml --s3-bucket ${STATE_BUCKET} --output-template-file packaged-template.yaml             
       - aws cloudformation package --template-file serverless/${SAM_TEMPLATE} --output-template-file packaged-template.yaml --s3-bucket ${TESTING_ARTIFACT_BUCKET}
-      - . ./assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} feature-deploy
+      # - . ./assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} feature-deploy
       - aws cloudformation deploy --template-file packaged-template.yaml
                     --stack-name $(echo ${FEATURE_BRANCH_NAME} | tr -cd '[a-zA-Z0-9-]')
                     --capabilities CAPABILITY_IAM 
