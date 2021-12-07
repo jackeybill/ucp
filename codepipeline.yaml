@@ -27,10 +27,10 @@ Parameters:
     Default: "dhair2-serverless-demo"
   TestingPipelineExecutionRole:
     Type: String
-    Default: "arn:aws:iam::608494368293:role/admin-full"
+    Default: ""
   TestingCloudFormationExecutionRole:
     Type: String
-    Default: "arn:aws:iam::608494368293:role/admin-full"
+    Default: ""
   TestingArtifactBucket:
     Type: String
     Default: "cloudformation-status-bucket"
@@ -222,6 +222,9 @@ Resources:
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
                 RunOrder: 1
+
+                #  {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${TestingPipelineExecutionRole}"},
+                #       {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestingCloudFormationExecutionRole}"},
               # Uncomment the following step for running the integration tests
               # - Name: IntegrationTest
               #   ActionTypeId:
@@ -552,9 +555,9 @@ Resources:
           - Name: TESTING_REGION
             Value: !Ref TestingRegion
           - Name: TESTING_PIPELINE_EXECUTION_ROLE
-            Value: !Ref TestingPipelineExecutionRole
+            Value: !Ref CodePipelineServiceRole
           - Name: TESTING_CLOUDFORMATION_EXECUTION_ROLE
-            Value: !Ref TestingCloudFormationExecutionRole
+            Value: !Ref CodePipelineServiceRole
           - Name: TESTING_ARTIFACT_BUCKET
             Value: !Ref TestingArtifactBucket
           - Name: TESTING_IMAGE_REPOSITORY
@@ -631,6 +634,71 @@ Resources:
       Source:
         Type: CODEPIPELINE
         BuildSpec: pipeline/buildspec_deploy.yml
+
+
+#Pipeline Role
+  CodePipelineServiceRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codepipeline.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: AWS-CodePipeline-Service
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'codecommit:CancelUploadArchive'
+                  - 'codecommit:GetBranch'
+                  - 'codecommit:GetCommit'
+                  - 'codecommit:GetUploadArchiveStatus'
+                  - 'codecommit:UploadArchive'
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - 'codedeploy:CreateDeployment'
+                  - 'codedeploy:GetApplicationRevision'
+                  - 'codedeploy:GetDeployment'
+                  - 'codedeploy:GetDeploymentConfig'
+                  - 'codedeploy:RegisterApplicationRevision'
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - 'codebuild:BatchGetBuilds'
+                  - 'codebuild:StartBuild'
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - 'lambda:InvokeFunction'
+                  - 'lambda:ListFunctions'
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - 'iam:PassRole'
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - 'elasticbeanstalk:*'
+                  - 'logs:*'
+                  - 'ec2:*'
+                  - 'elasticloadbalancing:*'
+                  - 'autoscaling:*'
+                  - 'cloudwatch:*'
+                  - 's3:*'
+                  - 'sns:*'
+                  - 'cloudformation:*'
+                  - 'rds:*'
+                  - 'sqs:*'
+                  - 'ecs:*'
+                Resource: '*'
 Outputs:
   CodeStarConnectionArn:
     Condition: CreateConnection
