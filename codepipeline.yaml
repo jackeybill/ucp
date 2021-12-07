@@ -308,6 +308,8 @@ Resources:
             Resource:
               - !Sub arn:aws:s3:::${PipelineArtifactsBucket}
               - !Sub arn:aws:s3:::${PipelineArtifactsBucket}/*
+              - !Sub arn:aws:s3:::${TestingArtifactBucket}/*
+              - !Sub arn:aws:s3:::${TestingArtifactBucket}
             Principal:
               AWS:
                 - !GetAtt CodePipelineExecutionRole.Arn
