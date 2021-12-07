@@ -1197,10 +1197,11 @@ const ScenarioPage = (props) => {
         x: '40%',
         y: '10%',
         orient: 'vertical',
-      itemHeight: 7,
-      textStyle: {
-        fontSize: 9
-      },
+        itemHeight: 7,
+        itemWidth: 7,
+        textStyle: {
+          fontSize: 9
+        },
         formatter: function(name) {
           let data = raceOption.series[0].data;
           let total = 0
