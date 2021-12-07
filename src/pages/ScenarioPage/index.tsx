@@ -562,13 +562,13 @@ const ScenarioPage = (props) => {
       var tempStr
       if(item.Text.toString() === "vital signs" && item.BP_value){
         console.log(item.Text,": ", item.BP_value);
-        // < 150/95 mmhg
+        // < 150/95 mmHg
         if (item.BP_value.avg_dbp_lower == 0 && item.BP_value.avg_sbp_lower == 0 && item.BP_value.avg_dbp_upper != 0 && item.BP_value.avg_sbp_upper != 0) {
           tempStr = "< "+ Number(item.BP_value.avg_sbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
-        // > 150/95 mmhg
+        // > 150/95 mmHg
         } else if (item.BP_value.avg_dbp_lower != 0 && item.BP_value.avg_sbp_lower != 0 && item.BP_value.avg_dbp_upper == 0 && item.BP_value.avg_sbp_upper == 0) {
           tempStr = "> " +  Number(item.BP_value.avg_sbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
-        // 180/90 - 200/95 mmhg
+        // 180/90 - 200/95 mmHg
         } else if (item.BP_value.avg_dbp_lower != 0 && item.BP_value.avg_sbp_lower != 0 && item.BP_value.avg_dbp_upper != 0 && item.BP_value.avg_sbp_upper != 0) {
           tempStr = Number(item.BP_value.avg_sbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/)) + " - " + Number(item.BP_value.avg_sbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
         } else {
@@ -1246,6 +1246,7 @@ const ScenarioPage = (props) => {
           fontWeight: 'bold',
           color: '#333'
         },
+        show: false
         // show: (!showLegend)
       },
       // legend: {
@@ -1336,6 +1337,7 @@ const ScenarioPage = (props) => {
           fontWeight: 'bold',
           color: '#333'
         },
+        show: false
         // show: (!showLegend)
       },
       // legend: {
@@ -1426,6 +1428,7 @@ const ScenarioPage = (props) => {
           fontWeight: 'bold',
           color: '#333'
         },
+        show: false
         // show: (!showLegend)
       },
       // legend: {
@@ -3235,13 +3238,22 @@ const ScenarioPage = (props) => {
                       <Row>
                         <Col span={24} className="result-chart">
                           {activeEnrollmentTabKey === '1' && (
-                            <ReactECharts option={eliPatientOption} style={{ height: funnelChartheight}}></ReactECharts>
+                            <>
+                              <div style={{fontWeight:700, fontSize:18, textAlign:"center", marginTop: 15}}>{eliPatientChartTitle||""}</div>
+                              <ReactECharts option={eliPatientOption} style={{ height: funnelChartheight, marginTop: -20, marginBottom: 20}}></ReactECharts>
+                            </>
                           )}
                           {activeEnrollmentTabKey === '2' && (
-                            <ReactECharts option={fePatientOption} style={{ height: funnelChartheight}}></ReactECharts>
+                            <>
+                              <div style={{fontWeight:700, fontSize:18, textAlign:"center", marginTop: 15}}>{fePatientChartTitle||""}</div>
+                              <ReactECharts option={fePatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
+                            </>
                           )}
                           {activeEnrollmentTabKey === '3' && (
-                            <ReactECharts option={ethPatientOption} style={{ height: funnelChartheight}}></ReactECharts>
+                            <>
+                              <div style={{fontWeight:700, fontSize:18, textAlign:"center", marginTop: 15}}>{ethPatientChartTitle||""}</div>
+                              <ReactECharts option={ethPatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
+                            </>
                           )}
                         </Col>
                       </Row>
