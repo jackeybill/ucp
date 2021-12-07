@@ -1316,6 +1316,11 @@ const ScenarioPage = (props) => {
       },
       yAxis: {
           type: 'category',
+          axisLabel: {
+            formatter: (value: any) => {
+              return value.length > 15 && value.indexOf(":") > 15? value.slice(0, 15) + '...'+ value.slice(value.indexOf(":")) : value
+            }
+          },
           axisLine: {
               show: false
           },
@@ -1407,6 +1412,11 @@ const ScenarioPage = (props) => {
       },
       yAxis: {
           type: 'category',
+          axisLabel: {
+            formatter: (value: any) => {
+              return value.length > 15 && value.indexOf(":") > 15? value.slice(0, 15) + '...'+ value.slice(value.indexOf(":")) : value
+            }
+          },
           axisLine: {
               show: false
           },
@@ -1498,6 +1508,11 @@ const ScenarioPage = (props) => {
       },
       yAxis: {
           type: 'category',
+          axisLabel: {
+            formatter: (value: any) => {
+              return value.length > 15 && value.indexOf(":") > 15? value.slice(0, 15) + '...'+ value.slice(value.indexOf(":")) : value
+            }
+          },
           axisLine: {
               show: false
           },
@@ -1563,7 +1578,7 @@ const ScenarioPage = (props) => {
       }
       if (response.statusCode === 200) {
         const resp = JSON.parse(response.body)
-        console.log("getPatientFunnelData:",response);
+        console.log("getPatientFunnelData:",JSON.parse(response.body));
 
         // set data for tab info
         setEliPatient(resp['eli_patient'])
