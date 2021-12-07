@@ -27,10 +27,10 @@ Parameters:
     Default: "dhair2-serverless-demo"
   TestingPipelineExecutionRole:
     Type: String
-    Default: "pipeline-demo-CodePipelineServiceRole-S10G6DI1YBV3"
+    Default: "testing-pipeline-role"
   TestingCloudFormationExecutionRole:
     Type: String
-    Default: "pipeline-demo-CodePipelineServiceRole-S10G6DI1YBV3"
+    Default: "testing-pipeline-execution-role"
   TestingArtifactBucket:
     Type: String
     Default: "cloudformation-status-bucket"
