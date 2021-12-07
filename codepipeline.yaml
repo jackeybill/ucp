@@ -33,7 +33,7 @@ Parameters:
     Default: ""
   TestingArtifactBucket:
     Type: String
-    Default: "cloudformation-status-bucket"
+    Default: "cloudformation-stack-state-store"
   TestingImageRepository:
     Type: String
     Default: "public.ecr.aws/sam/build-python3.8:latest"
@@ -51,7 +51,7 @@ Parameters:
     Default: "dhair2-demo-cfn-role2"
   ProdArtifactBucket:
     Type: String
-    Default: "cloudformation-status-bucket"
+    Default: "cloudformation-stack-state-store"
   ProdImageRepository:
     Type: String
     Default: "public.ecr.aws/sam/build-python3.8:latest"
