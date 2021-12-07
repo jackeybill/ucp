@@ -308,8 +308,6 @@ Resources:
             Resource:
               - !Sub arn:aws:s3:::${PipelineArtifactsBucket}
               - !Sub arn:aws:s3:::${PipelineArtifactsBucket}/*
-              - !Sub arn:aws:s3:::${TestingArtifactBucket}/*
-              - !Sub arn:aws:s3:::${TestingArtifactBucket}
             Principal:
               AWS:
                 - !GetAtt CodePipelineExecutionRole.Arn
@@ -390,7 +388,8 @@ Resources:
                   - "s3:PutObject"
                 Effect: Allow
                 Resource:
-                  Fn::Sub: ${PipelineArtifactsBucket.Arn}/*
+                  - Fn::Sub: ${PipelineArtifactsBucket.Arn}/*
+                  - Fn::Sub: "arn:aws:s3:::${TestingArtifactBucket}/*"
 
         - PolicyName: CodePipelineCodeBuildAndCloudformationAccess
           PolicyDocument:
