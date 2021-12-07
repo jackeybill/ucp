@@ -33,7 +33,7 @@ Parameters:
     Default: "dhairw2-cfn-role"
   TestingArtifactBucket:
     Type: String
-    Default: "dhair2-s3-demo"
+    Default: "ucp-dev-for-testing-bucket5-1gtwhhhnxe8of"
   TestingImageRepository:
     Type: String
     Default: "public.ecr.aws/sam/build-python3.8:latest"
@@ -51,7 +51,7 @@ Parameters:
     Default: "dhair2-demo-cfn-role2"
   ProdArtifactBucket:
     Type: String
-    Default: "dhair2-demo-s3-2"
+    Default: "ucp-dev-for-testing-bucket5-1gtwhhhnxe8of"
   ProdImageRepository:
     Type: String
     Default: "public.ecr.aws/sam/build-python3.8:latest"
