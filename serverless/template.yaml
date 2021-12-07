@@ -93,7 +93,7 @@ Resources:
       Properties:
         Queues: [!Ref 'MySQS']
         PolicyDocument:
-          Version: '2012-10-17'
+          Version: '2008-10-17'
           Id: PublicationPolicy4SendMsg
           Statement:
           - Sid: Allow-Lambda-SendMessage
