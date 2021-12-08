@@ -31,7 +31,9 @@ const colorList = {
   'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': '#CA4A044D', 
   'OTHER': '#FBD6BD', 
   'UNKNOWN': '#FBD0B3', 
-  'WHITE': '#FDECE0'
+  'WHITE': '#FDECE0',
+  "HIGHLIGHTED":'#FDECE0',
+  "NOT HIGHLIGHTED": '#E84F22',
 }
 
 const panelHeader = () => {
@@ -1193,34 +1195,34 @@ const ScenarioPage = (props) => {
         trigger: 'item',
         formatter: '{b} - {c} - {d}%'
       },
-      legend: {
-        x: '40%',
-        y: '10%',
-        orient: 'vertical',
-        itemHeight: 7,
-        itemWidth: 7,
-        textStyle: {
-          fontSize: 9
-        },
-        formatter: function(name) {
-          let data = raceOption.series[0].data;
-          let total = 0
-          for(const d in data){
-            total += data[d].value
-          }
-          let p = 0
-          for (let i = 0, l = data.length; i < l; i++) {
-              if (data[i].name == name) {
-                if(data[i].value >0){
-                  const p = (data[i].value/total * 100).toFixed(2)
-                  return name + ' - ' + p + '%';
-                }else{
-                  return name + ' - 0'
-                }
-              }
-          }
-        }
-      },
+      // legend: {
+      //   x: '40%',
+      //   y: '10%',
+      //   orient: 'vertical',
+      //   itemHeight: 7,
+      //   itemWidth: 7,
+      //   textStyle: {
+      //     fontSize: 9
+      //   },
+      //   formatter: function(name) {
+      //     let data = raceOption.series[0].data;
+      //     let total = 0
+      //     for(const d in data){
+      //       total += data[d].value
+      //     }
+      //     let p = 0
+      //     for (let i = 0, l = data.length; i < l; i++) {
+      //         if (data[i].name == name) {
+      //           if(data[i].value >0){
+      //             const p = (data[i].value/total * 100).toFixed(2)
+      //             return name + ' - ' + p + '%';
+      //           }else{
+      //             return name + ' - 0'
+      //           }
+      //         }
+      //     }
+      //   }
+      // },
       series: [
         {
           name: 'Race & Ethnicity',
@@ -1678,7 +1680,8 @@ const ScenarioPage = (props) => {
           defaultEth = resp['final_ethnicity'][0]
           setEthPatientChartTitle('Race & Ethnicity - ' + defaultEth + ' - ' + defaultEnthRate + '%')
         } else {
-          setEthPatientChartTitle('Race & Ethnicity - ' + resp['final_ethnicity'][0] +  ' - 0')
+          // setEthPatientChartTitle('Race & Ethnicity - ' + resp['final_ethnicity'][0] +  ' - 0')
+          resp['ethnicity_legend']&& setEthPatientChartTitle('Race & Ethnicity - ' + resp['ethnicity_legend'][0].name +  ' - ' + resp['ethnicity_legend'][0].percent + '%')
         }
         
         const tempEthPatientSeriesData = []
@@ -1698,6 +1701,7 @@ const ScenarioPage = (props) => {
         }
         tempEthPatientSeriesData.push(totalData)
         setEthPatientResultData(tempEthPatientSeriesData)
+        // console.log(tempEthPatientSeriesData);
         setActiveEnrollmentTabKey('1')
           
       }
@@ -2407,6 +2411,29 @@ const ScenarioPage = (props) => {
     } else if(e.name === 'Demographics'){
       setExcluDefaultActiveKey(['2'])
     }
+  }
+
+  const onClickLegend = (value, percent) =>{
+    // console.log(value);
+    let tempEthPatientSeriesData = []
+    let tempname = ""
+    let temppercent = ""
+    tempEthPatientSeriesData = JSON.parse(JSON.stringify(ethPatientResultData))
+    // console.log(tempEthPatientSeriesData);
+    for(const val of tempEthPatientSeriesData){
+      // console.log(val);
+      if (val.name === value){
+        val.color = colorList["HIGHLIGHTED"]
+        tempname = val.name
+        temppercent = percent
+      } else {
+        val.color = colorList["NOT HIGHLIGHTED"]
+      }
+    }
+    // console.log(tempEthPatientSeriesData);
+    setEthPatientResultData(tempEthPatientSeriesData)
+
+    setEthPatientChartTitle('Race & Ethnicity - ' + tempname +  ' - ' + temppercent + '%')
   }
 
   const handleGoBack = (scheduleOfEvents) =>{
@@ -3247,7 +3274,58 @@ const ScenarioPage = (props) => {
                           <Row><Col className="tab-item chart" span={24}>
                             <Row className="tab-desc">Race & Ethnicity&nbsp;
                                 {activeEnrollmentTabKey === '3'?(<CaretRightOutlined />):(<></>)}</Row>
-                            <Row><Col span={24}><ReactECharts option={raceOption} style={{ height: 100}}></ReactECharts></Col></Row>
+                            <Row><Col span={24}>
+                              <ReactECharts option={raceOption} style={{ height: 100}}></ReactECharts>
+                              
+                              {/* finalEthnicityData */}
+                              <div className="my-legend-wrapper">
+                                {finalEthnicityData
+                                  .sort((a, b) => {
+                                    return b.value - a.value;
+                                  })
+                                  .slice(0, 9)
+                                  .map((d, idx) => {
+                                    
+                                    const chartData = finalEthnicityData;
+
+                                    function getChartData(name,p) {
+                                      let data = raceOption.series[0].data;
+                                      let total = 0
+                                      for(const d in data){
+                                        total += data[d].value
+                                      }
+                                      for (let i = 0, l = data.length; i < l; i++) {
+                                          if (data[i].name == name) {
+                                            if(data[i].value >0){
+                                              const p = (data[i].value/total * 100).toFixed(2)
+                                              return name + ' - ' + p + '%';
+                                            }else{
+                                              return name + ' - 0'
+                                            }
+                                          }
+                                      }
+                                    }
+                                    const sum = chartData.reduce(
+                                      (accumulator, currentValue) => {
+                                        return accumulator + currentValue.value;
+                                      },
+                                      0
+                                    );
+                                    let percent = ((d.value / sum) * 100).toFixed(2);
+                                    return (
+                                      <div className="custom-legend" onClick={()=>onClickLegend(d.name, d.percent)}>
+                                        <span
+                                          className="my_legend"
+                                          style={{
+                                            backgroundColor: colorList[d.name],
+                                          }}
+                                        ></span>
+                                        <i className="my_legend_text">{getChartData(d.name,percent)}</i>
+                                      </div>
+                                    );
+                                  })}
+                              </div>
+                              </Col></Row>
                           </Col></Row>
                         </Col>
                       </Row>

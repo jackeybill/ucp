@@ -620,6 +620,28 @@
     .ant-slider-handle-dragging.ant-slider-handle-dragging.ant-slider-handle-dragging{
         border-color: #ca4a04;
     }
+
+    .my-legend-wrapper{
+        // margin-top: -15px;
+        margin-left: 5px;
+  
+        .custom-legend{
+          cursor: pointer;
+          .my_legend{
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 1px;
+            margin-right: 4px;
+          }
+          .my_legend_text{
+            color: #666666;
+            font-size: 10px;
+            font-style:normal;
+          }
+        }
+  
+      }
 }
 
 button.ant-btn.ant-btn-text, button.ant-btn.ant-btn-text:focus, button.ant-btn.ant-btn-text:hover {
