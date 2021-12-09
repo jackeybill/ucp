@@ -518,6 +518,12 @@ Resources:
                   - sqs:*
                   - dynamodb:*
                   - iam:CreateRole
+                  - iam:DetachRolePolicy
+                  - iam:DeleteRolePolicy 
+                  - iam:AttachRolePolicy
+                  - iam:PutRolePolicy
+                  - cognito-idp:CreateUserPool
+                  
                 Resource: "*"
         - PolicyName: CodeBuildParameterStore
           PolicyDocument:
