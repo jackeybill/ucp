@@ -54,7 +54,7 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       Subscription:
-        - Endpoint: Fn::GetAtt: MySQS.Arn
+        - Endpoint: !GetAtt MySQS.Arn
           Protocol: "sqs"
 
   ExtractPdfSNsTopic:
@@ -63,7 +63,7 @@ Resources:
       DisplayName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
       TopicName: !Join ['-', ['AmazonTextractExtractPDF', !Ref AppIdentity, !Ref Stage]]
       Subscription:
-        - Endpoint: Fn::GetAtt: MySQS.Arn
+        - Endpoint: !GetAtt MySQS.Arn
           Protocol: "sqs"
           
   MySQS:
