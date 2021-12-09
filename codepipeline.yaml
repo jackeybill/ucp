@@ -519,6 +519,16 @@ Resources:
                   - dynamodb:*
                   - iam:*
                   - cognito-idp:*
+                  - sns:*
+                  - 'elasticbeanstalk:*'
+                  - 'logs:*'
+                  - 'elasticloadbalancing:*'
+                  - 'autoscaling:*'
+                  - 'cloudwatch:*'
+                  - 's3:*'
+                  - 'cloudformation:*'
+                  - 'rds:*'
+                  - 'ecs:*'
                   
                 Resource: "*"
         - PolicyName: CodeBuildParameterStore
