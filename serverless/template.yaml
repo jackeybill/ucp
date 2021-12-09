@@ -46,7 +46,7 @@ Globals:
     Runtime: python3.8
 
 Resources:
-## --------------   Lambda   -------------------- ##
+
 
 # create subnet sg vpc secretsmanager sagemaker endpoint sns
 # functuins section
@@ -99,7 +99,13 @@ Resources:
   #         - !Ref MySubnet
   #     Events:
         
-
+#  _                     _         _
+# | |                   | |       | |      
+# | |     __ _ _ __ ___ | |__   __| | __ _ 
+# | |    / _` | '_ ` _ \| '_ \ / _` |/ _` |
+# | |___| (_| | | | | | | |_) | (_| | (_| |
+# |______\__,_|_| |_| |_|_.__/ \__,_|\__,_|                                          
+                                        
   gwCasemain:
     Type: 'AWS::Serverless::Function'
     Properties:
