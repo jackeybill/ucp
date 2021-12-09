@@ -30,7 +30,7 @@ phases:
                     --no-fail-on-empty-changeset
                     --s3-bucket ${TESTING_ARTIFACT_BUCKET}
                     --region ${TESTING_REGION}
-                    --parameter-overrides "Stage=feature,VPCId=id,AppIdentity=${AppIdentity}"
+                    --parameter-overrides Stage=feature VPCId=id AppIdentity=${AppIdentity}
                     # --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
                     # --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
              
