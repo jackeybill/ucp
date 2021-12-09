@@ -24,27 +24,14 @@ Parameters:
     Type: String
     Description: file bucket Name
     Default: ucp-sam-s3-demo-sg
-  # GithubRepo:
-  #   Description: Gitub Repository name
-  #   Type: AWS::SSM::Parameter::Value<String>
-  #   Default: /services/github/repo
-  # GithubToken:
-  #   Description: Github OAuth Token with full permissions on admin:repo_hook and repo
-  #   Type: AWS::SSM::Parameter::Value<String>
-  #   NoEcho: true
-  #   Default: /services/github/token
-  # GithubUser:
-  #   Description: Github user where the repository lives
-  #   Type: AWS::SSM::Parameter::Value<String>
-  #   Default: /services/github/user
   GitBranchName:
     Description: Repo Branch Name
     Type: String
     Default: master
-  VPCId:
-    Description: VPC ID for lambda
-    Type: String
-    Default: vpc-023bd2049facc6830
+  # VPCId:
+  #   Description: VPC ID for lambda
+  #   Type: String
+  #   Default: vpc-023bd2049facc6830
   SageMakerImage:
     Description: SagerMaker ECR Image ARN
     Type: String
@@ -125,11 +112,6 @@ Resources:
       Handler: index.handler
       CodeUri: main/gwCase-main/
       Role: !GetAtt MyLambdaExecuteRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds: 
-          - !Ref MySubnet
       Events:
         Api1:
           Type: Api
@@ -143,25 +125,6 @@ Resources:
             Path: /cases
             Method: OPTIONS
             RestApiId: !Ref MyApi
-        # BucketEvent1:
-        #   Type: S3
-        #   Properties:
-        #     Bucket: !Ref MyFileBucket
-        #     Events: s3:ObjectCreated:*
-        # SQS1:
-        #   Type: SQS
-        #   Properties:
-        #     Queue: !GetAtt MySQS.Arn
-      # Environment:
-      #   Variables:
-      #     STAGE: !Ref Stage
-      #     SERVICE: !Ref AppIdentity
-      #     NOTIFICATION_ARN: !Ref MySNSTopic
-      #     ROLE_ARN: !GetAtt MyLambdaExecuteRole.Arn
-      #     TEXTRACT_NOTIFICATION_ARN: !Ref ExtractPdfSNsTopic     
-      # Layers:
-        # - 'arn:aws:lambda:us-west-2:608494368293:layer:Jose:1'
-        # - 'arn:aws:lambda:us-west-2:608494368293:layer:postgresqlClient-master:3'
 
   isoservicedevupload:
     Type: 'AWS::Serverless::Function'
@@ -170,11 +133,6 @@ Resources:
       CodeUri: main/iso-service-dev-upload/
       Description: Upload file from api gateway to S3
       Role: !GetAtt MyLambdaExecuteRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds: 
-          - !Ref MySubnet
       Events:
         Api1:
           Type: Api
@@ -194,11 +152,6 @@ Resources:
       Handler: lambda_function.lambda_handler
       CodeUri: main/dean-dev-search-kendra/
       Role: !GetAtt MyLambdaExecuteRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds:
-          - !Ref MySubnet
       Events:
         Api1:
           Type: Api
@@ -219,11 +172,6 @@ Resources:
       Handler: extractPDF.lambda_handler
       CodeUri: main/iso-service-dev-extractPDF/
       Role: !GetAtt MyLambdaExecuteRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds: 
-          - !Ref MySubnet
       Events:
         BucketEvent1:
           Type: S3
@@ -245,11 +193,6 @@ Resources:
       CodeUri: main/iso-service-dev-processPdfToTxt/
       Description: 'Process PDF to txt, and save into S3'
       Role: !GetAtt MyLambdaExecuteRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds:
-          - !Ref MySubnet
       Events:
         SQS1:
           Type: SQS
@@ -270,11 +213,6 @@ Resources:
       CodeUri: main/iso-service-dev-txtintosections/
       Description: This lambda function to extract sections from txt
       Role: !GetAtt MyLambdaExecuteRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds: 
-          - !Ref MySubnet
 
   isoservicedevawslabel:
     Type: 'AWS::Serverless::Function'
@@ -282,11 +220,6 @@ Resources:
       Handler: lambda_function.lambda_handler
       CodeUri: main/iso-service-dev-aws-label/
       Role: !GetAtt MyLambdaExecuteRole.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          - !Ref MySecurityGroup
-        SubnetIds: 
-          - !Ref MySubnet
 
 ## --------------   lambda role   -------------------- ##
   MyRootInstanceProfile:
@@ -369,163 +302,6 @@ Resources:
           MyCognitoAuthorizer:
             UserPoolArn: !GetAtt MyCognitoUserPool.Arn
       
-## --------------   Networks   -------------------- ##
-#vpc
-  MyVPC:
-    Type: AWS::EC2::VPC
-    Properties:
-      CidrBlock: 172.31.0.0/16
-      EnableDnsHostnames: true
-      EnableDnsSupport: true
-      Tags:
-      - Key: Stack
-        Value: !Ref AWS::StackName
-
-#vpc endpoint
-  S3Endpoint:
-    Type: AWS::EC2::VPCEndpoint
-    Properties:
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal: "*"
-          Action:
-          - "*"
-          Resource:
-          - "*"
-      ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
-      RouteTableIds: 
-      - !Ref MyRouteTable
-      VpcId: !Ref MyVPC
-  
-  DynamoDBEndpoint:
-    Type: AWS::EC2::VPCEndpoint
-    Properties:
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal: "*"
-          Action:
-          - "*"
-          Resource:
-          - "*"
-      ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
-      RouteTableIds: 
-      - !Ref MyRouteTable
-      VpcId: !Ref MyVPC
-
-  TextractEndpoint:
-    Type: AWS::EC2::VPCEndpoint
-    Properties:
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal: "*"
-          Action:
-          - "*"
-          Resource:
-          - "*"
-      ServiceName: !Sub "com.amazonaws.${AWS::Region}.textract"
-      VpcEndpointType: Interface
-      PrivateDnsEnabled: true
-      SecurityGroupIds:
-      - !Ref MySecurityGroup
-      SubnetIds:
-      - !Ref MySubnet
-      - !Ref SecondSubnet
-      VpcId: !Ref MyVPC
-  
-  SnsEndpoint:
-    Type: AWS::EC2::VPCEndpoint
-    Properties:
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal: "*"
-          Action:
-          - "*"
-          Resource:
-          - "*"
-      ServiceName: !Sub "com.amazonaws.${AWS::Region}.sns"
-      VpcEndpointType: Interface
-      PrivateDnsEnabled: true
-      SecurityGroupIds:
-      - !Ref MySecurityGroup
-      SubnetIds:
-      - !Ref MySubnet
-      - !Ref SecondSubnet
-      VpcId: !Ref MyVPC
-
-#subnet 
-  MySubnet:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId:
-        Ref: MyVPC
-      AvailabilityZone:
-        Fn::Select:
-         - 0
-         - Fn::GetAZs: ""
-      CidrBlock: 172.31.2.0/24
-      MapPublicIpOnLaunch: false 
-      # AvailabilityZone: us-west-1b
-      Tags:
-      - Key: Stack
-        Value: !Ref AWS::StackName
-
-  SecondSubnet:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId:
-        Ref: MyVPC
-      AvailabilityZone:
-        Fn::Select:
-         - 1
-         - Fn::GetAZs: ""
-      CidrBlock: 172.31.3.0/24
-      MapPublicIpOnLaunch: false
-      Tags:
-      - Key: Stack
-        Value: Second subnet for UCP project
-
-#SG
-  MySecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: security group
-      VpcId:
-        Ref: MyVPC
-      Tags: 
-      - Key: Stack
-        Value: !Ref AWS::StackName
-      SecurityGroupIngress:
-      - IpProtocol: -1
-        CidrIp: 0.0.0.0/0
-        Description: allow all the traffic to lambda
-      SecurityGroupEgress:
-      - IpProtocol: -1
-        CidrIp: 0.0.0.0/0
-        Description: allow all the traffic from lambda
-
-## route table
-  MyRouteTable:
-      Type: AWS::EC2::RouteTable
-      Properties:
-        VpcId: !Ref MyVPC
-  MySubnetARouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref MySubnet
-      RouteTableId: !Ref MyRouteTable
-  MySubnetBRouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref SecondSubnet
-      RouteTableId: !Ref MyRouteTable
 
 ## --------------   Cognito   -------------------- ##
 #Congnito User Pool        
@@ -742,10 +518,10 @@ Outputs:
   Bucket:
     Description : "The name of the created bucket"
     Value: !Ref MyFileBucket
-  VPC:
-    Description : "VPC Name"
-    Value: !Ref MyVPC
-  # AmplifyAppID:
+  # VPC:
+  #   Description : "VPC Name"
+  #   Value: !Ref MyVPC
+  # # AmplifyAppID:
   #   Value: !Ref AmplifyApp
   # EndpointId:
   #   Value: !Ref Endpoint
@@ -795,3 +571,162 @@ Outputs:
   #         AliasTarget:
   #           HostedZoneId: Z2FDTNDATAQYW2
   #           DNSName: !GetAtt [WebsiteCloudfront, DomainName]
+
+  #  S3Endpoint:
+  #   Type: AWS::EC2::VPCEndpoint
+  #   Properties:
+  #     PolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #       - Effect: Allow
+  #         Principal: "*"
+  #         Action:
+  #         - "*"
+  #         Resource:
+  #         - "*"
+  #     ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
+  #     RouteTableIds: 
+  #     - !Ref MyRouteTable
+  #     VpcId: !Ref MyVPC
+  
+  # DynamoDBEndpoint:
+  #   Type: AWS::EC2::VPCEndpoint
+  #   Properties:
+  #     PolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #       - Effect: Allow
+  #         Principal: "*"
+  #         Action:
+  #         - "*"
+  #         Resource:
+  #         - "*"
+  #     ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
+  #     RouteTableIds: 
+  #     - !Ref MyRouteTable
+  #     VpcId: !Ref MyVPC
+
+    # TextractEndpoint:
+    # Type: AWS::EC2::VPCEndpoint
+    # Properties:
+    #   PolicyDocument:
+    #     Version: '2012-10-17'
+    #     Statement:
+    #     - Effect: Allow
+    #       Principal: "*"
+    #       Action:
+    #       - "*"
+    #       Resource:
+    #       - "*"
+    #   ServiceName: !Sub "com.amazonaws.${AWS::Region}.textract"
+    #   VpcEndpointType: Interface
+    #   PrivateDnsEnabled: true
+    #   SecurityGroupIds:
+    #   - !Ref MySecurityGroup
+    #   SubnetIds:
+    #   - !Ref MySubnet
+    #   - !Ref SecondSubnet
+    #   VpcId: !Ref MyVPC
+  ## --------------   Networks   -------------------- ##
+#vpc
+  # MyVPC:
+  #   Type: AWS::EC2::VPC
+  #   Properties:
+  #     CidrBlock: 172.31.0.0/16
+  #     EnableDnsHostnames: true
+  #     EnableDnsSupport: true
+  #     Tags:
+  #     - Key: Stack
+  #       Value: !Ref AWS::StackName
+
+#vpc endpoint
+ 
+
+
+#   SnsEndpoint:
+#     Type: AWS::EC2::VPCEndpoint
+#     Properties:
+#       PolicyDocument:
+#         Version: '2012-10-17'
+#         Statement:
+#         - Effect: Allow
+#           Principal: "*"
+#           Action:
+#           - "*"
+#           Resource:
+#           - "*"
+#       ServiceName: !Sub "com.amazonaws.${AWS::Region}.sns"
+#       VpcEndpointType: Interface
+#       PrivateDnsEnabled: true
+#       SecurityGroupIds:
+#       - !Ref MySecurityGroup
+#       SubnetIds:
+#       - !Ref MySubnet
+#       - !Ref SecondSubnet
+#       VpcId: !Ref MyVPC
+
+# #subnet 
+#   MySubnet:
+#     Type: AWS::EC2::Subnet
+#     Properties:
+#       VpcId:
+#         Ref: MyVPC
+#       AvailabilityZone:
+#         Fn::Select:
+#          - 0
+#          - Fn::GetAZs: ""
+#       CidrBlock: 172.31.2.0/24
+#       MapPublicIpOnLaunch: false 
+#       # AvailabilityZone: us-west-1b
+#       Tags:
+#       - Key: Stack
+#         Value: !Ref AWS::StackName
+
+#   SecondSubnet:
+#     Type: AWS::EC2::Subnet
+#     Properties:
+#       VpcId:
+#         Ref: MyVPC
+#       AvailabilityZone:
+#         Fn::Select:
+#          - 1
+#          - Fn::GetAZs: ""
+#       CidrBlock: 172.31.3.0/24
+#       MapPublicIpOnLaunch: false
+#       Tags:
+#       - Key: Stack
+#         Value: Second subnet for UCP project
+
+# #SG
+#   MySecurityGroup:
+#     Type: AWS::EC2::SecurityGroup
+#     Properties:
+#       GroupDescription: security group
+#       VpcId: !Ref MyVPC
+#       Tags: 
+#       - Key: Stack
+#         Value: !Ref AWS::StackName
+#       SecurityGroupIngress:
+#       - IpProtocol: -1
+#         CidrIp: 0.0.0.0/0
+#         Description: allow all the traffic to lambda
+#       SecurityGroupEgress:
+#       - IpProtocol: -1
+#         CidrIp: 0.0.0.0/0
+#         Description: allow all the traffic from lambda
+
+# ## route table
+#   MyRouteTable:
+#       Type: AWS::EC2::RouteTable
+#       Properties:
+#         VpcId: !Ref MyVPC
+#   MySubnetARouteTableAssociation:
+#     Type: AWS::EC2::SubnetRouteTableAssociation
+#     Properties:
+#       SubnetId: !Ref MySubnet
+#       RouteTableId: !Ref MyRouteTable
+#   MySubnetBRouteTableAssociation:
+#     Type: AWS::EC2::SubnetRouteTableAssociation
+#     Properties:
+#       SubnetId: !Ref SecondSubnet
+#       RouteTableId: !Ref MyRouteTable
