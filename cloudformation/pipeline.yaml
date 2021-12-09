@@ -409,6 +409,7 @@ Resources:
                   - 'rds:*'
                   - 'sqs:*'
                   - 'ecs:*'
+                  - 'apigateway:*'
                 Resource: '*'
                 
   WebsiteBucketPolicy:

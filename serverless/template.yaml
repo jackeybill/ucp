@@ -39,7 +39,8 @@ Parameters:
   DirsToCreate:
     Description: "list of directories to create."
     Type: String
-    Default: ucp-filebucket-dev/RawDocuments 
+    Default: ucp-filebucket-dev/RawDocuments
+    
 Globals:
   Function:
     Timeout: 60
