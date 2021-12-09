@@ -40,7 +40,7 @@ Parameters:
     Description: "list of directories to create."
     Type: String
     Default: ucp-filebucket-dev/RawDocuments
-    
+
 Globals:
   Function:
     Timeout: 60
@@ -139,7 +139,7 @@ Resources:
           Type: Api
           Properties:
             Path: /upload
-            Method: POST
+            Method: get
       Environment:
         Variables:
           STAGE: !Ref Stage
@@ -160,12 +160,12 @@ Resources:
             Path: /
             Method: GET
             RestApiId: !Ref MyApi
-        Api2:
-          Type: Api
-          Properties:
-            Path: /
-            Method: POST
-            RestApiId: !Ref MyApi
+        # Api2:
+        #   Type: Api
+        #   Properties:
+        #     Path: /
+        #     Method: POST
+        #     RestApiId: !Ref MyApi
 
   extractPDF:
     Type: 'AWS::Serverless::Function'
