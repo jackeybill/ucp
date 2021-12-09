@@ -509,6 +509,14 @@ Resources:
                 Action:
                   - cloudformation:*
                 Resource: "*"
+        - PolicyName: ExecCreateSQS
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sqs:*
+                Resource: "*"
         - PolicyName: CodeBuildParameterStore
           PolicyDocument:
             Version: '2012-10-17'
@@ -516,7 +524,6 @@ Resources:
               - Effect: Allow
                 Action: 'ssm:GetParameters'
                 Resource: '*'
-       
         - PolicyName: AssumeStagePipExecutionRoles
           PolicyDocument:
             Version: "2012-10-17"
