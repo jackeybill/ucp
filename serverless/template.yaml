@@ -41,6 +41,10 @@ Parameters:
     Description: Repo Branch Name
     Type: String
     Default: master
+  VPCId:
+    Description: VPC ID for lambda
+    Type: String
+    Default: vpc-023bd2049facc6830
   SageMakerImage:
     Description: SagerMaker ECR Image ARN
     Type: String
@@ -53,8 +57,7 @@ Globals:
   Function:
     Timeout: 60
     Runtime: python3.8
-  
-    
+
 Resources:
 ## --------------   Lambda   -------------------- ##
 
@@ -164,7 +167,6 @@ Resources:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: upload.lambda_handler
-      Runtime: python3.7
       CodeUri: main/iso-service-dev-upload/
       Description: Upload file from api gateway to S3
       Role: !GetAtt MyLambdaExecuteRole.Arn
