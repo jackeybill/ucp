@@ -572,7 +572,9 @@ Resources:
         PrivilegedMode: true
         EnvironmentVariables:
           - Name: SAM_TEMPLATE
-            Value: !Ref SamTemplate
+            Value: !Ref SamTemplate          
+          - Name: AppIdentity
+            Value: !Ref AppIdentity
           - Name: TESTING_REGION
             Value: !Ref TestingRegion
           # - Name: TESTING_PIPELINE_EXECUTION_ROLE
