@@ -35,7 +35,7 @@ Parameters:
   SageMakerImage:
     Description: SagerMaker ECR Image ARN
     Type: String
-    Default: 608494368293.dkr.ecr.ap-southeast-1.amazonaws.com/mosaic-meddra-coding:latest
+    Default: 608494368293.dkr.ecr.us-east-2.amazonaws.com/mosaic-meddra-coding
   DirsToCreate:
     Description: "list of directories to create."
     Type: String
