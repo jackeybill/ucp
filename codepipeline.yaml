@@ -516,6 +516,8 @@ Resources:
               - Effect: Allow
                 Action:
                   - sqs:*
+                  - dynamodb:*
+                  - iam:CreateRole
                 Resource: "*"
         - PolicyName: CodeBuildParameterStore
           PolicyDocument:
