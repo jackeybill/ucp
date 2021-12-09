@@ -521,6 +521,7 @@ Resources:
                   - cognito-idp:*
                   - sns:*
                   - 'elasticbeanstalk:*'
+                  - 'sagemaker:*'
                   - lambda:* 
                   - 'logs:*'
                   - 'elasticloadbalancing:*'
