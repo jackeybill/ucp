@@ -34,6 +34,7 @@ const colorList = {
   'WHITE': '#FDECE0',
   "HIGHLIGHTED":'#FDECE0',
   "NOT HIGHLIGHTED": '#E84F22',
+  "ACTIVE LEGEND": '#000000'
 }
 
 const panelHeader = () => {
@@ -1594,8 +1595,12 @@ const ScenarioPage = (props) => {
           tempColor.push(colorList[resp['ethnicity_legend'][e].name])
         }
         setEthLegendColor(tempColor)
-        setFinalEthnicityData(resp['ethnicity_legend'])
-
+        const templegend = []
+        for (const val of resp['ethnicity_legend']) {
+          templegend.push(Object.assign(val, {"selected":false}))
+        }
+        setFinalEthnicityData(templegend)
+        
         // Set criteria lib data as yAxis -- Common
         setEnrollCriteriaLib(resp['criteria'])
         setFunnelChartheight(50 + 35 * resp['criteria'].length)
@@ -2412,14 +2417,14 @@ const ScenarioPage = (props) => {
     }
   }
   // Click the legend of pie chart to change the bar chart accordingly
-  const onClickLegend = (value, percent) =>{
+const onClickLegend = (value, percent) =>{
     let tempEthPatientSeriesData = []
     let tempName = ""
     let tempPercent = ""
     let tempFirstData =  []
     let tempOtherData =  []
     tempEthPatientSeriesData = JSON.parse(JSON.stringify(ethPatientResultData))
-    for(const val of tempEthPatientSeriesData){
+    for(const val of tempEthPatientSeriesData){      
       if (val.name === value){
         val.color = colorList["HIGHLIGHTED"]
         tempName = val.name
@@ -2430,6 +2435,15 @@ const ScenarioPage = (props) => {
         tempOtherData.push(val)
       }
     }
+    // highlight the legend which is clicked
+    for(const val of finalEthnicityData) {
+      if(val.name === value) {
+        val.selected = true
+      } else {
+        val.selected = false
+      }
+    }
+    setFinalEthnicityData(finalEthnicityData)
     // remove the category to the beginning of bar chart 
     setEthPatientResultData([...tempFirstData,...tempOtherData])
     if (eChartsRef && eChartsRef.current) {      
@@ -3295,9 +3309,7 @@ const ScenarioPage = (props) => {
                                   })
                                   .slice(0, 9)
                                   .map((d, idx) => {
-                                    
                                     const chartData = finalEthnicityData;
-
                                     function getChartData(name,p) {
                                       let data = raceOption.series[0].data;
                                       let total = 0
@@ -3330,7 +3342,7 @@ const ScenarioPage = (props) => {
                                             backgroundColor: colorList[d.name],
                                           }}
                                         ></span>
-                                        <i className="my_legend_text">{getChartData(d.name,percent)}</i>
+                                        <i className={"my_legend_text" + (d.selected ? " active": "")}>{getChartData(d.name,percent)}</i>
                                       </div>
                                     );
                                   })}
