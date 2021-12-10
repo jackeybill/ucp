@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer} from 'react';
+import React, { useState, useEffect, useReducer, useRef} from 'react';
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
@@ -421,7 +421,7 @@ const ScenarioPage = (props) => {
         summaryDefaultList();
       }, []);
 
-
+    const eChartsRef = React.useRef(null as any);
 
     function getCatorgoryIndex(index, list){
       if(list[index]['Medical Condition'] != undefined){
@@ -1701,7 +1701,6 @@ const ScenarioPage = (props) => {
         }
         tempEthPatientSeriesData.push(totalData)
         setEthPatientResultData(tempEthPatientSeriesData)
-        // console.log(tempEthPatientSeriesData);
         setActiveEnrollmentTabKey('1')
           
       }
@@ -2412,28 +2411,39 @@ const ScenarioPage = (props) => {
       setExcluDefaultActiveKey(['2'])
     }
   }
-
+  // Click the legend of pie chart to change the bar chart accordingly
   const onClickLegend = (value, percent) =>{
-    // console.log(value);
     let tempEthPatientSeriesData = []
-    let tempname = ""
-    let temppercent = ""
+    let tempName = ""
+    let tempPercent = ""
+    let tempFirstData =  []
+    let tempOtherData =  []
     tempEthPatientSeriesData = JSON.parse(JSON.stringify(ethPatientResultData))
-    // console.log(tempEthPatientSeriesData);
     for(const val of tempEthPatientSeriesData){
-      // console.log(val);
       if (val.name === value){
         val.color = colorList["HIGHLIGHTED"]
-        tempname = val.name
-        temppercent = percent
+        tempName = val.name
+        tempPercent = percent
+        tempFirstData.push(val)
       } else {
         val.color = colorList["NOT HIGHLIGHTED"]
+        tempOtherData.push(val)
       }
     }
-    // console.log(tempEthPatientSeriesData);
-    setEthPatientResultData(tempEthPatientSeriesData)
-
-    setEthPatientChartTitle('Race & Ethnicity - ' + tempname +  ' - ' + temppercent + '%')
+    // remove the category to the beginning of bar chart 
+    setEthPatientResultData([...tempFirstData,...tempOtherData])
+    if (eChartsRef && eChartsRef.current) {      
+      ethPatientOption.series[0].color = tempFirstData[0].color
+      ethPatientOption.series[0].data = tempFirstData[0].data
+      ethPatientOption.series[0].emphasis = tempFirstData[0].emphasis
+      ethPatientOption.series[0].label = tempFirstData[0].label
+      ethPatientOption.series[0].name = tempFirstData[0].name
+      ethPatientOption.series[0].stack = tempFirstData[0].stack
+      ethPatientOption.series[0].type = tempFirstData[0].type      
+      eChartsRef.current?.getEchartsInstance().setOption(ethPatientOption);
+    }
+    // Change the title  of chart according to the legend clicked
+    setEthPatientChartTitle('Race & Ethnicity - ' + tempName +  ' - ' + tempPercent + '%')
   }
 
   const handleGoBack = (scheduleOfEvents) =>{
@@ -3346,7 +3356,7 @@ const ScenarioPage = (props) => {
                           {activeEnrollmentTabKey === '3' && (
                             <>
                               <div style={{fontWeight:700, fontSize:18, textAlign:"center", marginTop: 15}}>{ethPatientChartTitle||""}</div>
-                              <ReactECharts option={ethPatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
+                              <ReactECharts option={ethPatientOption} style={{ height: funnelChartheight, marginBottom: 15}} ref={eChartsRef}></ReactECharts>
                             </>
                           )}
                         </Col>
