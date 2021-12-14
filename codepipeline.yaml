@@ -15,7 +15,7 @@ Parameters:
     Default: "jackeybill/ucp"
   MainGitBranch:
     Type: String
-    Default: "master"
+    Default: "pipeline-demo-test"
   SamTemplate:
     Type: String
     Default: "template.yaml"
@@ -24,7 +24,7 @@ Parameters:
     Default: "us-east-2"
   TestingStackName:
     Type: String
-    Default: "dhair2-serverless-demo"
+    Default: "ucp-serverless-demo-test"
   TestingPipelineExecutionRole:
     Type: String
     Default: ""
@@ -42,13 +42,13 @@ Parameters:
     Default: "us-east-2"
   ProdStackName:
     Type: String
-    Default: "dhair2-demo-stage2"
+    Default: "ucp-serverless-demo-prod"
   ProdPipelineExecutionRole:
     Type: String
-    Default: "dhair2-demo-pipeline-role"
+    Default: ""
   ProdCloudFormationExecutionExeRole:
     Type: String
-    Default: "dhair2-demo-cfn-role2"
+    Default: ""
   ProdArtifactBucket:
     Type: String
     Default: "cloudformation-stack-state-store"
