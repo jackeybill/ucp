@@ -107,7 +107,7 @@ Resources:
 # | |___| (_| | | | | | | |_) | (_| | (_| |
 # |______\__,_|_| |_| |_|_.__/ \__,_|\__,_|                                          
                                         
-  gwCasemain-test:
+  gwCasemain:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: index.handler
