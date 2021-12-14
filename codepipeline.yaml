@@ -61,7 +61,7 @@ Parameters:
     Default: "arn:aws:codestar-connections:us-east-2:608494368293:connection/bdc7b34c-0e30-4a71-8816-6b53deba93ff"
   FeatureGitBranch:
     Type: String
-    Default: ""
+    Default: "pipeline-demo-sg"
 
 Conditions:
   IsMainBranchPipeline: !Equals [!Ref FeatureGitBranch, ""]
