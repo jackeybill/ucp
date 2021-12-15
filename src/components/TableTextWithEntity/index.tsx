@@ -3,7 +3,7 @@ import TextWithEntity from "../TextWithEntity";
 import "./index.scss";
 
 const TableTextWithEntity = (props) => {
-  console.log('===', props)
+  // console.log('===', props)
   const {
     secondaryDataSource,
     dataSource,

@@ -58,7 +58,7 @@ const Extraction = (props: any, ref) => {
   let tableResult,otherTableResult = []
   if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
     tableResult=file[key][activeSection][0].tableResult
-    otherTableResult = file[key][activeSection][0].otherTableResult
+    // otherTableResult = file[key][activeSection][0].otherTableResult
   }
 
   const [entity, setEntity] = useState(initEntity);
@@ -407,7 +407,7 @@ const Extraction = (props: any, ref) => {
           </div>
         </TabPane>
         {
-          !(activeSection==ENDPOINT_SECTION&&isTable(file,key,activeSection))&&(
+          !(activeSection==ENDPOINT_SECTION&&isTable(file,key,activeSection))&& activeSection !== "objectivesEndpointsEstimands"&&(
         <TabPane
           tab={
             <span>
