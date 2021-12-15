@@ -160,23 +160,32 @@ const Overview = (props: any) => {
   const handleRowClick = async (record) => {
     setLoading(true)    
     const filepath = `iso-service-dev/RawDocuments/${record.fileName}`
-    const resp = await extractText(filepath)
-    setLoading(false)
-    if (resp.statusCode == 200) {  
-      // console.log("--click row--", JSON.parse(resp.body));
-      props.readFile({
-        file: JSON.parse(resp.body)
-      })
-       props.history.push({
-         pathname: "/protocol-sections",
-         state: {
-           status: record.status,
-           title: record.protocolName? record.protocolName: record.fileName
-         }
-       });
-    } else {
-      message.error(resp.errorType)
+    let begin = 0
+    let resp = ""
+    while (begin >= 0) {
+      const respbegin = await extractText(filepath, begin)
+      begin = respbegin.begin
+      resp += respbegin.body
     }
+    
+    setLoading(false)
+
+     props.readFile({
+      file: JSON.parse(resp)
+    })
+    
+     props.history.push({
+       pathname: "/protocol-sections",
+       state: {
+         status: record.status,
+         title: record.protocolName? record.protocolName: record.fileName
+       }
+     });
+    // if (resp.statusCode == 200) {  
+     
+    // } else {
+    //   message.error(resp.errorType)
+    // }
   }
 
   return (

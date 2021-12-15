@@ -87,7 +87,7 @@ const Extraction = (props: any, ref) => {
   const firstMarkId = initLabels && initLabels.length > 0 && initLabels[0].id;
   let summary
   if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
-    summary=file[key][activeSection][0].totalSummary[entity]
+    summary=file[key][activeSection][0].totalSummary?file[key][activeSection][0].totalSummary[entity]:{}
   }else{
     summary = file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary || {};  
   }
