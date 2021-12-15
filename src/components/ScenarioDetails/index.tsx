@@ -192,7 +192,8 @@ const ScenarioDetails = (props: any) => {
                 </div>
                 </TabPane>
                 <TabPane tab="SCHEDULE OF EVENTS" key="2">
-                    <div className="none-click">
+                    {/* <div className="none-click"> */}
+                    <div>
                     <EventList
                       numbers={numbers}
                       labs={addedLabs}
