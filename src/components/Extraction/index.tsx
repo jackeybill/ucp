@@ -407,7 +407,8 @@ const Extraction = (props: any, ref) => {
           </div>
         </TabPane>
         {
-          !(activeSection==ENDPOINT_SECTION&&isTable(file,key,activeSection))&& activeSection !== "objectivesEndpointsEstimands"&&(
+          // !(activeSection==ENDPOINT_SECTION&&isTable(file,key,activeSection))&& activeSection !== "objectivesEndpointsEstimands"&&(
+          !(activeSection==ENDPOINT_SECTION&&isTable(file,key,activeSection))&&(
         <TabPane
           tab={
             <span>

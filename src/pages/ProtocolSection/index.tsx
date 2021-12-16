@@ -97,9 +97,17 @@ const ProtocolSection = (props: any) => {
   useEffect(() => {
     if (props.fileReader.activeTabKey == "ENTITY RELATIONSHIPS") {
       setFormatOptions(relationshipExportOptions);
-      setSections(checkedSections.filter( function(currentValue){
-        return currentValue !== "scheduleActivities"&& currentValue !== "objectivesEndpointsEstimands"
-      } ))
+      let tempCheckedSections
+      if(isTable(file,key,"objectivesEndpointsEstimands")){
+        tempCheckedSections = checkedSections.filter( function(currentValue){
+          return currentValue !== "scheduleActivities"&& currentValue !== "objectivesEndpointsEstimands"
+        } )
+      }else {
+        tempCheckedSections = checkedSections.filter( function(currentValue){
+          return currentValue !== "scheduleActivities"
+        } )
+      }
+      setSections(tempCheckedSections)
     } else {
       setFormatOptions(defaultExportOptions);
       setSections(checkedSections)
@@ -679,7 +687,7 @@ const ProtocolSection = (props: any) => {
                   PREV: ENTITY RECOGNITION
                 </Button>
               )}
-              {activeTabKey == "VALIDATION" && activeSection !== "scheduleActivities" && activeSection !== "objectivesEndpointsEstimands"&&(
+              {activeTabKey == "VALIDATION" && activeSection !== "scheduleActivities" && !isTable(file,key,"objectivesEndpointsEstimands")&&(
                 <Button
                 className="previous-btn"
                 onClick={() => props.readFile({ activeTabKey: "ENTITY RELATIONSHIPS" })} 
@@ -687,7 +695,7 @@ const ProtocolSection = (props: any) => {
                   PREV: ENTITY RELATIONSHIPS
                 </Button>
               )}
-              {activeTabKey == "VALIDATION" && (activeSection === "scheduleActivities" || activeSection === "objectivesEndpointsEstimands") &&(
+              {activeTabKey == "VALIDATION" && (activeSection === "scheduleActivities" || isTable(file,key,"objectivesEndpointsEstimands")) &&(
                <Button
                className="previous-btn"
                onClick={() => props.readFile({ activeTabKey: "ENTITY RECOGNITION" })}  
@@ -696,7 +704,7 @@ const ProtocolSection = (props: any) => {
                </Button>
               )}
              <div className="right_area">
-                {activeTabKey == "ENTITY RECOGNITION" && activeSection !== "scheduleActivities"&& activeSection !== "objectivesEndpointsEstimands" &&(
+                {activeTabKey == "ENTITY RECOGNITION" && activeSection !== "scheduleActivities"&& !isTable(file,key,"objectivesEndpointsEstimands") &&(
                    <Button
                     className="next-btn"
                     onClick={() => props.readFile({ activeTabKey: "ENTITY RELATIONSHIPS" })} 
@@ -704,7 +712,7 @@ const ProtocolSection = (props: any) => {
                     NEXT: ENTITY RELATIONSHIPS
                   </Button>
                 )}
-                {activeTabKey == "ENTITY RECOGNITION" && (activeSection === "scheduleActivities" || activeSection === "objectivesEndpointsEstimands") &&(
+                {activeTabKey == "ENTITY RECOGNITION" && (activeSection === "scheduleActivities" ||isTable(file,key,"objectivesEndpointsEstimands")) &&(
                    <Button
                    className="next-btn"
                    onClick={() => props.readFile({ activeTabKey: "VALIDATION" })} 
