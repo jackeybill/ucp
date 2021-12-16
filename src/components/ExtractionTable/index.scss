@@ -74,7 +74,7 @@
         &.active {
           opacity: 1;
           // entity highlight all one color
-          // background-color: $MEDICAL_CONDITION;
+          background-color: $MEDICAL_CONDITION;
         }
         span {
           display: inline-block;
@@ -122,57 +122,57 @@
         }
       }
     }
-    .entity-types {
-      display: flex;
-      flex-wrap: wrap;
-      margin-bottom: 15px;
-      .type-item {
-        cursor: pointer;
-        margin-right: 5px;
-        padding: 0px 5px;
-        opacity: 0.6;
-        margin-bottom: 5px;
-        &.active {
-          opacity: 1;
-        }
-        span {
-          display: inline-block;
-        }
-      }
-      .LABS {
-        background-color: $LABS;
-      }
-      .PHYSICAL_EXAMINATION {
-        background-color: $PHYSICAL_EXAMINATION;
-      }
-      .PROCEDURES {
-        background-color: $PROCEDURES;
-      }
-      .STUDY_PROCEDURES {
-        background-color: $STUDY_PROCEDURES;
-      }
-      .QUESTIONNAIRES {
-        background-color:$QUESTIONNAIRES!important;
-      }
-      .ACTIVITY {
-        background-color:$ACTIVITY!important;
-      }
+    // .entity-types {
+    //   display: flex;
+    //   flex-wrap: wrap;
+    //   margin-bottom: 15px;
+    //   .type-item {
+    //     cursor: pointer;
+    //     margin-right: 5px;
+    //     padding: 0px 5px;
+    //     opacity: 0.6;
+    //     margin-bottom: 5px;
+    //     &.active {
+    //       opacity: 1;
+    //     }
+    //     span {
+    //       display: inline-block;
+    //     }
+    //   }
+    //   .LABS {
+    //     background-color: $LABS;
+    //   }
+    //   .PHYSICAL_EXAMINATION {
+    //     background-color: $PHYSICAL_EXAMINATION;
+    //   }
+    //   .PROCEDURES {
+    //     background-color: $PROCEDURES;
+    //   }
+    //   .STUDY_PROCEDURES {
+    //     background-color: $STUDY_PROCEDURES;
+    //   }
+    //   .QUESTIONNAIRES {
+    //     background-color:$QUESTIONNAIRES!important;
+    //   }
+    //   .ACTIVITY {
+    //     background-color:$ACTIVITY!important;
+    //   }
       
-      .type-item-activity {
-        cursor: pointer;
-        margin-right: 5px;
-        padding: 0px 5px;
-        opacity: 0.6;
-        margin-bottom: 5px;
-        background-color: #9EDB85;
-        &.active {
-          opacity: 1;
-        }
-        span {
-          display: inline-block;
-        }
-      }
-    }
+    //   .type-item-activity {
+    //     cursor: pointer;
+    //     margin-right: 5px;
+    //     padding: 0px 5px;
+    //     opacity: 0.6;
+    //     margin-bottom: 5px;
+    //     background-color: #9EDB85;
+    //     &.active {
+    //       opacity: 1;
+    //     }
+    //     span {
+    //       display: inline-block;
+    //     }
+    //   }
+    // }
   }
   .content {
     white-space: pre-line;
@@ -320,49 +320,49 @@
           font-weight: normal;
         }
       }
-      mark {
-        position: relative;
-        display: inline-block;
-        vertical-align: text-top;
-        margin-top: -5px;
-        margin-left: -2px;
+      // mark {
+      //   position: relative;
+      //   display: inline-block;
+      //   vertical-align: text-top;
+      //   margin-top: -5px;
+      //   margin-left: -2px;
     
-        .key-word {
-          font-size: 12px;
-          font-weight: 600;
-          border-color: #9EDB85;
-          // white-space: nowrap;
-        }
-        .LABS {
-          border-color:$LABS!important;
-        }
-        .PHYSICAL_EXAMINATION {
-          border-color: $PHYSICAL_EXAMINATION!important;
-        }
-        .PROCEDURES {
-          border-color:$PROCEDURES!important;
-        }
-        .STUDY_PROCEDURES {
-          border-color:$STUDY_PROCEDURES!important;
-        }
-        .QUESTIONNAIRES {
-          border-color:$QUESTIONNAIRES!important;
-        }
-        .ACTIVITY {
-          border-color:$ACTIVITY!important;
-        }
-        .score-icon {
-          position: absolute;
-          top: 50%;
-          right: 0;
-          transform: translateY(-50%);
-        }
-        .cate-label {
-          font-size: 10px;
-          display: block;
-          font-weight: normal;
-        }
-      }
+      //   .key-word {
+      //     font-size: 12px;
+      //     font-weight: 600;
+      //     border-color: #9EDB85;
+      //     // white-space: nowrap;
+      //   }
+      //   .LABS {
+      //     border-color:$LABS!important;
+      //   }
+      //   .PHYSICAL_EXAMINATION {
+      //     border-color: $PHYSICAL_EXAMINATION!important;
+      //   }
+      //   .PROCEDURES {
+      //     border-color:$PROCEDURES!important;
+      //   }
+      //   .STUDY_PROCEDURES {
+      //     border-color:$STUDY_PROCEDURES!important;
+      //   }
+      //   .QUESTIONNAIRES {
+      //     border-color:$QUESTIONNAIRES!important;
+      //   }
+      //   .ACTIVITY {
+      //     border-color:$ACTIVITY!important;
+      //   }
+      //   .score-icon {
+      //     position: absolute;
+      //     top: 50%;
+      //     right: 0;
+      //     transform: translateY(-50%);
+      //   }
+      //   .cate-label {
+      //     font-size: 10px;
+      //     display: block;
+      //     font-weight: normal;
+      //   }
+      // }
     }
     }
     

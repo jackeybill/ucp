@@ -286,95 +286,95 @@
 
 
 }
-.entity-types {
-  .type-item {
-    background-color: #cbcbcb;
-  }
-  .ALL {
-    background-color: $theme-color;
-  }
-  .CHEMICAL {
-    background-color: $CHEMICAL;
-  }
-  .DISEASE {
-    background-color: $DISEASE;
-  }
-  .PROTECTED_HEALTH_INFORMATION {
-    background-color: $PROTECTED_HEALTH_INFORMATION;
-  }
-  .TEST_TREATMENT_PROCEDURE {
-    background-color: $TEST_TREATMENT_PROCEDURE;
-  }
-  .MEDICATION {
-    background-color: $MEDICATION;
-  }
-  .ANATOMY {
-    background-color: $ANATOMY;
-  }
-  .MEDICAL_CONDITION {
-    background-color: $MEDICAL_CONDITION;
-  }
-  .TAXON {
-    background-color: $TAXON;
-  }
-  .GO {
-    background-color: $GO;
-  }
-  .CELL_LINE {
-    background-color: $CELL_LINE;
-  }
-  .DNA {
-    background-color: $DNA;
-  }
-  .PROTEIN {
-    background-color: $PROTEIN;
-  }
-  .AE {
-    background-color: $AE;
-  }
-  .ADVERSE_EVENT {
-    background-color: $AE;
-  }
-  .ORGANISM {
-    background-color: $ORGANISM;
-  }
-  .CELL {
-    background-color: $CELL;
-  }
-  .CANCER {
-    background-color: $CANCER;
-  }
-  .CELLULAR_COMPONENT {
-    background-color: $CELLULAR_COMPONENT;
-  }
-  .GENE_OR_GENE_PRODUCT {
-    background-color: $GENE_OR_GENE_PRODUCT;
-  }
-  .IMMATERIAL_ANATOMICAL_ENTITY {
-    background-color: $IMMATERIAL_ANATOMICAL_ENTITY;
-  }
-  .ORGANISM_SUBDIVISION {
-    background-color: $ORGANISM_SUBDIVISION;
-  }
-  .ORGANISM_SUBSTANCE {
-    background-color: $ORGANISM_SUBSTANCE;
-  }
-  .SIMPLE_CHEMICAL {
-    background-color: $SIMPLE_CHEMICAL;
-  }
-  .GGP {
-    background-color: $GGP;
-  }
-  .CHEBI {
-    background-color: $CHEBI;
-  }
-  .MEDICAL_CONDITION {
-    background-color: $MEDICAL_CONDITION;
-  }
-  .TIME_EXPRESSION {
-    background-color: $TIME_EXPRESSION;
-  }
-}
+// .entity-types {
+//   .type-item {
+//     background-color: #cbcbcb;
+//   }
+//   .ALL {
+//     background-color: $theme-color;
+//   }
+//   .CHEMICAL {
+//     background-color: $CHEMICAL;
+//   }
+//   .DISEASE {
+//     background-color: $DISEASE;
+//   }
+//   .PROTECTED_HEALTH_INFORMATION {
+//     background-color: $PROTECTED_HEALTH_INFORMATION;
+//   }
+//   .TEST_TREATMENT_PROCEDURE {
+//     background-color: $TEST_TREATMENT_PROCEDURE;
+//   }
+//   .MEDICATION {
+//     background-color: $MEDICATION;
+//   }
+//   .ANATOMY {
+//     background-color: $ANATOMY;
+//   }
+//   .MEDICAL_CONDITION {
+//     background-color: $MEDICAL_CONDITION;
+//   }
+//   .TAXON {
+//     background-color: $TAXON;
+//   }
+//   .GO {
+//     background-color: $GO;
+//   }
+//   .CELL_LINE {
+//     background-color: $CELL_LINE;
+//   }
+//   .DNA {
+//     background-color: $DNA;
+//   }
+//   .PROTEIN {
+//     background-color: $PROTEIN;
+//   }
+//   .AE {
+//     background-color: $AE;
+//   }
+//   .ADVERSE_EVENT {
+//     background-color: $AE;
+//   }
+//   .ORGANISM {
+//     background-color: $ORGANISM;
+//   }
+//   .CELL {
+//     background-color: $CELL;
+//   }
+//   .CANCER {
+//     background-color: $CANCER;
+//   }
+//   .CELLULAR_COMPONENT {
+//     background-color: $CELLULAR_COMPONENT;
+//   }
+//   .GENE_OR_GENE_PRODUCT {
+//     background-color: $GENE_OR_GENE_PRODUCT;
+//   }
+//   .IMMATERIAL_ANATOMICAL_ENTITY {
+//     background-color: $IMMATERIAL_ANATOMICAL_ENTITY;
+//   }
+//   .ORGANISM_SUBDIVISION {
+//     background-color: $ORGANISM_SUBDIVISION;
+//   }
+//   .ORGANISM_SUBSTANCE {
+//     background-color: $ORGANISM_SUBSTANCE;
+//   }
+//   .SIMPLE_CHEMICAL {
+//     background-color: $SIMPLE_CHEMICAL;
+//   }
+//   .GGP {
+//     background-color: $GGP;
+//   }
+//   .CHEBI {
+//     background-color: $CHEBI;
+//   }
+//   .MEDICAL_CONDITION {
+//     background-color: $MEDICAL_CONDITION;
+//   }
+//   .TIME_EXPRESSION {
+//     background-color: $TIME_EXPRESSION;
+//   }
+// }
 
 // entity highlight all one color
 mark {
@@ -513,94 +513,94 @@ mark {
     border-color:$MEDICAL_CONDITION;
   }
 }
-mark {
-  background-color: transparent !important;
-  .key-word {
-    border-bottom: 2px solid #ededed;
-  }
-  .nocolor {
-    border-color: transparent;
-    font-weight: 400!important;
-  }
-  .CHEMICAL {
-    border-color: $CHEMICAL;
-  }
-  .DISEASE {
-    border-color: $DISEASE;
-  }
-  .PROTECTED_HEALTH_INFORMATION {
-    border-color: $PROTECTED_HEALTH_INFORMATION;
-  }
-  .TEST_TREATMENT_PROCEDURE {
-    border-color: $TEST_TREATMENT_PROCEDURE;
-  }
-  .MEDICATION {
-    border-color: $MEDICATION;
-  }
-  .ANATOMY {
-    border-color: $ANATOMY;
-  }
-  .MEDICAL_CONDITION {
-    border-color: $MEDICAL_CONDITION;
-  }
-  .TAXON {
-    border-color: $TAXON;
-  }
-  .GO {
-    border-color: $GO;
-  }
-  .CELL_LINE {
-    border-color: $CELL_LINE;
-  }
-  .DNA {
-    border-color: $DNA;
-  }
-  .PROTEIN {
-    border-color: $PROTEIN;
-  }
-  .AE {
-    border-color: $AE;
-  }
-  .ORGANISM {
-    border-color: $ORGANISM;
-  }
-  .CELL {
-    border-color: $CELL;
-  }
-  .CANCER {
-    border-color: $CANCER;
-  }
-  .CELLULAR_COMPONENT {
-    border-color: $CELLULAR_COMPONENT;
-  }
-  .GENE_OR_GENE_PRODUCT {
-    border-color: $GENE_OR_GENE_PRODUCT;
-  }
-  .IMMATERIAL_ANATOMICAL_ENTITY {
-    border-color: $IMMATERIAL_ANATOMICAL_ENTITY;
-  }
-  .ORGANISM_SUBDIVISION {
-    border-color: $ORGANISM_SUBDIVISION;
-  }
-  .ORGANISM_SUBSTANCE {
-    border-color: $ORGANISM_SUBSTANCE;
-  }
-  .SIMPLE_CHEMICAL {
-    border-color: $SIMPLE_CHEMICAL;
-  }
-  .GGP {
-    border-color: $GGP;
-  }
-  .CHEBI {
-    border-color: $CHEBI;
-  }
-  .MEDICAL_CONDITION {
-    border-color: $MEDICAL_CONDITION;
-  }
-  .TIME_EXPRESSION {
-    border-color: $TIME_EXPRESSION;
-  }
-}
+// mark {
+//   background-color: transparent !important;
+//   .key-word {
+//     border-bottom: 2px solid #ededed;
+//   }
+//   .nocolor {
+//     border-color: transparent;
+//     font-weight: 400!important;
+//   }
+//   .CHEMICAL {
+//     border-color: $CHEMICAL;
+//   }
+//   .DISEASE {
+//     border-color: $DISEASE;
+//   }
+//   .PROTECTED_HEALTH_INFORMATION {
+//     border-color: $PROTECTED_HEALTH_INFORMATION;
+//   }
+//   .TEST_TREATMENT_PROCEDURE {
+//     border-color: $TEST_TREATMENT_PROCEDURE;
+//   }
+//   .MEDICATION {
+//     border-color: $MEDICATION;
+//   }
+//   .ANATOMY {
+//     border-color: $ANATOMY;
+//   }
+//   .MEDICAL_CONDITION {
+//     border-color: $MEDICAL_CONDITION;
+//   }
+//   .TAXON {
+//     border-color: $TAXON;
+//   }
+//   .GO {
+//     border-color: $GO;
+//   }
+//   .CELL_LINE {
+//     border-color: $CELL_LINE;
+//   }
+//   .DNA {
+//     border-color: $DNA;
+//   }
+//   .PROTEIN {
+//     border-color: $PROTEIN;
+//   }
+//   .AE {
+//     border-color: $AE;
+//   }
+//   .ORGANISM {
+//     border-color: $ORGANISM;
+//   }
+//   .CELL {
+//     border-color: $CELL;
+//   }
+//   .CANCER {
+//     border-color: $CANCER;
+//   }
+//   .CELLULAR_COMPONENT {
+//     border-color: $CELLULAR_COMPONENT;
+//   }
+//   .GENE_OR_GENE_PRODUCT {
+//     border-color: $GENE_OR_GENE_PRODUCT;
+//   }
+//   .IMMATERIAL_ANATOMICAL_ENTITY {
+//     border-color: $IMMATERIAL_ANATOMICAL_ENTITY;
+//   }
+//   .ORGANISM_SUBDIVISION {
+//     border-color: $ORGANISM_SUBDIVISION;
+//   }
+//   .ORGANISM_SUBSTANCE {
+//     border-color: $ORGANISM_SUBSTANCE;
+//   }
+//   .SIMPLE_CHEMICAL {
+//     border-color: $SIMPLE_CHEMICAL;
+//   }
+//   .GGP {
+//     border-color: $GGP;
+//   }
+//   .CHEBI {
+//     border-color: $CHEBI;
+//   }
+//   .MEDICAL_CONDITION {
+//     border-color: $MEDICAL_CONDITION;
+//   }
+//   .TIME_EXPRESSION {
+//     border-color: $TIME_EXPRESSION;
+//   }
+// }
 
 mark.warn {
   span {
