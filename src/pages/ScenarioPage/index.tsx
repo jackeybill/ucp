@@ -1686,7 +1686,7 @@ const ScenarioPage = (props) => {
           setEthPatientChartTitle('Race & Ethnicity - ' + defaultEth + ' - ' + defaultEnthRate + '%')
         } else {
           // setEthPatientChartTitle('Race & Ethnicity - ' + resp['final_ethnicity'][0] +  ' - 0')
-          resp['ethnicity_legend']&& setEthPatientChartTitle('Race & Ethnicity - ' + resp['ethnicity_legend'][0].name +  ' - ' + resp['ethnicity_legend'][0].percent + '%')
+          resp['ethnicity_legend']&& resp['ethnicity_legend'][0]&&setEthPatientChartTitle('Race & Ethnicity - ' + resp['ethnicity_legend'][0].name +  ' - ' + resp['ethnicity_legend'][0].percent + '%')
         }
         
         const tempEthPatientSeriesData = []
@@ -3298,7 +3298,7 @@ const onClickLegend = (value, percent) =>{
                           <Row><Col className="tab-item chart" span={24}>
                             <Row className="tab-desc">Race & Ethnicity&nbsp;
                                 {activeEnrollmentTabKey === '3'?(<CaretRightOutlined />):(<></>)}</Row>
-                            <Row><Col span={24}>
+                            <Row><Col span={24} className="legend-wrapper-father">
                               <ReactECharts option={raceOption} style={{ height: 100}}></ReactECharts>
                               
                               {/* finalEthnicityData */}
@@ -3320,8 +3320,26 @@ const onClickLegend = (value, percent) =>{
                                           if (data[i].name == name) {
                                             if(data[i].value >0){
                                               const p = (data[i].value/total * 100).toFixed(2)
+                                              if (name === "BLACK/AFRICAN AMERICAN") {
+                                                name = "BLACK/AFRICAN..."
+                                              } else if (name === "AMERICAN INDIAN/ALASKA NATIVE") {
+                                                name = "AMERICAN INDIA..."
+                                              } else if (name === "NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER") {
+                                                name = "NATIVE HAWAIIA..."
+                                              } else if (name ==="MULTI RACE ETHNICITY") {
+                                                name = "MULTI RACE ETH..."
+                                              }
                                               return name + ' - ' + p + '%';
                                             }else{
+                                              if (name === "BLACK/AFRICAN AMERICAN") {
+                                                name = "BLACK/AFRICAN AM..."
+                                              } else if (name === "AMERICAN INDIAN/ALASKA NATIVE") {
+                                                name = "AMERICAN INDIAN/..."
+                                              } else if (name === "NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER") {
+                                                name = "NATIVE HAWAIIAN/..."
+                                              } else if (name ==="MULTI RACE ETHNICITY") {
+                                                name = "MULTI RACE ETHNI..."
+                                              }
                                               return name + ' - 0'
                                             }
                                           }

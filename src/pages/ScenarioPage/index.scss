@@ -621,10 +621,17 @@
         border-color: #ca4a04;
     }
 
+    .legend-wrapper-father {
+        position: relative;
+    }
     .my-legend-wrapper{
-        // margin-top: -15px;
-        margin-left: 5px;
-  
+        position: absolute;
+        z-index: 80;
+        right: -5px;
+        top: 0px;
+        width: 150px;
+        height: 95px;
+        overflow: scroll;
         .custom-legend{
           cursor: pointer;
           .my_legend{
