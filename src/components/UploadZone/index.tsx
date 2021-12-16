@@ -97,40 +97,47 @@ const Dropzone = (props: any) => {
       }
       console.log(res);
         
-        if (res.body === "success") {
-          // await sleep(5000)
-          let extractedRes = null;
-          let times = 1;
-          do {
-            console.log(`waiting ${10 + 10 * times}s`);
-            await sleep(10000 + times * 5000 *2);
-            times++;
-            extractedRes = await extractText(PATH + f.name);
-            try {
-              const result = JSON.parse(extractedRes.body);
-              // console.log("--upload new file--", result);
-              const availableTabs: string[] = [];
-              form.setFieldsValue({
-                nctID: nctID === ""?f.name.split(".")[0].toString():nctID,
-                protocolName: protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
-              });
-              props.readFile({
-                file: result,
-                protocolName:protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
-                fileName:f.name,
-                disabledButton:false
-              });
-              fileList.push({ 'nctID': nctID, 'protocolName': protocolName, filename: f.name, result, availableTabs });
-              // props.history.push("/protocol-sections");            
-            } catch (e) {
-              console.error(e);
-            }
-            if (times > 5) {
-              setshowError(true);
-              break;
-            }
-          } while (extractedRes.statusCode !== 200);
+      if (res.body === "success") {
+        // await sleep(5000)
+        let extractedRes = "";
+        let times = 1;
+        let begin = 0;
+        let resultbegin = null;
+        while (begin >=0) {
+          resultbegin = await extractText(PATH + f.name, begin);
+          begin = resultbegin.begin
+          extractedRes += resultbegin.body
         }
+        do {
+          console.log(`waiting ${10 + 10 * times}s`);
+          await sleep(10000 + times * 5000 *2);
+          times++;
+          
+          try {
+            const result = JSON.parse(extractedRes);
+            // console.log("--upload new file--", result);
+            const availableTabs: string[] = [];
+            form.setFieldsValue({
+              nctID: nctID === ""?f.name.split(".")[0].toString():nctID,
+              protocolName: protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
+            });
+            props.readFile({
+              file: result,
+              protocolName:protocolName === ""?(result[Object.keys(result)[0]]["protocolTitle"][0].briefTitle||result[Object.keys(result)[0]]["protocolTitle"][0].title):protocolName,
+              fileName:f.name,
+              disabledButton:false
+            });
+            fileList.push({ 'nctID': nctID, 'protocolName': protocolName, filename: f.name, result, availableTabs });
+            // props.history.push("/protocol-sections");            
+          } catch (e) {
+            console.error(e);
+          }
+          if (times > 5) {
+            setshowError(true);
+            break;
+          }
+        } while (resultbegin.statusCode !== 200);
+      }
     }
     setLoading(false);
   }, []);

@@ -29,14 +29,14 @@ export const getOverviewList = async () => {
   return await response.json();
 }
 
-export const extractText = async (filepath: string) => {
+export const extractText = async (filepath: string, begin: number) => {
   const response = await fetch(BACKEND_HOST, {
     method: 'POST',
     headers: {
       'Access-Control-Request-Method': 'POST',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ "queryStringParameters": { "file": filepath } })
+    body: JSON.stringify({ "queryStringParameters": { "file": filepath ,"begin": begin} })
   })
 
   return await response.json();
