@@ -71,6 +71,8 @@
         margin-bottom: 5px;
         &.active {
           opacity: 1;
+          // entity highlight all one color
+          // background-color: $MEDICAL_CONDITION;
         }
         span {
           display: inline-block;
