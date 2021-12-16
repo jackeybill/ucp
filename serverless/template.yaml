@@ -346,6 +346,7 @@ Resources:
 #S3 
   MyFileBucket:
     Type: "AWS::S3::Bucket"
+    # condition if parameter
     # DeletionPolicy: Retain
     Properties:
       BucketName: !Join ['-', [!Ref AppIdentity, 'filebucket', !Ref Stage]]
