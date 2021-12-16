@@ -69,8 +69,10 @@
         padding: 0px 5px;
         opacity: 0.6;
         margin-bottom: 5px;
+        // entity highlight all one color
         &.active {
           opacity: 1;
+          background-color: $MEDICAL_CONDITION;
         }
         span {
           display: inline-block;

@@ -59,6 +59,7 @@
     p {
       margin-bottom: 10px;
     }
+    // entity highlight all one color
     .entity-types {
       display: flex;
       flex-wrap: wrap;
@@ -71,6 +72,7 @@
         margin-bottom: 5px;
         &.active {
           opacity: 1;
+          background-color: $MEDICAL_CONDITION;
         }
         span {
           display: inline-block;
@@ -78,21 +80,27 @@
       }
       .LABS {
         background-color: $LABS;
+        background-color: #cbcbcb;
       }
       .PHYSICAL_EXAMINATION {
         background-color: $PHYSICAL_EXAMINATION;
+        background-color: #cbcbcb;
       }
       .PROCEDURES {
         background-color: $PROCEDURES;
+        background-color: #cbcbcb;
       }
       .STUDY_PROCEDURES {
         background-color: $STUDY_PROCEDURES;
+        background-color: #cbcbcb;
       }
       .QUESTIONNAIRES {
-        background-color:$QUESTIONNAIRES!important;
+        background-color:$QUESTIONNAIRES;
+        background-color: #cbcbcb;
       }
       .ACTIVITY {
-        background-color:$ACTIVITY!important;
+        background-color:$ACTIVITY;
+        background-color: #cbcbcb;
       }
       
       .type-item-activity {
@@ -102,8 +110,10 @@
         opacity: 0.6;
         margin-bottom: 5px;
         background-color: #9EDB85;
+        background-color: #cbcbcb;
         &.active {
           opacity: 1;
+          background-color: $MEDICAL_CONDITION;
         }
         span {
           display: inline-block;
@@ -206,6 +216,7 @@
         font-weight: 600;
         // white-space: nowrap;
       }
+      // entity highlight all one color
       mark {
         position: relative;
         display: inline-block;
@@ -217,25 +228,32 @@
           font-size: 12px;
           font-weight: 600;
           border-color: #9EDB85;
+          border-color:$MEDICAL_CONDITION;
           // white-space: nowrap;
         }
         .LABS {
           border-color:$LABS!important;
+          border-color:$MEDICAL_CONDITION!important;
         }
         .PHYSICAL_EXAMINATION {
           border-color: $PHYSICAL_EXAMINATION!important;
+          border-color:$MEDICAL_CONDITION!important;
         }
         .PROCEDURES {
           border-color:$PROCEDURES!important;
+          border-color:$MEDICAL_CONDITION!important;
         }
         .STUDY_PROCEDURES {
           border-color:$STUDY_PROCEDURES!important;
+          border-color:$MEDICAL_CONDITION!important;
         }
         .QUESTIONNAIRES {
           border-color:$QUESTIONNAIRES!important;
+          border-color:$MEDICAL_CONDITION!important;
         }
         .ACTIVITY {
           border-color:$ACTIVITY!important;
+          border-color:$MEDICAL_CONDITION!important;
         }
         .score-icon {
           position: absolute;

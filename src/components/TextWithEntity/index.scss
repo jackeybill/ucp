@@ -180,127 +180,165 @@
 
 
 
-
+// entity highlight all one color
 .entity-types {
   .type-item {
     background-color: #cbcbcb;
   }
   .ALL {
     background-color: $theme-color;
+    background-color: #cbcbcb;
   }
   .CHEMICAL {
     background-color: $CHEMICAL;
+    background-color: #cbcbcb;
   }
   .DISEASE {
-    background-color: $DISEASE;
+    background-color: $DISEASE;    
+    background-color: #cbcbcb;
   }
   .PROTECTED_HEALTH_INFORMATION {
     background-color: $PROTECTED_HEALTH_INFORMATION;
+    background-color: #cbcbcb;
   }
   .TEST_TREATMENT_PROCEDURE {
     background-color: $TEST_TREATMENT_PROCEDURE;
+    background-color: #cbcbcb;
   }
   .MEDICATION {
     background-color: $MEDICATION;
+    background-color: #cbcbcb;
   }
   .ANATOMY {
     background-color: $ANATOMY;
+    background-color: #cbcbcb;
   }
   .MEDICAL_CONDITION {
     background-color: $MEDICAL_CONDITION;
+    background-color: #cbcbcb;
   }
   .TAXON {
     background-color: $TAXON;
+    background-color: #cbcbcb;
   }
   .GO {
     background-color: $GO;
+    background-color: #cbcbcb;
   }
   .CELL_LINE {
     background-color: $CELL_LINE;
+    background-color: #cbcbcb;
   }
   .DNA {
     background-color: $DNA;
+    background-color: #cbcbcb;
   }
   .PROTEIN {
     background-color: $PROTEIN;
+    background-color: #cbcbcb;
   }
   .AE {
     background-color: $AE;
+    background-color: #cbcbcb;
   }
   .ADVERSE_EVENT {
     background-color: $AE;
+    background-color: #cbcbcb;
   }
   .ORGANISM {
     background-color: $ORGANISM;
+    background-color: #cbcbcb;
   }
   .CELL {
     background-color: $CELL;
+    background-color: #cbcbcb;
   }
   .CANCER {
     background-color: $CANCER;
+    background-color: #cbcbcb;
   }
   .CELLULAR_COMPONENT {
     background-color: $CELLULAR_COMPONENT;
+    background-color: #cbcbcb;
   }
   .GENE_OR_GENE_PRODUCT {
     background-color: $GENE_OR_GENE_PRODUCT;
+    background-color: #cbcbcb;
   }
   .IMMATERIAL_ANATOMICAL_ENTITY {
     background-color: $IMMATERIAL_ANATOMICAL_ENTITY;
+    background-color: #cbcbcb;
   }
   .ORGANISM_SUBDIVISION {
     background-color: $ORGANISM_SUBDIVISION;
+    background-color: #cbcbcb;
   }
   .ORGANISM_SUBSTANCE {
     background-color: $ORGANISM_SUBSTANCE;
+    background-color: #cbcbcb;
   }
   .SIMPLE_CHEMICAL {
     background-color: $SIMPLE_CHEMICAL;
+    background-color: #cbcbcb;
   }
   .GGP {
     background-color: $GGP;
+    background-color: #cbcbcb;
   }
   .CHEBI {
     background-color: $CHEBI;
+    background-color: #cbcbcb;
   }
   .MEDICAL_CONDITION {
     background-color: $MEDICAL_CONDITION;
+    background-color: #cbcbcb;
   }
   .TIME_EXPRESSION {
     background-color: $TIME_EXPRESSION;
+    background-color: #cbcbcb;
   }
   .TEST_NAME{
     background-color: $TEST_NAME;
+    background-color: #cbcbcb;
   }
   .PROCEDURE_NAME{
     background-color:$PROCEDURE_NAME;
+    background-color: #cbcbcb;
   }
   .TREATMENT_NAME{
     background-color:$TREATMENT_NAME;
+    background-color: #cbcbcb;
   }
   .TIME_TO_DX_NAME{
     background-color:$TIME_TO_DX_NAME;
+    background-color: #cbcbcb;
   }
   .TIME_TO_MEDICATION_NAME{
     background-color:$TIME_TO_MEDICATION_NAME;
+    background-color: #cbcbcb;
   }
   .TIME_TO_TREATMENT_NAME{
     background-color:$TIME_TO_TREATMENT_NAME;
+    background-color: #cbcbcb;
   }
   .TEST_VALUE{
     background-color:$TEST_VALUE;
+    background-color: #cbcbcb;
   }
   .TEST_UNIT{
     background-color: $TEST_UNIT;
+    background-color: #cbcbcb;
   }
 
 
 }
 
+// entity highlight all one color
 mark {
   background-color: transparent !important;
   .key-word {
     border-bottom: 2px solid #ededed;
+    border-color:$MEDICAL_CONDITION;
   }
   .nocolor {
     border-color: transparent;
@@ -308,105 +346,137 @@ mark {
   }
   .CHEMICAL {
     border-color: $CHEMICAL;
+    border-color:$MEDICAL_CONDITION;
   }
   .DISEASE {
     border-color: $DISEASE;
+    border-color:$MEDICAL_CONDITION;
   }
   .PROTECTED_HEALTH_INFORMATION {
     border-color: $PROTECTED_HEALTH_INFORMATION;
+    border-color:$MEDICAL_CONDITION;
   }
   .TEST_TREATMENT_PROCEDURE {
     border-color: $TEST_TREATMENT_PROCEDURE;
+    border-color:$MEDICAL_CONDITION;
   }
   .MEDICATION {
     border-color: $MEDICATION;
+    border-color:$MEDICAL_CONDITION;
   }
   .ANATOMY {
     border-color: $ANATOMY;
+    border-color:$MEDICAL_CONDITION;
   }
   .MEDICAL_CONDITION {
     border-color: $MEDICAL_CONDITION;
   }
   .TAXON {
     border-color: $TAXON;
+    border-color:$MEDICAL_CONDITION;
   }
   .GO {
     border-color: $GO;
+    border-color:$MEDICAL_CONDITION;
   }
   .CELL_LINE {
     border-color: $CELL_LINE;
+    border-color:$MEDICAL_CONDITION;
   }
   .DNA {
     border-color: $DNA;
+    border-color:$MEDICAL_CONDITION;
   }
   .PROTEIN {
     border-color: $PROTEIN;
+    border-color:$MEDICAL_CONDITION;
   }
   .AE {
     border-color: $AE;
+    border-color:$MEDICAL_CONDITION;
   }
   .ORGANISM {
     border-color: $ORGANISM;
+    border-color:$MEDICAL_CONDITION;
   }
   .CELL {
     border-color: $CELL;
+    border-color:$MEDICAL_CONDITION;
   }
   .CANCER {
     border-color: $CANCER;
+    border-color:$MEDICAL_CONDITION;
   }
   .CELLULAR_COMPONENT {
     border-color: $CELLULAR_COMPONENT;
+    border-color:$MEDICAL_CONDITION;
   }
   .GENE_OR_GENE_PRODUCT {
     border-color: $GENE_OR_GENE_PRODUCT;
+    border-color:$MEDICAL_CONDITION;
   }
   .IMMATERIAL_ANATOMICAL_ENTITY {
     border-color: $IMMATERIAL_ANATOMICAL_ENTITY;
+    border-color:$MEDICAL_CONDITION;
   }
   .ORGANISM_SUBDIVISION {
     border-color: $ORGANISM_SUBDIVISION;
+    border-color:$MEDICAL_CONDITION;
   }
   .ORGANISM_SUBSTANCE {
     border-color: $ORGANISM_SUBSTANCE;
+    border-color:$MEDICAL_CONDITION;
   }
   .SIMPLE_CHEMICAL {
     border-color: $SIMPLE_CHEMICAL;
+    border-color:$MEDICAL_CONDITION;
   }
   .GGP {
     border-color: $GGP;
+    border-color:$MEDICAL_CONDITION;
   }
   .CHEBI {
     border-color: $CHEBI;
+    border-color:$MEDICAL_CONDITION;
   }
   .MEDICAL_CONDITION {
     border-color: $MEDICAL_CONDITION;
   }
   .TIME_EXPRESSION {
     border-color: $TIME_EXPRESSION;
+    border-color:$MEDICAL_CONDITION;
   }
   .TEST_NAME{
     border-color: $TEST_NAME;
+    border-color:$MEDICAL_CONDITION;
   }
   .PROCEDURE_NAME{
     border-color:$PROCEDURE_NAME;
+    border-color:$MEDICAL_CONDITION;
   }
   .TREATMENT_NAME{
     border-color:$TREATMENT_NAME;
+    border-color:$MEDICAL_CONDITION;
   }
   .TIME_TO_DX_NAME{
     border-color:$TIME_TO_DX_NAME;
+    border-color:$MEDICAL_CONDITION;
   }
   .TIME_TO_MEDICATION_NAME{
     border-color:$TIME_TO_MEDICATION_NAME;
+    border-color:$MEDICAL_CONDITION;
   }
   .TIME_TO_TREATMENT_NAME{
     border-color:$TIME_TO_TREATMENT_NAME;
+    border-color:$MEDICAL_CONDITION;
   }
   .TEST_VALUE{
-    border-color:$TEST_VALUE
+    border-color:$TEST_VALUE;
+    border-color:$MEDICAL_CONDITION;
   }
   .TEST_UNIT{
     border-color: $TEST_UNIT;
+    border-color:$MEDICAL_CONDITION;
   }
 
 
