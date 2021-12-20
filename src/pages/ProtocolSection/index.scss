@@ -185,6 +185,9 @@
       .sections-checkbox {
         margin-top: 10px;
         padding-left: 25px;
+        .ant-checkbox + span {
+          padding-right: 7px!important;
+        }
       }
     }
 
