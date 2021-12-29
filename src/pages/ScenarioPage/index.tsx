@@ -1259,7 +1259,7 @@ const ScenarioPage = (props) => {
       grid: {
           left: '3%',
           right: '4%',
-          top: '50',
+          top: '8%',
           bottom: '3%',
           containLabel: true
       },
@@ -3374,7 +3374,7 @@ const onClickLegend = (value, percent) =>{
                           {activeEnrollmentTabKey === '1' && (
                             <>
                               <div style={{fontWeight:700, fontSize:18, textAlign:"center", marginTop: 15}}>{eliPatientChartTitle||""}</div>
-                              <ReactECharts option={eliPatientOption} style={{ height: funnelChartheight, marginTop: -20, marginBottom: 20}}></ReactECharts>
+                              <ReactECharts option={eliPatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
                             </>
                           )}
                           {activeEnrollmentTabKey === '2' && (
