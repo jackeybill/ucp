@@ -216,6 +216,7 @@ const ScenarioPage = (props) => {
   const [rateEliPatient, setRateEliPatient] = useState('')
   const [rateFeEliPatient, setRateFeEliPatient] = useState('')
   const [enrollCriteriaLib, setEnrollCriteriaLib] = useState([])
+  const [enrollCriteriaLibBelow, setEnrollCriteriaLibBelow] = useState([])
   const [finalEthnicityData, setFinalEthnicityData] = useState([])
   const [ethLegendColor, setEthLegendColor] = useState([])
 
@@ -230,6 +231,9 @@ const ScenarioPage = (props) => {
   const [reloadPTData, setReloadPTData] = useState(false)
   const [initPTData, setInitPTData] = useState(true)
   const [funnelChartheight, setFunnelChartheight] = useState(200)
+  // const [funnelChartheightBelow, setFunnelChartheightBelow] = useState(200)
+  const [funnelChartheightOverlap, setFunnelChartheightOverlap] = useState(100)
+
     //------------------------EXCLUSION CRITERIA CONST END-----------------------------
   
     const getTrialById = async () => {
@@ -423,6 +427,7 @@ const ScenarioPage = (props) => {
       }, []);
 
     const eChartsRef = React.useRef(null as any);
+    const eChartsBelowRef = React.useRef(null as any);
 
     function getCatorgoryIndex(index, list){
       if(list[index]['Medical Condition'] != undefined){
@@ -1242,14 +1247,14 @@ const ScenarioPage = (props) => {
 
     const eliPatientOption = {
       title : {
-        text: eliPatientChartTitle,
-        x:'40%',
-        y:'top',
-        textStyle: {
-          fontSize: 18,
-          fontWeight: 'bold',
-          color: '#333'
-        },
+  //       text: eliPatientChartTitle,
+  //       x:'40%',
+  //       y:'top',
+  //       textStyle: {
+  //         fontSize: 18,
+  //         fontWeight: 'bold',
+  //         color: '#333'
+  //       },
         show: false
         // show: (!showLegend)
       },
@@ -1259,8 +1264,8 @@ const ScenarioPage = (props) => {
       grid: {
           left: '3%',
           right: '4%',
-          top: '8%',
-          bottom: '3%',
+          top: 0,
+          bottom: 0,
           containLabel: true
       },
       xAxis: {
@@ -1321,8 +1326,13 @@ const ScenarioPage = (props) => {
       yAxis: {
           type: 'category',
           axisLabel: {
+            // show: false,
             formatter: (value: any) => {
-              return value.length > 15 && value.indexOf(":") > 15? value.slice(0, 15) + '...'+ value.slice(value.indexOf(":")) : value
+              return value.length > 15 && value.indexOf(":") > 15? `{a|${value.slice(0, 15)}... ${value.slice(value.indexOf(":"))}}` : `{a|${value}}`
+            },
+            rich: {
+              a: {
+              },
             }
           },
           axisLine: {
@@ -1333,8 +1343,110 @@ const ScenarioPage = (props) => {
           },
           data: enrollCriteriaLib
       },
-      series: eliPatientResultData
+      series: eliPatientResultData,
+      backgroundColor: "#fff"
     };
+
+  //   const eliPatientOptionBelow = {
+  //     title : {
+  // //       text: eliPatientChartTitle,
+  // //       x:'40%',
+  // //       y:'top',
+  // //       textStyle: {
+  // //         fontSize: 18,
+  // //         fontWeight: 'bold',
+  // //         color: '#333'
+  // //       },
+  //       show: false
+  //       // show: (!showLegend)
+  //     },
+  //     // legend: {
+  //     //   show: showLegend
+  //     // },
+  //     grid: {
+  //         left: '3%',
+  //         right: '4%',
+  //         top: '8%',
+  //         bottom: '3%',
+  //         containLabel: true
+  //     },
+  //     xAxis: {
+  //         type: 'value',
+  //         axisLabel: {
+  //             show: false
+  //         },
+  //         splitLine:{
+  //             show:false
+  //         },
+  //         axisLine: {
+  //           show: false
+  //         },
+  //         axisTick: {
+  //             show: false
+  //         },
+  //     },
+  //     tooltip: {
+  //       trigger: 'axis',
+  //       axisPointer: {
+  //         // Use axis to trigger tooltip
+  //         type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+  //       },
+  //       formatter: function(params){
+  //         // eligible patient chart won't show percentage value
+  //         if(params.length == 2){
+  //           return params[0].axisValue + ': ' + params[0].value
+  //         }
+  //         let total = 0
+  //         for(let id=0; id<params.length; id ++){
+  //           if(params[id].seriesName != 'Total'){
+  //             total += params[id].value
+  //           }
+  //         }
+  //         let html=`
+  //           <div>
+  //           <div>${params[0].axisValue}</div>
+  //           <table>${params.map((item)=>
+  //             item.seriesName != 'Total'?`
+  //             <tr>
+  //               <td>
+  //                 <span style="display:inline-block; width:10px;
+  //                   height:10px;background-color:${item.color};"></span>
+  //                   ${item.seriesName}:
+  //               </td>
+  //               <td><span style="margin-left:10px;">${item.value}</span></td>
+  //               <td>
+  //                 <span style="margin-left:10px;">
+  //                   ${item.value > 0? ((item.value / total) * 100).toFixed(2) + '%':0}
+  //               </span></td>
+  //             </tr>`:'').join("")}
+  //           </table>
+  //           <div>Total: ${total}</div>
+  //           </div>`
+  //         return html
+  //       }
+  //     },
+  //     yAxis: {
+  //         type: 'category',
+  //         axisLabel: {
+  //           // show: false,
+  //           formatter: (value: any) => {
+  //             return value.length > 15 && value.indexOf(":") > 15? `{a|${value.slice(0, 15)}... ${value.slice(value.indexOf(":"))}}` : `{a|${value}}`
+  //           },
+  //           rich: {
+  //             a: {
+  //             },
+  //           }
+  //         },
+  //         axisLine: {
+  //             show: false
+  //         },
+  //         axisTick: {
+  //             show: false
+  //         },
+  //         data: enrollCriteriaLibBelow
+  //     },
+  //     series: eliPatientResultData
+  //   };
 
     const fePatientOption = {
       title : {
@@ -1355,8 +1467,8 @@ const ScenarioPage = (props) => {
       grid: {
           left: '3%',
           right: '4%',
-          top: '8%',
-          bottom: '3%',
+          top: 0,
+          bottom: 0,
           containLabel: true
       },
       xAxis: {
@@ -1429,8 +1541,105 @@ const ScenarioPage = (props) => {
           },
           data: enrollCriteriaLib
       },
-      series: fePatientResultData
+      series: fePatientResultData,
+      backgroundColor: "#fff"
     };
+
+  //   const fePatientOptionBelow = {
+  //     title : {
+  //       text: fePatientChartTitle,
+  //       x:'40%',
+  //       y:'top',
+  //       textStyle: {
+  //         fontSize: 18,
+  //         fontWeight: 'bold',
+  //         color: '#333'
+  //       },
+  //       show: false
+  //       // show: (!showLegend)
+  //     },
+  //     // legend: {
+  //     //   show: showLegend
+  //     // },
+  //     grid: {
+  //         left: '3%',
+  //         right: '4%',
+  //         top: '8%',
+  //         bottom: '3%',
+  //         containLabel: true
+  //     },
+  //     xAxis: {
+  //         type: 'value',
+  //         axisLabel: {
+  //             show: false
+  //         },
+  //         splitLine:{
+  //             show:false
+  //         },
+  //         axisLine: {
+  //           show: false
+  //         },
+  //         axisTick: {
+  //             show: false
+  //         },
+  //     },
+  //     tooltip: {
+  //       trigger: 'axis',
+  //       axisPointer: {
+  //         // Use axis to trigger tooltip
+  //         type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+  //       },
+  //       formatter: function(params){
+  //         // eligible patient chart won't show percentage value
+  //         if(params.length == 2){
+  //           return params[0].axisValue + ': ' + params[0].value
+  //         }
+  //         let total = 0
+  //         for(let id=0; id<params.length; id ++){
+  //           if(params[id].seriesName != 'Total'){
+  //             total += params[id].value
+  //           }
+  //         }
+  //         let html=`
+  //           <div>
+  //           <div>${params[0].axisValue}</div>
+  //           <table>${params.map((item)=>
+  //             item.seriesName != 'Total'?`
+  //             <tr>
+  //               <td>
+  //                 <span style="display:inline-block; width:10px;
+  //                   height:10px;background-color:${item.color};"></span>
+  //                   ${item.seriesName}:
+  //               </td>
+  //               <td><span style="margin-left:10px;">${item.value}</span></td>
+  //               <td>
+  //                 <span style="margin-left:10px;">
+  //                   ${item.value > 0? ((item.value / total) * 100).toFixed(2) + '%':0}
+  //               </span></td>
+  //             </tr>`:'').join("")}
+  //           </table>
+  //           <div>Total: ${total}</div>
+  //           </div>`
+  //         return html
+  //       }
+  //     },
+  //     yAxis: {
+  //         type: 'category',
+  //         axisLabel: {
+  //           formatter: (value: any) => {
+  //             return value.length > 15 && value.indexOf(":") > 15? value.slice(0, 15) + '...'+ value.slice(value.indexOf(":")) : value
+  //           }
+  //         },
+  //         axisLine: {
+  //             show: false
+  //         },
+  //         axisTick: {
+  //             show: false
+  //         },
+  //         data: enrollCriteriaLibBelow
+  //     },
+  //     series: fePatientResultData
+  //   };
 
     const ethPatientOption = {
       title : {
@@ -1451,8 +1660,8 @@ const ScenarioPage = (props) => {
       grid: {
           left: '3%',
           right: '4%',
-          top: '8%',
-          bottom: '3%',
+          top: 0,
+          bottom: 0,
           containLabel: true
       },
       xAxis: {
@@ -1525,8 +1734,105 @@ const ScenarioPage = (props) => {
           },
           data: enrollCriteriaLib
       },
-      series: ethPatientResultData
+      series: ethPatientResultData,
+      backgroundColor: "#fff"
     };
+
+  //   const ethPatientOptionBelow = {
+  //     title : {
+  //       text: ethPatientChartTitle,
+  //       x:'40%',
+  //       y:'1%',
+  //       textStyle: {
+  //         fontSize: 18,
+  //         fontWeight: 'bold',
+  //         color: '#333'
+  //       },
+  //       show: false
+  //       // show: (!showLegend)
+  //     },
+  //     // legend: {
+  //     //   show: showLegend
+  //     // },
+  //     grid: {
+  //         left: '3%',
+  //         right: '4%',
+  //         top: '8%',
+  //         bottom: '3%',
+  //         containLabel: true
+  //     },
+  //     xAxis: {
+  //         type: 'value',
+  //         axisLabel: {
+  //             show: false
+  //         },
+  //         splitLine:{
+  //             show:false
+  //         },
+  //         axisLine: {
+  //           show: false
+  //         },
+  //         axisTick: {
+  //             show: false
+  //         },
+  //     },
+  //     tooltip: {
+  //       trigger: 'axis',
+  //       axisPointer: {
+  //         // Use axis to trigger tooltip
+  //         type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+  //       },
+  //       formatter: function(params){
+  //         // eligible patient chart won't show percentage value
+  //         // if(params.length == 2){
+  //         //   return params[0].axisValue + ': ' + params[0].value
+  //         // }
+  //         let total = 0
+  //         for(let id=0; id<params.length; id ++){
+  //           if(params[id].seriesName != 'Total'){
+  //             total += params[id].value
+  //           }
+  //         }
+  //         let html=`
+  //           <div>
+  //           <div>${params[0].axisValue}</div>
+  //           <table>${params.map((item)=>
+  //             item.seriesName != 'Total'?`
+  //             <tr>
+  //               <td>
+  //                 <span style="display:inline-block; width:10px;
+  //                   height:10px;background-color:${item.color};"></span>
+  //                   ${item.seriesName}:
+  //               </td>
+  //               <td><span style="margin-left:10px;">${item.value}</span></td>
+  //               <td>
+  //                 <span style="margin-left:10px;">
+  //                   ${item.value > 0? ((item.value / total) * 100).toFixed(2) + '%':0}
+  //               </span></td>
+  //             </tr>`:'').join("")}
+  //           </table>
+  //           <div>Total: ${total}</div>
+  //           </div>`
+  //         return html
+  //       }
+  //     },
+  //     yAxis: {
+  //         type: 'category',
+  //         axisLabel: {
+  //           formatter: (value: any) => {
+  //             return value.length > 15 && value.indexOf(":") > 15? value.slice(0, 15) + '...'+ value.slice(value.indexOf(":")) : value
+  //           }
+  //         },
+  //         axisLine: {
+  //             show: false
+  //         },
+  //         axisTick: {
+  //             show: false
+  //         },
+  //         data: enrollCriteriaLibBelow
+  //     },
+  //     series: ethPatientResultData
+  //   };
 
     const sleep = (time: number) => {
       return new Promise((resolve) => setTimeout(resolve, time));
@@ -1541,7 +1847,7 @@ const ScenarioPage = (props) => {
       let doReSearch = false
       let response
       if(initPTData && !reloadPTData){
-        response = await checkTrialPatientFunnelData(props.location.state.trial_id)
+        response = await checkTrialPatientFunnelData(props.location.state.trial_id+scenarioId)
         if(!response){
           doReSearch = true
         }
@@ -1550,7 +1856,7 @@ const ScenarioPage = (props) => {
       }
       if(doReSearch){
         let requestBody = {
-          'trialId': props.location.state.trial_id,
+          'trialId': props.location.state.trial_id+scenarioId,
           'requestBody':{
             'inclusion': {
               'demographicsElements': demographicsElements,
@@ -1574,7 +1880,7 @@ const ScenarioPage = (props) => {
           await sleep(5000);
         }
         tryTimes += 1
-        response = await checkTrialPatientFunnelData(props.location.state.trial_id)
+        response = await checkTrialPatientFunnelData(props.location.state.trial_id+scenarioId)
       }
       if (!response && tryTimes > 20){
         message.error('No response for searching patient funnel over 100 seconds, please call assist.')
@@ -1603,7 +1909,11 @@ const ScenarioPage = (props) => {
         
         // Set criteria lib data as yAxis -- Common
         setEnrollCriteriaLib(resp['criteria'])
-        setFunnelChartheight(50 + 35 * resp['criteria'].length)
+        // setEnrollCriteriaLib(resp['criteria'].slice(0,resp['in_item_len']))
+        // setEnrollCriteriaLibBelow(resp['criteria'].slice(resp['in_item_len']))
+        setFunnelChartheight(40 * resp['criteria'].length)
+        setFunnelChartheightOverlap((40 * resp['criteria'].length)/resp['criteria'].length *(resp['in_item_len']))
+        // setFunnelChartheightBelow(40 * (resp['criteria'].length-resp['in_item_len']))
         let totalData = {
           name: 'Total',
           type: 'bar',
@@ -1644,7 +1954,11 @@ const ScenarioPage = (props) => {
               // },
               // position: 'insideRight'
           },
-          data: resp['count']
+          data: resp['count'],
+          areaStyle:{
+            color:'#fff',
+            opacity: 1
+         }
         })
         tempEliPatientSeriesData.push(totalData)
         setEliPatientResultData(tempEliPatientSeriesData)
@@ -2455,6 +2769,16 @@ const onClickLegend = (value, percent) =>{
       ethPatientOption.series[0].stack = tempFirstData[0].stack
       ethPatientOption.series[0].type = tempFirstData[0].type      
       eChartsRef.current?.getEchartsInstance().setOption(ethPatientOption);
+    }
+    if (eChartsBelowRef && eChartsBelowRef.current) {      
+      ethPatientOption.series[0].color = tempFirstData[0].color
+      ethPatientOption.series[0].data = tempFirstData[0].data
+      ethPatientOption.series[0].emphasis = tempFirstData[0].emphasis
+      ethPatientOption.series[0].label = tempFirstData[0].label
+      ethPatientOption.series[0].name = tempFirstData[0].name
+      ethPatientOption.series[0].stack = tempFirstData[0].stack
+      ethPatientOption.series[0].type = tempFirstData[0].type      
+      eChartsBelowRef.current?.getEchartsInstance().setOption(ethPatientOption);
     }
     // Change the title  of chart according to the legend clicked
     setEthPatientChartTitle('Race & Ethnicity - ' + tempName +  ' - ' + tempPercent + '%')
@@ -3370,23 +3694,85 @@ const onClickLegend = (value, percent) =>{
                         </Col>
                       </Row>
                       <Row>
-                        <Col span={24} className="result-chart">
+                        <Col span={24} className="result-chart" style={{height:"100%"}}>
                           {activeEnrollmentTabKey === '1' && (
                             <>
-                              <div style={{fontWeight:700, fontSize:18, textAlign:"center", marginTop: 15}}>{eliPatientChartTitle||""}</div>
-                              <ReactECharts option={eliPatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
+                              <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{eliPatientChartTitle||""}</div>
+
+                              <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
+                                <div className="upperChart" >
+                                  <div className="title">
+                                    <span className="caption">
+                                      <span className="line line-l"></span>
+                                      Inclusion Criteria
+                                      <span className="line line-r"></span>
+                                    </span>
+                                  </div>
+                                  <ReactECharts option={eliPatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
+                                </div>
+                                <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
+                                  <div className="title">
+                                    <span className="caption">
+                                      <span className="line line-l"></span>
+                                      Exclusion Criteria   
+                                      <span className="line line-r"></span>
+                                    </span>
+                                  </div>
+                                  <ReactECharts option={eliPatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }}></ReactECharts>
+                                </div>
+                              </div>
                             </>
                           )}
                           {activeEnrollmentTabKey === '2' && (
                             <>
-                              <div style={{fontWeight:700, fontSize:18, textAlign:"center", marginTop: 15}}>{fePatientChartTitle||""}</div>
-                              <ReactECharts option={fePatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
+                              <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{fePatientChartTitle||""}</div>
+                              <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
+                                <div className="upperChart">
+                                  <div className="title">
+                                    <span className="caption">
+                                      <span className="line line-l"></span>
+                                      Inclusion Criteria
+                                      <span className="line line-r"></span>
+                                    </span>
+                                  </div>
+                                  <ReactECharts option={fePatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
+                                </div>
+                                <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
+                                  <div className="title">
+                                    <span className="caption">
+                                      <span className="line line-l"></span>
+                                      Exclusion Criteria   <span className="line line-r"></span>
+                                    </span>
+                                  </div>
+                                  <ReactECharts option={fePatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }}></ReactECharts>
+                                </div>
+                              </div>
                             </>
                           )}
                           {activeEnrollmentTabKey === '3' && (
                             <>
-                              <div style={{fontWeight:700, fontSize:18, textAlign:"center", marginTop: 15}}>{ethPatientChartTitle||""}</div>
-                              <ReactECharts option={ethPatientOption} style={{ height: funnelChartheight, marginBottom: 15}} ref={eChartsRef}></ReactECharts>
+                              <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{ethPatientChartTitle||""}</div>
+                              <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
+                                <div className="upperChart">
+                                  <div className="title">
+                                    <span className="caption">
+                                      <span className="line line-l"></span>
+                                      Inclusion Criteria
+                                      <span className="line line-r"></span>
+                                    </span>
+                                  </div>
+                                  <ReactECharts option={ethPatientOption} style={{ height: funnelChartheight, marginBottom: 15}} ref={eChartsRef}></ReactECharts>
+                                </div>
+                                <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
+                                  <div className="title">
+                                    <span className="caption">
+                                      <span className="line line-l"></span>
+                                      Exclusion Criteria   <span className="line line-r"></span>
+                                    </span>
+                                  </div>
+                                  <ReactECharts option={ethPatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }} ref={eChartsBelowRef}></ReactECharts>
+                              </div>
+                              </div>
                             </>
                           )}
                         </Col>
