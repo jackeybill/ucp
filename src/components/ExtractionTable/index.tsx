@@ -17,7 +17,6 @@ import {
   sectionOptions,
   initSelectedSections,
 } from "../../pages/ProtocolSection";
-import SvgComponent from "../analysedSVG";
 import SuccessIcon from "../../assets/success.svg";
 import WarnIcon from "../../assets/warn.svg";
 import TextWithEntity from "../TextWithEntity";
