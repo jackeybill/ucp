@@ -23,6 +23,8 @@ import TableTextWithEntity from "../../components/TableTextWithEntity";
 import {ENDPOINT_SECTION} from "../../pages/ProtocolSection";
 import "./index.scss";
 
+import {dummyResult} from "../../components/analysedSVG/dummyData.js"
+
 interface markIF {
   id: string;
   type: string;
@@ -49,10 +51,17 @@ const Extraction = (props: any, ref) => {
   const initEntity = entityOptions[0];
   const allEntity = "Entities";
   const { activeSection } = props;
+  // dummyResult testing
   const file = props.fileReader.file;
+  // const file = dummyResult
 
   const key = file.keyName || Object.keys(file)[0] || [];
-  let initContent = file[key][activeSection][0].content;
+  // change to array for svg
+  let initContent = []
+  file[key][activeSection].forEach((item,index)=>{
+    initContent.push(item.content)
+  })
+  // let initContent = [file[key][activeSection][0].content,file[key][activeSection][0].content,file[key][activeSection][0].content];
   const path = file["result_url"];
 
   let tableResult,otherTableResult = []
@@ -74,8 +83,13 @@ const Extraction = (props: any, ref) => {
   // const allWordsCollection = file[key][activeSection][0].comprehendMedical["Entities"].label
   // const allSummary = file[key][activeSection][0].comprehendMedical["Entities"].Summary;
 
-  const initSvgEntity =
-    file[key][activeSection][0].comprehendMedical["Entities"];
+  // change to array for svg
+  let initSvgEntity = []
+  file[key][activeSection].forEach((item,index)=>{
+    initSvgEntity.push(item.comprehendMedical["Entities"])
+  })
+  // const initSvgEntity =
+  //   [file[key][activeSection][0].comprehendMedical["Entities"],file[key][activeSection][0].comprehendMedical["Entities"],file[key][activeSection][0].comprehendMedical["Entities"]];
   const [svgEntity, setSvgEntity] = useState(initSvgEntity);
 
   const initLabels =
@@ -129,7 +143,13 @@ const Extraction = (props: any, ref) => {
 
   useEffect(() => {
     setActiveType("");
-    setContent(file[key][activeSection][0].content);
+    // change to array for svg
+    let tempNewContent = []
+    file[key][activeSection].forEach((item,index)=>{
+      tempNewContent.push(item.content)
+    })
+    setContent(tempNewContent)
+    // setContent([file[key][activeSection][0].content,file[key][activeSection][0].content,file[key][activeSection][0].content]);
     setLabels(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label);
     setWordsCollection(
       file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label
@@ -174,9 +194,16 @@ const Extraction = (props: any, ref) => {
     //     }
     //   });
 
+    // change to array for svg
+    let tempSvgEntity = []
+    file[key][activeSection].forEach((item,index)=>{
+      tempSvgEntity.push(item.comprehendMedical["Entities"])
+    })
+    // const tempSvgEntity = [file[key][activeSection][0].comprehendMedical["Entities"],file[key][activeSection][0].comprehendMedical["Entities"],file[key][activeSection][0].comprehendMedical["Entities"]]
+
     setWordsCollection(labels);
     props.updateCurrentEntity(entity);
-    setSvgEntity(file[key][activeSection][0].comprehendMedical["Entities"]);
+    setSvgEntity(tempSvgEntity);
     setActiveTabKey(props.fileReader.activeTabKey)
   }, [entity, activeSection, labels, activeTabKey,props.fileReader.activeTabKey, props.fileReader.file]);
 
@@ -364,7 +391,7 @@ const Extraction = (props: any, ref) => {
                   }
               </div>
             </div>
-            {(!wordsCollection || wordsCollection.length==0) && activeSection!=ENDPOINT_SECTION&& <div className="raw-content"> {content} </div>}           
+            {(!wordsCollection || wordsCollection.length==0) && activeSection!=ENDPOINT_SECTION&& <div className="raw-content"> {content[0]+" ......"} </div>}           
             {
             (activeSection!=ENDPOINT_SECTION || (activeSection==ENDPOINT_SECTION&&!isTable(file,key,activeSection))) && (
                <TextWithEntity
@@ -500,7 +527,7 @@ const Extraction = (props: any, ref) => {
               </span>
             </div>
             <div id="validation-content">          
-            {(!wordsCollection || wordsCollection.length==0) && activeSection!=ENDPOINT_SECTION &&  <div className="raw-content"> {content} </div>}           
+            {(!wordsCollection || wordsCollection.length==0) && activeSection!=ENDPOINT_SECTION &&  <div className="raw-content"> {content[0]+" ......"} </div>}           
             {(activeSection!=ENDPOINT_SECTION || (activeSection==ENDPOINT_SECTION&&!isTable(file,key,activeSection))) && (
                <TextWithEntity
                key="2"
