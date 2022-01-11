@@ -1,4 +1,24 @@
 @import "../../styles/variables.scss";
+
+.ant-dropdown {
+    .ant-dropdown-menu{
+        width: 290px;
+        height: 300px!important;
+        overflow: auto!important;
+
+        .itemLine {
+            width: 250px;
+            
+            .itemTitle {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        }
+        
+    }
+}
+
 .scenario-container{
     left: 0;
     right: 0;
@@ -273,6 +293,19 @@
                     min-width:30px;
                     transform: translateY(6px);
                 }
+            }
+
+            .searchSection {
+                background-color: #fff;
+                border: 1px solid #f3f3f3;
+                padding: 10px;
+                .title, .content{
+                    span{
+                        font-size: 14px;
+                    }
+                }
+
+
             }
     
             .content-outer{

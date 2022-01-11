@@ -2,10 +2,11 @@ import React, { useState, useEffect, useReducer, useRef} from 'react';
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
-import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer} from "antd";
+import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer, Input, AutoComplete, Select} from "antd";
 import {updateStudy, getSimilarhistoricalTrialById, getStudy, getCriteriaLibByNctId, getSOAResource, getIEResource, getPatientFunnelData, checkTrialPatientFunnelData} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
-import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
+import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined, SearchOutlined, HomeOutlined, UserOutlined, CheckOutlined } from "@ant-design/icons";
+
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
 import CriteriaOption from "../../components/CriteriaOption";
@@ -17,6 +18,8 @@ import ScheduleEvents from "../../components/ScheduleEvents";
 const { Panel } = Collapse;
 const { TabPane } = Tabs;
 const { Step } = Steps;
+const { Option, OptGroup } = Select;
+const { SubMenu } = Menu;
 
 const frequencyFilter = [5, 100]
 const inActiveChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA']
@@ -126,11 +129,17 @@ const ScenarioPage = (props) => {
     const [ieResource, setIEResource] = useState('')
 
     //------------------------INCLUSION CRITERIA CONST START-----------------------------
+    const [visibleValue, setVisibleValue] = useState(false)
     //Original libs for filter purpose
     const [originDemographics, setOriginDemographics] = useState([])
     const [originIntervention, setOriginIntervention] = useState([])
     const [originMedCondition, setOriginMedCondition] = useState([])
     const [originLabTest, setOriginLabTest] = useState([])
+
+    const [searchDemographics, setSearchDemographics] = useState([])
+    const [searchIntervention, setSearchIntervention] = useState([])
+    const [searchMedCondition, setSearchMedCondition] = useState([])
+    const [searchLabTest, setSearchLabTest] = useState([])
 
     //Filtered libs for display and selection purpose
     const [demographics, setDemographics] = useState([])
@@ -375,6 +384,7 @@ const ScenarioPage = (props) => {
                     var incluIndex = getCatorgoryIndex(i, inclusionCriteria)
                     if(incluIndex == 0){
                         setOriginMedCondition(inclusionCriteria[i]['Medical Condition'])
+                        // originMedCondition
                         setMedCondition(inclusionCriteria[i]['Medical Condition'].filter((d) => {
                             return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
                         }))
@@ -2641,9 +2651,6 @@ const ScenarioPage = (props) => {
   useEffect(() => {
     updateExcluTableData()
   }, [excluDemographicsElements, excluMedConditionElements, excluInterventionElements, excluLabTestElements])
-
-
-  
   
   const updateTableData = () => {
 
@@ -2731,7 +2738,7 @@ const ScenarioPage = (props) => {
     }
   }
   // Click the legend of pie chart to change the bar chart accordingly
-const onClickLegend = (value, percent) =>{
+  const onClickLegend = (value, percent) =>{
     let tempEthPatientSeriesData = []
     let tempName = ""
     let tempPercent = ""
@@ -2917,6 +2924,116 @@ const onClickLegend = (value, percent) =>{
     // FileSaver.saveAs(blob, `IE_Average_${dateStr}.csv`);
   }
 
+  const optionLabelDemographics = originDemographics.map((item, index)=>{
+     return item.Text
+   })
+  const optionLabelIntervention = originIntervention.map((item, index)=>{
+     return item.Text
+   })
+  const optionLabelMedCondition = originMedCondition.map((item, index)=>{
+     return item.Text
+   })
+  const optionLabelLabTest = originLabTest.map((item, index)=>{
+     return item.Text
+   })
+  
+
+  const onTextChange = (e) => {
+    // setSearchTxt(e.target.value);
+    !visibleValue&&setVisibleValue(true)
+    const val = e.target.value;
+    let timer: any;
+
+
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    timer = setTimeout(function () {
+      setSearchDemographics(optionLabelDemographics.filter(
+        (i) =>
+          i.toLowerCase().indexOf(val.toLowerCase()) > -1
+        ))
+      setSearchIntervention(optionLabelIntervention.filter(
+        (i) =>
+          i.toLowerCase().indexOf(val.toLowerCase()) > -1
+        ))
+      setSearchMedCondition(optionLabelMedCondition.filter(
+        (i) =>
+          i.toLowerCase().indexOf(val.toLowerCase()) > -1
+        ))
+      setSearchLabTest(optionLabelLabTest.filter(
+        (i) =>
+          i.toLowerCase().indexOf(val.toLowerCase()) > -1
+        ))
+    }, 3000);
+  };
+
+  const onClick = ({ key }) => {
+    console.log(`Click on item ${key}`)
+    setVisibleValue(true)
+};
+
+  
+ const renderItem = (title: string) => {
+    return (
+      <div
+        className="itemLine"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <span className="itemTitle">{title}</span>
+        <span style={{color:"#CA4A04", marginLeft:"25px"}}>
+          Add
+        </span>
+        {/* <span style={{color:"#3193E5", fontWeight:700, marginLeft:"25px"}}>
+          <CheckOutlined />
+        </span> */}
+
+      </div>
+    )
+  };
+
+  const menu = (
+  <Menu onClick={onClick}>
+    <Menu.ItemGroup title="Demographics">
+     {
+        searchDemographics.map((item,index)=>{
+          return <Menu.Item key={item}>{renderItem(item)}</Menu.Item>
+        })
+      }
+    </Menu.ItemGroup>
+    <Menu.ItemGroup title="Medical Condition">  
+      {
+        searchMedCondition.map((item,index)=>{
+          return <Menu.Item key={item}>{renderItem(item)}</Menu.Item>
+        })
+      }
+    </Menu.ItemGroup>
+    <Menu.ItemGroup title="Intervention">
+       {
+        searchIntervention.map((item,index)=>{
+          return <Menu.Item key={item}>{renderItem(item)}</Menu.Item>
+        })
+      }
+    </Menu.ItemGroup>
+    <Menu.ItemGroup title="Lab / Test">
+       {
+        searchLabTest.map((item,index)=>{
+          return <Menu.Item key={item}>{renderItem(item)}</Menu.Item>
+        })
+      }
+    </Menu.ItemGroup>
+  </Menu>
+);
+
+ 
+  
+
+  
+
     return (
     <div className="scenario-container">
       <Spin spinning={pageLoading} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
@@ -3087,6 +3204,25 @@ const onClickLegend = (value, percent) =>{
                       ) : (
                       <></>
                       )}
+
+                      <div className="searchSection">
+                        <div className="content">
+                          <Dropdown 
+                            overlay={menu} 
+                            visible={visibleValue}
+                            onVisibleChange={(visible: boolean) => {!visibleValue?setVisibleValue(true):setVisibleValue(false)}}
+                          >
+                            <Input
+                                prefix={<SearchOutlined />}
+                                style={{ width: '100%', height: 30 }}
+                                allowClear
+                                onChange={onTextChange}
+                                onClick={e => e.preventDefault()}
+                            />
+                          </Dropdown>
+                        </div>
+                      </div>
+
                       <Row>
                         <Col span={24}>
                           <div className="content-outer content-sidebar">
