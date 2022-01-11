@@ -176,6 +176,12 @@ const ScenarioPage = (props) => {
   let [interventionTableData, setInterventionTableData] = useState([])
   let [medConditionTableData, setMedConditionTableData] = useState([])
   let [labTestTableData, setLabTestTableData] = useState([])
+
+  const [searchTxt,setSearchTxt] = useState("")
+  const [frontTxt,setFrontTxt] = useState("")
+  const [endTxt,setEndTxt] = useState("")
+  const [midTxt,setMidTxt] = useState("")
+
     //------------------------INCLUSION CRITERIA CONST END-----------------------------
 
     //------------------------EXCLUSION CRITERIA CONST START-----------------------------
@@ -2939,7 +2945,7 @@ const ScenarioPage = (props) => {
   
 
   const onTextChange = (e) => {
-    // setSearchTxt(e.target.value);
+    setSearchTxt(e.target.value);
     !visibleValue&&setVisibleValue(true)
     const val = e.target.value;
     let timer: any;
@@ -2966,16 +2972,16 @@ const ScenarioPage = (props) => {
         (i) =>
           i.toLowerCase().indexOf(val.toLowerCase()) > -1
         ))
-    }, 3000);
+    }, 1000);
   };
 
   const onClick = ({ key }) => {
-    console.log(`Click on item ${key}`)
+    console.log(key)
     setVisibleValue(true)
 };
 
   
- const renderItem = (title: string) => {
+ const renderItem = (title: string,idx: any) => {
     return (
       <div
         className="itemLine"
@@ -2984,7 +2990,17 @@ const ScenarioPage = (props) => {
           justifyContent: 'space-between',
         }}
       >
-        <span className="itemTitle">{title}</span>
+        <span className="itemTitle">
+          {(searchTxt.length < title.length)&& title.toLowerCase().split(searchTxt)[0]}
+          <span className={`${
+            searchTxt &&
+            title.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
+              ? "matched-item"
+              : ""
+            }`}>{searchTxt.length - title.length === 0?title:searchTxt}
+          </span>
+          {(searchTxt.length !== 0)&&(searchTxt.length < title.length)&&title.toLowerCase().split(searchTxt)[1]}
+        </span>
         <span style={{color:"#CA4A04", marginLeft:"25px"}}>
           Add
         </span>
@@ -3000,29 +3016,29 @@ const ScenarioPage = (props) => {
   <Menu onClick={onClick}>
     <Menu.ItemGroup title="Demographics">
      {
-        searchDemographics.map((item,index)=>{
-          return <Menu.Item key={item}>{renderItem(item)}</Menu.Item>
+        (searchTxt.length !== 0)&&searchDemographics.map((item,idx)=>{
+          return <Menu.Item key={item}>{renderItem(item,idx)}</Menu.Item>
         })
       }
     </Menu.ItemGroup>
     <Menu.ItemGroup title="Medical Condition">  
       {
-        searchMedCondition.map((item,index)=>{
-          return <Menu.Item key={item}>{renderItem(item)}</Menu.Item>
+       (searchTxt.length !== 0)&& searchMedCondition.map((item,idx)=>{
+          return <Menu.Item key={item}>{renderItem(item,idx)}</Menu.Item>
         })
       }
     </Menu.ItemGroup>
     <Menu.ItemGroup title="Intervention">
        {
-        searchIntervention.map((item,index)=>{
-          return <Menu.Item key={item}>{renderItem(item)}</Menu.Item>
+       (searchTxt.length !== 0)&& searchIntervention.map((item,idx)=>{
+          return <Menu.Item key={item}>{renderItem(item,idx)}</Menu.Item>
         })
       }
     </Menu.ItemGroup>
     <Menu.ItemGroup title="Lab / Test">
        {
-        searchLabTest.map((item,index)=>{
-          return <Menu.Item key={item}>{renderItem(item)}</Menu.Item>
+       (searchTxt.length !== 0)&& searchLabTest.map((item,idx)=>{
+          return <Menu.Item key={item}>{renderItem(item,idx)}</Menu.Item>
         })
       }
     </Menu.ItemGroup>
