@@ -70,10 +70,10 @@ Conditions:
 
 Resources:
   #   ____
-  # / ___|  ___  _   _ _ __ ___ ___
-  # \___ \ / _ \| | | | '__/ __/ _ \
+  #  / ___|  ___  _   _ _ __ ___ ___
+  #  \___ \ / _ \| | | | '__/ __/ _ \
   #   ___) | (_) | |_| | | | (_|  __/
-  # |____/ \___/ \__,_|_|  \___\___|
+  #  |____/ \___/ \__,_|_|  \___\___|
   CodeStarConnection:
     Condition: CreateConnection
     Type: AWS::CodeStarConnections::Connection

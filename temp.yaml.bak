@@ -1,0 +1,242 @@
+  # VPC:
+  #   Description : "VPC Name"
+  #   Value: !Ref MyVPC
+  # # AmplifyAppID:
+  #   Value: !Ref AmplifyApp
+  # EndpointId:
+  #   Value: !Ref Endpoint
+  # EndpointName:
+  #   Value: !GetAtt Endpoint.EndpointName
+  # WebsiteCloudfront:
+  #   Type: AWS::CloudFront::Distribution
+  #   DependsOn:
+  #     - WebsiteBucket
+  #   Properties:
+  #     DistributionConfig:
+  #       Comment: Cloudfront Distribution pointing to S3 bucket
+  #       Origins:
+  #         - DomainName: !Select [2, !Split ["/", !GetAtt WebsiteBucket.WebsiteURL]]
+  #           Id: S3Origin
+  #           CustomOriginConfig:
+  #             HTTPPort: '80'
+  #             HTTPSPort: '443'
+  #             OriginProtocolPolicy: http-only
+  #       Enabled: true
+  #       HttpVersion: 'http2'
+  #       DefaultRootObject: index.html
+  #       Aliases:
+  #         - !Ref 'DomainName'
+  #       DefaultCacheBehavior:
+  #         AllowedMethods:
+  #           - GET
+  #           - HEAD
+  #         Compress: true
+  #         TargetOriginId: S3Origin
+  #         ForwardedValues:
+  #           QueryString: true
+  #           Cookies:
+  #             Forward: none
+  #         ViewerProtocolPolicy: redirect-to-https
+  #       PriceClass: PriceClass_All
+  #       ViewerCertificate:
+  #         AcmCertificateArn: arn:aws:acm:us-east-1:123456789012:certificate/1bf2c345--6789-0b1b-a123-a4bb5a6fa44c
+  #         SslSupportMethod: sni-only
+  # WebsiteDNSName:
+  #   Type: AWS::Route53::RecordSetGroup
+  #   Properties:
+  #     HostedZoneName: !Join ['', [!Ref 'DomainName', .]]
+  #     RecordSets:
+  #       - Name: !Ref 'DomainName'
+  #         Type: A
+  #         AliasTarget:
+  #           HostedZoneId: Z2FDTNDATAQYW2
+  #           DNSName: !GetAtt [WebsiteCloudfront, DomainName]
+
+  #  S3Endpoint:
+  #   Type: AWS::EC2::VPCEndpoint
+  #   Properties:
+  #     PolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #       - Effect: Allow
+  #         Principal: "*"
+  #         Action:
+  #         - "*"
+  #         Resource:
+  #         - "*"
+  #     ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
+  #     RouteTableIds: 
+  #     - !Ref MyRouteTable
+  #     VpcId: !Ref MyVPC
+  
+  # DynamoDBEndpoint:
+  #   Type: AWS::EC2::VPCEndpoint
+  #   Properties:
+  #     PolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #       - Effect: Allow
+  #         Principal: "*"
+  #         Action:
+  #         - "*"
+  #         Resource:
+  #         - "*"
+  #     ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
+  #     RouteTableIds: 
+  #     - !Ref MyRouteTable
+  #     VpcId: !Ref MyVPC
+
+    # TextractEndpoint:
+    # Type: AWS::EC2::VPCEndpoint
+    # Properties:
+    #   PolicyDocument:
+    #     Version: '2012-10-17'
+    #     Statement:
+    #     - Effect: Allow
+    #       Principal: "*"
+    #       Action:
+    #       - "*"
+    #       Resource:
+    #       - "*"
+    #   ServiceName: !Sub "com.amazonaws.${AWS::Region}.textract"
+    #   VpcEndpointType: Interface
+    #   PrivateDnsEnabled: true
+    #   SecurityGroupIds:
+    #   - !Ref MySecurityGroup
+    #   SubnetIds:
+    #   - !Ref MySubnet
+    #   - !Ref SecondSubnet
+    #   VpcId: !Ref MyVPC
+
+
+#vpc endpoint
+
+#   SnsEndpoint:
+#     Type: AWS::EC2::VPCEndpoint
+#     Properties:
+#       PolicyDocument:
+#         Version: '2012-10-17'
+#         Statement:
+#         - Effect: Allow
+#           Principal: "*"
+#           Action:
+#           - "*"
+#           Resource:
+#           - "*"
+#       ServiceName: !Sub "com.amazonaws.${AWS::Region}.sns"
+#       VpcEndpointType: Interface
+#       PrivateDnsEnabled: true
+#       SecurityGroupIds:
+#       - !Ref MySecurityGroup
+#       SubnetIds:
+#       - !Ref MySubnet
+#       - !Ref SecondSubnet
+#       VpcId: !Ref MyVPC
+
+# #subnet 
+#   MySubnet:
+#     Type: AWS::EC2::Subnet
+#     Properties:
+#       VpcId:
+#         Ref: MyVPC
+#       AvailabilityZone:
+#         Fn::Select:
+#          - 0
+#          - Fn::GetAZs: ""
+#       CidrBlock: 172.31.2.0/24
+#       MapPublicIpOnLaunch: false 
+#       # AvailabilityZone: us-west-1b
+#       Tags:
+#       - Key: Stack
+#         Value: !Ref AWS::StackName
+
+#   SecondSubnet:
+#     Type: AWS::EC2::Subnet
+#     Properties:
+#       VpcId:
+#         Ref: MyVPC
+#       AvailabilityZone:
+#         Fn::Select:
+#          - 1
+#          - Fn::GetAZs: ""
+#       CidrBlock: 172.31.3.0/24
+#       MapPublicIpOnLaunch: false
+#       Tags:
+#       - Key: Stack
+#         Value: Second subnet for UCP project
+
+# #SG
+#   MySecurityGroup:
+#     Type: AWS::EC2::SecurityGroup
+#     Properties:
+#       GroupDescription: security group
+#       VpcId: !Ref MyVPC
+#       Tags: 
+#       - Key: Stack
+#         Value: !Ref AWS::StackName
+#       SecurityGroupIngress:
+#       - IpProtocol: -1
+#         CidrIp: 0.0.0.0/0
+#         Description: allow all the traffic to lambda
+#       SecurityGroupEgress:
+#       - IpProtocol: -1
+#         CidrIp: 0.0.0.0/0
+#         Description: allow all the traffic from lambda
+
+# ## route table
+#   MyRouteTable:
+#       Type: AWS::EC2::RouteTable
+#       Properties:
+#         VpcId: !Ref MyVPC
+#   MySubnetARouteTableAssociation:
+#     Type: AWS::EC2::SubnetRouteTableAssociation
+#     Properties:
+#       SubnetId: !Ref MySubnet
+#       RouteTableId: !Ref MyRouteTable
+#   MySubnetBRouteTableAssociation:
+#     Type: AWS::EC2::SubnetRouteTableAssociation
+#     Properties:
+#       SubnetId: !Ref SecondSubnet
+#       RouteTableId: !Ref MyRouteTable
+## --------------   Amplify   -------------------- ##
+#amplify section
+  # AmplifyApp:
+  #   Type: AWS::Amplify::App
+  #   Properties:
+  #     Name: !Join ['-', [!Ref AppIdentity, 'amplify', !Ref Stage]]
+  #     Repository: !Sub "https://github.com/${GithubUser}/${GithubRepo}.git"
+  #     AccessToken: !Ref GithubToken
+  #     IAMServiceRole: !GetAtt AmplifyRole.Arn
+  #     EnvironmentVariables:
+  #       - Name: ENDPOINT
+  #         Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
+
+  # AmplifyBranch:
+  #   Type: AWS::Amplify::Branch
+  #   Properties:
+  #     BranchName: !Ref GitBranchName
+  #     AppId: !GetAtt AmplifyApp.AppId
+  #     EnableAutoBuild: true
+
+
+## --------------   IAM Role   -------------------- ##
+  # AmplifyRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: 2012-10-17
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service:
+  #               - amplify.amazonaws.com
+  #           Action:
+  #             - sts:AssumeRole
+  #     Policies:
+  #       - PolicyName: Amplify
+  #         PolicyDocument:
+  #           Version: 2012-10-17
+  #           Statement:
+  #             - Effect: Allow
+  #               Action: "amplify:*"
+  #               Resource: "*"

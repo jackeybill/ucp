@@ -28,10 +28,10 @@ Parameters:
     Description: Repo Branch Name
     Type: String
     Default: master
-  # VPCId:
-  #   Description: VPC ID for lambda
-  #   Type: String
-  #   Default: vpc-023bd2049facc6830
+  VPCId:
+    Description: VPC ID for lambda
+    Type: String
+    Default: ""
   SageMakerImage:
     Description: SagerMaker ECR Image ARN
     Type: String
@@ -40,6 +40,14 @@ Parameters:
     Description: "list of directories to create."
     Type: String
     Default: ucp-filebucket-dev/RawDocuments
+  FileBucket:
+    Description: Bucket for files
+    Type: String
+    Default: ""
+
+Conditions:
+  IsVPCNotCreated: !Not [!Equals [!Ref "VPCId", ""]]
+  IsFileBucketNotCreated: !Not [!Equals [!Ref "FileBucket", ""]]
 
 Globals:
   Function:
@@ -47,10 +55,31 @@ Globals:
     Runtime: python3.8
 
 Resources:
+## _   _      _                      _        
+# | \ | |    | |                    | |       
+# |  \| | ___| |___      _____  _ __| | _____ 
+# | . ` |/ _ \ __\ \ /\ / / _ \| '__| |/ / __|
+# | |\  |  __/ |_ \ V  V / (_) | |  |   <\__ \
+# |_| \_|\___|\__| \_/\_/ \___/|_|  |_|\_\___/
 
+  MyVPC: 
+    Type: AWS::EC2::VPC
+    Condition: IsVPCNotEmpty
+    Properties:
+      CidrBlock: 172.31.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+      - Key: Stack
+        Value: !Ref AWS::StackName
 
-# create subnet sg vpc secretsmanager sagemaker endpoint sns
-# functuins section
+#    _____ _   _  _____ 
+#   / ____| \ | |/ ____|
+#  | (___ |  \| | (___  
+#   \___ \| . ` |\___ \ 
+#   ____) | |\  |____) |
+#  |_____/|_| \_|_____/ 
+
   MySNSTopic:
     Type: AWS::SNS::Topic
     Properties:
@@ -86,20 +115,7 @@ Resources:
             Principal: "*"
             Action: "SQS:*"
             Resource: "*"
-  
-  # createFolder:
-  #   Type: 'AWS::Serverless::Function'
-  #   Properties:
-  #     Handler: createFolder.lambda_handler
-  #     CodeUri: main/iso-service-dev-create-folder/
-  #     Role: !GetAtt S3PutObjectFunctionRole.Arn
-  #     VpcConfig:
-  #       SecurityGroupIds: 
-  #         - !Ref MySecurityGroup
-  #       SubnetIds: 
-  #         - !Ref MySubnet
-  #     Events:
-        
+
 #  _                     _         _
 # | |                   | |       | |      
 # | |     __ _ _ __ ___ | |__   __| | __ _ 
@@ -222,13 +238,20 @@ Resources:
       CodeUri: main/iso-service-dev-aws-label/
       Role: !GetAtt MyLambdaExecuteRole.Arn
 
-## --------------   lambda role   -------------------- ##
+#   _____       _           
+#  |  __ \     | |          
+#  | |__) |___ | | ___  ___ 
+#  |  _  // _ \| |/ _ \/ __|
+#  | | \ \ (_) | |  __/\__ \
+#  |_|  \_\___/|_|\___||___/
+
   MyRootInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Path: "/"
       Roles:
       - !Ref MyLambdaExecuteRole
+
   MyRolePolicies:
     Type: AWS::IAM::Policy
     Properties:
@@ -241,6 +264,7 @@ Resources:
           Resource: "*"
       Roles:
       - !Ref MyLambdaExecuteRole
+
   MyLambdaExecuteRole:
     Type: AWS::IAM::Role
     Properties:
@@ -259,201 +283,10 @@ Resources:
             - textract.amazonaws.com
             - sns.amazonaws.com
             - rds.amazonaws.com
-            - kendra.amazonaws.com
           Action:
           - sts:AssumeRole       
       Path: "/"
-  
-  # S3PutObjectFunctionRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #       - Effect: Allow
-  #         Principal:
-  #           Service:
-  #           - lambda.amazonaws.com
-  #         Action:
-  #         - sts:AssumeRole
-  #     Policies:
-  #     - PolicyName: S3Writer
-  #       PolicyDocument:
-  #         Version: '2012-10-17'
-  #         Statement:
-  #         - Effect: Allow
-  #           Action:
-  #           - s3:ListBucket
-  #           - s3:PutObject
-  #           Resource: "*"
-
-## --------------   API   -------------------- ##
-# #API section
-  MyApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: !Ref Stage
-      Cors: 
-        AllowMethods: "'*'"
-        AllowHeaders: "'*'"
-        AllowOrigin: "'*'"
-      Auth:
-        DefaultAuthorizer: MyCognitoAuthorizer
-        Authorizers:
-          MyCognitoAuthorizer:
-            UserPoolArn: !GetAtt MyCognitoUserPool.Arn
       
-
-## --------------   Cognito   -------------------- ##
-#Congnito User Pool        
-  MyCognitoUserPool:
-    Type: AWS::Cognito::UserPool
-    Properties:
-      UserPoolName: !Join ['-', [!Ref AppIdentity, 'UserPool', !Ref Stage]]
-      Policies:
-        PasswordPolicy:
-          MinimumLength: 8
-      UsernameAttributes:
-        - email
-      Schema:
-        - AttributeDataType: String
-          Name: email
-          Required: false
-  
-  MyCognitoUserPoolClient:
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      UserPoolId: !Ref MyCognitoUserPool
-      ClientName: !Join ['-', [!Ref AppIdentity, 'UserPoolClientName', !Ref Stage]]
-      GenerateSecret: false
-
-## --------------   DynameDB   -------------------- ##     
-  DynamoDBTable:
-    Type: AWS::DynamoDB::Table
-    Properties: 
-      TableName: !Join ['-', [!Ref AppIdentity, !Ref Stage, 'log']]
-      AttributeDefinitions: 
-        - AttributeName: file_name
-          AttributeType: S
-      KeySchema: 
-        - AttributeName: file_name
-          KeyType: HASH
-      ProvisionedThroughput: 
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
-      
-## --------------   S3   -------------------- ##     
-#S3 
-  MyFileBucket:
-    Type: "AWS::S3::Bucket"
-    # condition if parameter
-    # DeletionPolicy: Retain
-    Properties:
-      BucketName: !Join ['-', [!Ref AppIdentity, 'filebucket', !Ref Stage]]
-      # NotificationConfiguration:
-      #   LambdaConfigurations:
-      #     -
-      #       Function: !Ref MyLambdaFunction
-      #       Event: "s3:ObjectCreated:*"
-      #       Filter:
-      #         S3Key:
-      #           Rules:
-      #             -
-      #               Name: suffix
-      #               Value: pdf
-  
-
-## --------------   Sagemaker   -------------------- ##
-# Sagemaker
-  # Endpoint:
-  #   Type: "AWS::SageMaker::Endpoint"
-  #   Properties:
-  #     EndpointConfigName:
-  #       !GetAtt EndpointConfig.EndpointConfigName
-  EndpointConfig:
-    Type: "AWS::SageMaker::EndpointConfig"
-    Properties:
-      ProductionVariants:
-        - InitialInstanceCount: 1
-          InitialVariantWeight: 1.0
-          InstanceType: ml.t2.large
-          ModelName: !GetAtt Model.ModelName
-          VariantName: !GetAtt Model.ModelName
-  Model:
-    Type: "AWS::SageMaker::Model"
-    Properties:
-      PrimaryContainer:
-        Image: !Ref SageMakerImage
-      ExecutionRoleArn: !GetAtt ExecutionRole.Arn
-
-  ExecutionRole: 
-    Type: "AWS::IAM::Role"
-    Properties: 
-      AssumeRolePolicyDocument: 
-        Version: "2012-10-17"
-        Statement: 
-          - 
-            Effect: "Allow"
-            Principal: 
-              Service: 
-                - "sagemaker.amazonaws.com"
-            Action: 
-              - "sts:AssumeRole"
-      Path: "/"
-      Policies: 
-        - 
-          PolicyName: "root"
-          PolicyDocument: 
-            Version: "2012-10-17"
-            Statement: 
-              - 
-                Effect: "Allow"
-                Action: "*"
-                Resource: "*"
-
-## --------------   Amplify   -------------------- ##
-#amplify section
-  # AmplifyApp:
-  #   Type: AWS::Amplify::App
-  #   Properties:
-  #     Name: !Join ['-', [!Ref AppIdentity, 'amplify', !Ref Stage]]
-  #     Repository: !Sub "https://github.com/${GithubUser}/${GithubRepo}.git"
-  #     AccessToken: !Ref GithubToken
-  #     IAMServiceRole: !GetAtt AmplifyRole.Arn
-  #     EnvironmentVariables:
-  #       - Name: ENDPOINT
-  #         Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
-
-  # AmplifyBranch:
-  #   Type: AWS::Amplify::Branch
-  #   Properties:
-  #     BranchName: !Ref GitBranchName
-  #     AppId: !GetAtt AmplifyApp.AppId
-  #     EnableAutoBuild: true
-
-
-## --------------   IAM Role   -------------------- ##
-  # AmplifyRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: 2012-10-17
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service:
-  #               - amplify.amazonaws.com
-  #           Action:
-  #             - sts:AssumeRole
-  #     Policies:
-  #       - PolicyName: Amplify
-  #         PolicyDocument:
-  #           Version: 2012-10-17
-  #           Statement:
-  #             - Effect: Allow
-  #               Action: "amplify:*"
-  #               Resource: "*"
-
   SQSRole:
     Type: AWS::IAM::Role
     Properties:
@@ -513,6 +346,159 @@ Resources:
                   - arn:aws:sqs:*
                 Effect: Allow
 
+#            _____ _____ 
+#      /\   |  __ \_   _|
+#     /  \  | |__) || |  
+#    / /\ \ |  ___/ | |  
+#   / ____ \| |    _| |_ 
+#  /_/    \_\_|   |_____|
+                       
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Stage
+      Cors: 
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+      Auth:
+        DefaultAuthorizer: MyCognitoAuthorizer
+        Authorizers:
+          MyCognitoAuthorizer:
+            UserPoolArn: !GetAtt MyCognitoUserPool.Arn
+      
+#    _____                  _ _        
+#   / ____|                (_) |       
+#  | |     ___   __ _ _ __  _| |_ ___  
+#  | |    / _ \ / _` | '_ \| | __/ _ \ 
+#  | |___| (_) | (_| | | | | | || (_) |
+#   \_____\___/ \__, |_| |_|_|\__\___/ 
+#                __/ |                 
+#               |___/                  
+     
+  MyCognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Join ['-', [!Ref AppIdentity, 'UserPool', !Ref Stage]]
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      UsernameAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: false
+  
+  MyCognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref MyCognitoUserPool
+      ClientName: !Join ['-', [!Ref AppIdentity, 'UserPoolClientName', !Ref Stage]]
+      GenerateSecret: false
+
+#   _____                                   _____  ____  
+#  |  __ \                                 |  __ \|  _ \ 
+#  | |  | |_   _ _ __   __ _ _ __ ___   ___| |  | | |_) |
+#  | |  | | | | | '_ \ / _` | '_ ` _ \ / _ \ |  | |  _ < 
+#  | |__| | |_| | | | | (_| | | | | | |  __/ |__| | |_) |
+#  |_____/ \__, |_| |_|\__,_|_| |_| |_|\___|_____/|____/ 
+#           __/ |                                        
+#          |___/                     
+                    
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      TableName: !Join ['-', [!Ref AppIdentity, !Ref Stage, 'log']]
+      AttributeDefinitions: 
+        - AttributeName: file_name
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: file_name
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+#   ____             _        _   
+#  |  _ \           | |      | |  
+#  | |_) |_   _  ___| | _____| |_ 
+#  |  _ <| | | |/ __| |/ / _ \ __|
+#  | |_) | |_| | (__|   <  __/ |_ 
+#  |____/ \__,_|\___|_|\_\___|\__|
+                                
+  MyFileBucket:
+    Type: "AWS::S3::Bucket"
+    # condition if parameter
+    # DeletionPolicy: Retain
+    Properties:
+      BucketName: !Join ['-', [!Ref AppIdentity, 'filebucket', !Ref Stage]]
+      # NotificationConfiguration:
+      #   LambdaConfigurations:
+      #     -
+      #       Function: !Ref MyLambdaFunction
+      #       Event: "s3:ObjectCreated:*"
+      #       Filter:
+      #         S3Key:
+      #           Rules:
+      #             -
+      #               Name: suffix
+      #               Value: pdf
+#    _____                                  _             
+#   / ____|                                | |            
+#  | (___   __ _  __ _  ___ _ __ ___   __ _| | _____ _ __ 
+#   \___ \ / _` |/ _` |/ _ \ '_ ` _ \ / _` | |/ / _ \ '__|
+#   ____) | (_| | (_| |  __/ | | | | | (_| |   <  __/ |   
+#  |_____/ \__,_|\__, |\___|_| |_| |_|\__,_|_|\_\___|_|   
+#                 __/ |                                   
+#                |___/                                    
+
+# Sagemaker
+  # Endpoint:
+  #   Type: "AWS::SageMaker::Endpoint"
+  #   Properties:
+  #     EndpointConfigName:
+  #       !GetAtt EndpointConfig.EndpointConfigName
+  EndpointConfig:
+    Type: "AWS::SageMaker::EndpointConfig"
+    Properties:
+      ProductionVariants:
+        - InitialInstanceCount: 1
+          InitialVariantWeight: 1.0
+          InstanceType: ml.t2.large
+          ModelName: !GetAtt Model.ModelName
+          VariantName: !GetAtt Model.ModelName
+  Model:
+    Type: "AWS::SageMaker::Model"
+    Properties:
+      PrimaryContainer:
+        Image: !Ref SageMakerImage
+      ExecutionRoleArn: !GetAtt ExecutionRole.Arn
+
+  ExecutionRole: 
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "sagemaker.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies: 
+        - 
+          PolicyName: "root"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - 
+                Effect: "Allow"
+                Action: "*"
+                Resource: "*"
 Outputs:
   OrderApi:
     Description: "API Gateway endpoint URL for Prod stage for Order function"
@@ -520,215 +506,3 @@ Outputs:
   Bucket:
     Description : "The name of the created bucket"
     Value: !Ref MyFileBucket
-  # VPC:
-  #   Description : "VPC Name"
-  #   Value: !Ref MyVPC
-  # # AmplifyAppID:
-  #   Value: !Ref AmplifyApp
-  # EndpointId:
-  #   Value: !Ref Endpoint
-  # EndpointName:
-  #   Value: !GetAtt Endpoint.EndpointName
-  # WebsiteCloudfront:
-  #   Type: AWS::CloudFront::Distribution
-  #   DependsOn:
-  #     - WebsiteBucket
-  #   Properties:
-  #     DistributionConfig:
-  #       Comment: Cloudfront Distribution pointing to S3 bucket
-  #       Origins:
-  #         - DomainName: !Select [2, !Split ["/", !GetAtt WebsiteBucket.WebsiteURL]]
-  #           Id: S3Origin
-  #           CustomOriginConfig:
-  #             HTTPPort: '80'
-  #             HTTPSPort: '443'
-  #             OriginProtocolPolicy: http-only
-  #       Enabled: true
-  #       HttpVersion: 'http2'
-  #       DefaultRootObject: index.html
-  #       Aliases:
-  #         - !Ref 'DomainName'
-  #       DefaultCacheBehavior:
-  #         AllowedMethods:
-  #           - GET
-  #           - HEAD
-  #         Compress: true
-  #         TargetOriginId: S3Origin
-  #         ForwardedValues:
-  #           QueryString: true
-  #           Cookies:
-  #             Forward: none
-  #         ViewerProtocolPolicy: redirect-to-https
-  #       PriceClass: PriceClass_All
-  #       ViewerCertificate:
-  #         AcmCertificateArn: arn:aws:acm:us-east-1:123456789012:certificate/1bf2c345--6789-0b1b-a123-a4bb5a6fa44c
-  #         SslSupportMethod: sni-only
-  # WebsiteDNSName:
-  #   Type: AWS::Route53::RecordSetGroup
-  #   Properties:
-  #     HostedZoneName: !Join ['', [!Ref 'DomainName', .]]
-  #     RecordSets:
-  #       - Name: !Ref 'DomainName'
-  #         Type: A
-  #         AliasTarget:
-  #           HostedZoneId: Z2FDTNDATAQYW2
-  #           DNSName: !GetAtt [WebsiteCloudfront, DomainName]
-
-  #  S3Endpoint:
-  #   Type: AWS::EC2::VPCEndpoint
-  #   Properties:
-  #     PolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #       - Effect: Allow
-  #         Principal: "*"
-  #         Action:
-  #         - "*"
-  #         Resource:
-  #         - "*"
-  #     ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
-  #     RouteTableIds: 
-  #     - !Ref MyRouteTable
-  #     VpcId: !Ref MyVPC
-  
-  # DynamoDBEndpoint:
-  #   Type: AWS::EC2::VPCEndpoint
-  #   Properties:
-  #     PolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #       - Effect: Allow
-  #         Principal: "*"
-  #         Action:
-  #         - "*"
-  #         Resource:
-  #         - "*"
-  #     ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
-  #     RouteTableIds: 
-  #     - !Ref MyRouteTable
-  #     VpcId: !Ref MyVPC
-
-    # TextractEndpoint:
-    # Type: AWS::EC2::VPCEndpoint
-    # Properties:
-    #   PolicyDocument:
-    #     Version: '2012-10-17'
-    #     Statement:
-    #     - Effect: Allow
-    #       Principal: "*"
-    #       Action:
-    #       - "*"
-    #       Resource:
-    #       - "*"
-    #   ServiceName: !Sub "com.amazonaws.${AWS::Region}.textract"
-    #   VpcEndpointType: Interface
-    #   PrivateDnsEnabled: true
-    #   SecurityGroupIds:
-    #   - !Ref MySecurityGroup
-    #   SubnetIds:
-    #   - !Ref MySubnet
-    #   - !Ref SecondSubnet
-    #   VpcId: !Ref MyVPC
-  ## --------------   Networks   -------------------- ##
-#vpc
-  # MyVPC:
-  #   Type: AWS::EC2::VPC
-  #   Properties:
-  #     CidrBlock: 172.31.0.0/16
-  #     EnableDnsHostnames: true
-  #     EnableDnsSupport: true
-  #     Tags:
-  #     - Key: Stack
-  #       Value: !Ref AWS::StackName
-
-#vpc endpoint
- 
-
-
-#   SnsEndpoint:
-#     Type: AWS::EC2::VPCEndpoint
-#     Properties:
-#       PolicyDocument:
-#         Version: '2012-10-17'
-#         Statement:
-#         - Effect: Allow
-#           Principal: "*"
-#           Action:
-#           - "*"
-#           Resource:
-#           - "*"
-#       ServiceName: !Sub "com.amazonaws.${AWS::Region}.sns"
-#       VpcEndpointType: Interface
-#       PrivateDnsEnabled: true
-#       SecurityGroupIds:
-#       - !Ref MySecurityGroup
-#       SubnetIds:
-#       - !Ref MySubnet
-#       - !Ref SecondSubnet
-#       VpcId: !Ref MyVPC
-
-# #subnet 
-#   MySubnet:
-#     Type: AWS::EC2::Subnet
-#     Properties:
-#       VpcId:
-#         Ref: MyVPC
-#       AvailabilityZone:
-#         Fn::Select:
-#          - 0
-#          - Fn::GetAZs: ""
-#       CidrBlock: 172.31.2.0/24
-#       MapPublicIpOnLaunch: false 
-#       # AvailabilityZone: us-west-1b
-#       Tags:
-#       - Key: Stack
-#         Value: !Ref AWS::StackName
-
-#   SecondSubnet:
-#     Type: AWS::EC2::Subnet
-#     Properties:
-#       VpcId:
-#         Ref: MyVPC
-#       AvailabilityZone:
-#         Fn::Select:
-#          - 1
-#          - Fn::GetAZs: ""
-#       CidrBlock: 172.31.3.0/24
-#       MapPublicIpOnLaunch: false
-#       Tags:
-#       - Key: Stack
-#         Value: Second subnet for UCP project
-
-# #SG
-#   MySecurityGroup:
-#     Type: AWS::EC2::SecurityGroup
-#     Properties:
-#       GroupDescription: security group
-#       VpcId: !Ref MyVPC
-#       Tags: 
-#       - Key: Stack
-#         Value: !Ref AWS::StackName
-#       SecurityGroupIngress:
-#       - IpProtocol: -1
-#         CidrIp: 0.0.0.0/0
-#         Description: allow all the traffic to lambda
-#       SecurityGroupEgress:
-#       - IpProtocol: -1
-#         CidrIp: 0.0.0.0/0
-#         Description: allow all the traffic from lambda
-
-# ## route table
-#   MyRouteTable:
-#       Type: AWS::EC2::RouteTable
-#       Properties:
-#         VpcId: !Ref MyVPC
-#   MySubnetARouteTableAssociation:
-#     Type: AWS::EC2::SubnetRouteTableAssociation
-#     Properties:
-#       SubnetId: !Ref MySubnet
-#       RouteTableId: !Ref MyRouteTable
-#   MySubnetBRouteTableAssociation:
-#     Type: AWS::EC2::SubnetRouteTableAssociation
-#     Properties:
-#       SubnetId: !Ref SecondSubnet
-#       RouteTableId: !Ref MyRouteTable
