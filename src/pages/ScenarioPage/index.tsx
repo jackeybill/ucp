@@ -129,7 +129,7 @@ const ScenarioPage = (props) => {
     const [ieResource, setIEResource] = useState('')
 
     //------------------------INCLUSION CRITERIA CONST START-----------------------------
-    const [visibleValue, setVisibleValue] = useState(false)
+    
     //Original libs for filter purpose
     const [originDemographics, setOriginDemographics] = useState([])
     const [originIntervention, setOriginIntervention] = useState([])
@@ -181,6 +181,10 @@ const ScenarioPage = (props) => {
   const [frontTxt,setFrontTxt] = useState("")
   const [endTxt,setEndTxt] = useState("")
   const [midTxt,setMidTxt] = useState("")
+
+  const [visibleValue, setVisibleValue] = useState(false)
+
+  const [whetherClick, setWhetherClick] = useState(false)
 
     //------------------------INCLUSION CRITERIA CONST END-----------------------------
 
@@ -2931,16 +2935,16 @@ const ScenarioPage = (props) => {
   }
 
   const optionLabelDemographics = originDemographics.map((item, index)=>{
-     return item.Text
+     return item
    })
   const optionLabelIntervention = originIntervention.map((item, index)=>{
-     return item.Text
+     return item
    })
   const optionLabelMedCondition = originMedCondition.map((item, index)=>{
-     return item.Text
+     return item
    })
   const optionLabelLabTest = originLabTest.map((item, index)=>{
-     return item.Text
+     return item
    })
   
 
@@ -2949,8 +2953,6 @@ const ScenarioPage = (props) => {
     !visibleValue&&setVisibleValue(true)
     const val = e.target.value;
     let timer: any;
-
-
     if (timer) {
       clearTimeout(timer);
       timer = null;
@@ -2958,30 +2960,124 @@ const ScenarioPage = (props) => {
     timer = setTimeout(function () {
       setSearchDemographics(optionLabelDemographics.filter(
         (i) =>
-          i.toLowerCase().indexOf(val.toLowerCase()) > -1
+          i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
         ))
       setSearchIntervention(optionLabelIntervention.filter(
         (i) =>
-          i.toLowerCase().indexOf(val.toLowerCase()) > -1
+          i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
         ))
       setSearchMedCondition(optionLabelMedCondition.filter(
         (i) =>
-          i.toLowerCase().indexOf(val.toLowerCase()) > -1
+          i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
         ))
       setSearchLabTest(optionLabelLabTest.filter(
         (i) =>
-          i.toLowerCase().indexOf(val.toLowerCase()) > -1
+          i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
         ))
     }, 1000);
-  };
+  }; 
 
-  const onClick = ({ key }) => {
-    console.log(key)
+  const onItemClick = ({ key }) => {
+    console.log(JSON.parse(key.slice(1)))
+    console.log(key.charAt(0))
     setVisibleValue(true)
-};
+    let indexdemographicsElements = demographicsElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+    let indexmedConditionElements = medConditionElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+    let indexinterventionElements = interventionElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+    let indexlabTestElements = labTestElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
 
+    console.log("indexdemographicsElements:",indexdemographicsElements);
+    
+    switch(key.charAt(0)) {
+      case "D":
+        if(indexdemographicsElements < 0){
+          var newItem = {
+            "Eligibility Criteria": JSON.parse(key).Text,
+            "Values": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key)),
+            "rawValue": JSON.parse(key).Value,
+            "Timeframe": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key)) : "-",
+            "Frequency":JSON.parse(key).Frequency
+          }
+          demographicsElements.push(newItem)
+          setDemographicsElements(demographicsElements)
+          console.log("demographicsElements:",demographicsElements);
+        }else {
+          demographicsElements.splice(indexdemographicsElements, 1) 
+          setDemographicsElements(demographicsElements)
+          console.log("demographicsElements:",demographicsElements);
+
+        }
+        break;
+      case "M":
+        if(indexmedConditionElements < 0){
+          var newItem = {
+            "Eligibility Criteria": JSON.parse(key).Text,
+            "Values": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key)),
+            "rawValue": JSON.parse(key).Value,
+            "Timeframe": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key)) : "-",
+            "Frequency":JSON.parse(key).Frequency
+          }
+          medConditionElements.push(newItem)
+          setMedConditionElements(medConditionElements)
+          console.log("medConditionElements:",medConditionElements);
+        }else {
+          medConditionElements.splice(indexmedConditionElements, 1) 
+          setMedConditionElements(medConditionElements)
+          console.log("medConditionElements:",medConditionElements);
+
+        }
+      break;
+      case "I":
+        if(indexinterventionElements < 0){
+          var newItem = {
+            "Eligibility Criteria": JSON.parse(key).Text,
+            "Values": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key)),
+            "rawValue": JSON.parse(key).Value,
+            "Timeframe": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key)) : "-",
+            "Frequency":JSON.parse(key).Frequency
+          }
+          interventionElements.push(newItem)
+          setInterventionElements(interventionElements)
+          console.log("interventionElements:",interventionElements);
+        }else {
+          interventionElements.splice(indexinterventionElements, 1) 
+          setInterventionElements(interventionElements)
+          console.log("interventionElements:",interventionElements);
+
+        }
+      break;
+      default:
+        if(indexlabTestElements < 0){
+          var newItem = {
+            "Eligibility Criteria": JSON.parse(key).Text,
+            "Values": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key)),
+            "rawValue": JSON.parse(key).Value,
+            "Timeframe": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key)) : "-",
+            "Frequency":JSON.parse(key).Frequency
+          }
+          labTestElements.push(newItem)
+          setLabTestElements(labTestElements)
+          console.log("labTestElements:",labTestElements);
+        }else {
+          labTestElements.splice(indexlabTestElements, 1) 
+          setLabTestElements(labTestElements)
+          console.log("labTestElements:",labTestElements);
+
+        }
+      break;
+
+    }
+    
+
+    key.charAt(0)
+    
+    //  if key includes in [], delete; if not includes, push []
+    
+    // if key includes in [], setWhetherClick(true)
+};
   
  const renderItem = (title: string,idx: any) => {
+    // if title in [], setWhetherClick(true)
     return (
       <div
         className="itemLine"
@@ -3001,54 +3097,51 @@ const ScenarioPage = (props) => {
           </span>
           {(searchTxt.length !== 0)&&(searchTxt.length < title.length)&&title.toLowerCase().split(searchTxt)[1]}
         </span>
-        <span style={{color:"#CA4A04", marginLeft:"25px"}}>
-          Add
-        </span>
-        {/* <span style={{color:"#3193E5", fontWeight:700, marginLeft:"25px"}}>
-          <CheckOutlined />
-        </span> */}
+        {!whetherClick?
+          (<span style={{color:"#CA4A04", marginLeft:"25px"}}>
+            Add
+          </span>):
+          (<span style={{color:"#3193E5", fontWeight:700, marginLeft:"25px"}}>
+            <CheckOutlined />
+          </span>)
+        }
 
       </div>
     )
   };
 
   const menu = (
-  <Menu onClick={onClick}>
+  <Menu onClick={onItemClick}>
     <Menu.ItemGroup title="Demographics">
      {
         (searchTxt.length !== 0)&&searchDemographics.map((item,idx)=>{
-          return <Menu.Item key={item}>{renderItem(item,idx)}</Menu.Item>
+          return <Menu.Item key={"D"+JSON.stringify(item)}>{renderItem(item.Text, idx)}</Menu.Item>
         })
       }
     </Menu.ItemGroup>
     <Menu.ItemGroup title="Medical Condition">  
       {
        (searchTxt.length !== 0)&& searchMedCondition.map((item,idx)=>{
-          return <Menu.Item key={item}>{renderItem(item,idx)}</Menu.Item>
+          return <Menu.Item key={"M"+JSON.stringify(item)}>{renderItem(item.Text, idx)}</Menu.Item>
         })
       }
     </Menu.ItemGroup>
     <Menu.ItemGroup title="Intervention">
        {
        (searchTxt.length !== 0)&& searchIntervention.map((item,idx)=>{
-          return <Menu.Item key={item}>{renderItem(item,idx)}</Menu.Item>
+          return <Menu.Item key={"I"+JSON.stringify(item)}>{renderItem(item.Text, idx)}</Menu.Item>
         })
       }
     </Menu.ItemGroup>
     <Menu.ItemGroup title="Lab / Test">
        {
        (searchTxt.length !== 0)&& searchLabTest.map((item,idx)=>{
-          return <Menu.Item key={item}>{renderItem(item,idx)}</Menu.Item>
+          return <Menu.Item key={"L"+JSON.stringify(item)}>{renderItem(item.Text, idx)}</Menu.Item>
         })
       }
     </Menu.ItemGroup>
   </Menu>
 );
-
- 
-  
-
-  
 
     return (
     <div className="scenario-container">
