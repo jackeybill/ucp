@@ -184,7 +184,7 @@ const ScenarioPage = (props) => {
 
   const [visibleValue, setVisibleValue] = useState(false)
 
-  const [whetherClick, setWhetherClick] = useState(false)
+  // const [whetherClick, setWhetherClick] = useState(false)
 
     //------------------------INCLUSION CRITERIA CONST END-----------------------------
 
@@ -2978,106 +2978,94 @@ const ScenarioPage = (props) => {
   }; 
 
   const onItemClick = ({ key }) => {
-    console.log(JSON.parse(key.slice(1)))
-    console.log(key.charAt(0))
+    // console.log(JSON.parse(key.slice(1)))
+    // console.log(key.charAt(0))
     setVisibleValue(true)
     let indexdemographicsElements = demographicsElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
     let indexmedConditionElements = medConditionElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
     let indexinterventionElements = interventionElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
     let indexlabTestElements = labTestElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
-
-    console.log("indexdemographicsElements:",indexdemographicsElements);
-    
+    //  if key includes in [], delete; if not includes, push []
     switch(key.charAt(0)) {
       case "D":
         if(indexdemographicsElements < 0){
           var newItem = {
-            "Eligibility Criteria": JSON.parse(key).Text,
-            "Values": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key)),
-            "rawValue": JSON.parse(key).Value,
-            "Timeframe": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key)) : "-",
-            "Frequency":JSON.parse(key).Frequency
+            "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+            "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+            "rawValue": JSON.parse(key.slice(1)).Value,
+            "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+            "Frequency":JSON.parse(key.slice(1)).Frequency
           }
           demographicsElements.push(newItem)
           setDemographicsElements(demographicsElements)
-          console.log("demographicsElements:",demographicsElements);
+          // console.log("demographicsElements:",demographicsElements);
         }else {
           demographicsElements.splice(indexdemographicsElements, 1) 
           setDemographicsElements(demographicsElements)
-          console.log("demographicsElements:",demographicsElements);
-
+          // console.log("demographicsElements:",demographicsElements);
         }
         break;
       case "M":
         if(indexmedConditionElements < 0){
           var newItem = {
-            "Eligibility Criteria": JSON.parse(key).Text,
-            "Values": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key)),
-            "rawValue": JSON.parse(key).Value,
-            "Timeframe": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key)) : "-",
-            "Frequency":JSON.parse(key).Frequency
+            "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+            "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+            "rawValue": JSON.parse(key.slice(1)).Value,
+            "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+            "Frequency":JSON.parse(key.slice(1)).Frequency
           }
           medConditionElements.push(newItem)
           setMedConditionElements(medConditionElements)
-          console.log("medConditionElements:",medConditionElements);
+          // console.log("medConditionElements:",medConditionElements);
         }else {
           medConditionElements.splice(indexmedConditionElements, 1) 
           setMedConditionElements(medConditionElements)
-          console.log("medConditionElements:",medConditionElements);
-
+          // console.log("medConditionElements:",medConditionElements);
         }
       break;
       case "I":
         if(indexinterventionElements < 0){
           var newItem = {
-            "Eligibility Criteria": JSON.parse(key).Text,
-            "Values": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key)),
-            "rawValue": JSON.parse(key).Value,
-            "Timeframe": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key)) : "-",
-            "Frequency":JSON.parse(key).Frequency
+            "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+            "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+            "rawValue": JSON.parse(key.slice(1)).Value,
+            "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+            "Frequency":JSON.parse(key.slice(1)).Frequency
           }
           interventionElements.push(newItem)
           setInterventionElements(interventionElements)
-          console.log("interventionElements:",interventionElements);
+          // console.log("interventionElements:",interventionElements);
         }else {
           interventionElements.splice(indexinterventionElements, 1) 
           setInterventionElements(interventionElements)
-          console.log("interventionElements:",interventionElements);
-
+          // console.log("interventionElements:",interventionElements);
         }
       break;
       default:
         if(indexlabTestElements < 0){
           var newItem = {
-            "Eligibility Criteria": JSON.parse(key).Text,
-            "Values": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key)),
-            "rawValue": JSON.parse(key).Value,
-            "Timeframe": JSON.parse(key).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key)) : "-",
-            "Frequency":JSON.parse(key).Frequency
+            "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+            "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+            "rawValue": JSON.parse(key.slice(1)).Value,
+            "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+            "Frequency":JSON.parse(key.slice(1)).Frequency
           }
           labTestElements.push(newItem)
           setLabTestElements(labTestElements)
-          console.log("labTestElements:",labTestElements);
+          // console.log("labTestElements:",labTestElements);
         }else {
           labTestElements.splice(indexlabTestElements, 1) 
           setLabTestElements(labTestElements)
-          console.log("labTestElements:",labTestElements);
-
+          // console.log("labTestElements:",labTestElements);
         }
       break;
-
     }
-    
 
-    key.charAt(0)
-    
-    //  if key includes in [], delete; if not includes, push []
-    
-    // if key includes in [], setWhetherClick(true)
+    updateTrial(1, 1)
+    // updateTrial(2, 1)    
 };
   
- const renderItem = (title: string,idx: any) => {
-    // if title in [], setWhetherClick(true)
+ const renderItem = (title: string, type: string, idx: any) => { 
     return (
       <div
         className="itemLine"
@@ -3097,15 +3085,35 @@ const ScenarioPage = (props) => {
           </span>
           {(searchTxt.length !== 0)&&(searchTxt.length < title.length)&&title.toLowerCase().split(searchTxt)[1]}
         </span>
-        {!whetherClick?
-          (<span style={{color:"#CA4A04", marginLeft:"25px"}}>
-            Add
-          </span>):
-          (<span style={{color:"#3193E5", fontWeight:700, marginLeft:"25px"}}>
+        <span style={{color:"#CA4A04", marginLeft:"25px"}}>
+          Add
+        </span>
+      </div>
+    )
+  };
+ const renderItemClick = (title: string, type: string, idx: any) => {
+    return (
+      <div
+        className="itemLine"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <span className="itemTitle">
+          {(searchTxt.length < title.length)&& title.toLowerCase().split(searchTxt)[0]}
+          <span className={`${
+            searchTxt &&
+            title.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
+              ? "matched-item"
+              : ""
+            }`}>{searchTxt.length - title.length === 0?title:searchTxt}
+          </span>
+          {(searchTxt.length !== 0)&&(searchTxt.length < title.length)&&title.toLowerCase().split(searchTxt)[1]}
+        </span>
+        <span style={{color:"#3193E5", fontWeight:700, marginLeft:"25px"}}>
             <CheckOutlined />
-          </span>)
-        }
-
+        </span>
       </div>
     )
   };
@@ -3115,28 +3123,44 @@ const ScenarioPage = (props) => {
     <Menu.ItemGroup title="Demographics">
      {
         (searchTxt.length !== 0)&&searchDemographics.map((item,idx)=>{
-          return <Menu.Item key={"D"+JSON.stringify(item)}>{renderItem(item.Text, idx)}</Menu.Item>
+          if(demographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+            return <Menu.Item key={"D"+JSON.stringify(item)}>{renderItem(item.Text,"D", idx)}</Menu.Item>
+          } else {
+            return <Menu.Item key={"D"+JSON.stringify(item)}>{renderItemClick(item.Text,"D", idx)}</Menu.Item>
+          }
         })
       }
     </Menu.ItemGroup>
     <Menu.ItemGroup title="Medical Condition">  
       {
        (searchTxt.length !== 0)&& searchMedCondition.map((item,idx)=>{
-          return <Menu.Item key={"M"+JSON.stringify(item)}>{renderItem(item.Text, idx)}</Menu.Item>
+          if(medConditionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+            return <Menu.Item key={"M"+JSON.stringify(item)}>{renderItem(item.Text, "M",idx)}</Menu.Item>
+          }else {
+            return <Menu.Item key={"M"+JSON.stringify(item)}>{renderItemClick(item.Text, "M",idx)}</Menu.Item>
+          }
         })
       }
     </Menu.ItemGroup>
     <Menu.ItemGroup title="Intervention">
        {
        (searchTxt.length !== 0)&& searchIntervention.map((item,idx)=>{
-          return <Menu.Item key={"I"+JSON.stringify(item)}>{renderItem(item.Text, idx)}</Menu.Item>
+          if(interventionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+            return <Menu.Item key={"I"+JSON.stringify(item)}>{renderItem(item.Text, "I",idx)}</Menu.Item>
+          }else{
+            return <Menu.Item key={"I"+JSON.stringify(item)}>{renderItemClick(item.Text, "I",idx)}</Menu.Item>
+          }
         })
       }
     </Menu.ItemGroup>
     <Menu.ItemGroup title="Lab / Test">
        {
        (searchTxt.length !== 0)&& searchLabTest.map((item,idx)=>{
-          return <Menu.Item key={"L"+JSON.stringify(item)}>{renderItem(item.Text, idx)}</Menu.Item>
+          if(labTestElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+            return <Menu.Item key={"L"+JSON.stringify(item)}>{renderItem(item.Text, "L",idx)}</Menu.Item>
+          }else{
+            return <Menu.Item key={"L"+JSON.stringify(item)}>{renderItemClick(item.Text, "L",idx)}</Menu.Item>
+          }
         })
       }
     </Menu.ItemGroup>
