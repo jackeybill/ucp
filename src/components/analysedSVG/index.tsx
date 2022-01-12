@@ -325,7 +325,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
             )
             cur = nextEntity.BeginOffset
           } else {
-            if (addedEntities.findIndex(e => e.Id === nextEntity.Id) === -1) {
+            if (addedEntities.findIndex(e => e.Id === nextEntity.Id && e.RelationshipScore === nextEntity.RelationshipScore ) === -1) {
               // Add entity text
               let color = "#1e8900" 
               if (nextEntity.Type.toLowerCase().includes('name')) {
