@@ -462,7 +462,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
 
     svgRawData.map((item, index)=> {
       let content = item.content + '\n'
-      let entities = flattenAttributeIntoEntities(item.entityData.Entities||[])
+      let entities = item.entityData&&item.entityData.Entities?flattenAttributeIntoEntities(item.entityData.Entities||[]):[]
       getSvgData(content, entities)
     })
     
@@ -470,7 +470,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       <div>
         <div id="svg-wrapper" className="svg-view-container" style={{overflow: "scroll", maxWidth: '100%', background: "#fafafa"}}>
           <svg viewBox="0 0" id="svg-viewport" overflow="scroll" style={{ position: "relative", display: "block" }}>        
-            {svgData.map((item, index)=>{
+            { this.props.entityData.length<2?(svgData.slice(0,1).map((item, index)=>{
               return(
                 <>
                 {item.lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{ display: 'inline-block' }}>{line}</g>)}
@@ -478,7 +478,15 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
                 <g key={`line-space`} className="svg_line" style={{ display: 'inline-block' }}></g>
               </>
               )
-            })}
+            })):(svgData.slice(1).map((item, index)=>{
+              return(
+                <>
+                {item.lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{ display: 'inline-block' }}>{line}</g>)}
+                {item.verticalRelations}
+                <g key={`line-space`} className="svg_line" style={{ display: 'inline-block' }}></g>
+              </>
+              )
+            }))}
           </svg>
         </div>
       </div>
