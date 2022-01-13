@@ -273,20 +273,20 @@ export const takeAction = async (action = "", params = {}) => {
   return await response.json();
 };
 
-export const saveText = async (result: any, path: any) => {
-  const status = "In progress"
-  const lastUpdate= moment().format('MM-DD-YYYY')
-  const response = await fetch(BACKEND_HOST, {
-    method: "POST",
-    headers: {
-      "Access-Control-Request-Method": "POST",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ savelabel: { content: result, key:path, status, lastUpdate } }),
-  });
+// export const saveText = async (result: any, path: any) => {
+//   const status = "In progress"
+//   const lastUpdate= moment().format('MM-DD-YYYY')
+//   const response = await fetch(BACKEND_HOST, {
+//     method: "POST",
+//     headers: {
+//       "Access-Control-Request-Method": "POST",
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({ savelabel: { content: result, key:path, status, lastUpdate } }),
+//   });
 
-  return await response.json();
-};
+//   return await response.json();
+// };
 
 export const submitText = async (result: any, path: any,) => {
    const status = "Completed"

@@ -9,7 +9,7 @@ import {
 } from "@ant-design/icons";
 import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
-import { saveText } from "../../utils/ajax-proxy";
+// import { saveText } from "../../utils/ajax-proxy";
 import { formatWord } from "../TextWithEntity";
 import {
   sectionOptions,
@@ -286,6 +286,8 @@ const Extraction = (props: any, ref) => {
     if (!currentLabel) return;
     const tempWordsCollection = wordsCollection.slice(0);
     tempWordsCollection[targetIdx].category = currentLabel;
+    // using Type_Category_Mapper to mapping rawcategory
+    tempWordsCollection[targetIdx].rawcategory = Type_Category_Mapper[currentLabel];
     setCurrentLabel("")
     tempWordsCollection[targetIdx].score = currentScore;
     updateWordsCollection(tempWordsCollection);

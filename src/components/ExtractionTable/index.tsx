@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
-import { saveText } from "../../utils/ajax-proxy";
+// import { saveText } from "../../utils/ajax-proxy";
 import { formatWord } from "../TextWithEntity";
 import {
   sectionOptions,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Select, Tooltip, message } from "antd";
-import { saveText } from "../../utils/ajax-proxy";
+// import { saveText } from "../../utils/ajax-proxy";
 import successIcon from "../../assets/success.svg";
 import warnIcon from "../../assets/warn.svg";
 import { connect } from "react-redux";
@@ -47,6 +47,7 @@ interface markIF {
   type: string;
   text: string;
   category: string;
+  rawcategory: string;
   children: Array<any>;
   score: 1;
 }
@@ -530,6 +531,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
       type: "mark", //'span'
       text: "",
       category: "",
+      rawcategory: "",
       children: selectedWordObj,
       score:1,
     };
