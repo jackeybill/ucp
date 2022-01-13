@@ -3043,11 +3043,9 @@ const ScenarioPage = (props) => {
           }
           demographicsElements.push(newItem)
           setDemographicsElements(demographicsElements)
-          // console.log("demographicsElements:",demographicsElements);
         }else {
           demographicsElements.splice(indexdemographicsElements, 1) 
           setDemographicsElements(demographicsElements)
-          // console.log("demographicsElements:",demographicsElements);
         }
         break;
       case "M":
@@ -3061,11 +3059,9 @@ const ScenarioPage = (props) => {
           }
           medConditionElements.push(newItem)
           setMedConditionElements(medConditionElements)
-          // console.log("medConditionElements:",medConditionElements);
         }else {
           medConditionElements.splice(indexmedConditionElements, 1) 
           setMedConditionElements(medConditionElements)
-          // console.log("medConditionElements:",medConditionElements);
         }
       break;
       case "I":
@@ -3079,11 +3075,9 @@ const ScenarioPage = (props) => {
           }
           interventionElements.push(newItem)
           setInterventionElements(interventionElements)
-          // console.log("interventionElements:",interventionElements);
         }else {
           interventionElements.splice(indexinterventionElements, 1) 
           setInterventionElements(interventionElements)
-          // console.log("interventionElements:",interventionElements);
         }
       break;
       default:
@@ -3097,11 +3091,9 @@ const ScenarioPage = (props) => {
           }
           labTestElements.push(newItem)
           setLabTestElements(labTestElements)
-          // console.log("labTestElements:",labTestElements);
         }else {
           labTestElements.splice(indexlabTestElements, 1) 
           setLabTestElements(labTestElements)
-          // console.log("labTestElements:",labTestElements);
         }
       break;
     }
