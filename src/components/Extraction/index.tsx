@@ -54,7 +54,34 @@ const Extraction = (props: any, ref) => {
     props.fileReader.activeTabKey
   );
   let [content, setContent] = useState(initContent);
-  const [entityTypes, setEntityTypes] = useState([]);
+  // const [entityTypes, setEntityTypes] = useState([]);
+  const Type_Category_Mapper = {
+    "ANATOMY": "ANATOMY",
+    "MEDICAL_CONDITION": "MEDICAL_CONDITION",
+    "MEDICATION": "MEDICATION",
+    "ADDRESS": "PROTECTED_HEALTH_INFORMATION", 
+    "AGE": "PROTECTED_HEALTH_INFORMATION", 
+    "EMAIL": "PROTECTED_HEALTH_INFORMATION", 
+    "ID": "PROTECTED_HEALTH_INFORMATION", 
+    "NAME": "PROTECTED_HEALTH_INFORMATION", 
+    "PHONE_OR_FAX": "PROTECTED_HEALTH_INFORMATION", 
+    "PROFESSION": "PROTECTED_HEALTH_INFORMATION", 
+    "PROCEDURE_NAME": "TEST_TREATMENT_PROCEDURE", 
+    "TEST_NAME": "TEST_TREATMENT_PROCEDURE", 
+    "TREATMENT_NAME": "TEST_TREATMENT_PROCEDURE", 
+    "TEST_VALUE": "TEST_TREATMENT_PROCEDURE", 
+    "TEST_UNIT": "TEST_TREATMENT_PROCEDURE", 
+    "TIME_TO_MEDICATION_NAME": "TIME_EXPRESSION", 
+    "TIME_TO_DX_NAME": "TIME_EXPRESSION", 
+    "TIME_TO_TEST_NAME": "TIME_EXPRESSION", 
+    "TIME_TO_PROCEDURE_NAME": "TIME_EXPRESSION", 
+    "TIME_TO_TREATMENT_NAME": "TIME_EXPRESSION", 
+    "TEMPORAL_PHASE": "TEMPORAL_PHASE", 
+    "LIMITATION": "LIMITATION", 
+    "MODIFIER": "MODIFIER"
+    }
+
+    const entityTypes = Object.keys(Type_Category_Mapper) 
 
   // const allWordsCollection = file[key][activeSection][0].comprehendMedical["Entities"].label
   // const allSummary = file[key][activeSection][0].comprehendMedical["Entities"].Summary;
@@ -103,7 +130,7 @@ const Extraction = (props: any, ref) => {
         initSelectedSections,
         entityOptions
       );
-      setEntityTypes(entities);
+      // setEntityTypes(entities);
     }
   }, [file[key]]);
 
