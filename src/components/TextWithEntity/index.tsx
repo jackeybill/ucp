@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import {ENDPOINT_SECTION} from '../../pages/ProtocolSection'
 import * as fileActions from "../../actions/file.js";
 import "./index.scss";
-import { isTable } from "../Extraction";
+// import { isTable } from "../Extraction";
 
 const { Option } = Select;
 
