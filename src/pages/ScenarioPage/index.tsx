@@ -3105,7 +3105,6 @@ const ScenarioPage = (props) => {
         }
       break;
     }
-
     updateTrial(1, 1)
 };
 
@@ -3182,7 +3181,6 @@ const ScenarioPage = (props) => {
         }
       break;
     }
-
     updateTrial(2, 1)    
 };
   
