@@ -178,11 +178,11 @@ const ScenarioPage = (props) => {
   let [labTestTableData, setLabTestTableData] = useState([])
 
   const [searchTxt,setSearchTxt] = useState("")
-  const [frontTxt,setFrontTxt] = useState("")
-  const [endTxt,setEndTxt] = useState("")
-  const [midTxt,setMidTxt] = useState("")
+  const [searchTxtExclu,setSearchTxtExclu] = useState("")
+  
 
   const [visibleValue, setVisibleValue] = useState(false)
+  const [visibleValueExclu, setVisibleValueExclu] = useState(false)
 
   // const [whetherClick, setWhetherClick] = useState(false)
 
@@ -195,6 +195,11 @@ const ScenarioPage = (props) => {
     const [originExcluMedCondition, setOriginExcluMedCondition] = useState([])
     const [originExcluLabTest, setOriginExcluLabTest] = useState([])
 
+    const [searchDemographicsExclu, setSearchDemographicsExclu] = useState([])
+    const [searchInterventionExclu, setSearchInterventionExclu] = useState([])
+    const [searchMedConditionExclu, setSearchMedConditionExclu] = useState([])
+    const [searchLabTestExclu, setSearchLabTestExclu] = useState([])
+    
     //Filtered libs for display and selection purpose
     const [excluDemographics, setExcluDemographics] = useState([])
     const [excluMedCondition, setExcluMedCondition] = useState([])
@@ -2974,12 +2979,52 @@ const ScenarioPage = (props) => {
         (i) =>
           i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
         ))
-    }, 1000);
+    }, 3000);
+  }; 
+
+  const optionLabelDemographicsExclu = originExcluDemographics.map((item, index)=>{
+    return item
+  })
+ const optionLabelInterventionExclu = originExcluIntervention.map((item, index)=>{
+    return item
+  })
+ const optionLabelMedConditionExclu = originExcluMedCondition.map((item, index)=>{
+    return item
+  })
+ const optionLabelLabTestExclu = originExcluLabTest.map((item, index)=>{
+    return item
+  })
+
+  const onExcluTextChange = (e) => {
+    setSearchTxtExclu(e.target.value);
+    !visibleValueExclu&&setVisibleValueExclu(true)
+    const val = e.target.value;
+    let timer: any;
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    timer = setTimeout(function () {
+      setSearchDemographicsExclu(optionLabelDemographicsExclu.filter(
+        (i) =>
+          i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+        ))
+        setSearchInterventionExclu(optionLabelInterventionExclu.filter(
+        (i) =>
+          i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+        ))
+        setSearchMedConditionExclu(optionLabelMedConditionExclu.filter(
+        (i) =>
+          i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+        ))
+        setSearchLabTestExclu(optionLabelLabTestExclu.filter(
+        (i) =>
+          i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+        ))
+    }, 3000);
   }; 
 
   const onItemClick = ({ key }) => {
-    // console.log(JSON.parse(key.slice(1)))
-    // console.log(key.charAt(0))
     setVisibleValue(true)
     let indexdemographicsElements = demographicsElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
     let indexmedConditionElements = medConditionElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
@@ -3062,7 +3107,83 @@ const ScenarioPage = (props) => {
     }
 
     updateTrial(1, 1)
-    // updateTrial(2, 1)    
+};
+
+  const onItemClickExclu = ({ key }) => {
+    setVisibleValueExclu(true)
+    let indexdemographicsElements = excluDemographicsElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+    let indexmedConditionElements = excluMedConditionElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+    let indexinterventionElements = excluInterventionElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+    let indexlabTestElements = excluLabTestElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+    //  if key includes in [], delete; if not includes, push []
+    switch(key.charAt(0)) {
+      case "D":
+        if(indexdemographicsElements < 0){
+          var newItem = {
+            "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+            "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+            "rawValue": JSON.parse(key.slice(1)).Value,
+            "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+            "Frequency":JSON.parse(key.slice(1)).Frequency
+          }
+          excluDemographicsElements.push(newItem)
+          setExcluDemographicsElements(excluDemographicsElements)
+        }else {
+          excluDemographicsElements.splice(indexdemographicsElements, 1) 
+          setExcluDemographicsElements(excluDemographicsElements)
+        }
+        break;
+      case "M":
+        if(indexmedConditionElements < 0){
+          var newItem = {
+            "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+            "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+            "rawValue": JSON.parse(key.slice(1)).Value,
+            "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+            "Frequency":JSON.parse(key.slice(1)).Frequency
+          }
+          excluMedConditionElements.push(newItem)
+          setExcluMedConditionElements(excluMedConditionElements)
+        }else {
+          excluMedConditionElements.splice(indexmedConditionElements, 1) 
+          setExcluMedConditionElements(excluMedConditionElements)
+        }
+      break;
+      case "I":
+        if(indexinterventionElements < 0){
+          var newItem = {
+            "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+            "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+            "rawValue": JSON.parse(key.slice(1)).Value,
+            "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+            "Frequency":JSON.parse(key.slice(1)).Frequency
+          }
+          excluInterventionElements.push(newItem)
+          setExcluInterventionElements(excluInterventionElements)
+        }else {
+          excluInterventionElements.splice(indexinterventionElements, 1) 
+          setExcluInterventionElements(excluInterventionElements)
+        }
+      break;
+      default:
+        if(indexlabTestElements < 0){
+          var newItem = {
+            "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+            "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+            "rawValue": JSON.parse(key.slice(1)).Value,
+            "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+            "Frequency":JSON.parse(key.slice(1)).Frequency
+          }
+          excluLabTestElements.push(newItem)
+          setExcluLabTestElements(excluLabTestElements)
+        }else {
+          excluLabTestElements.splice(indexlabTestElements, 1) 
+          setExcluLabTestElements(excluLabTestElements)
+        }
+      break;
+    }
+
+    updateTrial(2, 1)    
 };
   
  const renderItem = (title: string, type: string, idx: any) => { 
@@ -3091,6 +3212,7 @@ const ScenarioPage = (props) => {
       </div>
     )
   };
+
  const renderItemClick = (title: string, type: string, idx: any) => {
     return (
       <div
@@ -3110,6 +3232,60 @@ const ScenarioPage = (props) => {
             }`}>{searchTxt.length - title.length === 0?title:searchTxt}
           </span>
           {(searchTxt.length !== 0)&&(searchTxt.length < title.length)&&title.toLowerCase().split(searchTxt)[1]}
+        </span>
+        <span style={{color:"#3193E5", fontWeight:700, marginLeft:"25px"}}>
+            <CheckOutlined />
+        </span>
+      </div>
+    )
+  };
+
+ const renderItemExclu = (title: string, type: string, idx: any) => { 
+    return (
+      <div
+        className="itemLine"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <span className="itemTitle">
+          {(searchTxtExclu.length < title.length)&& title.toLowerCase().split(searchTxtExclu)[0]}
+          <span className={`${
+            searchTxtExclu &&
+            title.toLowerCase().indexOf(searchTxtExclu.toLowerCase()) > -1
+              ? "matched-item"
+              : ""
+            }`}>{searchTxtExclu.length - title.length === 0?title:searchTxtExclu}
+          </span>
+          {(searchTxtExclu.length !== 0)&&(searchTxtExclu.length < title.length)&&title.toLowerCase().split(searchTxtExclu)[1]}
+        </span>
+        <span style={{color:"#CA4A04", marginLeft:"25px"}}>
+          Add
+        </span>
+      </div>
+    )
+  };
+
+ const renderItemClickExclu = (title: string, type: string, idx: any) => {
+    return (
+      <div
+        className="itemLine"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <span className="itemTitle">
+          {(searchTxtExclu.length < title.length)&& title.toLowerCase().split(searchTxtExclu)[0]}
+          <span className={`${
+            searchTxtExclu &&
+            title.toLowerCase().indexOf(searchTxtExclu.toLowerCase()) > -1
+              ? "matched-item"
+              : ""
+            }`}>{searchTxtExclu.length - title.length === 0?title:searchTxtExclu}
+          </span>
+          {(searchTxtExclu.length !== 0)&&(searchTxtExclu.length < title.length)&&title.toLowerCase().split(searchTxtExclu)[1]}
         </span>
         <span style={{color:"#3193E5", fontWeight:700, marginLeft:"25px"}}>
             <CheckOutlined />
@@ -3166,6 +3342,55 @@ const ScenarioPage = (props) => {
     </Menu.ItemGroup>
   </Menu>
 );
+
+  const menuExclu = (
+    <Menu onClick={onItemClickExclu}>
+      <Menu.ItemGroup title="Demographics">
+      {
+          (searchTxtExclu.length !== 0)&&searchDemographicsExclu.map((item,idx)=>{
+            if(excluDemographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+              return <Menu.Item key={"D"+JSON.stringify(item)}>{renderItemExclu(item.Text,"D", idx)}</Menu.Item>
+            } else {
+              return <Menu.Item key={"D"+JSON.stringify(item)}>{renderItemClickExclu(item.Text,"D", idx)}</Menu.Item>
+            }
+          })
+        }
+      </Menu.ItemGroup>
+      <Menu.ItemGroup title="Medical Condition">  
+        {
+        (searchTxtExclu.length !== 0)&& searchMedConditionExclu.map((item,idx)=>{
+            if(excluMedConditionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+              return <Menu.Item key={"M"+JSON.stringify(item)}>{renderItemExclu(item.Text, "M",idx)}</Menu.Item>
+            }else {
+              return <Menu.Item key={"M"+JSON.stringify(item)}>{renderItemClickExclu(item.Text, "M",idx)}</Menu.Item>
+            }
+          })
+        }
+      </Menu.ItemGroup>
+      <Menu.ItemGroup title="Intervention">
+        {
+        (searchTxtExclu.length !== 0)&& searchInterventionExclu.map((item,idx)=>{
+            if(excluInterventionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+              return <Menu.Item key={"I"+JSON.stringify(item)}>{renderItemExclu(item.Text, "I",idx)}</Menu.Item>
+            }else{
+              return <Menu.Item key={"I"+JSON.stringify(item)}>{renderItemClickExclu(item.Text, "I",idx)}</Menu.Item>
+            }
+          })
+        }
+      </Menu.ItemGroup>
+      <Menu.ItemGroup title="Lab / Test">
+        {
+        (searchTxtExclu.length !== 0)&& searchLabTestExclu.map((item,idx)=>{
+            if(excluLabTestElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+              return <Menu.Item key={"L"+JSON.stringify(item)}>{renderItemExclu(item.Text, "L",idx)}</Menu.Item>
+            }else{
+              return <Menu.Item key={"L"+JSON.stringify(item)}>{renderItemClickExclu(item.Text, "L",idx)}</Menu.Item>
+            }
+          })
+        }
+      </Menu.ItemGroup>
+    </Menu>
+  );
 
     return (
     <div className="scenario-container">
@@ -3637,6 +3862,25 @@ const ScenarioPage = (props) => {
                       ) : (
                       <></>
                       )}
+                      
+                      <div className="searchSection">
+                        <div className="content">
+                          <Dropdown 
+                            overlay={menuExclu} 
+                            visible={visibleValueExclu}
+                            onVisibleChange={(visible: boolean) => {!visibleValueExclu?setVisibleValueExclu(true):setVisibleValueExclu(false)}}
+                          >
+                            <Input
+                                prefix={<SearchOutlined />}
+                                style={{ width: '100%', height: 30 }}
+                                allowClear
+                                onChange={onExcluTextChange}
+                                onClick={e => e.preventDefault()}
+                            />
+                          </Dropdown>
+                        </div>
+                      </div>
+
                       <Row>
                         <Col span={24}>
                           <div className="content-outer content-sidebar">
