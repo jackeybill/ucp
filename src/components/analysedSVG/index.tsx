@@ -100,7 +100,6 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
             c.setAttribute("x2", textBoxWidth-1.375+"")
           }
         }
-        
       }
 
       const arrowHeadNodeList = lineNode.getElementsByClassName("arrowhead")
