@@ -585,8 +585,10 @@ const TextWithEntity = (props: TextWithEntityIF) => {
           }
           if (word.type == "mark") {
             if (
+              // (activeType && word.category == activeType) ||
+              // activeType == "" || (activeType && word.rawcategory && (activeType ==="PROTECTED_HEALTH_INFORMATION" || activeType ==="TEST_TREATMENT_PROCEDURE" || activeType ==="TIME_EXPRESSION") && word.rawcategory == activeType) 
               (activeType && word.category == activeType) ||
-              activeType == "" || (activeType && word.rawcategory && (activeType ==="PROTECTED_HEALTH_INFORMATION" || activeType ==="TEST_TREATMENT_PROCEDURE" || activeType ==="TIME_EXPRESSION") && word.rawcategory == activeType) 
+              activeType == "" || (activeType && word.rawcategory && word.rawcategory == activeType) 
             ) {
               if (showTooltip) {
                 const id = word.id;
