@@ -56,7 +56,7 @@ links: https://lucid.app/lucidchart/invitations/accept/inv_1603edb2-9ec4-40a2-a4
 - run deploy command
 >  > ```sls deploy -v```
 
-I wanted to start involving you in building out 3 serverless applications 
+I wanted to start involving you in building out 3 serverless applications  test
   we are planning to deploy on the platform. (We can start building on our internal AWS environment.)
 
 1 - DQS ingest enhancement
