@@ -58,6 +58,44 @@ export const formatWord = (w) => {
   return w
 }
 
+// const renderConcepts = (concepts = [], text = "", entity = "") => {
+//   if (entity=="MedDRA") {
+//     return (
+//       <div className="concept-box meddra-concept-box">
+//         <span>LLT:<i>{concepts[0].LLT}</i></span>
+//         <span>PT:<i>{concepts[0].PT}</i></span>
+//         <span>HLT:<i>{concepts[0].HLT}</i></span>
+//         <span>HLGT:<i>{concepts[0].HLGT}</i></span>
+//         <span>SOC:<i>{concepts[0].SOC }</i></span>
+//       </div> 
+//     )
+//   }
+//   return (
+//     <div className="concept-box">
+//       {concepts.length > 0 &&
+//         concepts.map((c) => {
+//           return (
+//             <div className="concept-item">
+//               <div className="item-title">      
+//                {text}
+//               </div>
+//               <div className="item-desc">
+//                 <p className="desc-title">Top inferred concepts</p>
+//                 <div className="code">
+//                   <span>{c.Code}</span>
+//                   <div className="desc-box" >
+//                     <p className="desc">{c.Description}</p>
+//                     <p className="score">{ c.Score?c.Score.toFixed(2):'-' } score</p>
+//                   </div>
+//                 </div>          
+//               </div>
+//             </div>
+//           );
+//         })}
+//     </div>
+//   );
+// };
+
 const renderConcepts = (concepts = [], text = "", entity = "") => {
   if (entity=="MedDRA") {
     return (
@@ -73,25 +111,23 @@ const renderConcepts = (concepts = [], text = "", entity = "") => {
   return (
     <div className="concept-box">
       {concepts.length > 0 &&
-        concepts.map((c) => {
-          return (
-            <div className="concept-item">
-              <div className="item-title">      
-               {text}
-              </div>
-              <div className="item-desc">
-                <p className="desc-title">Top inferred concepts</p>
+        <div className="concept-item">
+          <div className="item-desc">
+            <p className="desc-title">Top inferred concepts</p>
+            { concepts.map((c) => {
+              return (
                 <div className="code">
-                  <span>{c.Code}</span>
+                  {c.Code?<span>{c.Code}</span>:''}
                   <div className="desc-box" >
-                    <p className="desc">{c.Description}</p>
-                    <p className="score">{ c.Score?c.Score.toFixed(2):'-' } score</p>
+                    {c.Description?<p className="desc">{c.Description}</p>:''}
+                    {c.Score?<p className="score">{ c.Score?c.Score.toFixed(2):'-' } score</p>:''}         
                   </div>
-                </div>          
-              </div>
-            </div>
-          );
-        })}
+                </div>  
+              )
+            })}                   
+          </div>
+        </div>
+        }
     </div>
   );
 };
