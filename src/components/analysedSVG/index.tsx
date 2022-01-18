@@ -363,7 +363,6 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
             addedEntities.push(nextEntity)
             entityLocation[nextEntity.Id] = lines.length
           }
-
           cur = nextEntity.EndOffset
           nextEntity = findNextIncludingEntity(last)
         }
