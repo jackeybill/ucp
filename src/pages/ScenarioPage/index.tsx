@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useRef} from 'react';
+import React, { useState, useEffect, useReducer, useRef, useMemo, useCallback, memo} from 'react';
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
@@ -2666,7 +2666,7 @@ const ScenarioPage = (props) => {
   useEffect(() => {
     updateExcluTableData()
   }, [excluDemographicsElements, excluMedConditionElements, excluInterventionElements, excluLabTestElements])
-  
+
   const updateTableData = () => {
 
     let demographicsTmp = demographicsElements.map((e,idx) => {
@@ -2952,35 +2952,41 @@ const ScenarioPage = (props) => {
      return item
    })
   
-
-  const onTextChange = (e) => {
-    setSearchTxt(e.target.value);
-    !visibleValue&&setVisibleValue(true)
+  let timer = null;
+  const onTextChange = useCallback((e) => {
     const val = e.target.value;
-    let timer: any;
-    if (timer) {
+    let searchDemo = []
+    let searchInte = []
+    let searchMed=[]
+    let searchLab=[]
+    !visibleValue&&setVisibleValue(true)
+    if (timer !== null) {
       clearTimeout(timer);
-      timer = null;
-    }
+    }    
     timer = setTimeout(function () {
-      setSearchDemographics(optionLabelDemographics.filter(
+      setSearchTxt(val)
+      searchDemo = val.length>0? optionLabelDemographics.filter(
         (i) =>
           i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
-        ))
-      setSearchIntervention(optionLabelIntervention.filter(
+        ) : []
+      searchInte = val.length>0? optionLabelIntervention.filter(
         (i) =>
           i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
-        ))
-      setSearchMedCondition(optionLabelMedCondition.filter(
+        ): []
+      searchMed = val.length>0?optionLabelMedCondition.filter(
         (i) =>
           i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
-        ))
-      setSearchLabTest(optionLabelLabTest.filter(
+        ): []
+      searchLab = val.length>0?optionLabelLabTest.filter(
         (i) =>
           i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
-        ))
-    }, 3000);
-  }; 
+        ): []
+      setSearchDemographics(searchDemo)
+      setSearchIntervention(searchInte)
+      setSearchMedCondition(searchMed)
+      setSearchLabTest(searchLab)
+    }, 200);
+  },[searchTxt])
 
   const optionLabelDemographicsExclu = originExcluDemographics.map((item, index)=>{
     return item
@@ -2995,34 +3001,41 @@ const ScenarioPage = (props) => {
     return item
   })
 
-  const onExcluTextChange = (e) => {
-    setSearchTxtExclu(e.target.value);
-    !visibleValueExclu&&setVisibleValueExclu(true)
+  let timerExclu = null;
+  const onExcluTextChange = useCallback((e) => {
     const val = e.target.value;
-    let timer: any;
-    if (timer) {
+    let searchDemoEx = []
+    let searchInterEx = []
+    let searchMedEx=[]
+    let searchLabEx=[]
+    !visibleValueExclu&&setVisibleValueExclu(true)
+    if ( timerExclu !== null) {
       clearTimeout(timer);
-      timer = null;
     }
-    timer = setTimeout(function () {
-      setSearchDemographicsExclu(optionLabelDemographicsExclu.filter(
-        (i) =>
-          i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
-        ))
-        setSearchInterventionExclu(optionLabelInterventionExclu.filter(
-        (i) =>
-          i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
-        ))
-        setSearchMedConditionExclu(optionLabelMedConditionExclu.filter(
-        (i) =>
-          i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
-        ))
-        setSearchLabTestExclu(optionLabelLabTestExclu.filter(
-        (i) =>
-          i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
-        ))
-    }, 3000);
-  }; 
+    timerExclu = setTimeout(function () {
+        setSearchTxtExclu(val);
+        searchDemoEx = val.length>0?optionLabelDemographicsExclu.filter(
+          (i) =>
+            i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+          ): []
+        searchInterEx = val.length>0?optionLabelInterventionExclu.filter(
+          (i) =>
+            i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+          ): []
+        searchMedEx = val.length>0?optionLabelMedConditionExclu.filter(
+          (i) =>
+            i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+          ): []
+        searchLabEx = val.length>0?optionLabelLabTestExclu.filter(
+          (i) =>
+            i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+          ): []
+        setSearchDemographicsExclu(searchDemoEx)
+        setSearchInterventionExclu(searchInterEx)
+        setSearchMedConditionExclu(searchMedEx)
+        setSearchLabTestExclu(searchLabEx)
+    }, 400);
+  },[searchTxtExclu]) 
 
   const onItemClick = ({ key }) => {
     setVisibleValue(true)
@@ -3286,9 +3299,9 @@ const ScenarioPage = (props) => {
 
   const menu = (
   <Menu onClick={onItemClick}>
-    <Menu.ItemGroup title="Demographics">
+    {(searchTxt.length !== 0)&&searchDemographics.length>0 && (<Menu.ItemGroup title="Demographics">
      {
-        (searchTxt.length !== 0)&&searchDemographics.map((item,idx)=>{
+        searchDemographics.map((item,idx)=>{
           if(demographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
             return <Menu.Item key={"D"+JSON.stringify(item)}>{renderItem(item.Text,"D", idx)}</Menu.Item>
           } else {
@@ -3296,10 +3309,10 @@ const ScenarioPage = (props) => {
           }
         })
       }
-    </Menu.ItemGroup>
-    <Menu.ItemGroup title="Medical Condition">  
+    </Menu.ItemGroup>)}
+    {(searchTxt.length !== 0)&&searchMedCondition.length>0 &&(<Menu.ItemGroup title="Medical Condition">  
       {
-       (searchTxt.length !== 0)&& searchMedCondition.map((item,idx)=>{
+        searchMedCondition.map((item,idx)=>{
           if(medConditionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
             return <Menu.Item key={"M"+JSON.stringify(item)}>{renderItem(item.Text, "M",idx)}</Menu.Item>
           }else {
@@ -3307,10 +3320,10 @@ const ScenarioPage = (props) => {
           }
         })
       }
-    </Menu.ItemGroup>
-    <Menu.ItemGroup title="Intervention">
+    </Menu.ItemGroup>)}
+    {(searchTxt.length !== 0)&&searchIntervention.length>0 &&(<Menu.ItemGroup title="Intervention">
        {
-       (searchTxt.length !== 0)&& searchIntervention.map((item,idx)=>{
+        searchIntervention.map((item,idx)=>{
           if(interventionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
             return <Menu.Item key={"I"+JSON.stringify(item)}>{renderItem(item.Text, "I",idx)}</Menu.Item>
           }else{
@@ -3318,10 +3331,10 @@ const ScenarioPage = (props) => {
           }
         })
       }
-    </Menu.ItemGroup>
-    <Menu.ItemGroup title="Lab / Test">
+    </Menu.ItemGroup>)}
+    {(searchTxt.length !== 0)&&searchLabTest.length>0 && <Menu.ItemGroup title="Lab / Test">
        {
-       (searchTxt.length !== 0)&& searchLabTest.map((item,idx)=>{
+        searchLabTest.map((item,idx)=>{
           if(labTestElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
             return <Menu.Item key={"L"+JSON.stringify(item)}>{renderItem(item.Text, "L",idx)}</Menu.Item>
           }else{
@@ -3329,15 +3342,15 @@ const ScenarioPage = (props) => {
           }
         })
       }
-    </Menu.ItemGroup>
+    </Menu.ItemGroup>}
   </Menu>
 );
 
   const menuExclu = (
     <Menu onClick={onItemClickExclu}>
-      <Menu.ItemGroup title="Demographics">
+      {(searchTxtExclu.length !== 0)&&searchDemographicsExclu.length>0&&(<Menu.ItemGroup title="Demographics">
       {
-          (searchTxtExclu.length !== 0)&&searchDemographicsExclu.map((item,idx)=>{
+          searchDemographicsExclu.map((item,idx)=>{
             if(excluDemographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
               return <Menu.Item key={"D"+JSON.stringify(item)}>{renderItemExclu(item.Text,"D", idx)}</Menu.Item>
             } else {
@@ -3345,10 +3358,10 @@ const ScenarioPage = (props) => {
             }
           })
         }
-      </Menu.ItemGroup>
-      <Menu.ItemGroup title="Medical Condition">  
+      </Menu.ItemGroup>)}
+      {(searchTxtExclu.length !== 0)&& searchMedConditionExclu.length>0&&(<Menu.ItemGroup title="Medical Condition">  
         {
-        (searchTxtExclu.length !== 0)&& searchMedConditionExclu.map((item,idx)=>{
+        searchMedConditionExclu.map((item,idx)=>{
             if(excluMedConditionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
               return <Menu.Item key={"M"+JSON.stringify(item)}>{renderItemExclu(item.Text, "M",idx)}</Menu.Item>
             }else {
@@ -3356,10 +3369,10 @@ const ScenarioPage = (props) => {
             }
           })
         }
-      </Menu.ItemGroup>
-      <Menu.ItemGroup title="Intervention">
+      </Menu.ItemGroup>)}
+     {(searchTxtExclu.length !== 0)&& searchInterventionExclu.length>0&&( <Menu.ItemGroup title="Intervention">
         {
-        (searchTxtExclu.length !== 0)&& searchInterventionExclu.map((item,idx)=>{
+        searchInterventionExclu.map((item,idx)=>{
             if(excluInterventionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
               return <Menu.Item key={"I"+JSON.stringify(item)}>{renderItemExclu(item.Text, "I",idx)}</Menu.Item>
             }else{
@@ -3367,10 +3380,10 @@ const ScenarioPage = (props) => {
             }
           })
         }
-      </Menu.ItemGroup>
-      <Menu.ItemGroup title="Lab / Test">
+      </Menu.ItemGroup>)}
+      {(searchTxtExclu.length !== 0)&& searchLabTestExclu.length>0&&(<Menu.ItemGroup title="Lab / Test">
         {
-        (searchTxtExclu.length !== 0)&& searchLabTestExclu.map((item,idx)=>{
+        searchLabTestExclu.map((item,idx)=>{
             if(excluLabTestElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
               return <Menu.Item key={"L"+JSON.stringify(item)}>{renderItemExclu(item.Text, "L",idx)}</Menu.Item>
             }else{
@@ -3378,7 +3391,7 @@ const ScenarioPage = (props) => {
             }
           })
         }
-      </Menu.ItemGroup>
+      </Menu.ItemGroup>)}
     </Menu>
   );
 
@@ -4324,4 +4337,4 @@ const ScenarioPage = (props) => {
 }
 
 
-export default withRouter(ScenarioPage);
+export default withRouter(memo(ScenarioPage));
