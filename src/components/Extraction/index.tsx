@@ -481,8 +481,8 @@ const Extraction = (props: any, ref) => {
               </span>
             </div>
             <div className="summary">
-              {!file[key][activeSection][0].RelationshipSummary ||
-              file[key][activeSection][0].RelationshipSummary.length == 0 ? (
+              {!file[key][activeSection][0].RelationshipSummary_dummy ||
+              file[key][activeSection][0].RelationshipSummary_dummy.length == 0 ? (
                 <div>
                   There are no entity relationships identified in this section.
                 </div>
@@ -490,8 +490,8 @@ const Extraction = (props: any, ref) => {
                 <>
                   <p>Relationships identfied in this section</p>
                   <div className="relation-pair">
-                    {file[key][activeSection][0].RelationshipSummary &&
-                      file[key][activeSection][0].RelationshipSummary.map(
+                    {file[key][activeSection][0].RelationshipSummary_dummy &&
+                      file[key][activeSection][0].RelationshipSummary_dummy.map(
                         (pair: any, idx: number) => {
                           return (
                             <span className="pair-item" key={idx}>
