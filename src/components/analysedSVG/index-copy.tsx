@@ -289,7 +289,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
 
     const svgData = []
 
-    const getSvgData = (content, entities, paragraphNo) => {
+    const getSvgData = (content, entities) => {
       const lines = []
       const entityLocation: any = {} // key: entity id;  value: line index
       const pendingEntities: any = [] // need to draw arrow tail
@@ -396,30 +396,30 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
             // if relationship is in the same line
             if (addedEntities.findIndex(e => e.Id === childEntity.Id) >= 0) {
               // Add relationship arrow
-              gList.push(<path className={`arrowhead relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id}/>)
-              gList.push(<line className={`head_line relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-              gList.push(<path className={`joint_curve ${childEntity.BeginOffset > item.BeginOffset ? 'left-circle' : ''} relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-              gList.push(<path className={`conn_line relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
+              gList.push(<path className={`arrowhead relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id}/>)
+              gList.push(<line className={`head_line relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+              gList.push(<path className={`joint_curve ${childEntity.BeginOffset > item.BeginOffset ? 'left-circle' : ''} relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+              gList.push(<path className={`conn_line relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_id_${childEntity.Id}_${item.Id}`}/>)
               gList.push(<rect className="text_rect" style={{strokeWidth: 1, cursor: "default"}} />)
               gList.push(
                 <text dy="3" className="relation_label" style={{fill: "dimgrey", display: "block", strokeWidth: 1, cursor: "default"}}>
                   <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'9pt'}}>{formatStr(childEntity.RelationshipType)}</textPath>
                 </text>
               )
-              gList.push(<path className={`joint_curve ${childEntity.BeginOffset > item.BeginOffset ? 'left-circle' : ''} relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-              gList.push(<line className={`tail_line relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-              gList.push(<path className={`arrowtail relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+              gList.push(<path className={`joint_curve ${childEntity.BeginOffset > item.BeginOffset ? 'left-circle' : ''} relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+              gList.push(<line className={`tail_line relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+              gList.push(<path className={`arrowtail relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
             } else {
               // Relationship across different rows
-              gList.push(<path className={`arrowhead cross_row_relation relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id}/>)
-              gList.push(<line className={`head_line relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-              gList.push(<path className={`joint_curve relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-              gList.push(<path className={`conn_line horizontal relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_head_horizontal_line_${childEntity.Id}_${item.Id}`}/>)
-              verticalRelations.push(<path className={`conn_line vertical relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
-              verticalRelations.push(<line className={`conn_line horizontal relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
-              verticalRelations.push(<line className={`conn_line horizontal relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
-              verticalRelations.push(<path className={`joint_curve left_circle relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
-              verticalRelations.push(<path className={`joint_curve relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
+              gList.push(<path className={`arrowhead cross_row_relation relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id}/>)
+              gList.push(<line className={`head_line relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+              gList.push(<path className={`joint_curve relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+              gList.push(<path className={`conn_line horizontal relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_head_horizontal_line_${childEntity.Id}_${item.Id}`}/>)
+              verticalRelations.push(<path className={`conn_line vertical relation_id_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_id_${childEntity.Id}_${item.Id}`}/>)
+              verticalRelations.push(<line className={`conn_line horizontal relation_id_${childEntity.Id}_${item.Id}`}/>)
+              verticalRelations.push(<line className={`conn_line horizontal relation_id_${childEntity.Id}_${item.Id}`}/>)
+              verticalRelations.push(<path className={`joint_curve left_circle relation_id_${childEntity.Id}_${item.Id}`}/>)
+              verticalRelations.push(<path className={`joint_curve relation_id_${childEntity.Id}_${item.Id}`}/>)
               verticalRelations.push(<rect className={`text_rect`}/>)
               verticalRelations.push(
                 <text dy="3" className="relation_label" style={{fill: "dimgrey", display: "block", strokeWidth: 1, cursor: "default"}}>
@@ -450,10 +450,10 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
       for (let childEntity of pendingEntities) {
         const lineNo = entityLocation[childEntity.Id]
         const tempLineChildren = lines[lineNo]
-        tempLineChildren.push(<path className={`arrowtail cross_row_relation relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id}/>)
-        tempLineChildren.push(<line className={`head_line relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} />)
-        tempLineChildren.push(<path className={`joint_curve relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} />)
-        tempLineChildren.push(<path className={`conn_line horizontal relation_id_paragraph_${paragraphNo}_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} id={`relation_tail_horizontal_line_${childEntity.Id}_${childEntity.parentId}`}/>)
+        tempLineChildren.push(<path className={`arrowtail cross_row_relation relation_id_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id}/>)
+        tempLineChildren.push(<line className={`head_line relation_id_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} />)
+        tempLineChildren.push(<path className={`joint_curve relation_id_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} />)
+        tempLineChildren.push(<path className={`conn_line horizontal relation_id_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} id={`relation_tail_horizontal_line_${childEntity.Id}_${childEntity.parentId}`}/>)
       }
 
       svgData.push({lines,verticalRelations})
@@ -462,7 +462,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
     svgRawData.map((item, index)=> {
       let content = item.content + '\n'
       let entities = item.entityData&&item.entityData.Entities?flattenAttributeIntoEntities(item.entityData.Entities||[]):[]
-      getSvgData(content, entities, index)
+      getSvgData(content, entities)
     })
     
     return (
