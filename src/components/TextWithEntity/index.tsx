@@ -262,7 +262,7 @@ const renderMarkNoColor = (markParams, entity) => {
               <span
                 id={child.id}
                 key={idx}
-                className={`key-word ${word.category} ${
+                className={`key-word nocolor ${
                   searchTxt &&
                   word.text.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
                     ? "matched-word"
@@ -276,6 +276,7 @@ const renderMarkNoColor = (markParams, entity) => {
           <span
             id={word.id}
             key={`cate-${word.id}`}
+            style={{color: "transparent"}}
             className={`cate-label ${
               searchTxt &&
               word.category.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
