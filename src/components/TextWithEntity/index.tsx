@@ -4,7 +4,7 @@ import { Button, Select, Tooltip, message } from "antd";
 import successIcon from "../../assets/success.svg";
 import warnIcon from "../../assets/warn.svg";
 import { connect } from "react-redux";
-import {ENDPOINT_SECTION} from '../../pages/ProtocolSection'
+// import {ENDPOINT_SECTION} from '../../pages/ProtocolSection'
 import * as fileActions from "../../actions/file.js";
 import "./index.scss";
 // import { isTable } from "../Extraction";
@@ -231,7 +231,7 @@ const renderMarkNoColor = (markParams, entity) => {
               <span
                 id={child.id}
                 key={idx}
-                className={`key-word ${word.category} ${
+                className={`key-word nocolor  ${
                   searchTxt &&
                   word.text.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
                     ? "matched-word"
@@ -245,6 +245,7 @@ const renderMarkNoColor = (markParams, entity) => {
           <span
             id={word.id}
             key={`cate-${word.id}`}
+            style={{color: "transparent"}}
             className={`cate-label ${
               searchTxt &&
               word.category.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
