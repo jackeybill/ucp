@@ -410,7 +410,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
               gList.push(<rect className="text_rect" style={{strokeWidth: 1, cursor: "default"}} />)
               gList.push(
                 <text dy="3" className="relation_label" style={{fill: "dimgrey", display: "block", strokeWidth: 1, cursor: "default"}}>
-                  <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'9pt'}}>{formatStr(childEntity.RelationshipType)}</textPath>
+                  <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'7pt'}}>{formatStr(childEntity.RelationshipType)}</textPath>
                 </text>
               )
               gList.push(<path className={`joint_curve ${childEntity.BeginOffset > item.BeginOffset ? 'left-circle' : ''} relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
@@ -430,7 +430,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
               verticalRelations.push(<rect className={`text_rect`}/>)
               verticalRelations.push(
                 <text dy="3" className="relation_label" style={{fill: "dimgrey", display: "block", strokeWidth: 1, cursor: "default"}}>
-                  <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'9pt'}}>{formatStr(childEntity.RelationshipType)}</textPath>
+                  <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'7pt'}}>{formatStr(childEntity.RelationshipType)}</textPath>
                 </text>
               )
               // Record the entities which need to draw arrowtail
