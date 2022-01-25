@@ -314,6 +314,20 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
         }
         return null
       }
+
+      // To show the missing relationship of multiple relationships
+      const replaceEntityWithAttributesOne = (entities, entity) => {
+        const existedAddedEntity = entities.find(e => e.Id === entity.Id ) ;
+
+        if(existedAddedEntity){
+          const hasAttributeForExistedEntity = !!existedAddedEntity.Attributes;
+          const hasAttributeForNewEntity = !!entity.Attributes;
+          if(!hasAttributeForExistedEntity &&  hasAttributeForNewEntity){
+            existedAddedEntity.Attributes = entity.Attributes;
+          }
+        }
+      }
+    
       const getSvgLine = (last: number) => {
         // deal with content[pos, cur]
         const gList = []
@@ -331,6 +345,7 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
             )
             cur = nextEntity.BeginOffset
           } else {
+            replaceEntityWithAttributesOne(addedEntities, nextEntity);
             if (addedEntities.findIndex(e => e.Id === nextEntity.Id) === -1) {
               // Add entity text
               let color = "#1e8900" 
