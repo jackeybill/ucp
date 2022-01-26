@@ -3570,6 +3570,7 @@ const ScenarioPage = (props) => {
                         <div className="content">
                           <Dropdown 
                             overlay={menu} 
+                            overlayClassName="searchbox"
                             visible={visibleValue}
                             onVisibleChange={(visible: boolean) => {!visibleValue?setVisibleValue(true):setVisibleValue(false)}}
                           >
@@ -3870,6 +3871,7 @@ const ScenarioPage = (props) => {
                         <div className="content">
                           <Dropdown 
                             overlay={menuExclu} 
+                            overlayClassName="searchbox"
                             visible={visibleValueExclu}
                             onVisibleChange={(visible: boolean) => {!visibleValueExclu?setVisibleValueExclu(true):setVisibleValueExclu(false)}}
                           >
