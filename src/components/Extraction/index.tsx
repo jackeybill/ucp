@@ -118,7 +118,7 @@ const Extraction = (props: any, ref) => {
   const [svgEntity, setSvgEntity] = useState(initSvgEntity);
 
   const initLabels =
-  file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label || {};
+  file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy? (file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy || {}):(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label || {});
   const [labels, setLabels] = useState(initLabels); // labels and wordsColelction are same now
   const [wordsCollection, setWordsCollection] = useState(initLabels);
   // const entities =
@@ -175,9 +175,9 @@ const Extraction = (props: any, ref) => {
     })
     setContent(tempNewContent)
     // setContent([file[key][activeSection][0].content,file[key][activeSection][0].content,file[key][activeSection][0].content]);
-    setLabels(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label);
+    setLabels(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy?(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy):(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label));
     setWordsCollection(
-      file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label
+      file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy?(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy):(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label)
     );
     const paramBody = {
       [key]: {
@@ -186,6 +186,7 @@ const Extraction = (props: any, ref) => {
             comprehendMedical: {
               [entity]: {
                 label: labels,
+                label_dummy:labels,
               },
             },
           },
@@ -314,6 +315,7 @@ const Extraction = (props: any, ref) => {
     }else{
       updatedData = file
       file[hashKey][activeSection][0].comprehendMedical[entity].label = tempWordsCollection;
+      file[hashKey][activeSection][0].comprehendMedical[entity].label_dummy = tempWordsCollection;
 
       paramBody = {
         [hashKey]: {
@@ -322,6 +324,7 @@ const Extraction = (props: any, ref) => {
               comprehendMedical: {
                 [entity]: {
                   label: tempWordsCollection,
+                  label_dummy: tempWordsCollection,
                 },
               },
             },

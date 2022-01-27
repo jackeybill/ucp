@@ -427,6 +427,7 @@ const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,s
    }else{
     updatedData = fileReader.file
     updatedData[hashKey][activeSection][0].comprehendMedical[entity].label = tempWordsCollection;
+    updatedData[hashKey][activeSection][0].comprehendMedical[entity].label_dummy = tempWordsCollection;
 
     paramBody = {
       [hashKey]: {
@@ -435,6 +436,7 @@ const hanldeRemoveCategory = async(mid, wordsCollection, updateWordsCollection,s
             comprehendMedical: {
               [entity]: {
                  label: tempWordsCollection,
+                 label_dummy:tempWordsCollection,
               },
             },
           },
