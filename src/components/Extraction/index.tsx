@@ -128,7 +128,7 @@ const Extraction = (props: any, ref) => {
   if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
     summary=file[key][activeSection][0].totalSummary?file[key][activeSection][0].totalSummary[entity]:{}
   }else{
-    summary = file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary || {};  
+    summary = file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary_dummy?(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary_dummy || {}):(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary || {});  
   }
 
   useEffect(() => {
@@ -137,7 +137,7 @@ const Extraction = (props: any, ref) => {
       sections.forEach((k) => {
         entity.forEach((en) => {
           obj[k][0] && obj[k][0].comprehendMedical[en]&&
-            summaryCollection.push(obj[k][0].comprehendMedical[en].Summary);
+            summaryCollection.push(obj[k][0].comprehendMedical[en].Summary_dummy?(obj[k][0].comprehendMedical[en].Summary_dummy):(obj[k][0].comprehendMedical[en].Summary));
         });
       });
       const keys = [];
