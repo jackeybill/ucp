@@ -2861,7 +2861,7 @@ const optionLabelLabTestExclu = originExcluLabTest.map((item, index)=>{
    let searchLabEx=[]
    !visibleValueExclu&&setVisibleValueExclu(true)
    if ( timerExclu !== null) {
-     clearTimeout(timer);
+     clearTimeout(timerExclu);
    }
    timerExclu = setTimeout(function () {
        setSearchTxtExclu(val);
@@ -2885,7 +2885,7 @@ const optionLabelLabTestExclu = originExcluLabTest.map((item, index)=>{
        setSearchInterventionExclu(searchInterEx)
        setSearchMedConditionExclu(searchMedEx)
        setSearchLabTestExclu(searchLabEx)
-   }, 1000);
+   }, 200);
  },[searchTxtExclu]) 
 
  const onItemClick = ({ key }) => {
@@ -3377,7 +3377,7 @@ const renderItemClickExclu = (title: string, type: string, idx: any) => {
           <Tabs onChange={changeActiveTabKey} activeKey={activeTabKey} centered>
             <TabPane tab="Inclusion Criteria" key="1">
               <Row>
-                <Col span={criteriaLib} style={{backgroundColor: '#F8F8F8'}}>
+                <Col span={criteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '340px', minWidth: '340px'}}>
                   <Row style={{backgroundColor: '#F8F8F8'}}>
                     <Col span={24}>
                       <div className="item-header">
@@ -3678,7 +3678,7 @@ const renderItemClickExclu = (title: string, type: string, idx: any) => {
             </TabPane>
             <TabPane tab="Exclusion Criteria" key="2" disabled={collapsible}>
               <Row>
-                <Col span={excluCriteriaLib} style={{backgroundColor: '#F8F8F8'}}>
+                <Col span={excluCriteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '340px', minWidth: '340px'}}>
                   <Row style={{backgroundColor: '#F8F8F8'}}>
                     <Col span={24}>
                       <div className="item-header">
