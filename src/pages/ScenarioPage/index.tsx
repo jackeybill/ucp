@@ -3252,12 +3252,12 @@ const renderItemClickExclu = (title: string, type: string, idx: any) => {
       <Spin spinning={pageLoading} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
       <div>
         <Row className="process-container">
-            <Col span={2} className="center">
+            <Col flex="100px" className="center">
                 <div className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
                     <LeftOutlined /> &nbsp;Trial Page
                 </div>
             </Col>
-            <Col span={4} className="scenario-header center">
+            <Col flex="240px" className="scenario-header center">
               <Row>
               <Col span={24}>
                 <Row className="item-translate">
@@ -3269,14 +3269,14 @@ const renderItemClickExclu = (title: string, type: string, idx: any) => {
                 </Col>
                 </Row>
             </Col>
-            <Col span={8} className="center" style={{paddingLeft: '10px'}}>
+            <Col flex="420px" className="center" style={{paddingLeft: '10px'}}>
                 <Steps progressDot current={processStep} size="small" >
                     <Step title="Add Inclusion / Exclusion Criteria"/>
                     <Step title="Add Schedule of Events"/>
                 </Steps>
             </Col>
             {/* delete this Col for showing  Enrollment Feasibility*/}
-             <Col span={10} className={`center ${ collapsible ? "none-click" : "" }`} >
+             <Col flex="auto" className={`center ${ collapsible ? "none-click" : "" }`} >
                 {activeTabKey === '1'?(
                     <>
                         <Button type="primary" className="step-btn" onClick={() => setActiveTabKey('2')}>
@@ -3445,6 +3445,26 @@ const renderItemClickExclu = (title: string, type: string, idx: any) => {
                       ) : (
                       <></>
                       )}
+
+<div className="searchSection">
+                        <div className="content">
+                          <Dropdown 
+                            overlay={menu} 
+                            overlayClassName="searchbox"
+                            visible={visibleValue}
+                            onVisibleChange={(visible: boolean) => {!visibleValue?setVisibleValue(true):setVisibleValue(false)}}
+                          >
+                            <Input
+                                prefix={<SearchOutlined />}
+                                style={{ width: '100%', height: 30 }}
+                                allowClear
+                                onChange={onTextChange}
+                                onClick={e => e.preventDefault()}
+                            />
+                          </Dropdown>
+                        </div>
+                      </div>
+
                       <Row>
                         <Col span={24}>
                           <div className="content-outer">
@@ -3545,7 +3565,7 @@ const renderItemClickExclu = (title: string, type: string, idx: any) => {
                     </Col>
                   </Row>
                 </Col>
-                <Col span={24 - criteriaLib} className={`${ collapsible ? "none-click" : "" } main-content-right`}>
+                <Col flex="auto"  className={`${ collapsible ? "none-click" : "" } main-content-right`}>
                   <Row style={{ paddingTop: '10px' }}>
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>
