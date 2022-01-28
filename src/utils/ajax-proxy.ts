@@ -330,6 +330,25 @@ export const getTrialList = async () => {
   return await response.json();
 }
 
+export const DeleteTrialList = async (id) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "module": "criteria",
+      "method": "delStudy",
+      "body": {
+        "id": id
+      }
+    })
+  })
+
+  return await response.json();
+}
+
 export const addStudy = async (params:any) => {
   const response = await fetch(criteria_url, {
     method: 'POST',
@@ -517,6 +536,22 @@ export const getStandardEvents = async () => {
   return await response.json();
 }
 
+// get Enrollment Feasibility chart data
+export const getPatientFunnelData = async (params) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "searchPatientFunnel": params
+      })
+  })
+
+  return await response.json();
+}
+
 export const getEventAverageCost = async (nctids) => {
   const response = await fetch(criteria_url, {
     method: 'POST',
@@ -586,6 +621,21 @@ export const getAverage = async (nctids) => {
   return await response.json();
 }
 
+export const checkTrialPatientFunnelData = async (trialId) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "checkTrialPatientFunnelData": {
+        "trialId": trialId
+      }})
+  })
+  return await response.json();
+}
+
 //for test only: Delete All In Progress Trials
 // export const deleteAllStudy = async () => {
 //   const response = await fetch(criteria_url, {
@@ -602,6 +652,7 @@ export const getAverage = async (nctids) => {
 
 //   return await response.json();
 // }
+
 
 //for test only: Delete Trial By Id
 // export const deleteStudy = async (nctId) => {
