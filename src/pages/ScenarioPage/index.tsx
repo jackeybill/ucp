@@ -3010,7 +3010,7 @@ const ScenarioPage = (props) => {
     let searchLabEx=[]
     !visibleValueExclu&&setVisibleValueExclu(true)
     if ( timerExclu !== null) {
-      clearTimeout(timer);
+      clearTimeout(timerExclu);
     }
     timerExclu = setTimeout(function () {
         setSearchTxtExclu(val);
