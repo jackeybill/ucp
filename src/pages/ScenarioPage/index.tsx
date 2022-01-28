@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useReducer} from 'react';
+import React, { useState, useEffect, useReducer, useRef, useMemo, useCallback, memo} from 'react';
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
-import {Button, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer} from "antd";
-import {getSummaryDefaultList, updateStudy, getSimilarhistoricalTrialById, getStudy, getSummaryListByNctId, getCriteriaLibByNctId, getSOAResource, getIEResource, getAverage} from "../../utils/ajax-proxy";
+import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer, Input, AutoComplete, Select} from "antd";
+import {updateStudy, getSimilarhistoricalTrialById, getStudy, getCriteriaLibByNctId, getSOAResource, getIEResource, getPatientFunnelData, checkTrialPatientFunnelData} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
-import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined} from "@ant-design/icons";
+import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined, SearchOutlined, HomeOutlined, UserOutlined, CheckOutlined } from "@ant-design/icons";
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
-
 import CriteriaOption from "../../components/CriteriaOption";
 import EditTable from "../../components/EditTable";
 import SelectableTable from "../../components/SelectableTable";
@@ -23,6 +22,21 @@ const frequencyFilter = [5, 100]
 const inActiveChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA']
 const activeChartColors = ['#E53500', '#F27A26', '#F5924D', '#FBD0B3']
 const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2025}
+
+const colorList = {
+  'AMERICAN INDIAN/ALASKA NATIVE': '#CA4A04', 
+  'ASIAN': '#E84F22', 
+  'BLACK/AFRICAN AMERICAN': '#F27A26', 
+  'HISPANIC/LATINO': '#E68700', 
+  'MULTI RACE ETHNICITY': '#F5924D', 
+  'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': '#CA4A044D', 
+  'OTHER': '#FBD6BD', 
+  'UNKNOWN': '#FBD0B3', 
+  'WHITE': '#FDECE0',
+  "HIGHLIGHTED":'#FDECE0',
+  "NOT HIGHLIGHTED": '#E84F22',
+  "ACTIVE LEGEND": '#000000'
+}
 
 
 const panelHeader = () => {
@@ -132,6 +146,10 @@ const ScenarioPage = (props) => {
     const [originMedCondition, setOriginMedCondition] = useState([])
     const [originLabTest, setOriginLabTest] = useState([])
 
+    const [searchDemographics, setSearchDemographics] = useState([])
+    const [searchIntervention, setSearchIntervention] = useState([])
+    const [searchMedCondition, setSearchMedCondition] = useState([])
+    const [searchLabTest, setSearchLabTest] = useState([])
     //Filtered libs for display and selection purpose
     const [demographics, setDemographics] = useState([])
     const [intervention, setIntervention] = useState([])
@@ -167,6 +185,13 @@ const ScenarioPage = (props) => {
   let [interventionTableData, setInterventionTableData] = useState([])
   let [medConditionTableData, setMedConditionTableData] = useState([])
   let [labTestTableData, setLabTestTableData] = useState([])
+
+  const [searchTxt,setSearchTxt] = useState("")
+  const [searchTxtExclu,setSearchTxtExclu] = useState("")
+  
+  const [visibleValue, setVisibleValue] = useState(false)
+  const [visibleValueExclu, setVisibleValueExclu] = useState(false)
+
     //------------------------INCLUSION CRITERIA CONST END-----------------------------
 
     //------------------------EXCLUSION CRITERIA CONST START-----------------------------
@@ -176,6 +201,11 @@ const ScenarioPage = (props) => {
     const [originExcluMedCondition, setOriginExcluMedCondition] = useState([])
     const [originExcluLabTest, setOriginExcluLabTest] = useState([])
 
+    const [searchDemographicsExclu, setSearchDemographicsExclu] = useState([])
+    const [searchInterventionExclu, setSearchInterventionExclu] = useState([])
+    const [searchMedConditionExclu, setSearchMedConditionExclu] = useState([])
+    const [searchLabTestExclu, setSearchLabTestExclu] = useState([])
+    
     //Filtered libs for display and selection purpose
     const [excluDemographics, setExcluDemographics] = useState([])
     const [excluMedCondition, setExcluMedCondition] = useState([])
@@ -211,214 +241,232 @@ const ScenarioPage = (props) => {
   let [excluInterventionTableData, setExcluInterventionTableData] = useState([])
   let [excluMedConditionTableData, setExcluMedConditionTableData] = useState([])
   let [excluLabTestTableData, setExcluLabTestTableData] = useState([])
+
     //------------------------EXCLUSION CRITERIA CONST END-----------------------------
+
+    const [eliPatient, setEliPatient] = useState(0)
+  const [rateEliPatient, setRateEliPatient] = useState('')
+  const [rateFeEliPatient, setRateFeEliPatient] = useState('')
+  const [enrollCriteriaLib, setEnrollCriteriaLib] = useState([])
+  const [enrollCriteriaLibBelow, setEnrollCriteriaLibBelow] = useState([])
+  const [finalEthnicityData, setFinalEthnicityData] = useState([])
+  const [ethLegendColor, setEthLegendColor] = useState([])
+
+  const [eliPatientChartTitle, setEliPatientChartTitle] = useState('')
+  const [eliPatientResultData, setEliPatientResultData] = useState([])
+  const [fePatientChartTitle, setFePatientChartTitle] = useState('')
+  const [fePatientResultData, setFePatientResultData] = useState([])
+  const [ethPatientChartTitle, setEthPatientChartTitle] = useState('')
+  const [ethPatientResultData, setEthPatientResultData] = useState([])
   
+  const [loadPatientFunnel, setLoadPatientFunnel] = useState(false)
+  const [reloadPTData, setReloadPTData] = useState(false)
+  const [initPTData, setInitPTData] = useState(true)
+  const [funnelChartheight, setFunnelChartheight] = useState(200)
+  // const [funnelChartheightBelow, setFunnelChartheightBelow] = useState(200)
+  const [funnelChartheightOverlap, setFunnelChartheightOverlap] = useState(100)
 
-    useEffect(() => {
-      let tempData = [];
-      for(let i = 0, l = resultdata.length; i < l; i++){
-          var num = resultdata[i] + 100;
-          tempData.push({'total': resultdata[i]+'K', 'value':num});
+  const getTrialById = async () => {
+      const resp = await getStudy(props.location.state.trial_id);
+      console.log("getlist",resp);
+      
+      if(resp.statusCode == 200){
+          const tempRecord = JSON.parse(JSON.stringify(resp.body))
+          setTrialRecord(tempRecord)
+          setTrialTitle(tempRecord['trial_alias'])
+          if(tempRecord.similarHistoricalTrials !== undefined){
+            setSimilarHistoricalTrials(tempRecord.similarHistoricalTrials)
+          }
+          
+          const tempScenarioId = props.location.state.scenarioId
+          const tempEditFlag = props.location.state.editFlag
+          const tempScenarioType = props.location.state.scenarioType
+          const tempScenario = tempRecord.scenarios.find( i=> i['scenario_id'] == tempScenarioId)
+          setScenarioId(tempScenarioId)
+          setEditFlag(tempEditFlag)
+          setScenarioType(tempScenarioType)
+          setScenario(tempScenario)
+
+          console.log('edit scenario for: ' +  tempScenarioId + ': ' +  tempEditFlag)
+
+          if(tempEditFlag && tempScenario['Inclusion Criteria'].Demographics !== undefined
+            && tempScenario['Inclusion Criteria'].Demographics.Entities !== undefined){
+              demographicsElements = tempScenario['Inclusion Criteria'].Demographics.Entities
+              interventionElements = tempScenario['Inclusion Criteria'].Intervention.Entities
+              medConditionElements = tempScenario['Inclusion Criteria']['Medical Condition'].Entities
+              labTestElements = tempScenario['Inclusion Criteria']['Lab / Test'].Entities
+              
+              excluDemographicsElements = tempScenario['Exclusion Criteria'].Demographics.Entities
+              excluMedConditionElements = tempScenario['Exclusion Criteria']['Medical Condition'].Entities
+              excluInterventionElements = tempScenario['Exclusion Criteria'].Intervention.Entities
+              excluLabTestElements = tempScenario['Exclusion Criteria']['Lab / Test'].Entities
+
+              //Get inclusion chart info
+              var inclu = tempScenario["Inclusion Criteria"]
+              
+              setProtocolRateData([
+                  {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
+                  {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
+                  {value: formatNumber(inclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
+                  {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical Condition'}
+              ])
+              setScreenRateData([
+                  {value: formatNumber(inclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
+                  {value: formatNumber(inclu.Intervention.screen_failure_rate), name: 'Intervention'},
+                  {value: formatNumber(inclu.Demographics.screen_failure_rate), name: 'Demographics'},
+                  {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical Condition'}
+              ])
+      
+              var tempScoreA = ''
+              var tempScoreB = ''
+                  
+                  var score = formatNumber(tempScenario.protocol_amendment_rate)
+                  if(score <= 33){
+                    tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{good|GOOD}'
+                  } else if(score > 33  && score <= 67){
+                    tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{fair|FAIR}'
+                  } else if(score > 67){
+                    tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{poor|POOR}'
+                  }
+
+                  var scoreB = formatNumber(tempScenario.screen_failure_rate)
+                  if(scoreB <= 33){
+                    tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{good|GOOD}'
+                  } else if(scoreB > 33  && scoreB <= 67){
+                    tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{fair|FAIR}'
+                  } else if(scoreB > 67){
+                    tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{poor|POOR}'
+                  }
+
+                  setAmend_avg_rate(tempScoreA)
+                  setScreen_avg_rate(tempScoreB)
+
+              //Get exclusion chart info
+              var exclu = tempScenario["Exclusion Criteria"]
+              
+              setExcluProtocolRateData([
+                  {value: formatNumber(exclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
+                  {value: formatNumber(exclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
+                  {value: formatNumber(exclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
+                  {value: formatNumber(exclu['Medical Condition'].protocol_amendment_rate), name: 'Medical Condition'}
+              ])
+              setExcluScreenRateData([
+                  {value: formatNumber(exclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
+                  {value: formatNumber(exclu.Intervention.screen_failure_rate), name: 'Intervention'},
+                  {value: formatNumber(exclu.Demographics.screen_failure_rate), name: 'Demographics'},
+                  {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical Condition'}
+              ])
+      
+                  setExcluAmend_avg_rate(tempScoreA)
+                  setExcluScreen_avg_rate(tempScoreB)
+
+              setShowChartLabel(true)
+              setImpactColors(activeChartColors)
+              setExcluImpactColors(activeChartColors)
+          }
+          
+          if(tempRecord['Therapeutic Area Average']){
+            setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
+            setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
+            setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
+            setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
+          }
+          
+          if(tempEditFlag){
+              updateTrial(1, 2)
+              updateTrial(2, 2)
+          }
       }
-      setTotalData(tempData)
+  };
+  
+  useEffect(() => {
+    if(props.location.state.trial_id == undefined || props.location.state.trial_id == ''){
+      props.history.push({pathname: '/trials'})
+    } else {
+      
+      getTrialById();
+    }
+  }, []);
 
-      if(props.location.state.trial_id == undefined || props.location.state.trial_id == ''){
-        props.history.push({pathname: '/trials'})
-      } else {
-        const getTrialById = async () => {
-            const resp = await getStudy(props.location.state.trial_id);
-            console.log("getlist",resp);
-            
-            if(resp.statusCode == 200){
-                const tempRecord = resp.body
-                setTrialRecord(tempRecord)
-                setTrialTitle(tempRecord['trial_alias'])
-                if(tempRecord.similarHistoricalTrials !== undefined){
-                  setSimilarHistoricalTrials(tempRecord.similarHistoricalTrials)
-                }
-                
-                const tempScenarioId = props.location.state.scenarioId
-                const tempEditFlag = props.location.state.editFlag
-                const tempScenarioType = props.location.state.scenarioType
-                const tempScenario = tempRecord.scenarios.find( i=> i['scenario_id'] == tempScenarioId)
-                setScenarioId(tempScenarioId)
-                setEditFlag(tempEditFlag)
-                setScenarioType(tempScenarioType)
-                setScenario(tempScenario)
+  useEffect(() => {
 
-                console.log('edit scenario for: ' +  tempScenarioId + ': ' +  tempEditFlag)
+      const summaryDefaultList = async () => {
+        const nctIdList = props.location.state.similarHistoricalTrials
+        console.log("nctIdList",nctIdList);
+        
+        var resp
+        // if(nctIdList != undefined && nctIdList instanceof Array && nctIdList.length > 0){
+          console.log("input",props.location.state.similarHistoricalTrials);
+          resp = await getCriteriaLibByNctId(props.location.state.similarHistoricalTrials, props.location.state.trial_id);
+          // console.log("criteria",resp);
+        // } else {
+        //   resp = await getSummaryDefaultList();
+        //   console.log("default",resp);
+        // }
+        setPageLoading(false)
+          if (resp.statusCode == 200) {
+              setAvgFileKey(resp.csvKey)
+              // const response = JSON.parse(resp.body)
+              const response = resp.body
+              console.log("criteria result: ", response);
+              const inclusionCriteria = response[0].InclusionCriteria
+              for(var i = 0; i < inclusionCriteria.length; i ++){
+                  var incluIndex = getCatorgoryIndex(i, inclusionCriteria)
+                  if(incluIndex == 0){
+                      setOriginMedCondition(inclusionCriteria[i]['Medical Condition'])
+                      setMedCondition(inclusionCriteria[i]['Medical Condition'].filter((d) => {
+                          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+                      }))
+                  } else if(incluIndex == 1){ 
+                      setOriginDemographics(inclusionCriteria[i]['Demographics'])
+                      setDemographics(inclusionCriteria[i]['Demographics'].filter((d) => {
+                          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+                      }))
+                  } else if(incluIndex == 2){
+                      setOriginLabTest(inclusionCriteria[i]['Lab/Test'])
+                      setLabTest(inclusionCriteria[i]['Lab/Test'].filter((d) => {
+                          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+                      }))
+                  } else if(incluIndex == 3){
+                      setOriginIntervention(inclusionCriteria[i]['Intervention'])
+                      setIntervention(inclusionCriteria[i]['Intervention'].filter((d) => {
+                          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+                      }))
+                  }
+              }
 
-                if(tempEditFlag && tempScenario['Inclusion Criteria'].Demographics !== undefined
-                  && tempScenario['Inclusion Criteria'].Demographics.Entities !== undefined){
-                    demographicsElements = tempScenario['Inclusion Criteria'].Demographics.Entities
-                    interventionElements = tempScenario['Inclusion Criteria'].Intervention.Entities
-                    medConditionElements = tempScenario['Inclusion Criteria']['Medical Condition'].Entities
-                    labTestElements = tempScenario['Inclusion Criteria']['Lab / Test'].Entities
-                    
-                    excluDemographicsElements = tempScenario['Exclusion Criteria'].Demographics.Entities
-                    excluMedConditionElements = tempScenario['Exclusion Criteria']['Medical Condition'].Entities
-                    excluInterventionElements = tempScenario['Exclusion Criteria'].Intervention.Entities
-                    excluLabTestElements = tempScenario['Exclusion Criteria']['Lab / Test'].Entities
-
-                    //Get inclusion chart info
-                    var inclu = tempScenario["Inclusion Criteria"]
-                    
-                    setProtocolRateData([
-                        {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
-                        {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
-                        {value: formatNumber(inclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
-                        {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical Condition'}
-                    ])
-                    setScreenRateData([
-                        {value: formatNumber(inclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
-                        {value: formatNumber(inclu.Intervention.screen_failure_rate), name: 'Intervention'},
-                        {value: formatNumber(inclu.Demographics.screen_failure_rate), name: 'Demographics'},
-                        {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical Condition'}
-                    ])
-            
-                    var tempScoreA = ''
-                    var tempScoreB = ''
-                        
-                        var score = formatNumber(tempScenario.protocol_amendment_rate)
-                        if(score <= 33){
-                          tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{good|GOOD}'
-                        } else if(score > 33  && score <= 67){
-                          tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{fair|FAIR}'
-                        } else if(score > 67){
-                          tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{poor|POOR}'
-                        }
-
-                        var scoreB = formatNumber(tempScenario.screen_failure_rate)
-                        if(scoreB <= 33){
-                          tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{good|GOOD}'
-                        } else if(scoreB > 33  && scoreB <= 67){
-                          tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{fair|FAIR}'
-                        } else if(scoreB > 67){
-                          tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{poor|POOR}'
-                        }
-
-                        setAmend_avg_rate(tempScoreA)
-                        setScreen_avg_rate(tempScoreB)
-
-                    //Get exclusion chart info
-                    var exclu = tempScenario["Exclusion Criteria"]
-                    
-                    setExcluProtocolRateData([
-                        {value: formatNumber(exclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
-                        {value: formatNumber(exclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
-                        {value: formatNumber(exclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
-                        {value: formatNumber(exclu['Medical Condition'].protocol_amendment_rate), name: 'Medical Condition'}
-                    ])
-                    setExcluScreenRateData([
-                        {value: formatNumber(exclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
-                        {value: formatNumber(exclu.Intervention.screen_failure_rate), name: 'Intervention'},
-                        {value: formatNumber(exclu.Demographics.screen_failure_rate), name: 'Demographics'},
-                        {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical Condition'}
-                    ])
-            
-                        setExcluAmend_avg_rate(tempScoreA)
-                        setExcluScreen_avg_rate(tempScoreB)
-
-                    setShowChartLabel(true)
-                    setImpactColors(activeChartColors)
-                    setExcluImpactColors(activeChartColors)
-                }
-                
-                if(tempRecord['Therapeutic Area Average']){
-                  setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
-                  setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
-                  setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].protocol_amendment_rate)
-                  setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + tempRecord['Therapeutic Area Average'].screen_failure_rate)
-                }
-                
-                if(tempEditFlag){
-                    updateTrial(1)
-                    updateTrial(2)
-                }
-            }
-        };
-        getTrialById();
-      }
+              const exclusionCriteria = response[1].ExclusionCriteria
+              for(var i = 0; i < exclusionCriteria.length; i ++){
+                  var excluIndex = getCatorgoryIndex(i, exclusionCriteria)
+                  if(excluIndex == 0){
+                      setOriginExcluMedCondition(exclusionCriteria[i]['Medical Condition'])
+                      setExcluMedCondition(exclusionCriteria[i]['Medical Condition'].filter((d) => {
+                          return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
+                      }))
+                  } else if(excluIndex == 1){ 
+                      setOriginExcluDemographics(exclusionCriteria[i]['Demographics'])
+                      setExcluDemographics(exclusionCriteria[i]['Demographics'].filter((d) => {
+                          return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
+                      }))
+                  } else if(excluIndex == 2){
+                      setOriginExcluLabTest(exclusionCriteria[i]['Lab/Test'])
+                      setExcluLabTest(exclusionCriteria[i]['Lab/Test'].filter((d) => {
+                          return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
+                      }))
+                  } else if(excluIndex == 3){
+                      setOriginExcluIntervention(exclusionCriteria[i]['Intervention'])
+                      setExcluIntervention(exclusionCriteria[i]['Intervention'].filter((d) => {
+                          return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
+                      }))
+                  }
+              }
+          }
+      };
+      summaryDefaultList();
     }, []);
 
-    useEffect(() => {
-
-        const summaryDefaultList = async () => {
-          const nctIdList = props.location.state.similarHistoricalTrials
-          console.log("nctIdList",nctIdList);
-          
-          var resp
-          // if(nctIdList != undefined && nctIdList instanceof Array && nctIdList.length > 0){
-            console.log("input",props.location.state.similarHistoricalTrials);
-            resp = await getCriteriaLibByNctId(props.location.state.similarHistoricalTrials, props.location.state.trial_id);
-            // console.log("criteria",resp);
-          // } else {
-          //   resp = await getSummaryDefaultList();
-          //   console.log("default",resp);
-          // }
-          setPageLoading(false)
-            if (resp.statusCode == 200) {
-                setAvgFileKey(resp.csvKey)
-                // const response = JSON.parse(resp.body)
-                const response = resp.body
-                console.log("criteria result: ", response);
-                const inclusionCriteria = response[0].InclusionCriteria
-                for(var i = 0; i < inclusionCriteria.length; i ++){
-                    var incluIndex = getCatorgoryIndex(i, inclusionCriteria)
-                    if(incluIndex == 0){
-                        setOriginMedCondition(inclusionCriteria[i]['Medical Condition'])
-                        setMedCondition(inclusionCriteria[i]['Medical Condition'].filter((d) => {
-                            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-                        }))
-                    } else if(incluIndex == 1){ 
-                        setOriginDemographics(inclusionCriteria[i]['Demographics'])
-                        setDemographics(inclusionCriteria[i]['Demographics'].filter((d) => {
-                            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-                        }))
-                    } else if(incluIndex == 2){
-                        setOriginLabTest(inclusionCriteria[i]['Lab/Test'])
-                        setLabTest(inclusionCriteria[i]['Lab/Test'].filter((d) => {
-                            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-                        }))
-                    } else if(incluIndex == 3){
-                        setOriginIntervention(inclusionCriteria[i]['Intervention'])
-                        setIntervention(inclusionCriteria[i]['Intervention'].filter((d) => {
-                            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-                        }))
-                    }
-                }
-
-                const exclusionCriteria = response[1].ExclusionCriteria
-                for(var i = 0; i < exclusionCriteria.length; i ++){
-                    var excluIndex = getCatorgoryIndex(i, exclusionCriteria)
-                    if(excluIndex == 0){
-                        setOriginExcluMedCondition(exclusionCriteria[i]['Medical Condition'])
-                        setExcluMedCondition(exclusionCriteria[i]['Medical Condition'].filter((d) => {
-                            return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
-                        }))
-                    } else if(excluIndex == 1){ 
-                        setOriginExcluDemographics(exclusionCriteria[i]['Demographics'])
-                        setExcluDemographics(exclusionCriteria[i]['Demographics'].filter((d) => {
-                            return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
-                        }))
-                    } else if(excluIndex == 2){
-                        setOriginExcluLabTest(exclusionCriteria[i]['Lab/Test'])
-                        setExcluLabTest(exclusionCriteria[i]['Lab/Test'].filter((d) => {
-                            return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
-                        }))
-                    } else if(excluIndex == 3){
-                        setOriginExcluIntervention(exclusionCriteria[i]['Intervention'])
-                        setExcluIntervention(exclusionCriteria[i]['Intervention'].filter((d) => {
-                            return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
-                        }))
-                    }
-                }
-            }
-        };
-        summaryDefaultList();
-      }, []);
-
-
+    const eChartsRef = React.useRef(null as any);
+    const eChartsBelowRef = React.useRef(null as any);
 
     function getCatorgoryIndex(index, list){
       if(list[index]['Medical Condition'] != undefined){
@@ -555,25 +603,60 @@ const ScenarioPage = (props) => {
       console.log(item.Text, item.Value);
       
       var tempStr
-      if(item.Value === ''){
-        tempStr = '-'
-      } else if (item.Value.avg_value != '' && item.Value.avg_value != 0) {
-        tempStr = Number(item.Value.avg_value.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
-      } else if (item.Value.avg_lower == 0 && item.Value.avg_upper != 0) {
-        tempStr = "< "+ Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
-      } else if (item.Value.avg_lower != 0 && item.Value.avg_upper == 0) {
-        tempStr = "> "+ Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
-      } else if (item.Value.avg_lower != 0 && item.Value.avg_upper != 0) {
-        // if (Number(item.Value.avg_lower) == Number(item.Value.avg_upper)){
-        //   tempStr = Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
-        if(item.Text.toString() === "vital signs"){
-          console.log(item.Text,": ", item.Value);
-          tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+      if(item.Text.toString() === "vital signs" && item.BP_value){
+        console.log(item.Text,": ", item.BP_value);
+        // < 150/95 mmHg
+        if (item.BP_value.avg_dbp_lower == 0 && item.BP_value.avg_sbp_lower == 0 && item.BP_value.avg_dbp_upper != 0 && item.BP_value.avg_sbp_upper != 0) {
+          tempStr = "< "+ Number(item.BP_value.avg_sbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
+        // > 150/95 mmHg
+        } else if (item.BP_value.avg_dbp_lower != 0 && item.BP_value.avg_sbp_lower != 0 && item.BP_value.avg_dbp_upper == 0 && item.BP_value.avg_sbp_upper == 0) {
+          tempStr = "> " +  Number(item.BP_value.avg_sbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
+        // 180/90 - 200/95 mmHg
+        } else if (item.BP_value.avg_dbp_lower != 0 && item.BP_value.avg_sbp_lower != 0 && item.BP_value.avg_dbp_upper != 0 && item.BP_value.avg_sbp_upper != 0) {
+          tempStr = Number(item.BP_value.avg_sbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/)) + " - " + Number(item.BP_value.avg_sbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
         } else {
-        tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " - " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+          tempStr = '-'
         }
-      } else{
-        tempStr = '-'
+      } else {
+          if(item.Value === ''){
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = '-'
+            }
+          } else if (item.Value.avg_value != '' && item.Value.avg_value != 0) {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = Number(item.Value.avg_value.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+            }
+          } else if (item.Value.avg_lower == 0 && item.Value.avg_upper != 0) {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = "< "+ Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
+            }
+          } else if (item.Value.avg_lower != 0 && item.Value.avg_upper == 0) {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = "> "+ Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
+            }
+          } else if (item.Value.avg_lower != 0 && item.Value.avg_upper != 0) {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              // if (Number(item.Value.avg_lower) == Number(item.Value.avg_upper)){
+              //   tempStr = Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+              tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " - " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+            } 
+          } else {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = '-' 
+            }
+          }
       }
       return tempStr
     }
