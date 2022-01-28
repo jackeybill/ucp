@@ -185,7 +185,7 @@ const Extraction = (props: any, ref) => {
           {
             comprehendMedical: {
               [entity]: {
-                label: labels,
+                // label: labels,
                 label_dummy:labels,
               },
             },
@@ -314,7 +314,7 @@ const Extraction = (props: any, ref) => {
 
     }else{
       updatedData = file
-      file[hashKey][activeSection][0].comprehendMedical[entity].label = tempWordsCollection;
+      // file[hashKey][activeSection][0].comprehendMedical[entity].label = tempWordsCollection;
       file[hashKey][activeSection][0].comprehendMedical[entity].label_dummy = tempWordsCollection;
 
       paramBody = {
@@ -323,7 +323,7 @@ const Extraction = (props: any, ref) => {
             {
               comprehendMedical: {
                 [entity]: {
-                  label: tempWordsCollection,
+                  // label: tempWordsCollection,
                   label_dummy: tempWordsCollection,
                 },
               },
