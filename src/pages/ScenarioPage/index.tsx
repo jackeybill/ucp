@@ -2885,7 +2885,7 @@ const optionLabelLabTestExclu = originExcluLabTest.map((item, index)=>{
        setSearchInterventionExclu(searchInterEx)
        setSearchMedConditionExclu(searchMedEx)
        setSearchLabTestExclu(searchLabEx)
-   }, 400);
+   }, 1000);
  },[searchTxtExclu]) 
 
  const onItemClick = ({ key }) => {
@@ -3746,6 +3746,26 @@ const renderItemClickExclu = (title: string, type: string, idx: any) => {
                       ) : (
                       <></>
                       )}
+
+<div className="searchSection">
+                        <div className="content">
+                          <Dropdown 
+                            overlay={menuExclu} 
+                            overlayClassName="searchbox"
+                            visible={visibleValueExclu}
+                            onVisibleChange={(visible: boolean) => {!visibleValueExclu?setVisibleValueExclu(true):setVisibleValueExclu(false)}}
+                          >
+                            <Input
+                                prefix={<SearchOutlined />}
+                                style={{ width: '100%', height: 30 }}
+                                allowClear
+                                onChange={onExcluTextChange}
+                                onClick={e => e.preventDefault()}
+                            />
+                          </Dropdown>
+                        </div>
+                      </div>  
+
                       <Row>
                         <Col span={24}>
                           <div className="content-outer">
@@ -3848,7 +3868,7 @@ const renderItemClickExclu = (title: string, type: string, idx: any) => {
                     </Col>
                   </Row>
                 </Col>
-                <Col span={24 - excluCriteriaLib} className={`${ excluCollapsible ? "none-click" : "" } main-content-right`}>
+                <Col flex="auto" className={`${ excluCollapsible ? "none-click" : "" } main-content-right`}>
                   <Row style={{ paddingTop: '10px' }}>
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>
