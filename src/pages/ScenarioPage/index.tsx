@@ -746,7 +746,11 @@ const ScenarioPage = (props) => {
       }
     }
 
-  const updateTrial = (type: number) => {
+    const updateTrial = (type: number, res: number) => {
+      // res: 1, update when loading page; 2, update when update criteria
+      if(res == 1){
+        setReloadPTData(true)
+      }
       if (type == 1) {//Inclusion
         
         let demographicsElementsTmp = demographicsElements.map((item,index) =>{
@@ -762,7 +766,6 @@ const ScenarioPage = (props) => {
         }))
         console.log("demographicsElementsTmp",demographicsElementsTmp);
         
-
         let medConditionElementsTmp = medConditionElements.map((item,index) =>{
           return Object.assign(item,{Key:(index + 1) + ''})
         })
@@ -1223,47 +1226,158 @@ const ScenarioPage = (props) => {
       ]
     };
 
-    const raceOption = {
-      legend: {
-        x:'40%',
-        y:'10%',
-        orient: 'vertical',
-        itemHeight: 7,
-        textStyle: {
-          fontSize: 9
-        },
-        formatter: function(name) {
-          let data = raceOption.series[0].data;
-          let total = 0;
-          let tarValue = 0;
-          for (let i = 0, l = data.length; i < l; i++) {
-              total += data[i].value;
-              if (data[i].name == name) {
-                  tarValue = data[i].value;
-              }
-          }
-          let p = (tarValue / total * 100).toFixed(2);
-          return name + ' - ' + p + '%';
-        },
-        data: ['Caucasian','Hispanic','Asian','African American']
+     // Enrollment Feasibility chart data
+     const raceOption = {
+      tooltip: {
+        trigger: 'item',
+        formatter: '{b} - {c} - {d}%'
       },
-      series: [{
-        type: 'pie',
-        center: ['20%', '45%'],
-        radius: ['30%', '70%'],
-        avoidLabelOverlap: false,
-        label: {
-          show: false,
-        },
-        color:['#F27A26', '#F5924D', '#FBD6BD', '#FDECE0'],
-        data: [
-          {value: 75, name: 'Caucasian'},
-          {value: 12, name: 'Hispanic'},
-          {value: 8, name: 'Asian'},
-          {value: 5, name: 'African American'}
-        ]
-      }]
+      // legend: {
+      //   x: '40%',
+      //   y: '10%',
+      //   orient: 'vertical',
+      //   itemHeight: 7,
+      //   itemWidth: 7,
+      //   textStyle: {
+      //     fontSize: 9
+      //   },
+      //   formatter: function(name) {
+      //     let data = raceOption.series[0].data;
+      //     let total = 0
+      //     for(const d in data){
+      //       total += data[d].value
+      //     }
+      //     let p = 0
+      //     for (let i = 0, l = data.length; i < l; i++) {
+      //         if (data[i].name == name) {
+      //           if(data[i].value >0){
+      //             const p = (data[i].value/total * 100).toFixed(2)
+      //             return name + ' - ' + p + '%';
+      //           }else{
+      //             return name + ' - 0'
+      //           }
+      //         }
+      //     }
+      //   }
+      // },
+      series: [
+        {
+          name: 'Race & Ethnicity',
+          type: 'pie',
+          center: ['20%', '45%'],
+          radius: ['30%', '70%'],
+          avoidLabelOverlap: false,
+          label: {
+            show: false
+          },
+          color: ethLegendColor,
+          data: finalEthnicityData
+        }
+      ]
     };
+
+    const eliPatientOption = {
+      title : {
+  //       text: eliPatientChartTitle,
+  //       x:'40%',
+  //       y:'top',
+  //       textStyle: {
+  //         fontSize: 18,
+  //         fontWeight: 'bold',
+  //         color: '#333'
+  //       },
+        show: false
+        // show: (!showLegend)
+      },
+      // legend: {
+      //   show: showLegend
+      // },
+      grid: {
+          left: '3%',
+          right: '4%',
+          top: 0,
+          bottom: 0,
+          containLabel: true
+      },
+      xAxis: {
+          type: 'value',
+          axisLabel: {
+              show: false
+          },
+          splitLine:{
+              show:false
+          },
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+              show: false
+          },
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          // Use axis to trigger tooltip
+          type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+        },
+        formatter: function(params){
+          // eligible patient chart won't show percentage value
+          if(params.length == 2){
+            return params[0].axisValue + ': ' + params[0].value
+          }
+          let total = 0
+          for(let id=0; id<params.length; id ++){
+            if(params[id].seriesName != 'Total'){
+              total += params[id].value
+            }
+          }
+          let html=`
+            <div>
+            <div>${params[0].axisValue}</div>
+            <table>${params.map((item)=>
+              item.seriesName != 'Total'?`
+              <tr>
+                <td>
+                  <span style="display:inline-block; width:10px;
+                    height:10px;background-color:${item.color};"></span>
+                    ${item.seriesName}:
+                </td>
+                <td><span style="margin-left:10px;">${item.value}</span></td>
+                <td>
+                  <span style="margin-left:10px;">
+                    ${item.value > 0? ((item.value / total) * 100).toFixed(2) + '%':0}
+                </span></td>
+              </tr>`:'').join("")}
+            </table>
+            <div>Total: ${total}</div>
+            </div>`
+          return html
+        }
+      },
+      yAxis: {
+          type: 'category',
+          axisLabel: {
+            // show: false,
+            formatter: (value: any) => {
+              return value.length > 15 && value.indexOf(":") > 15? `{a|${value.slice(0, 15)}... ${value.slice(value.indexOf(":"))}}` : `{a|${value}}`
+            },
+            rich: {
+              a: {
+              },
+            }
+          },
+          axisLine: {
+              show: false
+          },
+          axisTick: {
+              show: false
+          },
+          data: enrollCriteriaLib
+      },
+      series: eliPatientResultData,
+      backgroundColor: "#fff"
+    };
+
 
     const resultOption = {
       title : {
@@ -1347,6 +1461,394 @@ const ScenarioPage = (props) => {
           }
       ]
   };
+
+  const fePatientOption = {
+    title : {
+      text: fePatientChartTitle,
+      x:'40%',
+      y:'top',
+      textStyle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333'
+      },
+      show: false
+      // show: (!showLegend)
+    },
+    // legend: {
+    //   show: showLegend
+    // },
+    grid: {
+        left: '3%',
+        right: '4%',
+        top: 0,
+        bottom: 0,
+        containLabel: true
+    },
+    xAxis: {
+        type: 'value',
+        axisLabel: {
+            show: false
+        },
+        splitLine:{
+            show:false
+        },
+        axisLine: {
+          show: false
+        },
+        axisTick: {
+            show: false
+        },
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        // Use axis to trigger tooltip
+        type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+      },
+      formatter: function(params){
+        // eligible patient chart won't show percentage value
+        if(params.length == 2){
+          return params[0].axisValue + ': ' + params[0].value
+        }
+        let total = 0
+        for(let id=0; id<params.length; id ++){
+          if(params[id].seriesName != 'Total'){
+            total += params[id].value
+          }
+        }
+        let html=`
+          <div>
+          <div>${params[0].axisValue}</div>
+          <table>${params.map((item)=>
+            item.seriesName != 'Total'?`
+            <tr>
+              <td>
+                <span style="display:inline-block; width:10px;
+                  height:10px;background-color:${item.color};"></span>
+                  ${item.seriesName}:
+              </td>
+              <td><span style="margin-left:10px;">${item.value}</span></td>
+              <td>
+                <span style="margin-left:10px;">
+                  ${item.value > 0? ((item.value / total) * 100).toFixed(2) + '%':0}
+              </span></td>
+            </tr>`:'').join("")}
+          </table>
+          <div>Total: ${total}</div>
+          </div>`
+        return html
+      }
+    },
+    yAxis: {
+        type: 'category',
+        axisLabel: {
+          formatter: (value: any) => {
+            return value.length > 15 && value.indexOf(":") > 15? value.slice(0, 15) + '...'+ value.slice(value.indexOf(":")) : value
+          }
+        },
+        axisLine: {
+            show: false
+        },
+        axisTick: {
+            show: false
+        },
+        data: enrollCriteriaLib
+    },
+    series: fePatientResultData,
+    backgroundColor: "#fff"
+  };
+
+  const ethPatientOption = {
+    title : {
+      text: ethPatientChartTitle,
+      x:'40%',
+      y:'1%',
+      textStyle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333'
+      },
+      show: false
+      // show: (!showLegend)
+    },
+    // legend: {
+    //   show: showLegend
+    // },
+    grid: {
+        left: '3%',
+        right: '4%',
+        top: 0,
+        bottom: 0,
+        containLabel: true
+    },
+    xAxis: {
+        type: 'value',
+        axisLabel: {
+            show: false
+        },
+        splitLine:{
+            show:false
+        },
+        axisLine: {
+          show: false
+        },
+        axisTick: {
+            show: false
+        },
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        // Use axis to trigger tooltip
+        type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+      },
+      formatter: function(params){
+        // eligible patient chart won't show percentage value
+        // if(params.length == 2){
+        //   return params[0].axisValue + ': ' + params[0].value
+        // }
+        let total = 0
+        for(let id=0; id<params.length; id ++){
+          if(params[id].seriesName != 'Total'){
+            total += params[id].value
+          }
+        }
+        let html=`
+          <div>
+          <div>${params[0].axisValue}</div>
+          <table>${params.map((item)=>
+            item.seriesName != 'Total'?`
+            <tr>
+              <td>
+                <span style="display:inline-block; width:10px;
+                  height:10px;background-color:${item.color};"></span>
+                  ${item.seriesName}:
+              </td>
+              <td><span style="margin-left:10px;">${item.value}</span></td>
+              <td>
+                <span style="margin-left:10px;">
+                  ${item.value > 0? ((item.value / total) * 100).toFixed(2) + '%':0}
+              </span></td>
+            </tr>`:'').join("")}
+          </table>
+          <div>Total: ${total}</div>
+          </div>`
+        return html
+      }
+    },
+    yAxis: {
+        type: 'category',
+        axisLabel: {
+          formatter: (value: any) => {
+            return value.length > 15 && value.indexOf(":") > 15? value.slice(0, 15) + '...'+ value.slice(value.indexOf(":")) : value
+          }
+        },
+        axisLine: {
+            show: false
+        },
+        axisTick: {
+            show: false
+        },
+        data: enrollCriteriaLib
+    },
+    series: ethPatientResultData,
+    backgroundColor: "#fff"
+  };
+
+  const sleep = (time: number) => {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  };
+
+  const getPatientFunnel = async () => {
+    if (!initPTData && !reloadPTData){
+      return
+    }
+    
+    setLoadPatientFunnel(true)
+    let doReSearch = false
+    let response
+    if(initPTData && !reloadPTData){
+      response = await checkTrialPatientFunnelData(props.location.state.trial_id+scenarioId)
+      if(!response){
+        doReSearch = true
+      }
+    }else {
+      doReSearch = true
+    }
+    if(doReSearch){
+      let requestBody = {
+        'trialId': props.location.state.trial_id+scenarioId,
+        'requestBody':{
+          'inclusion': {
+            'demographicsElements': demographicsElements,
+            'medConditionElements': medConditionElements,
+            'interventionElements': interventionElements,
+            'labTestElements': labTestElements
+          },
+          'exclusion': {
+            'demographicsElements': excluDemographicsElements,
+            'medConditionElements': excluMedConditionElements,
+            'interventionElements': excluInterventionElements,
+            'labTestElements': excluLabTestElements
+          }
+        }
+      }
+      getPatientFunnelData(requestBody)
+    }
+    let tryTimes = 0
+    while(!response && tryTimes <= 20){
+      if(doReSearch){
+        await sleep(5000);
+      }
+      tryTimes += 1
+      response = await checkTrialPatientFunnelData(props.location.state.trial_id+scenarioId)
+    }
+    if (!response && tryTimes > 20){
+      message.error('No response for searching patient funnel over 100 seconds, please call assist.')
+      return
+    }
+    if (response.statusCode === 200) {
+      const resp = JSON.parse(response.body)
+      console.log("getPatientFunnelData:",JSON.parse(response.body));
+
+      // set data for tab info
+      setEliPatient(resp['eli_patient'])
+      setRateEliPatient(resp['rate_eli_patient'])
+
+      setRateFeEliPatient(resp['rate_fe_eli_patient'])
+
+      const tempColor = []
+      for(const e in resp['ethnicity_legend']){
+        tempColor.push(colorList[resp['ethnicity_legend'][e].name])
+      }
+      setEthLegendColor(tempColor)
+      const templegend = []
+      for (const val of resp['ethnicity_legend']) {
+        templegend.push(Object.assign(val, {"selected":false}))
+      }
+      setFinalEthnicityData(templegend)
+      
+      // Set criteria lib data as yAxis -- Common
+      setEnrollCriteriaLib(resp['criteria'])
+      // setEnrollCriteriaLib(resp['criteria'].slice(0,resp['in_item_len']))
+      // setEnrollCriteriaLibBelow(resp['criteria'].slice(resp['in_item_len']))
+      setFunnelChartheight(40 * resp['criteria'].length)
+      setFunnelChartheightOverlap((40 * resp['criteria'].length)/resp['criteria'].length *(resp['in_item_len']))
+      // setFunnelChartheightBelow(40 * (resp['criteria'].length-resp['in_item_len']))
+      let totalData = {
+        name: 'Total',
+        type: 'bar',
+        stack: 'Total',
+        barGap: '-100%',
+        label: {
+            normal: {
+                show: true,
+                position: 'right',
+                textStyle: { color: '#000' },
+                formatter: function(v) {
+                    return v.value
+                }
+            }
+        },
+        itemStyle: { 
+            normal: { 
+                color: 'rgba(128, 128, 128, 0)',
+                borderWidth: 1,
+            } 
+        },
+        data: resp['count']
+      }
+
+      // Set data for chart Eligible Patient
+      setEliPatientChartTitle('Patients Eligible - ' + resp['eli_patient'] + '(' + resp['rate_eli_patient'] + ' of Dataset)')
+      const tempEliPatientSeriesData = []
+      tempEliPatientSeriesData.push({
+        name: 'Eligible Patient',
+        type: 'bar',
+        stack: 'total',
+        // barWidth:'24px',
+        color: '#E84F22',
+        label: {
+            show: false,
+            // formatter: function(p) {
+            //     return p.data
+            // },
+            // position: 'insideRight'
+        },
+        data: resp['count'],
+        areaStyle:{
+          color:'#fff',
+          opacity: 1
+       }
+      })
+      tempEliPatientSeriesData.push(totalData)
+      setEliPatientResultData(tempEliPatientSeriesData)
+      
+      // Set data for chart Femaile patients eligible
+      setFePatientChartTitle('Female patients eligible - ' + resp['rate_fe_eli_patient'])
+      const feEliPatient = resp['count_females']
+      let mEliPatient = feEliPatient.map((item, id) =>{
+        return resp['count'][id] - item
+      })
+      const tempFeEliPatientSeriesData = []
+      tempFeEliPatientSeriesData.push({
+          name: 'Female',
+          type: 'bar',
+          stack: 'total',
+          color: '#EF7A57',
+          label: {show: false},
+          emphasis: {focus: 'series'},
+          data: feEliPatient
+      })
+      tempFeEliPatientSeriesData.push({
+          name: 'Male',
+          type: 'bar',
+          stack: 'total',
+          color: '#E84F22',
+          label: {show: false},
+          emphasis: {focus: 'series'},
+          data: mEliPatient
+      })
+      tempFeEliPatientSeriesData.push(totalData)
+      setFePatientResultData(tempFeEliPatientSeriesData)
+
+      // Set data for chart Race & Ethnicities
+      let defaultEnthRate = ''
+      let defaultEth = ''
+      if(resp['final_ethnicity'].length > 0){
+        defaultEnthRate = ((resp['final_ethnicity_count'][0] / resp['eli_patient']) * 100).toFixed(2)
+        defaultEth = resp['final_ethnicity'][0]
+        setEthPatientChartTitle('Race & Ethnicity - ' + defaultEth + ' - ' + defaultEnthRate + '%')
+      } else {
+        // setEthPatientChartTitle('Race & Ethnicity - ' + resp['final_ethnicity'][0] +  ' - 0')
+        resp['ethnicity_legend']&& resp['ethnicity_legend'][0]&&setEthPatientChartTitle('Race & Ethnicity - ' + resp['ethnicity_legend'][0].name +  ' - ' + resp['ethnicity_legend'][0].percent + '%')
+      }
+      
+      const tempEthPatientSeriesData = []
+      for(const ckey in resp){
+        if (ckey.startsWith('percent_') && ckey != 'percent_females'){
+          const cnKey = ckey.replace('percent_', '')
+          tempEthPatientSeriesData.push({
+            name: cnKey,
+            type: 'bar',
+            stack: 'total',
+            color: colorList[cnKey],
+            label: {show: false},
+            emphasis: {focus: 'series'},
+            data: resp[cnKey]
+          })
+        }
+      }
+      tempEthPatientSeriesData.push(totalData)
+      setEthPatientResultData(tempEthPatientSeriesData)
+      setActiveEnrollmentTabKey('1')
+        
+    }
+    setLoadPatientFunnel(false)
+    setReloadPTData(false)
+    setInitPTData(false)
+  }
 
   const switchTabkey = (key) =>{
     setActiveEnrollmentTabKey(key)
@@ -2099,6 +2601,61 @@ const ScenarioPage = (props) => {
     }
   }
 
+   // Click the legend of pie chart to change the bar chart accordingly
+   const onClickLegend = (value, percent) =>{
+    let tempEthPatientSeriesData = []
+    let tempName = ""
+    let tempPercent = ""
+    let tempFirstData =  []
+    let tempOtherData =  []
+    tempEthPatientSeriesData = JSON.parse(JSON.stringify(ethPatientResultData))
+    for(const val of tempEthPatientSeriesData){      
+      if (val.name === value){
+        val.color = colorList["HIGHLIGHTED"]
+        tempName = val.name
+        tempPercent = percent
+        tempFirstData.push(val)
+      } else {
+        val.color = colorList["NOT HIGHLIGHTED"]
+        tempOtherData.push(val)
+      }
+    }
+    // highlight the legend which is clicked
+    for(const val of finalEthnicityData) {
+      if(val.name === value) {
+        val.selected = true
+      } else {
+        val.selected = false
+      }
+    }
+    setFinalEthnicityData(finalEthnicityData)
+    // remove the category to the beginning of bar chart 
+    setEthPatientResultData([...tempFirstData,...tempOtherData])
+    if (eChartsRef && eChartsRef.current) {      
+      ethPatientOption.series[0].color = tempFirstData[0].color
+      ethPatientOption.series[0].data = tempFirstData[0].data
+      ethPatientOption.series[0].emphasis = tempFirstData[0].emphasis
+      ethPatientOption.series[0].label = tempFirstData[0].label
+      ethPatientOption.series[0].name = tempFirstData[0].name
+      ethPatientOption.series[0].stack = tempFirstData[0].stack
+      ethPatientOption.series[0].type = tempFirstData[0].type      
+      eChartsRef.current?.getEchartsInstance().setOption(ethPatientOption);
+    }
+    if (eChartsBelowRef && eChartsBelowRef.current) {      
+      ethPatientOption.series[0].color = tempFirstData[0].color
+      ethPatientOption.series[0].data = tempFirstData[0].data
+      ethPatientOption.series[0].emphasis = tempFirstData[0].emphasis
+      ethPatientOption.series[0].label = tempFirstData[0].label
+      ethPatientOption.series[0].name = tempFirstData[0].name
+      ethPatientOption.series[0].stack = tempFirstData[0].stack
+      ethPatientOption.series[0].type = tempFirstData[0].type      
+      eChartsBelowRef.current?.getEchartsInstance().setOption(ethPatientOption);
+    }
+    // Change the title  of chart according to the legend clicked
+    setEthPatientChartTitle('Race & Ethnicity - ' + tempName +  ' - ' + tempPercent + '%')
+  }
+
+
   const handleGoBack = (scheduleOfEvents) =>{
     let newScenario = trialRecord.scenarios.find( i=> i['scenario_id'] == scenarioId)
     newScenario['Schedule of Events'] = scheduleOfEvents
@@ -2231,6 +2788,464 @@ const ScenarioPage = (props) => {
     // const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
     // FileSaver.saveAs(blob, `IE_Average_${dateStr}.csv`);
   }
+
+  // search bar data
+  const optionLabelDemographics = originDemographics.map((item, index)=>{
+    return item
+  })
+ const optionLabelIntervention = originIntervention.map((item, index)=>{
+    return item
+  })
+ const optionLabelMedCondition = originMedCondition.map((item, index)=>{
+    return item
+  })
+ const optionLabelLabTest = originLabTest.map((item, index)=>{
+    return item
+  })
+ 
+ let timer = null;
+ const onTextChange = useCallback((e) => {
+   const val = e.target.value;
+   let searchDemo = []
+   let searchInte = []
+   let searchMed=[]
+   let searchLab=[]
+   !visibleValue&&setVisibleValue(true)
+   if (timer !== null) {
+     clearTimeout(timer);
+   }    
+   timer = setTimeout(function () {
+     setSearchTxt(val)
+     searchDemo = val.length>0? optionLabelDemographics.filter(
+       (i) =>
+         i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+       ) : []
+     searchInte = val.length>0? optionLabelIntervention.filter(
+       (i) =>
+         i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+       ): []
+     searchMed = val.length>0?optionLabelMedCondition.filter(
+       (i) =>
+         i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+       ): []
+     searchLab = val.length>0?optionLabelLabTest.filter(
+       (i) =>
+         i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+       ): []
+     setSearchDemographics(searchDemo)
+     setSearchIntervention(searchInte)
+     setSearchMedCondition(searchMed)
+     setSearchLabTest(searchLab)
+   }, 200);
+ },[searchTxt])
+
+ const optionLabelDemographicsExclu = originExcluDemographics.map((item, index)=>{
+   return item
+ })
+const optionLabelInterventionExclu = originExcluIntervention.map((item, index)=>{
+   return item
+ })
+const optionLabelMedConditionExclu = originExcluMedCondition.map((item, index)=>{
+   return item
+ })
+const optionLabelLabTestExclu = originExcluLabTest.map((item, index)=>{
+   return item
+ })
+
+ let timerExclu = null;
+ const onExcluTextChange = useCallback((e) => {
+   const val = e.target.value;
+   let searchDemoEx = []
+   let searchInterEx = []
+   let searchMedEx=[]
+   let searchLabEx=[]
+   !visibleValueExclu&&setVisibleValueExclu(true)
+   if ( timerExclu !== null) {
+     clearTimeout(timer);
+   }
+   timerExclu = setTimeout(function () {
+       setSearchTxtExclu(val);
+       searchDemoEx = val.length>0?optionLabelDemographicsExclu.filter(
+         (i) =>
+           i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+         ): []
+       searchInterEx = val.length>0?optionLabelInterventionExclu.filter(
+         (i) =>
+           i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+         ): []
+       searchMedEx = val.length>0?optionLabelMedConditionExclu.filter(
+         (i) =>
+           i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+         ): []
+       searchLabEx = val.length>0?optionLabelLabTestExclu.filter(
+         (i) =>
+           i.Text.toLowerCase().indexOf(val.toLowerCase()) > -1
+         ): []
+       setSearchDemographicsExclu(searchDemoEx)
+       setSearchInterventionExclu(searchInterEx)
+       setSearchMedConditionExclu(searchMedEx)
+       setSearchLabTestExclu(searchLabEx)
+   }, 400);
+ },[searchTxtExclu]) 
+
+ const onItemClick = ({ key }) => {
+   setVisibleValue(true)
+   let indexdemographicsElements = demographicsElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+   let indexmedConditionElements = medConditionElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+   let indexinterventionElements = interventionElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+   let indexlabTestElements = labTestElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+   //  if key includes in [], delete; if not includes, push []
+   switch(key.charAt(0)) {
+     case "D":
+       if(indexdemographicsElements < 0){
+         var newItem = {
+           "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+           "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+           "rawValue": JSON.parse(key.slice(1)).Value,
+           "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+           "Frequency":JSON.parse(key.slice(1)).Frequency
+         }
+         demographicsElements.push(newItem)
+         setDemographicsElements(demographicsElements)
+       }else {
+         demographicsElements.splice(indexdemographicsElements, 1) 
+         setDemographicsElements(demographicsElements)
+       }
+       break;
+     case "M":
+       if(indexmedConditionElements < 0){
+         var newItem = {
+           "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+           "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+           "rawValue": JSON.parse(key.slice(1)).Value,
+           "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+           "Frequency":JSON.parse(key.slice(1)).Frequency
+         }
+         medConditionElements.push(newItem)
+         setMedConditionElements(medConditionElements)
+       }else {
+         medConditionElements.splice(indexmedConditionElements, 1) 
+         setMedConditionElements(medConditionElements)
+       }
+     break;
+     case "I":
+       if(indexinterventionElements < 0){
+         var newItem = {
+           "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+           "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+           "rawValue": JSON.parse(key.slice(1)).Value,
+           "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+           "Frequency":JSON.parse(key.slice(1)).Frequency
+         }
+         interventionElements.push(newItem)
+         setInterventionElements(interventionElements)
+       }else {
+         interventionElements.splice(indexinterventionElements, 1) 
+         setInterventionElements(interventionElements)
+       }
+     break;
+     default:
+       if(indexlabTestElements < 0){
+         var newItem = {
+           "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+           "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+           "rawValue": JSON.parse(key.slice(1)).Value,
+           "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+           "Frequency":JSON.parse(key.slice(1)).Frequency
+         }
+         labTestElements.push(newItem)
+         setLabTestElements(labTestElements)
+       }else {
+         labTestElements.splice(indexlabTestElements, 1) 
+         setLabTestElements(labTestElements)
+       }
+     break;
+   }
+   updateTrial(1, 1)
+};
+
+ const onItemClickExclu = ({ key }) => {
+   setVisibleValueExclu(true)
+   let indexdemographicsElements = excluDemographicsElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+   let indexmedConditionElements = excluMedConditionElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+   let indexinterventionElements = excluInterventionElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+   let indexlabTestElements = excluLabTestElements.findIndex((domain) => JSON.parse(key.slice(1)).Text == domain['Eligibility Criteria']);
+   //  if key includes in [], delete; if not includes, push []
+   switch(key.charAt(0)) {
+     case "D":
+       if(indexdemographicsElements < 0){
+         var newItem = {
+           "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+           "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+           "rawValue": JSON.parse(key.slice(1)).Value,
+           "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+           "Frequency":JSON.parse(key.slice(1)).Frequency
+         }
+         excluDemographicsElements.push(newItem)
+         setExcluDemographicsElements(excluDemographicsElements)
+       }else {
+         excluDemographicsElements.splice(indexdemographicsElements, 1) 
+         setExcluDemographicsElements(excluDemographicsElements)
+       }
+       break;
+     case "M":
+       if(indexmedConditionElements < 0){
+         var newItem = {
+           "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+           "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+           "rawValue": JSON.parse(key.slice(1)).Value,
+           "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+           "Frequency":JSON.parse(key.slice(1)).Frequency
+         }
+         excluMedConditionElements.push(newItem)
+         setExcluMedConditionElements(excluMedConditionElements)
+       }else {
+         excluMedConditionElements.splice(indexmedConditionElements, 1) 
+         setExcluMedConditionElements(excluMedConditionElements)
+       }
+     break;
+     case "I":
+       if(indexinterventionElements < 0){
+         var newItem = {
+           "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+           "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+           "rawValue": JSON.parse(key.slice(1)).Value,
+           "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+           "Frequency":JSON.parse(key.slice(1)).Frequency
+         }
+         excluInterventionElements.push(newItem)
+         setExcluInterventionElements(excluInterventionElements)
+       }else {
+         excluInterventionElements.splice(indexinterventionElements, 1) 
+         setExcluInterventionElements(excluInterventionElements)
+       }
+     break;
+     default:
+       if(indexlabTestElements < 0){
+         var newItem = {
+           "Eligibility Criteria": JSON.parse(key.slice(1)).Text,
+           "Values": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(JSON.parse(key.slice(1))),
+           "rawValue": JSON.parse(key.slice(1)).Value,
+           "Timeframe": JSON.parse(key.slice(1)).Text.trim().toUpperCase() === 'INSULIN' ? formatValue(JSON.parse(key.slice(1))) : "-",
+           "Frequency":JSON.parse(key.slice(1)).Frequency
+         }
+         excluLabTestElements.push(newItem)
+         setExcluLabTestElements(excluLabTestElements)
+       }else {
+         excluLabTestElements.splice(indexlabTestElements, 1) 
+         setExcluLabTestElements(excluLabTestElements)
+       }
+     break;
+   }
+   updateTrial(2, 1)    
+};
+ 
+const renderItem = (title: string, type: string, idx: any) => { 
+   return (
+     <div
+       className="itemLine"
+       style={{
+         display: 'flex',
+         justifyContent: 'space-between',
+       }}
+     >
+       <span className="itemTitle">
+         {(searchTxt.length < title.length)&& title.toLowerCase().split(searchTxt)[0]}
+         <span className={`${
+           searchTxt &&
+           title.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
+             ? "matched-item"
+             : ""
+           }`}>{searchTxt.length - title.length === 0?title:searchTxt}
+         </span>
+         {(searchTxt.length !== 0)&&(searchTxt.length < title.length)&&title.toLowerCase().split(searchTxt)[1]}
+       </span>
+       <span style={{color:"#CA4A04", marginLeft:"25px"}}>
+         Add
+       </span>
+     </div>
+   )
+ };
+
+const renderItemClick = (title: string, type: string, idx: any) => {
+   return (
+     <div
+       className="itemLine"
+       style={{
+         display: 'flex',
+         justifyContent: 'space-between',
+       }}
+     >
+       <span className="itemTitle">
+         {(searchTxt.length < title.length)&& title.toLowerCase().split(searchTxt)[0]}
+         <span className={`${
+           searchTxt &&
+           title.toLowerCase().indexOf(searchTxt.toLowerCase()) > -1
+             ? "matched-item"
+             : ""
+           }`}>{searchTxt.length - title.length === 0?title:searchTxt}
+         </span>
+         {(searchTxt.length !== 0)&&(searchTxt.length < title.length)&&title.toLowerCase().split(searchTxt)[1]}
+       </span>
+       <span style={{color:"#3193E5", fontWeight:700, marginLeft:"25px"}}>
+           <CheckOutlined />
+       </span>
+     </div>
+   )
+ };
+
+const renderItemExclu = (title: string, type: string, idx: any) => { 
+   return (
+     <div
+       className="itemLine"
+       style={{
+         display: 'flex',
+         justifyContent: 'space-between',
+       }}
+     >
+       <span className="itemTitle">
+         {(searchTxtExclu.length < title.length)&& title.toLowerCase().split(searchTxtExclu)[0]}
+         <span className={`${
+           searchTxtExclu &&
+           title.toLowerCase().indexOf(searchTxtExclu.toLowerCase()) > -1
+             ? "matched-item"
+             : ""
+           }`}>{searchTxtExclu.length - title.length === 0?title:searchTxtExclu}
+         </span>
+         {(searchTxtExclu.length !== 0)&&(searchTxtExclu.length < title.length)&&title.toLowerCase().split(searchTxtExclu)[1]}
+       </span>
+       <span style={{color:"#CA4A04", marginLeft:"25px"}}>
+         Add
+       </span>
+     </div>
+   )
+ };
+
+const renderItemClickExclu = (title: string, type: string, idx: any) => {
+   return (
+     <div
+       className="itemLine"
+       style={{
+         display: 'flex',
+         justifyContent: 'space-between',
+       }}
+     >
+       <span className="itemTitle">
+         {(searchTxtExclu.length < title.length)&& title.toLowerCase().split(searchTxtExclu)[0]}
+         <span className={`${
+           searchTxtExclu &&
+           title.toLowerCase().indexOf(searchTxtExclu.toLowerCase()) > -1
+             ? "matched-item"
+             : ""
+           }`}>{searchTxtExclu.length - title.length === 0?title:searchTxtExclu}
+         </span>
+         {(searchTxtExclu.length !== 0)&&(searchTxtExclu.length < title.length)&&title.toLowerCase().split(searchTxtExclu)[1]}
+       </span>
+       <span style={{color:"#3193E5", fontWeight:700, marginLeft:"25px"}}>
+           <CheckOutlined />
+       </span>
+     </div>
+   )
+ };
+
+ const menu = (
+ <Menu onClick={onItemClick}>
+   {(searchTxt.length !== 0)&&searchDemographics.length>0 && (<Menu.ItemGroup title="Demographics">
+    {
+       searchDemographics.map((item,idx)=>{
+         if(demographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+           return <Menu.Item key={"D"+JSON.stringify(item)}>{renderItem(item.Text,"D", idx)}</Menu.Item>
+         } else {
+           return <Menu.Item key={"D"+JSON.stringify(item)}>{renderItemClick(item.Text,"D", idx)}</Menu.Item>
+         }
+       })
+     }
+   </Menu.ItemGroup>)}
+   {(searchTxt.length !== 0)&&searchMedCondition.length>0 &&(<Menu.ItemGroup title="Medical Condition">  
+     {
+       searchMedCondition.map((item,idx)=>{
+         if(medConditionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+           return <Menu.Item key={"M"+JSON.stringify(item)}>{renderItem(item.Text, "M",idx)}</Menu.Item>
+         }else {
+           return <Menu.Item key={"M"+JSON.stringify(item)}>{renderItemClick(item.Text, "M",idx)}</Menu.Item>
+         }
+       })
+     }
+   </Menu.ItemGroup>)}
+   {(searchTxt.length !== 0)&&searchIntervention.length>0 &&(<Menu.ItemGroup title="Intervention">
+      {
+       searchIntervention.map((item,idx)=>{
+         if(interventionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+           return <Menu.Item key={"I"+JSON.stringify(item)}>{renderItem(item.Text, "I",idx)}</Menu.Item>
+         }else{
+           return <Menu.Item key={"I"+JSON.stringify(item)}>{renderItemClick(item.Text, "I",idx)}</Menu.Item>
+         }
+       })
+     }
+   </Menu.ItemGroup>)}
+   {(searchTxt.length !== 0)&&searchLabTest.length>0 && <Menu.ItemGroup title="Lab / Test">
+      {
+       searchLabTest.map((item,idx)=>{
+         if(labTestElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+           return <Menu.Item key={"L"+JSON.stringify(item)}>{renderItem(item.Text, "L",idx)}</Menu.Item>
+         }else{
+           return <Menu.Item key={"L"+JSON.stringify(item)}>{renderItemClick(item.Text, "L",idx)}</Menu.Item>
+         }
+       })
+     }
+   </Menu.ItemGroup>}
+ </Menu>
+);
+
+ const menuExclu = (
+   <Menu onClick={onItemClickExclu}>
+     {(searchTxtExclu.length !== 0)&&searchDemographicsExclu.length>0&&(<Menu.ItemGroup title="Demographics">
+     {
+         searchDemographicsExclu.map((item,idx)=>{
+           if(excluDemographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+             return <Menu.Item key={"D"+JSON.stringify(item)}>{renderItemExclu(item.Text,"D", idx)}</Menu.Item>
+           } else {
+             return <Menu.Item key={"D"+JSON.stringify(item)}>{renderItemClickExclu(item.Text,"D", idx)}</Menu.Item>
+           }
+         })
+       }
+     </Menu.ItemGroup>)}
+     {(searchTxtExclu.length !== 0)&& searchMedConditionExclu.length>0&&(<Menu.ItemGroup title="Medical Condition">  
+       {
+       searchMedConditionExclu.map((item,idx)=>{
+           if(excluMedConditionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+             return <Menu.Item key={"M"+JSON.stringify(item)}>{renderItemExclu(item.Text, "M",idx)}</Menu.Item>
+           }else {
+             return <Menu.Item key={"M"+JSON.stringify(item)}>{renderItemClickExclu(item.Text, "M",idx)}</Menu.Item>
+           }
+         })
+       }
+     </Menu.ItemGroup>)}
+    {(searchTxtExclu.length !== 0)&& searchInterventionExclu.length>0&&( <Menu.ItemGroup title="Intervention">
+       {
+       searchInterventionExclu.map((item,idx)=>{
+           if(excluInterventionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+             return <Menu.Item key={"I"+JSON.stringify(item)}>{renderItemExclu(item.Text, "I",idx)}</Menu.Item>
+           }else{
+             return <Menu.Item key={"I"+JSON.stringify(item)}>{renderItemClickExclu(item.Text, "I",idx)}</Menu.Item>
+           }
+         })
+       }
+     </Menu.ItemGroup>)}
+     {(searchTxtExclu.length !== 0)&& searchLabTestExclu.length>0&&(<Menu.ItemGroup title="Lab / Test">
+       {
+       searchLabTestExclu.map((item,idx)=>{
+           if(excluLabTestElements.findIndex((domain) => item.Text == domain['Eligibility Criteria'])<0){
+             return <Menu.Item key={"L"+JSON.stringify(item)}>{renderItemExclu(item.Text, "L",idx)}</Menu.Item>
+           }else{
+             return <Menu.Item key={"L"+JSON.stringify(item)}>{renderItemClickExclu(item.Text, "L",idx)}</Menu.Item>
+           }
+         })
+       }
+     </Menu.ItemGroup>)}
+   </Menu>
+ );
+
 
     return (
     <div className="scenario-container">
@@ -2523,7 +3538,7 @@ const ScenarioPage = (props) => {
                   <Row style={{backgroundColor: '#fff'}}>
                     <Col span={24}>
                       <div className="updateTrial">
-                        <Button className="update-btn" onClick={() => updateTrial(1)}>
+                        <Button className="update-btn" onClick={() => updateTrial(1,1)}>
                           UPDATE MY TRIAL
                         </Button>
                       </div>
@@ -2611,22 +3626,22 @@ const ScenarioPage = (props) => {
                                   <EditTable updateCriteria={updateInclusionCriteria} tableIndex={2}                                
                                     data={demographicsTableData}
                                     defaultActiveKey={defaultActiveKey}
-                                    collapsible={collapsible} panelHeader={"Demographics"} updateTrial={() => updateTrial(1)}                                  
+                                    collapsible={collapsible} panelHeader={"Demographics"} updateTrial={() => updateTrial(1,1)}                                  
                                   />
                                   <EditTable updateCriteria={updateInclusionCriteria} tableIndex={3}
                                     data={medConditionTableData}
                                     defaultActiveKey={defaultActiveKey}
-                                    collapsible={collapsible} panelHeader={"Medical Condition"} updateTrial={() => updateTrial(1)}                               
+                                    collapsible={collapsible} panelHeader={"Medical Condition"} updateTrial={() => updateTrial(1,1)}                               
                                   />
                               <EditTable updateCriteria={updateInclusionCriteria} tableIndex={4} 
                                     data={interventionTableData}                                  
                                     defaultActiveKey={defaultActiveKey}
-                                    collapsible={collapsible} panelHeader={"Intervention"} updateTrial={() => updateTrial(1)}                                   
+                                    collapsible={collapsible} panelHeader={"Intervention"} updateTrial={() => updateTrial(1,1)}                                   
                                   />
                               <EditTable updateCriteria={updateInclusionCriteria} tableIndex={5} 
                                     data={labTestTableData}
                                     defaultActiveKey={defaultActiveKey}
-                                    collapsible={collapsible} panelHeader={"Lab / Test"} updateTrial={() => updateTrial(1)}/>
+                                    collapsible={collapsible} panelHeader={"Lab / Test"} updateTrial={() => updateTrial(1,1)}/>
                               </div>
                             </div>
                           </div>
@@ -2806,7 +3821,7 @@ const ScenarioPage = (props) => {
                   <Row style={{backgroundColor: '#fff'}}>
                     <Col span={24}>
                       <div className="updateTrial">
-                        <Button className="update-btn" onClick={() => updateTrial(2)}>
+                        <Button className="update-btn" onClick={() => updateTrial(2,1)}>
                           UPDATE MY TRIAL
                         </Button>
                       </div>
