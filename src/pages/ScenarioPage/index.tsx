@@ -5,7 +5,7 @@ import FileSaver from 'file-saver';
 import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer, Input, AutoComplete, Select} from "antd";
 import {updateStudy, getSimilarhistoricalTrialById, getStudy, getCriteriaLibByNctId, getSOAResource, getIEResource, getPatientFunnelData, checkTrialPatientFunnelData} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
-import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined, SearchOutlined, HomeOutlined, UserOutlined, CheckOutlined } from "@ant-design/icons";
+import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined, SearchOutlined, HomeOutlined, UserOutlined, CheckOutlined,MinusOutlined,PlusOutlined } from "@ant-design/icons";
 
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
@@ -3395,6 +3395,22 @@ const ScenarioPage = (props) => {
     </Menu>
   );
 
+  // update UI to new wireframe
+  const [activeCollapse, setActiveCollapse] = useState(['1'])
+
+  const eventLibHeader = (name, count, key) => {
+    return (
+      <Row className="section-header">
+        <Col span={23}><span>{name}</span><span className="count-span">{count}</span></Col>
+        <Col span={1} className="collapse-icon">{activeCollapse.indexOf(key) >= 0 ?(<MinusOutlined />):(<PlusOutlined />)}</Col>
+      </Row>
+    );
+  };
+
+  const criteriaCallback = (key) => {
+    setActiveCollapse(key)
+  }
+
     return (
     <div className="scenario-container">
       <Spin spinning={pageLoading} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
@@ -3565,7 +3581,7 @@ const ScenarioPage = (props) => {
                       ) : (
                       <></>
                       )}
-
+                      {/* search bar */}
                       <div className="searchSection">
                         <div className="content">
                           <Dropdown 
@@ -3576,7 +3592,7 @@ const ScenarioPage = (props) => {
                           >
                             <Input
                                 prefix={<SearchOutlined />}
-                                style={{ width: '100%', height: 30 }}
+                                style={{ width: '100%', height: 37 }}
                                 allowClear
                                 onChange={onTextChange}
                                 onClick={e => e.preventDefault()}
@@ -3584,88 +3600,109 @@ const ScenarioPage = (props) => {
                           </Dropdown>
                         </div>
                       </div>
-
                       <Row>
                         <Col span={24}>
                           <div className="content-outer content-sidebar">
                             <div className="content-over">
-                              <div className="library box">
-                                <span>Demographics</span>
-                                <br />
-                                {demographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {                              
-                                  return (
-                                    <CriteriaOption
-                                      selectedEle = {demographicsElements}
-                                      minValue={minValue}
-                                      maxValue={maxValue}
-                                      key={`demographic_${idx}`}
-                                      demographic={demographic}
-                                      index={0}
-                                      idx={idx}
-                                      handleOptionSelect={handleOptionSelect}
-                                    ></CriteriaOption>
-                                  );
-                                })}
-                              </div>
+                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                <Panel showArrow={false} header={eventLibHeader("Demographics", demographics.length, "1")} key="1">
+                                  {demographics.length>0 ? (
+                                      <div className="library box">
+                                      {demographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {                     
+                                        return (
+                                          <CriteriaOption
+                                            selectedEle = {demographicsElements}
+                                            minValue={minValue}
+                                            maxValue={maxValue}
+                                            key={`demographic_${idx}`}
+                                            demographic={demographic}
+                                            index={0}
+                                            idx={idx}
+                                            handleOptionSelect={handleOptionSelect}
+                                          ></CriteriaOption>
+                                        );
+                                      })}
+                                    </div>
+                                  ): (
+                                    <></>
+                                  )}
+                                </Panel>
+                              </Collapse>
 
-                              <div className="library box">
-                                <span>Medical Condition</span>
-                                <br />
-                                {medCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
-                                  return (
-                                    <CriteriaOption
-                                      selectedEle = {medConditionElements}
-                                      minValue={minValue}
-                                      maxValue={maxValue}
-                                      key={`medCon_${idx}`}
-                                      demographic={medCon}
-                                      index={1}
-                                      idx={idx}
-                                      handleOptionSelect={handleOptionSelect}
-                                    ></CriteriaOption>
-                                  );
-                                })}
-                              </div>
+                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                <Panel showArrow={false} header={eventLibHeader("Medical Condition", medCondition.length, "2")} key="2">
+                                  {medCondition.length>0 ? (
+                                      <div className="library box">
+                                      {medCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
+                                        return (
+                                          <CriteriaOption
+                                            selectedEle = {medConditionElements}
+                                            minValue={minValue}
+                                            maxValue={maxValue}
+                                            key={`medCon_${idx}`}
+                                            demographic={medCon}
+                                            index={1}
+                                            idx={idx}
+                                            handleOptionSelect={handleOptionSelect}
+                                          ></CriteriaOption>
+                                        );
+                                      })}
+                                    </div>
+                                  ): (
+                                    <></>
+                                  )}
+                                </Panel>
+                              </Collapse>
 
-                              <div className="library box">
-                                <span>Intervention</span>
-                                <br />
-                                {intervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {
-                                   
-                                  return (
-                                    <CriteriaOption
-                                      selectedEle = {interventionElements}
-                                      minValue={minValue}
-                                      maxValue={maxValue}
-                                      key={`intervent_${idx}`}
-                                      demographic={intervent}
-                                      index={2}
-                                      idx={idx}
-                                      handleOptionSelect={handleOptionSelect}
-                                    ></CriteriaOption>
-                                  );
-                                })}
-                              </div>
+                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                              <Panel showArrow={false} header={eventLibHeader("Intervention", intervention.length, "3")} key="3">
+                                {intervention.length>0 ? (
+                                      <div className="library box">
+                                      {intervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {              
+                                        return (
+                                          <CriteriaOption
+                                            selectedEle = {interventionElements}
+                                            minValue={minValue}
+                                            maxValue={maxValue}
+                                            key={`intervent_${idx}`}
+                                            demographic={intervent}
+                                            index={2}
+                                            idx={idx}
+                                            handleOptionSelect={handleOptionSelect}
+                                          ></CriteriaOption>
+                                        );
+                                      })}
+                                    </div>
+                                ): (
+                                  <></>
+                                )}
+                              </Panel>
+                            </Collapse>
 
-                              <div className="library box lastOne">
-                                <span>Lab / Test</span>
-                                <br />
-                                {labTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
-                                 
-                                  return (
-                                    <CriteriaOption
-                                      selectedEle = {labTestElements}
-                                      minValue={minValue}
-                                      maxValue={maxValue}
-                                      key={`lib_${idx}`}
-                                      demographic={lib}
-                                      index={3}
-                                      idx={idx}
-                                      handleOptionSelect={handleOptionSelect}
-                                    ></CriteriaOption>
-                                  );
-                                })}
-                              </div>
+                              <Collapse className="eventLib library box lastOne" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                <Panel showArrow={false} header={eventLibHeader("Lab / Test", labTest.length, "4")} key="4">
+                                  {labTest.length>0 ? (
+                                      <div className="library box lastOne">
+                                      {labTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
+                                        return (
+                                          <CriteriaOption
+                                            selectedEle = {labTestElements}
+                                            minValue={minValue}
+                                            maxValue={maxValue}
+                                            key={`lib_${idx}`}
+                                            demographic={lib}
+                                            index={3}
+                                            idx={idx}
+                                            handleOptionSelect={handleOptionSelect}
+                                          ></CriteriaOption>
+                                        );
+                                      })}
+                                    </div>
+                                  ): (
+                                    <></>
+                                  )}
+                                </Panel>
+                              </Collapse>
                             </div>
                           </div>
                         </Col>
@@ -3866,7 +3903,7 @@ const ScenarioPage = (props) => {
                       ) : (
                       <></>
                       )}
-                      
+                      {/* search bar */}
                       <div className="searchSection">
                         <div className="content">
                           <Dropdown 
@@ -3877,7 +3914,7 @@ const ScenarioPage = (props) => {
                           >
                             <Input
                                 prefix={<SearchOutlined />}
-                                style={{ width: '100%', height: 30 }}
+                                style={{ width: '100%', height: 37 }}
                                 allowClear
                                 onChange={onExcluTextChange}
                                 onClick={e => e.preventDefault()}
@@ -3885,90 +3922,111 @@ const ScenarioPage = (props) => {
                           </Dropdown>
                         </div>
                       </div>
-
                       <Row>
                         <Col span={24}>
                           <div className="content-outer content-sidebar">
                             <div className="content-over">
-                              <div className="library box">
-                                <span>Demographics</span>
-                                <br />
-                                {excluDemographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {
-                                  const activeType = excluDemographicsElements.find(e=> e['Eligibility Criteria']==demographic.Text) ?1:0
-                                  return (
-                                    <CriteriaOption
-                                      selectedEle = {excluDemographicsElements}
-                                      minValue={minValue}
-                                      maxValue={maxValue}
-                                      key={`demographic_${idx}`}
-                                      demographic={demographic}
-                                      index={0}
-                                      idx={idx}
-                                      handleOptionSelect={handleExcluOptionSelect}
-                                    ></CriteriaOption>
-                                  );
-                                })}
-                              </div>
+                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                <Panel showArrow={false} header={eventLibHeader("Demographics", excluDemographics.length, "5")} key="5">
+                                  {excluDemographics.length>0 ? (
+                                      <div className="library box">
+                                      {excluDemographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {
+                                        const activeType = excluDemographicsElements.find(e=> e['Eligibility Criteria']==demographic.Text) ?1:0
+                                        return (
+                                          <CriteriaOption
+                                            selectedEle = {excluDemographicsElements}
+                                            minValue={minValue}
+                                            maxValue={maxValue}
+                                            key={`demographic_${idx}`}
+                                            demographic={demographic}
+                                            index={0}
+                                            idx={idx}
+                                            handleOptionSelect={handleExcluOptionSelect}
+                                          ></CriteriaOption>
+                                        );
+                                      })}
+                                    </div>
+                                     ): (
+                                    <></>
+                                  )}
+                                </Panel>
+                              </Collapse>
 
-                              <div className="library box">
-                                <span>Medical Condition</span>
-                                <br />
-                                {excluMedCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
-                                 
-                                  return (
-                                    <CriteriaOption
-                                      selectedEle = {excluMedConditionElements}
-                                      minValue={minValue}
-                                      maxValue={maxValue}
-                                      key={`medCon_${idx}`}
-                                      demographic={medCon}
-                                      index={1}
-                                      idx={idx}
-                                      handleOptionSelect={handleExcluOptionSelect}
-                                    ></CriteriaOption>
-                                  );
-                                })}
-                              </div>
+                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                <Panel showArrow={false} header={eventLibHeader("Medical Condition", excluMedCondition.length, "6")} key="6">
+                                  {excluMedCondition.length>0 ? (
+                                      <div className="library box">
+                                      {excluMedCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
+                                        return (
+                                          <CriteriaOption
+                                            selectedEle = {excluMedConditionElements}
+                                            minValue={minValue}
+                                            maxValue={maxValue}
+                                            key={`medCon_${idx}`}
+                                            demographic={medCon}
+                                            index={1}
+                                            idx={idx}
+                                            handleOptionSelect={handleExcluOptionSelect}
+                                          ></CriteriaOption>
+                                        );
+                                      })}
+                                    </div>
+                                     ): (
+                                    <></>
+                                  )}
+                                </Panel>
+                              </Collapse>
 
-                               <div className="library box">
-                                <span>Intervention</span>
-                                <br />
-                                {excluIntervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {
-                                  
-                                  return (
-                                    <CriteriaOption
-                                      selectedEle = {excluInterventionElements}
-                                      minValue={minValue}
-                                      maxValue={maxValue}
-                                      key={`intervent_${idx}`}
-                                      demographic={intervent}
-                                      index={2}
-                                      idx={idx}
-                                      handleOptionSelect={handleExcluOptionSelect}
-                                    ></CriteriaOption>
-                                  );
-                                })}
-                              </div> 
+                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                              <Panel showArrow={false} header={eventLibHeader("Intervention", excluIntervention.length, "7")} key="7">
+                                {excluIntervention.length>0 ? (
+                                  <div className="library box">
+                                  {excluIntervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {
+                                    
+                                    return (
+                                      <CriteriaOption
+                                        selectedEle = {excluInterventionElements}
+                                        minValue={minValue}
+                                        maxValue={maxValue}
+                                        key={`intervent_${idx}`}
+                                        demographic={intervent}
+                                        index={2}
+                                        idx={idx}
+                                        handleOptionSelect={handleExcluOptionSelect}
+                                      ></CriteriaOption>
+                                    );
+                                  })}
+                                </div> 
+                                  ): (
+                                <></>
+                              )}
+                              </Panel>
+                            </Collapse>
 
-                              <div className="library box lastOne">
-                                <span>Lab / Test</span>
-                                <br />
-                                {excluLabTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
-                                  
-                                  return (
-                                    <CriteriaOption
-                                     selectedEle = {excluLabTestElements}
-                                      minValue={minValue}
-                                      maxValue={maxValue}
-                                      key={`lib_${idx}`}
-                                      demographic={lib}
-                                      index={3}
-                                      idx={idx}
-                                      handleOptionSelect={handleExcluOptionSelect}
-                                    ></CriteriaOption>
-                                  );
-                                })}
-                              </div>
+                              <Collapse className="eventLib library box lastOne" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                <Panel showArrow={false} header={eventLibHeader("Lab / Test", excluLabTest.length, "8")} key="8">
+                                  {excluLabTest.length>0 ? (
+                                        <div className="library box lastOne">
+                                        {excluLabTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
+                                          return (
+                                            <CriteriaOption
+                                             selectedEle = {excluLabTestElements}
+                                              minValue={minValue}
+                                              maxValue={maxValue}
+                                              key={`lib_${idx}`}
+                                              demographic={lib}
+                                              index={3}
+                                              idx={idx}
+                                              handleOptionSelect={handleExcluOptionSelect}
+                                            ></CriteriaOption>
+                                          );
+                                        })}
+                                      </div>
+                                     ): (
+                                    <></>
+                                  )}
+                                </Panel>
+                              </Collapse>
                             </div>
                           </div>
                         </Col>

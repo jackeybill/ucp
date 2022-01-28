@@ -161,40 +161,40 @@
         overflow-y:scroll;
         box-sizing: content-box;
             
-        .library.box{
-            background-color: #fff;
-            padding: 10px;
-            font-weight:bold;
-            margin-bottom: 10px;
-            font-size: 15px;
-            color:#000;
+        // .library.box{
+        //     background-color: #fff;
+        //     padding: 10px;
+        //     font-weight:bold;
+        //     margin-bottom: 10px;
+        //     font-size: 15px;
+        //     color:#000;
 
-            .select-option {
-                font-weight:normal;
-                border: 1px solid #E5E5E5;
-                margin: 4px 10px 5px 0px;
-                padding: 2px 15px;
-                border-radius: 16px;
-                // border-top-right-radius: 16px;
-                // border-top-left-radius: 16px;
-                display: inline-block;
-                color: #4E4E4E;
-                font-size: 14px;
-            }
+        //     .select-option {
+        //         font-weight:normal;
+        //         border: 1px solid #E5E5E5;
+        //         margin: 4px 10px 5px 0px;
+        //         padding: 2px 15px;
+        //         border-radius: 16px;
+        //         // border-top-right-radius: 16px;
+        //         // border-top-left-radius: 16px;
+        //         display: inline-block;
+        //         color: #4E4E4E;
+        //         font-size: 14px;
+        //     }
 
-            .select-option:hover {
-                cursor: pointer;
-            }
+        //     .select-option:hover {
+        //         cursor: pointer;
+        //     }
 
-            .select-option.selected{
-                color:#3193E5;
-                border-color: #3193E5;
-            }
+        //     .select-option.selected{
+        //         color:#3193E5;
+        //         border-color: #3193E5;
+        //     }
 
-            .anticon-check{
-                transform: translateY(-3px);
-            }
-        }
+        //     .anticon-check{
+        //         transform: translateY(-3px);
+        //     }
+        // }
 
         .library.box.lastOne{
             margin-bottom: unset;
