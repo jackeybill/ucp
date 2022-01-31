@@ -3607,7 +3607,7 @@ const ScenarioPage = (props) => {
                               <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
                                 <Panel showArrow={false} header={eventLibHeader("Demographics", demographics.length, "1")} key="1">
                                   {demographics.length>0 ? (
-                                      <div className="library box">
+                                      <div className="library box select-option-wrapper">
                                       {demographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {                     
                                         return (
                                           <CriteriaOption
@@ -3632,7 +3632,7 @@ const ScenarioPage = (props) => {
                               <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
                                 <Panel showArrow={false} header={eventLibHeader("Medical Condition", medCondition.length, "2")} key="2">
                                   {medCondition.length>0 ? (
-                                      <div className="library box">
+                                      <div className="library box select-option-wrapper">
                                       {medCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
                                         return (
                                           <CriteriaOption
@@ -3657,7 +3657,7 @@ const ScenarioPage = (props) => {
                               <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
                               <Panel showArrow={false} header={eventLibHeader("Intervention", intervention.length, "3")} key="3">
                                 {intervention.length>0 ? (
-                                      <div className="library box">
+                                      <div className="library box select-option-wrapper">
                                       {intervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {              
                                         return (
                                           <CriteriaOption
@@ -3682,7 +3682,7 @@ const ScenarioPage = (props) => {
                               <Collapse className="eventLib library box lastOne" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
                                 <Panel showArrow={false} header={eventLibHeader("Lab / Test", labTest.length, "4")} key="4">
                                   {labTest.length>0 ? (
-                                      <div className="library box lastOne">
+                                      <div className="library box select-option-wrapper lastOne">
                                       {labTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
                                         return (
                                           <CriteriaOption
@@ -3929,7 +3929,7 @@ const ScenarioPage = (props) => {
                               <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
                                 <Panel showArrow={false} header={eventLibHeader("Demographics", excluDemographics.length, "5")} key="5">
                                   {excluDemographics.length>0 ? (
-                                      <div className="library box">
+                                      <div className="library box select-option-wrapper">
                                       {excluDemographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {
                                         const activeType = excluDemographicsElements.find(e=> e['Eligibility Criteria']==demographic.Text) ?1:0
                                         return (
@@ -3955,7 +3955,7 @@ const ScenarioPage = (props) => {
                               <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
                                 <Panel showArrow={false} header={eventLibHeader("Medical Condition", excluMedCondition.length, "6")} key="6">
                                   {excluMedCondition.length>0 ? (
-                                      <div className="library box">
+                                      <div className="library box select-option-wrapper">
                                       {excluMedCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
                                         return (
                                           <CriteriaOption
@@ -3980,7 +3980,7 @@ const ScenarioPage = (props) => {
                               <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
                               <Panel showArrow={false} header={eventLibHeader("Intervention", excluIntervention.length, "7")} key="7">
                                 {excluIntervention.length>0 ? (
-                                  <div className="library box">
+                                  <div className="library box select-option-wrapper">
                                   {excluIntervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {
                                     
                                     return (
@@ -4006,7 +4006,7 @@ const ScenarioPage = (props) => {
                               <Collapse className="eventLib library box lastOne" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
                                 <Panel showArrow={false} header={eventLibHeader("Lab / Test", excluLabTest.length, "8")} key="8">
                                   {excluLabTest.length>0 ? (
-                                        <div className="library box lastOne">
+                                        <div className="library box select-option-wrapper lastOne">
                                         {excluLabTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
                                           return (
                                             <CriteriaOption
