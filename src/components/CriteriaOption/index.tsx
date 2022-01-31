@@ -24,29 +24,55 @@ const CriteriaOption = (props) => {
   };
 
   return (
-    <div className="criteria-option-wrapper">
+    // <div className="criteria-option-wrapper">
+    //   {activeType == 0 ? (
+    //     <Tooltip
+    //       title={
+    //         "Frequency " + Math.floor(domain.Frequency * 10000) / 100 + "%"
+    //       }
+    //     >
+    //       <div
+    //         className="select-option"
+    //         onClick={(e) => handleOptionSelect(domain, e)}
+    //       >
+    //         <span className="select-text">
+    //           {domain.Text}
+    //          </span>
+    //       </div>
+    //     </Tooltip>
+    //   ) : (
+    //     <div className="select-option selected" onClick={(e) => handleOptionSelect(domain, e)}>
+    //       <span className="select-text">
+    //         {domain.Text}
+    //       </span>
+    //       <span className="right-icon">
+    //         <CheckOutlined />
+    //       </span>
+    //     </div>
+    //   )}
+    // </div>
+
+    <div style={{ display: "inline-block" }}>
       {activeType == 0 ? (
         <Tooltip
           title={
             "Frequency " + Math.floor(domain.Frequency * 10000) / 100 + "%"
           }
         >
-          <div
+          <span
             className="select-option"
             onClick={(e) => handleOptionSelect(domain, e)}
           >
             <span className="select-text">
               {domain.Text}
              </span>
-          </div>
+          </span>
         </Tooltip>
       ) : (
         <div className="select-option selected" onClick={(e) => handleOptionSelect(domain, e)}>
           <span className="select-text">
-            {domain.Text}
-          </span>
-          <span className="right-icon">
             <CheckOutlined />
+            {domain.Text}
           </span>
         </div>
       )}
