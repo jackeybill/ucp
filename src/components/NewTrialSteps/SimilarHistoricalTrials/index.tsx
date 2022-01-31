@@ -68,22 +68,35 @@ const marks = {
 };
 
 const sponsorChartColor = [
-  "#d04a02",
-  "#d4520d",
-  "#d85d1c",
-  "#de6c30",
-  "#e47d47",
-  "#e68d5e",
-  "#e8aa89",
+  // "#d04a02",
+  // "#d4520d",
+  // "#d85d1c",
+  // "#de6c30",
+  // "#e47d47",
+  // "#e68d5e",
+  // "#e8aa89",
+  "#F53500",
+  "#E94700",
+  "#EC5100",
+  "#EE5B00",
+  "#F06300",
+  "#F27A26",
+  "#F5924D",
+  "#F8B180",
+  "#FBD0B3",
+  "#FDECE0",
 ];
 const statusChartColor = [
-  "#d04a02",
-  "#d4520d",
-  "#d85d1c",
-  "#de6c30",
-  "#e47d47",
-  "#e68d5e",
-  "#e8aa89",
+  "#F53500",
+  "#E94700",
+  "#EC5100",
+  "#EE5B00",
+  "#F06300",
+  "#F27A26",
+  "#F5924D",
+  "#F8B180",
+  "#FBD0B3",
+  "#FDECE0",
 ];
 
 class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
@@ -262,6 +275,11 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         formatter: function (params) {
           return [params.name] + " - " + [params.value];
         },
+        position: ['5%', '10%'],
+        textStyle:{
+          fontSize: 12,
+        },
+        confine:false,
       },
       // legend: {
       //   show:false,
@@ -291,7 +309,10 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
             show: false,
           },
           color: sponsorChartColor,
-          data: this.state.sponsorChartData,
+          data: this.state.sponsorChartData.sort((a, b) => {
+            return b.value - a.value;
+          })
+          .slice(0, 10),
         },
       ],
     };
@@ -314,6 +335,11 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         formatter: function (params) {
           return [params.name] + " - " + [params.value];
         },
+        position: ['5%', '10%'],
+        textStyle:{
+          fontSize: 12,
+        },
+        confine:false,
       },
       // legend: {
       //   show:false,
@@ -343,7 +369,10 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
             show: false,
           },
           color: statusChartColor,
-          data: this.state.statusChartData,
+          data: this.state.statusChartData.sort((a, b) => {
+            return b.value - a.value;
+          })
+          .slice(0, 10),
         },
       ],
     };
@@ -526,7 +555,9 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
               </div>
               <div className="chart-wrapper">
                 <div className="chart">
-                  <div className="my-echart-wrapper"><ReactECharts option={this.getOptionOne()}></ReactECharts></div>
+                  <div className="my-echart-wrapper">
+                    <ReactECharts option={this.getOptionOne()}></ReactECharts>
+                  </div>
                   <div className="my-legend-wrapper">
                     {this.state.sponsorChartData
                       .sort((a, b) => {
@@ -559,7 +590,9 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                 <div className="chart">
                   {this.state.showStatusChart ? (
                     <>
-                      <div className="my-echart-wrapper"><ReactECharts option={this.getOptionTwo()}></ReactECharts></div>
+                      <div className="my-echart-wrapper">
+                        <ReactECharts option={this.getOptionTwo()}></ReactECharts>
+                      </div>
                       <div className="my-legend-wrapper">
                         {this.state.statusChartData
                           .sort((a, b) => {
