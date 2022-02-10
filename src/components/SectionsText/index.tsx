@@ -128,8 +128,9 @@ const SectionText = (props: SectionTextIF) => {
                       </pre>
                     ) : (<pre> <div>N/A</div></pre>)
                   )}
-                  
-                   <pre> <pre>{sectionTxt}</pre></pre>
+                  {
+                    displayTitle && displayTitle.label !== "SCHEDULE OF ACTIVITIES" && (<pre> <div>{sectionTxt}</div></pre>)
+                  }
                 </div>
               </div>
             );
