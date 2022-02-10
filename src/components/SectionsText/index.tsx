@@ -50,88 +50,86 @@ const SectionText = (props: SectionTextIF) => {
                   {displayTitle && displayTitle.label}
                 </div>
                 <div className="section-content">
-                  {displayTitle && displayTitle.label == "SCHEDULE OF ACTIVITIES" &&Array.isArray(tableTxt)? (
-                    // <>
-                    //   <div className="inclusion-txt">{inclusionTxt}</div>
-                    //   <div><pre>{exclusionTxt}</pre> </div>
-                    // </>
-                    <pre>
-                      <div className="content-table">
-                        <table>
-                          <tbody>
-                            {
-                                tableTxt.map((item, index) => {
-                                  return (
-                                    index < 1? (
-                                      <tr>
-                                      {
-                                        item.map((iten, indey) => {
-                                          return (
-                                            <td>
-                                              <span style={{display:"inline-block",width: "80px"}}>
-                                                {iten}
-                                              </span>
-                                            </td>
-                                          )
-                                        })
-                                      }
-                                    </tr>
-                                    ):(
-                                      <tr>
-                                      {
-                                        item.map((iten, indey) => {
-                                          return (
-                                            indey < 1? (
+                {displayTitle && displayTitle.label == "SCHEDULE OF ACTIVITIES" && (
+                    Array.isArray(tableTxt)? (
+                      <pre>
+                        <div className="content-table">
+                          <table>
+                            <tbody>
+                              {
+                                  tableTxt.map((item, index) => {
+                                    return (
+                                      index < 1? (
+                                        <tr>
+                                        {
+                                          item.map((iten, indey) => {
+                                            return (
                                               <td>
-                                                <span style={{display:"inline-block",width: "180px", textAlign:"left"}}>
+                                                <span style={{display:"inline-block",width: "80px"}}>
                                                   {iten}
                                                 </span>
                                               </td>
-                                            ) :(
-                                              iten.startsWith("X")||iten==="(X)" ||iten==="x"? (
+                                            )
+                                          })
+                                        }
+                                      </tr>
+                                      ):(
+                                        <tr>
+                                        {
+                                          item.map((iten, indey) => {
+                                            return (
+                                              indey < 1? (
                                                 <td>
-                                                  <CheckCircleFilled/>
-                                                  {/* {iten.substr(1)} */}
+                                                  <span style={{display:"inline-block",width: "180px", textAlign:"left"}}>
+                                                    {iten}
+                                                  </span>
                                                 </td>
-                                              ) : (
-                                                iten.toString().length > 68? (
+                                              ) :(
+                                                iten.startsWith("X")||iten==="(X)" ? (
                                                   <td>
-                                                    <span style={{display:"inline-block",width: "400px", textAlign:"left"}}>
-                                                      {iten}
-                                                    </span>
+                                                    <CheckCircleFilled/>
+                                                    {/* {iten.substr(1)} */}
                                                   </td>
-                                                ):(
-                                                  indey === tableTxt[index].length-1?(
-                                                    <td style={{textAlign:"left"}}>
-                                                      <span >
+                                                ) : (
+                                                  iten.toString().length > 68? (
+                                                    <td>
+                                                      <span style={{display:"inline-block",width: "400px", textAlign:"left"}}>
                                                         {iten}
                                                       </span>
                                                     </td>
                                                   ):(
-                                                    <td >
-                                                      <span >
-                                                        {iten}
-                                                      </span>
-                                                    </td>
+                                                    indey === tableTxt[index].length-1?(
+                                                      <td style={{textAlign:"left"}}>
+                                                        <span >
+                                                          {iten}
+                                                        </span>
+                                                      </td>
+                                                    ):(
+                                                      <td >
+                                                        <span >
+                                                          {iten}
+                                                        </span>
+                                                      </td>
+                                                    )
                                                   )
                                                 )
                                               )
                                             )
-                                          )
-                                        })
-                                      }
-                                    </tr>
+                                          })
+                                        }
+                                      </tr>
+                                      )
                                     )
-                                  )
-                                })
-                            }
-                          </tbody>
-                        </table>
-                      </div>
-                    </pre>
-                  ) : (
-                    <pre> <pre>{sectionTxt}</pre></pre>
+                                  })
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+                      </pre>
+                    ) : (<pre> <div>N/A</div></pre>)
                   )}
+                  
+                   <pre> <pre>{sectionTxt}</pre></pre>
                 </div>
               </div>
             );
