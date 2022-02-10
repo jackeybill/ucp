@@ -144,7 +144,8 @@ const SectionText = (props: SectionTextIF) => {
                   }
                   {
                     s==ENDPOINT_SECTION&&props.file[key][s][0].raw && !props.file[key][s][0].tableResult&& (
-                      props.file[key][s][0].raw && props.file[key][s][0].raw.content[0].text?(<div className="endpoint-raw-content">
+                      props.file[key][s][0].raw && props.file[key][s][0].raw.content[0].text?
+                      (<div className="endpoint-raw-content">
                           {
                             props.file[key][s][0].raw && Object.values(props.file[key][s][0].raw.content).map((paragraph:EndpointParagraphIF,idx:number)=>{
                               // console.log( paragraph.text)
@@ -152,7 +153,7 @@ const SectionText = (props: SectionTextIF) => {
                               const formattedText = paragraph.rawtext&&paragraph.rawtext ||paragraph.text&&paragraph.text|| ""                          
                               return(  
                                 <div className={paragraph.type==="heading"?"heading":"body"} key={idx}> 
-                                  <div className="paragraph-name">{paragraph.name}</div>
+                                  {formattedText && <div className="paragraph-name">{paragraph.name}</div>}
                                   <div className="paragraph-text" dangerouslySetInnerHTML={{__html:formattedText}}></div>                                
                                 </div>
                               )
