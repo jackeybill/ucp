@@ -33,10 +33,11 @@ const SectionText = (props: SectionTextIF) => {
           <div className="section-title">
             Complete Document
            </div>
-        <div
+          { props.fileReader.file[key]['includeAllText'][0].content.length>3?( <div
           className="text"
           dangerouslySetInnerHTML={{ __html: `<pre>${props.fileReader.file[key]['includeAllText'][0].content}</pre>` }}
-        ></div>
+        ></div>):(<div style={{fontSize:14, paddingLeft: "17px",paddingTop:"50px",paddingBottom:"50px"}}
+        >N/A</div>)}
         </div> 
       ) : (
         <div>
