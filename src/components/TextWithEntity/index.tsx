@@ -561,7 +561,7 @@ const TextWithEntity = (props: TextWithEntityIF) => {
 
   return (
     <div className="text-with-entity-container">
-      <pre>
+      <pre className="pre-style">
       <div
         className="content text"
         id="pdf-content"
