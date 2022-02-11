@@ -632,12 +632,17 @@ const ProtocolSection = (props: any) => {
             />
           )}
           {props.location.pathname === "/extraction" && activeSection !== "scheduleActivities"&& checkedSections[0]!== "scheduleActivities" &&(
-            <>
+            (activeSection === "objectivesEndpointsEstimands"|| checkedSections[0]=== "objectivesEndpointsEstimands")&&(file["6e30ab50aa8da9e5fad614a0ef641d58"]["objectivesEndpointsEstimands"][0]&&file["6e30ab50aa8da9e5fad614a0ef641d58"]["objectivesEndpointsEstimands"][0].content&&file["6e30ab50aa8da9e5fad614a0ef641d58"]["objectivesEndpointsEstimands"][0].content.startsWith("Mr . Nesser is a 52 - year - old Caucasian male"))? 
+            (
+              <div style={{marginTop:"60px", paddingLeft:"30px"}}>
+                <div>N/A</div>
+              </div>
+            ):(<>
               <Extraction
                 updateCurrentEntity={updateCurrentEntity}
                 activeSection={activeSection ? activeSection : sections[0]}
               />
-            </>
+            </>)
           )}
           {props.location.pathname === "/extraction" && (activeSection === "scheduleActivities"|| checkedSections[0]=== "scheduleActivities")&& (file[key]["scheduleActivities"]&&(
             file[key]["scheduleActivities"][0]&&file[key]["scheduleActivities"][0].table&&file[key]["scheduleActivities"][0].table!=={}&&file[key]["scheduleActivities"][0].table[0])?
