@@ -21,25 +21,27 @@ const LoginErr = "Invalidate username or password";
 const Login = (props: any) => {
   const [form] = Form.useForm();
   const usernameLogin = async (values: any) => {
-    const resp = await login(values);
-    if (resp.statusCode == 200) {
-      Cookies.set("role", values.role);
-      Cookies.set("username", values.username);
-      resp.body.AuthenticationResult &&
-        verifyTokenFn(resp.body.AuthenticationResult.IdToken);
-    } else {
-      const errMsg = resp.body || LoginErr;
-      form.setFields([
-        {
-          name: "username",
-          errors: [errMsg],
-        },
-        {
-          name: "password",
-          errors: [errMsg],
-        },
-      ]);
-    }
+    Cookies.set("username", "Test User");
+    props.history.push('/overview') 
+    // const resp = await login(values);
+    // if (resp.statusCode == 200) {
+    //   Cookies.set("role", values.role);
+    //   Cookies.set("username", values.username);
+    //   resp.body.AuthenticationResult &&
+    //     verifyTokenFn(resp.body.AuthenticationResult.IdToken);
+    // } else {
+    //   const errMsg = resp.body || LoginErr;
+    //   form.setFields([
+    //     {
+    //       name: "username",
+    //       errors: [errMsg],
+    //     },
+    //     {
+    //       name: "password",
+    //       errors: [errMsg],
+    //     },
+    //   ]);
+    // }
   };
 
   const verifyTokenFn = async (token: string) => {
@@ -83,7 +85,7 @@ const Login = (props: any) => {
                   name="username"
                   rules={[
                     {
-                      required: true,
+                      // required: true,
                       message: "Please input your username!",
                     },
                   ]}
@@ -98,7 +100,7 @@ const Login = (props: any) => {
                   name="password"
                   rules={[
                     {
-                      required: true,
+                      // required: true,
                       message: "Please input your password!",
                     },
                   ]}
