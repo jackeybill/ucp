@@ -34,10 +34,10 @@ export const sectionOptions = [
   { label: "INCLUSION CRITERIA", value: "inclusionCriteria" },
   { label: "EXCLUSION CRITERIA", value: "exclusionCriteria" },
   { label: "SCHEDULE OF ACTIVITIES", value: "scheduleActivities" },
-  {
-    label: "ENDPOINTS",
-    value: "objectivesEndpointsEstimands",
-  },
+  // {
+  //   label: "ENDPOINTS",
+  //   value: "objectivesEndpointsEstimands",
+  // },
 ];
 export const ENDPOINT_SECTION="objectivesEndpointsEstimands"
 export const SCHEDULE_OF_ACTIVITIES="scheduleActivities"
