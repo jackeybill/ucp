@@ -22,7 +22,7 @@ const Login = (props: any) => {
   const [form] = Form.useForm();
 
   const usernameLogin = async (values: any) => {
-      Cookies.set("username", values.username);
+      Cookies.set("username", values.username?values.username:"John");
       props.history.push('/trials')  
 
     // const resp = await login(values);
@@ -78,7 +78,7 @@ const Login = (props: any) => {
                 name="username"
                 rules={[
                   {
-                    required: true,
+                    // required: true,
                     message: "Please input your username!",
                   },
                 ]}
@@ -93,7 +93,7 @@ const Login = (props: any) => {
                 name="password"
                 rules={[
                   {
-                    required: true,
+                    // required: true,
                     message: "Please input your password!",
                   },
                 ]}
