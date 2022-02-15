@@ -1075,7 +1075,7 @@ const ScenarioPage = (props) => {
           color: '#999'
         }
       },
-    
+      animation: false,
       tooltip: {
         trigger: 'item',
         formatter: '{b} - {d}%',
@@ -1157,7 +1157,7 @@ const ScenarioPage = (props) => {
             color: '#999'
         }
       },
-  
+      animation: false,
       tooltip: {
         trigger: 'item',
         formatter: '{b} - {d}%',
