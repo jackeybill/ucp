@@ -54,7 +54,7 @@ const TrialSummary = (props) => {
                   size="large"
                   value={newTrial["therapeutic_area"]}
                   showSearch
-                  style={{ width: 430, fontSize: "14px" }}
+                  style={{ width: "100%", fontSize: "14px" }}
                   onChange={(v) =>
                     handleNewTrialSelectChange("therapeutic_area", v)
                   }
@@ -81,7 +81,7 @@ const TrialSummary = (props) => {
                   mode="multiple"
                   allowClear
                   value={newTrial["indication"]}
-                  style={{ width: 430, fontSize: "14px"  }}
+                  style={{ width: "100%", fontSize: "14px"  }}
                   onChange={(v) => handleNewTrialSelectChange("indication", v)}
               >
                   {props.indicationList.map((t) => {
@@ -99,7 +99,7 @@ const TrialSummary = (props) => {
               <div className="trial-item">
                 <label htmlFor="">Trial Title</label>
                 <Input
-                  style={{ width: 430, height: "40px"}}
+                  style={{ width: "100%", height: "40px"}}
                   size="large"
                   onChange={(e) => handleNewTrialInputChange("trial_title", e)}
                   value={newTrial["trial_title"]}
@@ -113,7 +113,7 @@ const TrialSummary = (props) => {
                   mode="multiple"
                   allowClear
                   value={newTrial["study_type"]}
-                  style={{ width: 430, fontSize: "14px"  }}
+                  style={{ width: "100%", fontSize: "14px"  }}
                   onChange={(v) => handleNewTrialSelectChange("study_type", v)}
                 >
                   {study_types.map((t) => {
@@ -130,7 +130,7 @@ const TrialSummary = (props) => {
               <div className="trial-item">
                 <label htmlFor="">Molecule Name</label>
                 <Input
-                  style={{ width: 430, height: "40px"}}
+                  style={{ width: "100%", height: "40px"}}
                   size="large"
                   onChange={(v) =>
                     handleNewTrialInputChange("molecule_name", v)
@@ -146,7 +146,7 @@ const TrialSummary = (props) => {
                   mode="multiple"
                   allowClear
                   value={newTrial["study_phase"]}
-                  style={{ width: 430, fontSize: "14px"  }}
+                  style={{ width: "100%", fontSize: "14px"  }}
                   onChange={(v) => handleNewTrialSelectChange("study_phase", v)}
                 >
                   {phase_options.map((o) => {
@@ -166,7 +166,7 @@ const TrialSummary = (props) => {
                   defaultValue="All"
                   size="large"
                   value={newTrial["pediatric_study"]}
-                  style={{ width: 430, fontSize: "14px"  }}
+                  style={{ width: "100%", fontSize: "14px"  }}
                   onChange={(v) =>
                     handleNewTrialSelectChange("pediatric_study", v)
                   }
@@ -181,7 +181,7 @@ const TrialSummary = (props) => {
                   defaultValue="All"
                   size="large"
                   value={newTrial["study_country"]}
-                  style={{ width: 430, fontSize: "14px"  }}
+                  style={{ width: "100%", fontSize: "14px"  }}
                   onChange={(v) =>
                     handleNewTrialSelectChange("study_country", v)
                   }
