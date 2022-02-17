@@ -56,12 +56,43 @@ const SceneriosDashbaord = (props: any) => {
     }
   }
 
-  const editScenario = (s) =>{
+  const editScenario = async (s) =>{
     setScenarioId(s['scenario_id'])
     setScenario(s);
+    // console.log("s:",s);
+    
     setScenarioType(s['scenario_type'])
-    setNewScenarioVisiable(true)
+    // setNewScenarioVisiable(true)
     setEditFlag(true)
+
+    // setNewScenarioVisiable(false)
+    const tempScenarios = props.record.scenarios
+    
+    const index = tempScenarios.findIndex((e) => e['scenario_id'] === s['scenario_id'])
+    tempScenarios.splice(index, 1, s)
+
+    const tempTrial = props.record
+    // console.log("props.record:",props.record);
+    
+    tempTrial.scenarios = tempScenarios
+    if(tempTrial.CostAvg === undefined || tempTrial.CostAvg === 0){
+      tempTrial.CostAvg = CostAvg
+      tempTrial.BurdenAvg = BurdenAvg
+    }
+
+    const resp = await updateStudy(tempTrial);
+    if (resp.statusCode == 200) {
+        props.history.push({
+          pathname: '/scenario',
+          state: { 
+            trial_id: props.record['_id'] , 
+            scenarioId: s['scenario_id'], 
+            editFlag: true, 
+            scenarioType: s['scenario_type'],
+            similarHistoricalTrials: props.record['similarHistoricalTrials']
+          }
+        })
+    }
   }
   const addNewScenario =(scenarioType) => {
     const newScenarioId = '' + (props.record.scenarios.length + 1)

@@ -4255,7 +4255,7 @@ const ScenarioPage = (props) => {
                                     );
                                     let percent = ((d.value / sum) * 100).toFixed(2);
                                     return (
-                                      <div className="custom-legend" onClick={()=>onClickLegend(d.name, d.percent)}>
+                                      <div className="custom-legend" key={d.name+idx} onClick={()=>onClickLegend(d.name, d.percent)}>
                                         <span
                                           className="my_legend"
                                           style={{
