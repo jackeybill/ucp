@@ -479,6 +479,7 @@
                     align-items: center;
                 }
             }
+
             .main-content-right{
                 border-left: 1px solid #f8f8f8;
             }
@@ -486,6 +487,7 @@
             .option-item {
                 border-right: 1px solid #ddd;
             }
+
             .collapse-section-wrapper{
                border-bottom: 1px solid #31393F33;
 
@@ -559,6 +561,10 @@
             .ant-collapse > .ant-collapse-item {
                 // border-bottom: 1px solid #d9d9d9;
                 background-color: #fff;
+            }
+
+            .ant-collapse-content > .ant-collapse-content-box {
+                padding: 0px!important;
             }
     
             .sectionPanel > .ant-collapse > .ant-collapse-item {

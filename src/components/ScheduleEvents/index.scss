@@ -315,7 +315,8 @@
         div.chart-container{
             display:inline-block;
             width:45%;
-
+            padding-left: 16px;
+            padding-top: 6px;
             .label{
                 padding-left: calc(80% - 120px);
                 color: #999999;
