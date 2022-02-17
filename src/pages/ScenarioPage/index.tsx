@@ -4165,9 +4165,9 @@ const ScenarioPage = (props) => {
             <TabPane tab="Enrollment Feasibility" key="3" disabled={collapsible}>
             <Spin spinning={loadPatientFunnel} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
             <Row>
-                <Col span={5}>
+                <Col span={4}>
                 </Col>
-                <Col span={14}>
+                <Col span={16}>
                   <Row style={{ paddingTop: '10px' }}>
                     <Col flex="none">
                       <div style={{ padding: '0 10px' }}></div>
@@ -4371,7 +4371,7 @@ const ScenarioPage = (props) => {
                     </Col>
                   </Row>
                 </Col>
-                <Col span={5}></Col>
+                <Col span={4}></Col>
               </Row>
               </Spin>
             </TabPane>
