@@ -94,7 +94,7 @@ const EditTable = (props) => {
     const targetRecord = tmpData.find(e=> e.Key==record.Key)
     targetRecord.Children[idx][key]=e.target.value
     setData(tmpData)
-    console.log("tmpData L92: ",tmpData);
+    // console.log("tmpData L92: ",tmpData);
     
     
   }
@@ -140,7 +140,7 @@ const EditTable = (props) => {
           return item
         })
         setData(tempData);
-        console.log("tempData L138: ",tempData);
+        // console.log("tempData L138: ",tempData);
         
         setEditingKey(''); 
 
@@ -154,7 +154,7 @@ const EditTable = (props) => {
       } else {
         newData.push(row);
         setData(newData);
-        console.log("newData L52: ",newData);
+        // console.log("newData L52: ",newData);
 
         setEditingKey('');
 
@@ -322,8 +322,9 @@ const panelHeaderSection = (header, count) => {
     {
       title: "Key",
       dataIndex: "Key",
-      width: '7%',
+      // width: '7%',
       editable: false,
+      className:"notshow",
       render: (_, record) => {
         return record.splitPart ? (
           <Typography.Link style={{cursor: 'default'}}>
@@ -339,26 +340,26 @@ const panelHeaderSection = (header, count) => {
     {
       title: "Eligibility Criteria",
       dataIndex: "Eligibility Criteria",
-      width: '28%',
+      // width: '43%',
       editable: true,
       render: (_, record) => {
         const editable = isEditing(record);
         return record.splitPart ? (
           <Typography.Link style={{cursor: 'default'}}>
-          <div><span style={{fontSize: '14px'}}>{record['Eligibility Criteria']}</span></div>
+          <span style={{fontSize: '14px'}}>{record['Eligibility Criteria']}</span>
           </Typography.Link>
         ) : (editable ? (
             <Input value={record["Eligibility Criteria"]}/>
         ) : (
           <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
-            <div><span style={{fontSize: '14px'}}>{record['Eligibility Criteria']}</span></div>
+            <span style={{fontSize: '14px'}}>{record['Eligibility Criteria']}</span>
           </Typography.Link>
         ))
       }
     }, {
       title: 'Values',
       dataIndex: 'Values',
-      width: '28%',
+      // width: '25%',
       editable: true,
       render: (_, record) => {
         const editable = isEditing(record);
@@ -366,24 +367,24 @@ const panelHeaderSection = (header, count) => {
             <Input value={record["Values"]}/>
         ) : (
           <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
-            <div><span style={{fontSize: '14px'}}>{record.Values}</span></div>
+            <span style={{fontSize: '14px'}}>{record.Values}</span>
           </Typography.Link>
         )
       }
     }, {
       title: 'Timeframe',
       dataIndex: 'Timeframe',
-      width: '25%',
+      // width: '25%',
       editable: true,
       render: (_, record) => {
         const editable = isEditing(record);
         return record.splitPart ? (
-          <div><span style={{fontSize: '14px'}}>{record.Timeframe}</span></div>
+          <span style={{fontSize: '14px'}}>{record.Timeframe}</span>
         ) : ( editable ? (
             <Input value={record["Timeframe"]}/>
         ) : (
           <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
-            <div><span style={{fontSize: '14px'}}>{record.Timeframe}</span></div>
+            <span style={{fontSize: '14px'}}>{record.Timeframe}</span>
           </Typography.Link>
         ))
       }
@@ -393,12 +394,12 @@ const panelHeaderSection = (header, count) => {
       render: (_, record) => {
         const editable = isEditing(record);
         return !viewOnly && (editable ? (
-          <span style={{float:'right'}}>
+          <span style={{float:'left'}}>
             <CheckOutlined onClick={() => save(record.Key)}/> &nbsp;&nbsp;
             <CloseOutlined onClick={cancel}/>
           </span>
         ) : (record.splitPart ? (
-          <CloseOutlined style={{ color: 'red', float:'right'}} onClick={() =>deleteConditionOrException(record)}/>
+          <CloseOutlined style={{ color: 'red', float:'left'}} onClick={() =>deleteConditionOrException(record)}/>
         ) : (
           <Popover content={<div style={{display:'grid'}}>
                       <span className="popover-action" onClick={() => handleAddSubCriteria(record)}>Add sub-criteria</span>
@@ -406,7 +407,7 @@ const panelHeaderSection = (header, count) => {
                       <span className="popover-action" onClick={() => handleDelete(record)}>Delete</span>
                     </div>} 
                 title={false} placement="bottomRight">
-            <MoreOutlined style={{float:'right'}}/>
+            <MoreOutlined style={{float:'left'}}/>
           </Popover>
         )))
       }

@@ -68,7 +68,7 @@ span.anticon.anticon-close.ant-modal-close-icon {
 
   .ant-input,
   .sub-row-non-editable {
-    margin-right: 20px;
+    // margin-right: 20px;
     color: #333;
   }
 
@@ -86,17 +86,28 @@ span.anticon.anticon-close.ant-modal-close-icon {
   }
 
   .serial-number{
-    padding-left: 45px;
-    padding-right: 60px;
-    color: #333;
+    // display: none;
+    padding-left: 15px;
+    padding-right: 5px;
+    color: transparent;
   }
 }
 .sub-criteria-wrapper:hover, .sub-criteria-wrapper:focus {
   background-color: #e7e7e7;
 }
-.sub-row-non-editable {
+.sub-row-non-editable:nth-child(2) {
+  flex: 1.5;
+  padding: 4px 1px;
+  cursor: pointer;
+}
+.sub-row-non-editable:nth-child(3) {
   flex: 1;
-  padding: 4px 11px;
+  padding: 4px 1px;
+  cursor: pointer;
+}
+.sub-row-non-editable:nth-child(4) {
+  flex: 1;
+  padding: 4px 1px;
   cursor: pointer;
 }
 
@@ -126,4 +137,47 @@ span.anticon.anticon-close.ant-modal-close-icon {
   .ant-btn-primary{
     font-size: 16px;
   }
+}
+
+.notshow{ 
+  display: none;
+}
+
+.sectionPanel {
+  .ant-table-content .ant-table-tbody {
+    tr.editable-row {
+      display: flex;
+      // width: 100%;
+      // justify-content: space-between;
+      .ant-table-cell:first-child {
+        width: 15px;
+        .ant-table-row-expand-icon {
+          color: transparent;
+          border-color: transparent;
+          visibility: hidden;
+        }
+      }
+      .ant-table-cell:nth-child(3) {
+        flex: 1.5;
+      }
+      .ant-table-cell:nth-child(4) {
+        flex: 1;
+      }
+      .ant-table-cell:nth-child(5) {
+        flex: 1;
+      }
+      .ant-table-cell:last-child {
+        flex: 0.1;
+
+      }
+    }
+
+    .ant-table-row-expand-icon-cell {
+      width: 5px;
+    }
+}
+
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table tfoot > tr > th, .ant-table tfoot > tr > td {
+  padding: 16px 5px 16px 5px;
+}
 }

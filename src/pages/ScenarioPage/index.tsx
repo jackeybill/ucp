@@ -3793,12 +3793,17 @@ const ScenarioPage = (props) => {
                               className={`collapse-inner ${rollHeight == true ? "taller" : ""} ${collapsible == true ? "collapsed" : ""}`}>
                               <div className="criteria-list">
                                 <div className="list-columns">
-                                  <Row>
+                                  <span className="col-item col-item-before"> </span>
+                                  <span className="col-item col-item-first">Eligibility Criteria</span>
+                                  <span className="col-item col-item-middle">Values</span>
+                                  <span className="col-item col-item-last">Timeframe</span>
+                                  <span className="col-item col-item-after"> </span>
+                                  {/* <Row>
                                     <Col span={2}><div className="col-item">S/No.</div></Col>
-                                    <Col span={7}><div className="col-item">Eligibility Criteria</div></Col>
-                                    <Col span={7}><div className="col-item">Values</div></Col>
-                                    <Col span={7}><div className="col-item">Timeframe</div></Col>
-                                  </Row>
+                                    <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
+                                    <Col span={8}><div className="col-item">Values</div></Col>
+                                    <Col span={8}><div className="col-item">Timeframe</div></Col>
+                                  </Row> */}
                                 </div>
                               </div>
                               <div className="sectionPanel">
@@ -4117,12 +4122,17 @@ const ScenarioPage = (props) => {
                               className={`collapse-inner ${excluRollHeight == true ? "taller" : ""} ${excluCollapsible == true ? "collapsed" : ""}`}>
                               <div className="criteria-list">
                                 <div className="list-columns">
-                                  <Row>
+                                  <span className="col-item col-item-before"> </span>
+                                  <span className="col-item col-item-first">Eligibility Criteria</span>
+                                  <span className="col-item col-item-middle">Values</span>
+                                  <span className="col-item col-item-last">Timeframe</span>
+                                  <span className="col-item col-item-after"> </span>
+                                  {/* <Row>
                                     <Col span={2}><div className="col-item">S/No.</div></Col>
-                                    <Col span={7}><div className="col-item">Eligibility Criteria</div></Col>
-                                    <Col span={7}><div className="col-item">Values</div></Col>
-                                    <Col span={7}><div className="col-item">Timeframe</div></Col>
-                                  </Row>
+                                    <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
+                                    <Col span={8}><div className="col-item">Values</div></Col>
+                                    <Col span={8}><div className="col-item">Timeframe</div></Col>
+                                  </Row> */}
                                 </div>
                               </div>
                               <div className="sectionPanel">
