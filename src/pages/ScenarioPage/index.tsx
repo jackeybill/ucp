@@ -2,10 +2,10 @@ import React, { useState, useEffect, useReducer, useRef, useMemo, useCallback, m
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
-import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer, Input, AutoComplete, Select} from "antd";
+import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer, Input, AutoComplete, Select,Breadcrumb,} from "antd";
 import {updateStudy, getSimilarhistoricalTrialById, getStudy, getCriteriaLibByNctId, getSOAResource, getIEResource, getPatientFunnelData, checkTrialPatientFunnelData} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
-import {LeftOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined, SearchOutlined, HomeOutlined, UserOutlined, CheckOutlined,MinusOutlined,PlusOutlined } from "@ant-design/icons";
+import {LeftOutlined,MenuOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined, SearchOutlined, HomeOutlined, UserOutlined, CheckOutlined,MinusOutlined,PlusOutlined } from "@ant-design/icons";
 
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
@@ -2430,6 +2430,165 @@ const ScenarioPage = (props) => {
         message.success("Save successfully");
       }
     }
+    const submitCriteria = async () => {
+      setPageLoading(true)
+      let newScenario = trialRecord.scenarios.find( i=> i['scenario_id'] == scenarioId)
+
+        var newInclusion = {
+          "Demographics": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": demographicsElements
+          },
+          "Medical Condition": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": medConditionElements
+          },
+          "Intervention": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": interventionElements
+          },
+          "Lab / Test": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": labTestElements
+          }
+        }
+
+        var newExclusion = {
+          "Demographics": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": excluDemographicsElements
+          },
+          "Medical Condition": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": excluMedConditionElements
+          },
+          "Intervention": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": excluInterventionElements
+          },
+          "Lab / Test": {
+            "protocol_amendment_rate": '',
+            "patient_burden": '',
+            "Entities": excluLabTestElements
+          }
+        }
+      if(newScenario["Inclusion Criteria"].Demographics === undefined){
+        newScenario["Inclusion Criteria"] = newInclusion
+        newScenario["Exclusion Criteria"] = newExclusion
+      } else {
+        newScenario["Inclusion Criteria"].Demographics.Entities = demographicsElements
+        newScenario["Inclusion Criteria"]['Medical Condition'].Entities = medConditionElements
+        newScenario["Inclusion Criteria"].Intervention.Entities = interventionElements
+        newScenario["Inclusion Criteria"]['Lab / Test'].Entities = labTestElements
+
+        newScenario["Exclusion Criteria"].Demographics.Entities = excluDemographicsElements
+        newScenario["Exclusion Criteria"]['Medical Condition'].Entities = excluMedConditionElements
+        newScenario["Exclusion Criteria"].Intervention.Entities = excluInterventionElements
+        newScenario["Exclusion Criteria"]['Lab / Test'].Entities = excluLabTestElements
+      }
+
+      const newScenarioList = trialRecord.scenarios.map((item, id) =>{
+        if(item['scenario_id'] == scenarioId){
+          //If go back from SOA and SOA got edited, re-calculate SOA results for save changes
+          if(item['Schedule of Events'].Finished != undefined && !item['Schedule of Events'].Finished){
+            return reCalculateSOA(newScenario, item['Schedule of Events'])
+          } else {
+            return newScenario
+          }
+        } else {
+            return item
+        }
+      })
+
+      let newTrial = trialRecord
+      newTrial.scenarios = newScenarioList
+
+      setTrialRecord(newTrial)
+
+      setImpactColors(activeChartColors)
+      setExcluImpactColors(activeChartColors)
+      //Update record
+      const resp = await updateStudy(newTrial);
+      setPageLoading(false)
+      if (resp.statusCode == 200) {
+        var currentScenario = resp.body.scenarios.find( i=> i['scenario_id'] == scenarioId)
+
+        //Get inclusion chart info
+        var inclu = currentScenario["Inclusion Criteria"]
+        
+        setProtocolRateData([
+          {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
+          {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
+          {value: formatNumber(inclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
+          {value: formatNumber(inclu['Medical Condition'].protocol_amendment_rate), name: 'Medical Condition'}
+        ])
+        setScreenRateData([
+          {value: formatNumber(inclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
+          {value: formatNumber(inclu.Intervention.screen_failure_rate), name: 'Intervention'},
+          {value: formatNumber(inclu.Demographics.screen_failure_rate), name: 'Demographics'},
+          {value: formatNumber(inclu['Medical Condition'].screen_failure_rate), name: 'Medical Condition'}
+        ])
+  
+        var tempScoreA = ''
+        var tempScoreB = ''
+
+          var score = formatNumber(currentScenario.protocol_amendment_rate)
+          if(score <= 33){
+            tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{good|GOOD}'
+          } else if(score > 33  && score <= 67){
+            tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{fair|FAIR}'
+          } else if(score > 67){
+            tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{poor|POOR}'
+          }
+
+          var scoreB = formatNumber(currentScenario.screen_failure_rate)
+          if(scoreB <= 33){
+            tempScoreB = '{p|' + currentScenario.screen_failure_rate + '}\n{good|GOOD}'
+          } else if(scoreB > 33  && scoreB <= 67){
+            tempScoreB = '{p|' + currentScenario.screen_failure_rate + '}\n{fair|FAIR}'
+          } else if(scoreB > 67){
+            tempScoreB = '{p|' + currentScenario.screen_failure_rate + '}\n{poor|POOR}'
+          }
+
+          setAmend_avg_rate(tempScoreA)
+          setScreen_avg_rate(tempScoreB)
+
+        //Get exclusion chart info
+        var exclu = currentScenario["Exclusion Criteria"]
+        
+        setExcluProtocolRateData([
+          {value: formatNumber(exclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
+          {value: formatNumber(exclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
+          {value: formatNumber(exclu.Demographics.protocol_amendment_rate), name: 'Demographics'},
+          {value: formatNumber(exclu['Medical Condition'].protocol_amendment_rate), name: 'Medical Condition'}
+        ])
+        setExcluScreenRateData([
+          {value: formatNumber(exclu['Lab / Test'].screen_failure_rate), name: 'Labs / Tests'},
+          {value: formatNumber(exclu.Intervention.screen_failure_rate), name: 'Intervention'},
+          {value: formatNumber(exclu.Demographics.screen_failure_rate), name: 'Demographics'},
+          {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical Condition'}
+        ])
+          setExcluAmend_avg_rate(tempScoreA)
+          setExcluScreen_avg_rate(tempScoreB)
+        if(currentScenario['Therapeutic Area Average']){
+          setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].protocol_amendment_rate)
+          setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].screen_failure_rate)
+          setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].protocol_amendment_rate)
+          setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].screen_failure_rate)
+        }
+  
+        setShowChartLabel(true)
+        props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})
+        message.success("Save successfully");
+      }
+    }
 
     function formatNumber (str){
       if(str == undefined || str == ''){
@@ -2821,7 +2980,7 @@ const ScenarioPage = (props) => {
     let newTrial = trialRecord
     newTrial.scenarios = newScenarioList
     setTrialRecord(newTrial)
-    setProcessStep(0)
+    // setProcessStep(0)
     setSubmitType(0)
   }
 
@@ -3413,975 +3572,1039 @@ const ScenarioPage = (props) => {
     setActiveCollapse(key)
   }
 
+  const backToHome = () => {
+    // setShowDetails(false)
+    // setViewScenario({viewScenarioDetails: false, scnarioId: ''})
+  }
+
+  const clickInclu = () => {
+    setActiveTabKey('1')
+    setProcessStep(0)
+  }
+
+  const clickExclu = () => {
+    setActiveTabKey('2')
+    setProcessStep(0)
+  }
+
+  const clickEnroll = () => {
+    changeActiveTabKey('3')
+    setProcessStep(0)
+    setSubmitType(1)
+  }
+
+  const clickEndpoint = () => {
+    changeActiveTabKey('4')
+    setProcessStep(1)
+  }
+
+  const clickSOE = () => {
+    changeActiveTabKey('5')
+    setProcessStep(2)
+  }
+
     return (
     <div className="scenario-container">
       <Spin spinning={pageLoading} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
-      <div>
-        <Row className="process-container">
-            <Col flex="100px" className="center">
-                <div className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
-                    <LeftOutlined /> &nbsp;Trial Page
-                </div>
-            </Col>
-            <Col flex="240px" className="scenario-header center">
-              <Row>
-              <Col span={24}>
-                <Row className="item-translate">
-                    <Col flex="auto">{trialTitle}&nbsp;:&nbsp;{scenarioType}</Col>
-                </Row>
-                <Row className="item-translate">
-                    <Col flex="auto" className="name">{scenario['scenario_name']}</Col>
-                </Row>
-                </Col>
-                </Row>
-            </Col>
-            <Col flex="420px" className="center" style={{paddingLeft: '10px'}}>
-                <Steps progressDot current={processStep} size="small" >
-                    <Step title="Add Inclusion / Exclusion Criteria"/>
-                    <Step title="Add Schedule of Events"/>
-                </Steps>
-            </Col>
-            <Col flex="auto" className={`center ${ collapsible ? "none-click" : "" }`} >
-                {activeTabKey === '1'?(
-                    <>
-                        <Button type="primary" className="step-btn" onClick={() => setActiveTabKey('2')}>
-                            NEXT:EXCLUSION CRITERIA
-                        </Button>
-                    </>
-                ):(activeTabKey === '2'?(
-                    <>
-                        <Button type="primary" className="step-btn" onClick={() => changeActiveTabKey('3')}>
-                            NEXT:ENROLLMENT FEASIBILITY
-                        </Button>
-                        <Button className="view-btn step-btn" onClick={() => setActiveTabKey('1')}>
-                            PREV:INCLUSION CRITERIA
-                        </Button>
-                    </>
-                ):(processStep === 0?(
-
-                    <>
-                        <Button type="primary" className="step-btn" onClick={() => setProcessStep(1)}>
-                            NEXT:ADD SCHEDULE OF EVENTS
-                        </Button>
-                        <Button className="view-btn step-btn" onClick={() => setActiveTabKey('2')}>
-                            PREV:EXCLUSION CRITERIA
-                        </Button>
-                    </>
-                ):(
-                    <>
-                        <Button type="primary" className="step-btn"  onClick={()=> setSubmitType(2)}>
-                            SAVE AND FINISH LATER
-                        </Button>
-                        <Button className="view-btn step-btn" onClick={() => setSubmitType(1)}>
-                            PREV:ENROLLMENT FEASIBILITY
-                        </Button>
-                    </>
-                )))}
-            </Col>
-            
-        </Row>
-      </div>
-      {processStep === 0 ? (
-      <div className="ie-container">
-        <div className="export-container">
-          <Row>
-            <Col span={17}>
-              <div style={{ bottom: '0',height: '50px' }}></div>
-            </Col>
-            <Col span={7} style={{paddingRight: '20px'}}>
-              <Dropdown.Button style={{zIndex: 1}}
-                overlay={
-                  <Menu>
-                    <Menu.Item key="pdf" onClick={() => handleExport('pdf')}>PDF</Menu.Item>
-                    <Menu.Item key="csv" onClick={() => handleExport('csv')}>CSV</Menu.Item>
-                  </Menu>
-                }
-                icon={<DownOutlined />}>
-                <DownloadOutlined />
-                EXPORT AS
-              </Dropdown.Button>
-            </Col>
-          </Row>
+        <div className="left-nav">
+          {/* <div className="nav-trial-title">{trialTitle}&nbsp;:&nbsp;{scenarioType}</div> */}
+          <div className="nav-trial-title ellipsis">{trialTitle}</div>
+          <div className="nav-scenario-name ellipsis">{scenario['scenario_name']}</div>
+          <div className="nav-blank"> </div>  
+          <div  className="nav-section-wrapper" >
+              <div className="ie-wrapper">
+                <div className="ie-text">Inclusion / <br></br>Exclusion Criteria</div>
+                  {activeTabKey === '1' && <Button  className="nav-btn ie-btn selected" onClick={clickInclu}>
+                      Inclusion Criteria
+                  </Button>}
+                  {activeTabKey !== '1' && <Button  className="nav-btn ie-btn" onClick={clickInclu}>
+                      Inclusion Criteria
+                  </Button>}
+                  <Button  className="nav-btn ie-btn" onClick={clickExclu}>
+                      Exclusion Criteria
+                  </Button>
+                  <Button  className="nav-btn ie-btn" onClick={clickEnroll}>
+                      Enrollment Feasibility
+                  </Button>
+              </div>
+              <div className="endpoint-wrapper">
+                  <Button className="nav-btn other-btn" onClick={clickEndpoint}>
+                      Protocol Endpoint
+                  </Button>
+              </div>
+              <div className="soe-wrapper">
+                <Button className="nav-btn other-btn" onClick={clickSOE}>
+                    Schedule Of Events
+                </Button>
+              </div>
+          <div/> 
+          </div>
         </div>
-        <div className="tab-container">
-          <div className={`side-toolbar ${criteriaLib > 0 || activeTabKey != "1" ? 'hidden' : ''}`} onClick={()=> setCriteriaLib(6)}>
-            <div className="panel-label">Inclusion Criteria Library</div>
-            <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
+        <div className="right-content">
+          <div className="process-container-wrapper">
+            <div className="top-process-container">
+              <Breadcrumb>
+                <Breadcrumb.Item
+                  className="homepage"
+                  onClick={()=>props.history.push('/trials')}
+                >
+                  <span>
+                    My Trials
+                  </span>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item 
+                  className="homepage"
+                  onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}
+                  >
+                    Trial Page
+                  </Breadcrumb.Item>
+                <Breadcrumb.Item
+                  className="currentpage"
+                  >
+                  {scenario['scenario_name']}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </div>
           </div>
-          <div className={`side-toolbar ${excluCriteriaLib > 0 || activeTabKey != "2" ? 'hidden' : ''}`} onClick={()=> setExcluCriteriaLib(6)}>
-            <div className="panel-label">Exclusion Criteria Library</div>
-            <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
-          </div>
-          <Tabs onChange={changeActiveTabKey} activeKey={activeTabKey} centered>
-            <TabPane tab="Inclusion Criteria" key="1">
+          {processStep === 0 &&
+          <div className="ie-container">
+            <div className="process-container">
+                    <span className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
+                        <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
+                    </span>
+                    <span className="content-title">
+                      {activeTabKey === '1' && <>
+                        <span className="tab-title">Add Inclusion Criteria</span>
+                        <span className="tip1-desc">
+                        Use the historical trial library on the left to build the I/E criteria for your trial scenario.
+                        </span>
+                      </>}
+                      {activeTabKey === '2' && <>
+                        <span className="tab-title">Add Exclusion Criteria</span>
+                        <span className="tip1-desc">
+                        Use the historical trial library on the left to build the I/E criteria for your trial scenario.
+                        </span>
+                      </>}
+                      {activeTabKey === '3' && <>
+                        <span className="tab-title">Enrollment Feasibility</span>
+                        <span className="tip1-desc">
+                        View the impact of selected inclusion exclusion criteria on prospective patient enrollment
+                        </span>
+                      </>}
+                    </span>
+                    <span className="button-area">
+                      <Dropdown.Button style={{zIndex: 1}}
+                      overlay={
+                        <Menu>
+                          <Menu.Item key="pdf" onClick={() => handleExport('pdf')}>PDF</Menu.Item>
+                          <Menu.Item key="csv" onClick={() => handleExport('csv')}>CSV</Menu.Item>
+                        </Menu>
+                      }
+                        icon={<DownOutlined />}>
+                        {/* <DownloadOutlined /> */}
+                        EXPORT AS
+                      </Dropdown.Button>
+                      <Button className="save-btn"  onClick={saveCriteria}>
+                          Save And Finish Later
+                      </Button>
+                      {/* <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}> */}
+                      <Button type="primary" className="submit-btn"   onClick={submitCriteria}>
+                          Submit
+                      </Button>
+                    </span>
+            </div>
+            <div className="export-container">
               <Row>
-                <Col span={criteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '340px', minWidth: '340px'}}>
-                  <Row style={{backgroundColor: '#F8F8F8'}}>
-                    <Col span={24}>
-                      <div className="item-header">
-                        <span>Inclusion Criteria Library</span>
-                        <Tooltip title={'Collapse Inclusion Criteria Library'}>
-                          <CloseOutlined className="right-icon" onClick={() => setCriteriaLib(0)}></CloseOutlined>
-                          </Tooltip>
-                        <Tooltip title={'View Historical Trial List'}>
-                          <HistoryOutlined className="right-icon" onClick={searchHistoricalTrials}></HistoryOutlined>
-                        </Tooltip>
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row style={{borderBottom:'10px solid #F8F8F8'}}>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                    <Col className="left-section">
-                      <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
-                        <Col span={16}>
-                          <div className="item-option">
-                            <span>Select criteria to add to Trial</span>
+                <Col span={17}>
+                  <div style={{ bottom: '0',height: '50px' }}></div>
+                </Col>
+                <Col span={7} style={{paddingRight: '20px'}}>
+                  
+                </Col>
+              </Row>
+            </div>
+            <div className="tab-container">
+              <div className={`side-toolbar ${criteriaLib > 0 || activeTabKey != "1" ? 'hidden' : ''}`} onClick={()=> setCriteriaLib(6)}>
+                <div className="panel-label">Inclusion Criteria Library</div>
+                <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
+              </div>
+              <div className={`side-toolbar ${excluCriteriaLib > 0 || activeTabKey != "2" ? 'hidden' : ''}`} onClick={()=> setExcluCriteriaLib(6)}>
+                <div className="panel-label">Exclusion Criteria Library</div>
+                <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
+              </div>
+              <Tabs onChange={changeActiveTabKey} activeKey={activeTabKey} centered>
+                <TabPane tab="Inclusion Criteria" key="1">
+                  <Row>
+                    <Col span={criteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '340px', minWidth: '340px'}}>
+                      <Row style={{backgroundColor: '#F8F8F8'}}>
+                        <Col span={24}>
+                          <div className="item-header">
+                            <span>Inclusion Criteria Library</span>
+                            <Tooltip title={'Collapse Inclusion Criteria Library'}>
+                              <CloseOutlined className="right-icon" onClick={() => setCriteriaLib(0)}></CloseOutlined>
+                              </Tooltip>
+                            <Tooltip title={'View Historical Trial List'}>
+                              <HistoryOutlined className="right-icon" onClick={searchHistoricalTrials}></HistoryOutlined>
+                            </Tooltip>
                           </div>
                         </Col>
-                        <Col span={8} style={{textAlign:'right'}}>
-                          <Row>
-                          <Col span={24}><span className="frequency" style={{ display: "block",width: "110px" }}>CRITERIA FREQUENCY</span></Col>
+                      </Row>
+                      <Row style={{borderBottom:'10px solid #F8F8F8'}}>
+                        <Col flex="none">
+                          <div style={{ padding: '0 10px' }}></div>
+                        </Col>
+                        <Col className="left-section">
+                          <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
+                            <Col span={16}>
+                              <div className="item-option">
+                                <span>Select criteria to add to Trial</span>
+                              </div>
+                            </Col>
+                            <Col span={8} style={{textAlign:'right'}}>
+                              <Row>
+                              <Col span={24}><span className="frequency" style={{ display: "block",width: "110px" }}>CRITERIA FREQUENCY</span></Col>
+                              </Row>
+                              <Row style={{width:'100%'}}>
+                              <Col span={24}>
+                                <div id="freqModal" ref={null} onClick={() => setVisible(true)}>
+                                  <span className="label">
+                                    {minValue}%-{maxValue}%
+                                  </span>
+                                  <EditFilled className={`${visible ? 'active' : ''}`}/>
+                                </div>
+                                </Col>
+                              </Row>
+                            </Col>
                           </Row>
-                          <Row style={{width:'100%'}}>
-                          <Col span={24}>
-                            <div id="freqModal" ref={null} onClick={() => setVisible(true)}>
-                              <span className="label">
-                                {minValue}%-{maxValue}%
-                              </span>
-                              <EditFilled className={`${visible ? 'active' : ''}`}/>
+                          
+                          {visible ? (
+                          <div className="freqSection">
+                            <div className="title">
+                              {/* <span>Set Frequency</span> */}
+                              <CloseOutlined
+                                className="right-icon"
+                                onClick={() => setVisible(false)}
+                              ></CloseOutlined>
                             </div>
+                            <br/>
+                            <div className="content">
+                              <span>Criteria Frequency</span>
+                              <span style={{ float: "right", fontWeight: 'bold' }}>
+                                {minValue}% - {maxValue}%
+                              </span>
+                            </div>
+                            <Slider
+                              range={{ draggableTrack: true }}
+                              defaultValue={[minValue, maxValue]}
+                              tipFormatter={formatter}
+                              onAfterChange={getFrequency}
+                            />
+                          </div>
+                          ) : (
+                          <></>
+                          )}
+                          {/* search bar */}
+                          <div className="searchSection">
+                            <div className="content">
+                              <Dropdown 
+                                overlay={menu} 
+                                overlayClassName="searchbox"
+                                visible={visibleValue}
+                                onVisibleChange={(visible: boolean) => {!visibleValue?setVisibleValue(true):setVisibleValue(false)}}
+                              >
+                                <Input
+                                    prefix={<SearchOutlined />}
+                                    style={{ width: '100%', height: 37 }}
+                                    allowClear
+                                    onChange={onTextChange}
+                                    onClick={e => e.preventDefault()}
+                                />
+                              </Dropdown>
+                            </div>
+                          </div>
+                          <Row>
+                            <Col span={24}>
+                              <div className="content-outer content-sidebar">
+                                <div className="content-over">
+                                  <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                    <Panel showArrow={false} header={eventLibHeader("Demographics", demographics.length, "1")} key="1">
+                                      {demographics.length>0 ? (
+                                          <div className="library box select-option-wrapper">
+                                          {demographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {                     
+                                            return (
+                                              <CriteriaOption
+                                                selectedEle = {demographicsElements}
+                                                minValue={minValue}
+                                                maxValue={maxValue}
+                                                key={`demographic_${idx}`}
+                                                demographic={demographic}
+                                                index={0}
+                                                idx={idx}
+                                                handleOptionSelect={handleOptionSelect}
+                                              ></CriteriaOption>
+                                            );
+                                          })}
+                                        </div>
+                                      ): (
+                                        <></>
+                                      )}
+                                    </Panel>
+                                  </Collapse>
+
+                                  <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                    <Panel showArrow={false} header={eventLibHeader("Medical Condition", medCondition.length, "2")} key="2">
+                                      {medCondition.length>0 ? (
+                                          <div className="library box select-option-wrapper">
+                                          {medCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
+                                            return (
+                                              <CriteriaOption
+                                                selectedEle = {medConditionElements}
+                                                minValue={minValue}
+                                                maxValue={maxValue}
+                                                key={`medCon_${idx}`}
+                                                demographic={medCon}
+                                                index={1}
+                                                idx={idx}
+                                                handleOptionSelect={handleOptionSelect}
+                                              ></CriteriaOption>
+                                            );
+                                          })}
+                                        </div>
+                                      ): (
+                                        <></>
+                                      )}
+                                    </Panel>
+                                  </Collapse>
+
+                                  <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                  <Panel showArrow={false} header={eventLibHeader("Intervention", intervention.length, "3")} key="3">
+                                    {intervention.length>0 ? (
+                                          <div className="library box select-option-wrapper">
+                                          {intervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {              
+                                            return (
+                                              <CriteriaOption
+                                                selectedEle = {interventionElements}
+                                                minValue={minValue}
+                                                maxValue={maxValue}
+                                                key={`intervent_${idx}`}
+                                                demographic={intervent}
+                                                index={2}
+                                                idx={idx}
+                                                handleOptionSelect={handleOptionSelect}
+                                              ></CriteriaOption>
+                                            );
+                                          })}
+                                        </div>
+                                    ): (
+                                      <></>
+                                    )}
+                                  </Panel>
+                                </Collapse>
+
+                                  <Collapse className="eventLib library box lastOne" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                    <Panel showArrow={false} header={eventLibHeader("Lab / Test", labTest.length, "4")} key="4">
+                                      {labTest.length>0 ? (
+                                          <div className="library box select-option-wrapper lastOne">
+                                          {labTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
+                                            return (
+                                              <CriteriaOption
+                                                selectedEle = {labTestElements}
+                                                minValue={minValue}
+                                                maxValue={maxValue}
+                                                key={`lib_${idx}`}
+                                                demographic={lib}
+                                                index={3}
+                                                idx={idx}
+                                                handleOptionSelect={handleOptionSelect}
+                                              ></CriteriaOption>
+                                            );
+                                          })}
+                                        </div>
+                                      ): (
+                                        <></>
+                                      )}
+                                    </Panel>
+                                  </Collapse>
+                                </div>
+                              </div>
                             </Col>
                           </Row>
                         </Col>
+                        <Col flex="none">
+                          <div style={{ padding: '0 10px' }}></div>
+                        </Col>
                       </Row>
-                      
-                      {visible ? (
-                      <div className="freqSection">
-                        <div className="title">
-                          {/* <span>Set Frequency</span> */}
-                          <CloseOutlined
-                            className="right-icon"
-                            onClick={() => setVisible(false)}
-                          ></CloseOutlined>
-                        </div>
-                        <br/>
-                        <div className="content">
-                          <span>Criteria Frequency</span>
-                          <span style={{ float: "right", fontWeight: 'bold' }}>
-                            {minValue}% - {maxValue}%
-                          </span>
-                        </div>
-                        <Slider
-                          range={{ draggableTrack: true }}
-                          defaultValue={[minValue, maxValue]}
-                          tipFormatter={formatter}
-                          onAfterChange={getFrequency}
-                        />
-                      </div>
-                      ) : (
-                      <></>
-                      )}
-                      {/* search bar */}
-                      <div className="searchSection">
-                        <div className="content">
-                          <Dropdown 
-                            overlay={menu} 
-                            overlayClassName="searchbox"
-                            visible={visibleValue}
-                            onVisibleChange={(visible: boolean) => {!visibleValue?setVisibleValue(true):setVisibleValue(false)}}
-                          >
-                            <Input
-                                prefix={<SearchOutlined />}
-                                style={{ width: '100%', height: 37 }}
-                                allowClear
-                                onChange={onTextChange}
-                                onClick={e => e.preventDefault()}
-                            />
-                          </Dropdown>
-                        </div>
-                      </div>
-                      <Row>
+                      <Row style={{backgroundColor: '#fff'}}>
                         <Col span={24}>
-                          <div className="content-outer content-sidebar">
-                            <div className="content-over">
-                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                <Panel showArrow={false} header={eventLibHeader("Demographics", demographics.length, "1")} key="1">
-                                  {demographics.length>0 ? (
-                                      <div className="library box select-option-wrapper">
-                                      {demographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {                     
-                                        return (
-                                          <CriteriaOption
-                                            selectedEle = {demographicsElements}
-                                            minValue={minValue}
-                                            maxValue={maxValue}
-                                            key={`demographic_${idx}`}
-                                            demographic={demographic}
-                                            index={0}
-                                            idx={idx}
-                                            handleOptionSelect={handleOptionSelect}
-                                          ></CriteriaOption>
-                                        );
-                                      })}
-                                    </div>
-                                  ): (
-                                    <></>
-                                  )}
-                                </Panel>
-                              </Collapse>
+                          <div className="updateTrial">
+                            <Button className="update-btn" onClick={() => updateTrial(1, 1)}>
+                              UPDATE MY TRIAL
+                            </Button>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col flex="auto" className={`${ collapsible ? "none-click" : "" } main-content-right`}>
+                      <Row style={{ paddingTop: '10px' }}>
+                        <Col flex="none">
+                          <div style={{ padding: '0 10px' }}></div>
+                        </Col>
+                        <Col flex="auto">
+                          <Row>
+                            <Col span={24}></Col>
+                          </Row>
 
-                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                <Panel showArrow={false} header={eventLibHeader("Medical Condition", medCondition.length, "2")} key="2">
-                                  {medCondition.length>0 ? (
-                                      <div className="library box select-option-wrapper">
-                                      {medCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
-                                        return (
-                                          <CriteriaOption
-                                            selectedEle = {medConditionElements}
-                                            minValue={minValue}
-                                            maxValue={maxValue}
-                                            key={`medCon_${idx}`}
-                                            demographic={medCon}
-                                            index={1}
-                                            idx={idx}
-                                            handleOptionSelect={handleOptionSelect}
-                                          ></CriteriaOption>
-                                        );
-                                      })}
+                          <Row>
+                            <Col span={24}>
+                            
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col span={24}>
+                            <div className="option-item">
+                              <div className="collapse-section-wrapper">
+                                <Collapse activeKey={activeKey} onChange={callback} expandIconPosition="right" >
+                                  <Panel header={panelHeader()} key="1" forceRender={false} >
+                                    <div className="chart-container">
+                                      <div className="label">
+                                        <span>Click on each metric to filter</span>
+                                      </div>
+                                      <ReactECharts
+                                        option={amendmentRateoption}
+                                        style={{ height: 120}}
+                                        onEvents={{'click': onInclusionChartClick}}/>
                                     </div>
-                                  ): (
+                                    <div className="chart-container  box">
+                                      <div className="label">
+                                        <span>Click on each metric to filter</span>
+                                      </div>
+                                      <ReactECharts
+                                        option={screenFailureOption}
+                                        style={{ height: 120}}
+                                        onEvents={{'click': onInclusionChartClick}}/>
+                                    </div>
+                                  </Panel>
+                                </Collapse>
+                              </div>
+                            </div>
+                            </Col>
+                          </Row>
+                          <Row className="impact-summary-wrapper">
+                            <Col span={24}>
+                              <div className="impact-summary">
+                                <span>Inclusion Criteria</span>
+                                {activeTabKey === '3'? (
                                     <></>
+                                  ) : (
+                                    <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
+                                      Save
+                                    </Button>
                                   )}
-                                </Panel>
-                              </Collapse>
+                              </div>
+                              </Col>
+                          </Row>
+                          <Row>
+                            <Col span={24} >
+                              <div className="collapse-container">
+                              <div className="content-outer">
+                                <div id="inclusion-criteria" 
+                                  className={`collapse-inner ${rollHeight == true ? "taller" : ""} ${collapsible == true ? "collapsed" : ""}`}>
+                                  <div className="criteria-list">
+                                    <div className="list-columns">
+                                      <span className="col-item col-item-before"> </span>
+                                      <span className="col-item col-item-first">Eligibility Criteria</span>
+                                      <span className="col-item col-item-middle">Values</span>
+                                      <span className="col-item col-item-last">Timeframe</span>
+                                      <span className="col-item col-item-after"> </span>
+                                      {/* <Row>
+                                        <Col span={2}><div className="col-item">S/No.</div></Col>
+                                        <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
+                                        <Col span={8}><div className="col-item">Values</div></Col>
+                                        <Col span={8}><div className="col-item">Timeframe</div></Col>
+                                      </Row> */}
+                                    </div>
+                                  </div>
+                                  <div className="sectionPanel">
+                                      <EditTable updateCriteria={updateInclusionCriteria} tableIndex={2}                                
+                                        data={demographicsTableData}
+                                        defaultActiveKey={defaultActiveKey}
+                                        collapsible={collapsible} panelHeader={"Demographics"} updateTrial={() => updateTrial(1, 1)}                                  
+                                      />
+                                      <EditTable updateCriteria={updateInclusionCriteria} tableIndex={3}
+                                        data={medConditionTableData}
+                                        defaultActiveKey={defaultActiveKey}
+                                        collapsible={collapsible} panelHeader={"Medical Condition"} updateTrial={() => updateTrial(1, 1)}                               
+                                      />
+                                  <EditTable updateCriteria={updateInclusionCriteria} tableIndex={4} 
+                                        data={interventionTableData}                                  
+                                        defaultActiveKey={defaultActiveKey}
+                                        collapsible={collapsible} panelHeader={"Intervention"} updateTrial={() => updateTrial(1, 1)}                                   
+                                      />
+                                  <EditTable updateCriteria={updateInclusionCriteria} tableIndex={5} 
+                                        data={labTestTableData}
+                                        defaultActiveKey={defaultActiveKey}
+                                        collapsible={collapsible} panelHeader={"Lab / Test"} updateTrial={() => updateTrial(1, 1)}/>
+                                  </div>
+                                </div>
+                              </div>
+                              </div>
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col flex="none">
+                          <div style={{ padding: '0 10px' }}></div>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </TabPane>
+                <TabPane tab="Exclusion Criteria" key="2" disabled={collapsible}>
+                  <Row>
+                    <Col span={excluCriteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '340px', minWidth: '340px'}}>
+                      <Row style={{backgroundColor: '#F8F8F8'}}>
+                        <Col span={24}>
+                          <div className="item-header">
+                            <span>Exclusion Criteria Library</span>
+                            <Tooltip title={'Collapse Exclusion Criteria Library'}>
+                              <CloseOutlined className="right-icon" onClick={() => setExcluCriteriaLib(0)}></CloseOutlined>
+                            </Tooltip>
+                            <Tooltip title={'View Historical Trial List'}>
+                              <HistoryOutlined className="right-icon" onClick={searchHistoricalTrials}></HistoryOutlined>
+                            </Tooltip>
+                          </div>
+                        </Col>
+                      </Row>
+                      <Row style={{borderBottom:'10px solid #F8F8F8'}}>
+                        <Col flex="none">
+                          <div style={{ padding: '0 10px' }}></div>
+                        </Col>
+                        <Col className="left-section">
+                          <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
+                            <Col span={16}>
+                              <div className="item-option">
+                                <span className="tip">Select criteria to add to Trial</span>
+                              </div>
+                            </Col>
+                            <Col span={8} style={{textAlign:'right'}}>
+                              <Row>
+                              <Col span={24}><span className="frequency" style={{ display: "block",width: "110px" }}>CRITERIA FREQUENCY</span></Col>
+                              </Row>
+                              <Row style={{width:'100%'}}>
+                              <Col span={24}>
+                                <div id="freqModal" ref={null} onClick={() => setExcluVisible(true)}>
+                                  <span className="label">
+                                    {excluMinValue}%-{excluMaxValue}%
+                                  </span>
+                                  <EditFilled className={`${excluVisible ? 'active' : ''}`}/>
+                                </div>
+                                </Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                          
+                          {excluVisible ? (
+                          <div className="freqSection">
+                            <div className="title">
+                              {/* <span>Set Frequency</span> */}
+                              <CloseOutlined
+                                className="right-icon"
+                                onClick={() => setExcluVisible(false)}
+                              ></CloseOutlined>
+                            </div>
+                            <br/>
+                            <div className="content">
+                              <span>Criteria Frequency</span>
+                              <span style={{ float: "right", fontWeight: 'bold' }}>
+                                {excluMinValue}% - {excluMaxValue}%
+                              </span>
+                            </div>
+                            <Slider
+                              range={{ draggableTrack: true }}
+                              defaultValue={[excluMinValue, excluMaxValue]}
+                              tipFormatter={formatter}
+                              onAfterChange={getExcluFrequency}
+                            />
+                          </div>
+                          ) : (
+                          <></>
+                          )}
+                          {/* search bar */}
+                          <div className="searchSection">
+                            <div className="content">
+                              <Dropdown 
+                                overlay={menuExclu} 
+                                overlayClassName="searchbox"
+                                visible={visibleValueExclu}
+                                onVisibleChange={(visible: boolean) => {!visibleValueExclu?setVisibleValueExclu(true):setVisibleValueExclu(false)}}
+                              >
+                                <Input
+                                    prefix={<SearchOutlined />}
+                                    style={{ width: '100%', height: 37 }}
+                                    allowClear
+                                    onChange={onExcluTextChange}
+                                    onClick={e => e.preventDefault()}
+                                />
+                              </Dropdown>
+                            </div>
+                          </div>
+                          <Row>
+                            <Col span={24}>
+                              <div className="content-outer content-sidebar">
+                                <div className="content-over">
+                                  <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                    <Panel showArrow={false} header={eventLibHeader("Demographics", excluDemographics.length, "5")} key="5">
+                                      {excluDemographics.length>0 ? (
+                                          <div className="library box select-option-wrapper">
+                                          {excluDemographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {
+                                            const activeType = excluDemographicsElements.find(e=> e['Eligibility Criteria']==demographic.Text) ?1:0
+                                            return (
+                                              <CriteriaOption
+                                                selectedEle = {excluDemographicsElements}
+                                                minValue={minValue}
+                                                maxValue={maxValue}
+                                                key={`demographic_${idx}`}
+                                                demographic={demographic}
+                                                index={0}
+                                                idx={idx}
+                                                handleOptionSelect={handleExcluOptionSelect}
+                                              ></CriteriaOption>
+                                            );
+                                          })}
+                                        </div>
+                                        ): (
+                                        <></>
+                                      )}
+                                    </Panel>
+                                  </Collapse>
 
-                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                              <Panel showArrow={false} header={eventLibHeader("Intervention", intervention.length, "3")} key="3">
-                                {intervention.length>0 ? (
+                                  <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                    <Panel showArrow={false} header={eventLibHeader("Medical Condition", excluMedCondition.length, "6")} key="6">
+                                      {excluMedCondition.length>0 ? (
+                                          <div className="library box select-option-wrapper">
+                                          {excluMedCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
+                                            return (
+                                              <CriteriaOption
+                                                selectedEle = {excluMedConditionElements}
+                                                minValue={minValue}
+                                                maxValue={maxValue}
+                                                key={`medCon_${idx}`}
+                                                demographic={medCon}
+                                                index={1}
+                                                idx={idx}
+                                                handleOptionSelect={handleExcluOptionSelect}
+                                              ></CriteriaOption>
+                                            );
+                                          })}
+                                        </div>
+                                        ): (
+                                        <></>
+                                      )}
+                                    </Panel>
+                                  </Collapse>
+
+                                  <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                  <Panel showArrow={false} header={eventLibHeader("Intervention", excluIntervention.length, "7")} key="7">
+                                    {excluIntervention.length>0 ? (
                                       <div className="library box select-option-wrapper">
-                                      {intervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {              
+                                      {excluIntervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {
+                                        
                                         return (
                                           <CriteriaOption
-                                            selectedEle = {interventionElements}
+                                            selectedEle = {excluInterventionElements}
                                             minValue={minValue}
                                             maxValue={maxValue}
                                             key={`intervent_${idx}`}
                                             demographic={intervent}
                                             index={2}
                                             idx={idx}
-                                            handleOptionSelect={handleOptionSelect}
+                                            handleOptionSelect={handleExcluOptionSelect}
                                           ></CriteriaOption>
                                         );
                                       })}
-                                    </div>
-                                ): (
-                                  <></>
-                                )}
-                              </Panel>
-                            </Collapse>
-
-                              <Collapse className="eventLib library box lastOne" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                <Panel showArrow={false} header={eventLibHeader("Lab / Test", labTest.length, "4")} key="4">
-                                  {labTest.length>0 ? (
-                                      <div className="library box select-option-wrapper lastOne">
-                                      {labTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
-                                        return (
-                                          <CriteriaOption
-                                            selectedEle = {labTestElements}
-                                            minValue={minValue}
-                                            maxValue={maxValue}
-                                            key={`lib_${idx}`}
-                                            demographic={lib}
-                                            index={3}
-                                            idx={idx}
-                                            handleOptionSelect={handleOptionSelect}
-                                          ></CriteriaOption>
-                                        );
-                                      })}
-                                    </div>
-                                  ): (
+                                    </div> 
+                                      ): (
                                     <></>
                                   )}
-                                </Panel>
-                              </Collapse>
-                            </div>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                  </Row>
-                  <Row style={{backgroundColor: '#fff'}}>
-                    <Col span={24}>
-                      <div className="updateTrial">
-                        <Button className="update-btn" onClick={() => updateTrial(1, 1)}>
-                          UPDATE MY TRIAL
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
-                </Col>
-                <Col flex="auto" className={`${ collapsible ? "none-click" : "" } main-content-right`}>
-                  <Row style={{ paddingTop: '10px' }}>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                    <Col flex="auto">
-                      <Row>
-                        <Col span={24}><span className="tab-title">Add Inclusion Criteria</span></Col>
-                      </Row>
-                      <Row>
-                        <Col span={24}>
-                        <span className="tip1-desc">
-                          Use the historical trial library on the left to build the
-                          I/E criteria for your scenario.
-                        </span>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col span={24}>
-                        <div className="option-item">
-                          <div className="collapse-section-wrapper">
-                            <Collapse activeKey={activeKey} onChange={callback} expandIconPosition="right" >
-                              <Panel header={panelHeader()} key="1" forceRender={false} >
-                                <div className="chart-container">
-                                  <div className="label">
-                                    <span>Click on each metric to filter</span>
-                                  </div>
-                                  <ReactECharts
-                                    option={amendmentRateoption}
-                                    style={{ height: 120}}
-                                    onEvents={{'click': onInclusionChartClick}}/>
-                                </div>
-                                <div className="chart-container  box">
-                                  <div className="label">
-                                    <span>Click on each metric to filter</span>
-                                  </div>
-                                  <ReactECharts
-                                    option={screenFailureOption}
-                                    style={{ height: 120}}
-                                    onEvents={{'click': onInclusionChartClick}}/>
-                                </div>
-                              </Panel>
-                            </Collapse>
-                          </div>
-                        </div>
-                        </Col>
-                      </Row>
-                      <Row className="impact-summary-wrapper">
-                        <Col span={24}>
-                          <div className="impact-summary">
-                            <span>Inclusion Criteria</span>
-                            {activeTabKey === '3'? (
-                                <></>
-                              ) : (
-                                <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
-                                  Save
-                                </Button>
-                              )}
-                          </div>
-                          </Col>
-                      </Row>
-                      <Row>
-                        <Col span={24} >
-                          <div className="collapse-container">
-                          <div className="content-outer">
-                            <div id="inclusion-criteria" 
-                              className={`collapse-inner ${rollHeight == true ? "taller" : ""} ${collapsible == true ? "collapsed" : ""}`}>
-                              <div className="criteria-list">
-                                <div className="list-columns">
-                                  <span className="col-item col-item-before"> </span>
-                                  <span className="col-item col-item-first">Eligibility Criteria</span>
-                                  <span className="col-item col-item-middle">Values</span>
-                                  <span className="col-item col-item-last">Timeframe</span>
-                                  <span className="col-item col-item-after"> </span>
-                                  {/* <Row>
-                                    <Col span={2}><div className="col-item">S/No.</div></Col>
-                                    <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
-                                    <Col span={8}><div className="col-item">Values</div></Col>
-                                    <Col span={8}><div className="col-item">Timeframe</div></Col>
-                                  </Row> */}
+                                  </Panel>
+                                </Collapse>
+
+                                  <Collapse className="eventLib library box lastOne" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                    <Panel showArrow={false} header={eventLibHeader("Lab / Test", excluLabTest.length, "8")} key="8">
+                                      {excluLabTest.length>0 ? (
+                                            <div className="library box select-option-wrapper lastOne">
+                                            {excluLabTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
+                                              return (
+                                                <CriteriaOption
+                                                selectedEle = {excluLabTestElements}
+                                                  minValue={minValue}
+                                                  maxValue={maxValue}
+                                                  key={`lib_${idx}`}
+                                                  demographic={lib}
+                                                  index={3}
+                                                  idx={idx}
+                                                  handleOptionSelect={handleExcluOptionSelect}
+                                                ></CriteriaOption>
+                                              );
+                                            })}
+                                          </div>
+                                        ): (
+                                        <></>
+                                      )}
+                                    </Panel>
+                                  </Collapse>
                                 </div>
                               </div>
-                              <div className="sectionPanel">
-                                  <EditTable updateCriteria={updateInclusionCriteria} tableIndex={2}                                
-                                    data={demographicsTableData}
-                                    defaultActiveKey={defaultActiveKey}
-                                    collapsible={collapsible} panelHeader={"Demographics"} updateTrial={() => updateTrial(1, 1)}                                  
-                                  />
-                                  <EditTable updateCriteria={updateInclusionCriteria} tableIndex={3}
-                                    data={medConditionTableData}
-                                    defaultActiveKey={defaultActiveKey}
-                                    collapsible={collapsible} panelHeader={"Medical Condition"} updateTrial={() => updateTrial(1, 1)}                               
-                                  />
-                              <EditTable updateCriteria={updateInclusionCriteria} tableIndex={4} 
-                                    data={interventionTableData}                                  
-                                    defaultActiveKey={defaultActiveKey}
-                                    collapsible={collapsible} panelHeader={"Intervention"} updateTrial={() => updateTrial(1, 1)}                                   
-                                  />
-                              <EditTable updateCriteria={updateInclusionCriteria} tableIndex={5} 
-                                    data={labTestTableData}
-                                    defaultActiveKey={defaultActiveKey}
-                                    collapsible={collapsible} panelHeader={"Lab / Test"} updateTrial={() => updateTrial(1, 1)}/>
-                              </div>
-                            </div>
-                          </div>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </TabPane>
-            <TabPane tab="Exclusion Criteria" key="2" disabled={collapsible}>
-              <Row>
-                <Col span={excluCriteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '340px', minWidth: '340px'}}>
-                  <Row style={{backgroundColor: '#F8F8F8'}}>
-                    <Col span={24}>
-                      <div className="item-header">
-                        <span>Exclusion Criteria Library</span>
-                        <Tooltip title={'Collapse Exclusion Criteria Library'}>
-                          <CloseOutlined className="right-icon" onClick={() => setExcluCriteriaLib(0)}></CloseOutlined>
-                        </Tooltip>
-                        <Tooltip title={'View Historical Trial List'}>
-                          <HistoryOutlined className="right-icon" onClick={searchHistoricalTrials}></HistoryOutlined>
-                        </Tooltip>
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row style={{borderBottom:'10px solid #F8F8F8'}}>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                    <Col className="left-section">
-                      <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
-                        <Col span={16}>
-                          <div className="item-option">
-                            <span className="tip">Select criteria to add to Trial</span>
-                          </div>
-                        </Col>
-                        <Col span={8} style={{textAlign:'right'}}>
-                          <Row>
-                          <Col span={24}><span className="frequency" style={{ display: "block",width: "110px" }}>CRITERIA FREQUENCY</span></Col>
-                          </Row>
-                          <Row style={{width:'100%'}}>
-                          <Col span={24}>
-                            <div id="freqModal" ref={null} onClick={() => setExcluVisible(true)}>
-                              <span className="label">
-                                {excluMinValue}%-{excluMaxValue}%
-                              </span>
-                              <EditFilled className={`${excluVisible ? 'active' : ''}`}/>
-                            </div>
                             </Col>
                           </Row>
                         </Col>
+                        <Col flex="none">
+                          <div style={{ padding: '0 10px' }}></div>
+                        </Col>
                       </Row>
-                      
-                      {excluVisible ? (
-                      <div className="freqSection">
-                        <div className="title">
-                          {/* <span>Set Frequency</span> */}
-                          <CloseOutlined
-                            className="right-icon"
-                            onClick={() => setExcluVisible(false)}
-                          ></CloseOutlined>
-                        </div>
-                        <br/>
-                        <div className="content">
-                          <span>Criteria Frequency</span>
-                          <span style={{ float: "right", fontWeight: 'bold' }}>
-                            {excluMinValue}% - {excluMaxValue}%
-                          </span>
-                        </div>
-                        <Slider
-                          range={{ draggableTrack: true }}
-                          defaultValue={[excluMinValue, excluMaxValue]}
-                          tipFormatter={formatter}
-                          onAfterChange={getExcluFrequency}
-                        />
-                      </div>
-                      ) : (
-                      <></>
-                      )}
-                      {/* search bar */}
-                      <div className="searchSection">
-                        <div className="content">
-                          <Dropdown 
-                            overlay={menuExclu} 
-                            overlayClassName="searchbox"
-                            visible={visibleValueExclu}
-                            onVisibleChange={(visible: boolean) => {!visibleValueExclu?setVisibleValueExclu(true):setVisibleValueExclu(false)}}
-                          >
-                            <Input
-                                prefix={<SearchOutlined />}
-                                style={{ width: '100%', height: 37 }}
-                                allowClear
-                                onChange={onExcluTextChange}
-                                onClick={e => e.preventDefault()}
-                            />
-                          </Dropdown>
-                        </div>
-                      </div>
-                      <Row>
+                      <Row style={{backgroundColor: '#fff'}}>
                         <Col span={24}>
-                          <div className="content-outer content-sidebar">
-                            <div className="content-over">
-                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                <Panel showArrow={false} header={eventLibHeader("Demographics", excluDemographics.length, "5")} key="5">
-                                  {excluDemographics.length>0 ? (
-                                      <div className="library box select-option-wrapper">
-                                      {excluDemographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {
-                                        const activeType = excluDemographicsElements.find(e=> e['Eligibility Criteria']==demographic.Text) ?1:0
-                                        return (
-                                          <CriteriaOption
-                                            selectedEle = {excluDemographicsElements}
-                                            minValue={minValue}
-                                            maxValue={maxValue}
-                                            key={`demographic_${idx}`}
-                                            demographic={demographic}
-                                            index={0}
-                                            idx={idx}
-                                            handleOptionSelect={handleExcluOptionSelect}
-                                          ></CriteriaOption>
-                                        );
-                                      })}
-                                    </div>
-                                     ): (
-                                    <></>
-                                  )}
-                                </Panel>
-                              </Collapse>
-
-                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                <Panel showArrow={false} header={eventLibHeader("Medical Condition", excluMedCondition.length, "6")} key="6">
-                                  {excluMedCondition.length>0 ? (
-                                      <div className="library box select-option-wrapper">
-                                      {excluMedCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
-                                        return (
-                                          <CriteriaOption
-                                            selectedEle = {excluMedConditionElements}
-                                            minValue={minValue}
-                                            maxValue={maxValue}
-                                            key={`medCon_${idx}`}
-                                            demographic={medCon}
-                                            index={1}
-                                            idx={idx}
-                                            handleOptionSelect={handleExcluOptionSelect}
-                                          ></CriteriaOption>
-                                        );
-                                      })}
-                                    </div>
-                                     ): (
-                                    <></>
-                                  )}
-                                </Panel>
-                              </Collapse>
-
-                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                              <Panel showArrow={false} header={eventLibHeader("Intervention", excluIntervention.length, "7")} key="7">
-                                {excluIntervention.length>0 ? (
-                                  <div className="library box select-option-wrapper">
-                                  {excluIntervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {
-                                    
-                                    return (
-                                      <CriteriaOption
-                                        selectedEle = {excluInterventionElements}
-                                        minValue={minValue}
-                                        maxValue={maxValue}
-                                        key={`intervent_${idx}`}
-                                        demographic={intervent}
-                                        index={2}
-                                        idx={idx}
-                                        handleOptionSelect={handleExcluOptionSelect}
-                                      ></CriteriaOption>
-                                    );
-                                  })}
-                                </div> 
-                                  ): (
-                                <></>
-                              )}
-                              </Panel>
-                            </Collapse>
-
-                              <Collapse className="eventLib library box lastOne" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                <Panel showArrow={false} header={eventLibHeader("Lab / Test", excluLabTest.length, "8")} key="8">
-                                  {excluLabTest.length>0 ? (
-                                        <div className="library box select-option-wrapper lastOne">
-                                        {excluLabTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
-                                          return (
-                                            <CriteriaOption
-                                             selectedEle = {excluLabTestElements}
-                                              minValue={minValue}
-                                              maxValue={maxValue}
-                                              key={`lib_${idx}`}
-                                              demographic={lib}
-                                              index={3}
-                                              idx={idx}
-                                              handleOptionSelect={handleExcluOptionSelect}
-                                            ></CriteriaOption>
-                                          );
-                                        })}
+                          <div className="updateTrial">
+                            <Button className="update-btn" onClick={() => updateTrial(2, 1)}>
+                              UPDATE MY TRIAL
+                            </Button>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col flex="auto" className={`${ excluCollapsible ? "none-click" : "" } main-content-right`}>
+                      <Row style={{ paddingTop: '10px' }}>
+                        <Col flex="none">
+                          <div style={{ padding: '0 10px' }}></div>
+                        </Col>
+                        <Col flex="auto">
+                          <Row>
+                            <Col span={24}><span className="tab-title">Add Exclusion Criteria</span></Col>
+                          </Row>
+                          <Row>
+                            <Col span={24}>
+                            <span className="tip1-desc">
+                              Use the historical trial library on the left to build the
+                              I/E criteria for your scenario.
+                            </span>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col span={24}>
+                            <div className="option-item">
+                              <div>
+                                <Collapse activeKey={excluActiveKey} onChange={excluCallback} expandIconPosition="right" >
+                                  <Panel header={panelHeader()} key="1" forceRender={false} >
+                                    <div className="chart-container">
+                                      <div className="label">
+                                        <span>Click on each metric to filter</span>
                                       </div>
-                                     ): (
-                                    <></>
-                                  )}
-                                </Panel>
-                              </Collapse>
-                            </div>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                  </Row>
-                  <Row style={{backgroundColor: '#fff'}}>
-                    <Col span={24}>
-                      <div className="updateTrial">
-                        <Button className="update-btn" onClick={() => updateTrial(2, 1)}>
-                          UPDATE MY TRIAL
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
-                </Col>
-                <Col flex="auto" className={`${ excluCollapsible ? "none-click" : "" } main-content-right`}>
-                  <Row style={{ paddingTop: '10px' }}>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                    <Col flex="auto">
-                      <Row>
-                        <Col span={24}><span className="tab-title">Add Exclusion Criteria</span></Col>
-                      </Row>
-                      <Row>
-                        <Col span={24}>
-                        <span className="tip1-desc">
-                          Use the historical trial library on the left to build the
-                          I/E criteria for your scenario.
-                        </span>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col span={24}>
-                        <div className="option-item">
-                          <div>
-                            <Collapse activeKey={excluActiveKey} onChange={excluCallback} expandIconPosition="right" >
-                              <Panel header={panelHeader()} key="1" forceRender={false} >
-                                <div className="chart-container">
-                                  <div className="label">
-                                    <span>Click on each metric to filter</span>
-                                  </div>
-                                  <ReactECharts
-                                    option={excluAmendmentRateoption}
-                                    style={{ height: 120}}
-                                    onEvents={{'click': onExclusionChartClick}}/>
-                                </div>
-                                <div className="chart-container  box">
-                                  <div className="label">
-                                    <span>Click on each metric to filter</span>
-                                  </div>
-                                  <ReactECharts
-                                    option={excluScreenFailureOption}
-                                    style={{ height: 120}}
-                                    onEvents={{'click': onExclusionChartClick}}/>
-                                </div>
-                              </Panel>
-                            </Collapse>
-                          </div>
-                        </div>
-                        </Col>
-                      </Row>
-                      <Row className="impact-summary-wrapper"> 
-                        <Col span={24}>
-                          <div className="impact-summary">
-                            <span>Exclusion Criteria</span>
-                            {activeTabKey === '3'? (
-                              <></>
-                            ) : (
-                              <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
-                                Save
-                              </Button>
-                            )}
-                          </div>
-                          </Col>
-                      </Row>
-                      <Row>
-                        <Col span={24} >
-                          <div className="collapse-container">
-                          <div className="content-outer">
-                            <div id="inclusion-criteria" 
-                              className={`collapse-inner ${excluRollHeight == true ? "taller" : ""} ${excluCollapsible == true ? "collapsed" : ""}`}>
-                              <div className="criteria-list">
-                                <div className="list-columns">
-                                  <span className="col-item col-item-before"> </span>
-                                  <span className="col-item col-item-first">Eligibility Criteria</span>
-                                  <span className="col-item col-item-middle">Values</span>
-                                  <span className="col-item col-item-last">Timeframe</span>
-                                  <span className="col-item col-item-after"> </span>
-                                  {/* <Row>
-                                    <Col span={2}><div className="col-item">S/No.</div></Col>
-                                    <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
-                                    <Col span={8}><div className="col-item">Values</div></Col>
-                                    <Col span={8}><div className="col-item">Timeframe</div></Col>
-                                  </Row> */}
-                                </div>
-                              </div>
-                              <div className="sectionPanel">
-                              <EditTable updateCriteria={updateExclusionCriteria} tableIndex={2} 
-                                      data={excluDemographicsTableData} defaultActiveKey={excluDefaultActiveKey}
-                                      collapsible={excluCollapsible} panelHeader={"Demographics"}/>
-                              <EditTable updateCriteria={updateExclusionCriteria} tableIndex={3} 
-                                      data={excluMedConditionTableData} defaultActiveKey={excluDefaultActiveKey}
-                                      collapsible={excluCollapsible} panelHeader={"Medical Condition"}/>
-                              <EditTable updateCriteria={updateExclusionCriteria} tableIndex={4} 
-                                      data={excluInterventionTableData} defaultActiveKey={excluDefaultActiveKey}
-                                      collapsible={excluCollapsible} panelHeader={"Intervention"}/>
-                              <EditTable updateCriteria={updateExclusionCriteria} tableIndex={5} 
-                                      data={excluLabTestTableData} defaultActiveKey={excluDefaultActiveKey}
-                                      collapsible={excluCollapsible} panelHeader={"Lab / Test"}/>
+                                      <ReactECharts
+                                        option={excluAmendmentRateoption}
+                                        style={{ height: 120}}
+                                        onEvents={{'click': onExclusionChartClick}}/>
+                                    </div>
+                                    <div className="chart-container  box">
+                                      <div className="label">
+                                        <span>Click on each metric to filter</span>
+                                      </div>
+                                      <ReactECharts
+                                        option={excluScreenFailureOption}
+                                        style={{ height: 120}}
+                                        onEvents={{'click': onExclusionChartClick}}/>
+                                    </div>
+                                  </Panel>
+                                </Collapse>
                               </div>
                             </div>
-                          </div>
-                          </div>
+                            </Col>
+                          </Row>
+                          <Row className="impact-summary-wrapper"> 
+                            <Col span={24}>
+                              <div className="impact-summary">
+                                <span>Exclusion Criteria</span>
+                                {activeTabKey === '3'? (
+                                  <></>
+                                ) : (
+                                  <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
+                                    Save
+                                  </Button>
+                                )}
+                              </div>
+                              </Col>
+                          </Row>
+                          <Row>
+                            <Col span={24} >
+                              <div className="collapse-container">
+                              <div className="content-outer">
+                                <div id="inclusion-criteria" 
+                                  className={`collapse-inner ${excluRollHeight == true ? "taller" : ""} ${excluCollapsible == true ? "collapsed" : ""}`}>
+                                  <div className="criteria-list">
+                                    <div className="list-columns">
+                                      <span className="col-item col-item-before"> </span>
+                                      <span className="col-item col-item-first">Eligibility Criteria</span>
+                                      <span className="col-item col-item-middle">Values</span>
+                                      <span className="col-item col-item-last">Timeframe</span>
+                                      <span className="col-item col-item-after"> </span>
+                                      {/* <Row>
+                                        <Col span={2}><div className="col-item">S/No.</div></Col>
+                                        <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
+                                        <Col span={8}><div className="col-item">Values</div></Col>
+                                        <Col span={8}><div className="col-item">Timeframe</div></Col>
+                                      </Row> */}
+                                    </div>
+                                  </div>
+                                  <div className="sectionPanel">
+                                  <EditTable updateCriteria={updateExclusionCriteria} tableIndex={2} 
+                                          data={excluDemographicsTableData} defaultActiveKey={excluDefaultActiveKey}
+                                          collapsible={excluCollapsible} panelHeader={"Demographics"}/>
+                                  <EditTable updateCriteria={updateExclusionCriteria} tableIndex={3} 
+                                          data={excluMedConditionTableData} defaultActiveKey={excluDefaultActiveKey}
+                                          collapsible={excluCollapsible} panelHeader={"Medical Condition"}/>
+                                  <EditTable updateCriteria={updateExclusionCriteria} tableIndex={4} 
+                                          data={excluInterventionTableData} defaultActiveKey={excluDefaultActiveKey}
+                                          collapsible={excluCollapsible} panelHeader={"Intervention"}/>
+                                  <EditTable updateCriteria={updateExclusionCriteria} tableIndex={5} 
+                                          data={excluLabTestTableData} defaultActiveKey={excluDefaultActiveKey}
+                                          collapsible={excluCollapsible} panelHeader={"Lab / Test"}/>
+                                  </div>
+                                </div>
+                              </div>
+                              </div>
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col flex="none">
+                          <div style={{ padding: '0 10px' }}></div>
                         </Col>
                       </Row>
-                    </Col>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
                     </Col>
                   </Row>
-                </Col>
-              </Row>
-            </TabPane>
-            <TabPane tab="Enrollment Feasibility" key="3" disabled={collapsible}>
-            <Spin spinning={loadPatientFunnel} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
-            <Row>
-                <Col span={4}>
-                </Col>
-                <Col span={16}>
-                  <Row style={{ paddingTop: '10px' }}>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
+                </TabPane>
+                <TabPane tab="Enrollment Feasibility" key="3" disabled={collapsible}>
+                <Spin spinning={loadPatientFunnel} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
+                <Row>
+                    <Col span={4}>
                     </Col>
-                    <Col flex="auto" className="enrollment-right-section">
-                      <Row>
-                        <Col span={24}><span className="tab-title" onClick={()=>{getPatientFunnel()}}>Enrollment Feasibility</span></Col>
-                      </Row>
-                      <Row>
-                        <Col span={24}>
-                        <span className="tip1-desc">
-                          View the impact of selected inclusion exclusion criteria on propspective patient enrollment.
-                        </span>
+                    <Col span={16}>
+                      <Row style={{ paddingTop: '10px' }}>
+                        <Col flex="none">
+                          <div style={{ padding: '0 10px' }}></div>
                         </Col>
-                      </Row>
-                      <Row style={{paddingTop: 20}}>
-                        <Col span={24}>
-                          <span className="chart-title">My Protocol</span>
-                        </Col>
-                      </Row>
-                      <Row className="enroll-tab">
-                        <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('1')}>
-                          <Row><Col className="tab-item">
-                            <Row className="tab-desc">Patients Eligible&nbsp;
-                              {activeEnrollmentTabKey === '1'?(<CaretRightOutlined />):(<></>)}</Row>
-                            <Row className="sub-tab-title">{eliPatient}</Row>
-                            <Row className="tab-desc">{rateEliPatient} of Dataset</Row>
-                          </Col></Row>
-                        </Col>
-                        <Col span={1}></Col>
-                        <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '2' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('2')}>
-                          <Row><Col className="tab-item" span={24}>
-                            <Row className="tab-desc">Female patients eligible&nbsp;
-                                {activeEnrollmentTabKey === '2'?(<CaretRightOutlined />):(<></>)}</Row>
-                            <Row className="sub-tab-title">{rateFeEliPatient}</Row>
-                          </Col></Row>
-                        </Col>
-                        <Col span={1}></Col>
-                        <Col span={8} className={`chart-tab ${activeEnrollmentTabKey === '3' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('3')}>
-                          <Row><Col className="tab-item chart" span={24}>
-                            <Row className="tab-desc">Race & Ethnicity&nbsp;
-                                {activeEnrollmentTabKey === '3'?(<CaretRightOutlined />):(<></>)}</Row>
-                            <Row><Col span={24} className="legend-wrapper-father">
-                              <ReactECharts option={raceOption} style={{ height: 100}}></ReactECharts>
-                              
-                              {/* finalEthnicityData */}
-                              <div className="my-legend-wrapper">
-                                {finalEthnicityData
-                                  .sort((a, b) => {
-                                    return b.value - a.value;
-                                  })
-                                  .slice(0, 9)
-                                  .map((d, idx) => {
-                                    const chartData = finalEthnicityData;
-                                    function getChartData(name,p) {
-                                      let data = raceOption.series[0].data;
-                                      let total = 0
-                                      for(const d in data){
-                                        total += data[d].value
-                                      }
-                                      for (let i = 0, l = data.length; i < l; i++) {
-                                          if (data[i].name == name) {
-                                            if(data[i].value >0){
-                                              const p = (data[i].value/total * 100).toFixed(2)
-                                              if (name === "BLACK/AFRICAN AMERICAN") {
-                                                name = "BLACK/AFRICAN..."
-                                              } else if (name === "AMERICAN INDIAN/ALASKA NATIVE") {
-                                                name = "AMERICAN INDIA..."
-                                              } else if (name === "NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER") {
-                                                name = "NATIVE HAWAIIA..."
-                                              } else if (name ==="MULTI RACE ETHNICITY") {
-                                                name = "MULTI RACE ETH..."
-                                              }
-                                              return name + ' - ' + p + '%';
-                                            }else{
-                                              if (name === "BLACK/AFRICAN AMERICAN") {
-                                                name = "BLACK/AFRICAN AM..."
-                                              } else if (name === "AMERICAN INDIAN/ALASKA NATIVE") {
-                                                name = "AMERICAN INDIAN/..."
-                                              } else if (name === "NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER") {
-                                                name = "NATIVE HAWAIIAN/..."
-                                              } else if (name ==="MULTI RACE ETHNICITY") {
-                                                name = "MULTI RACE ETHNI..."
-                                              }
-                                              return name + ' - 0'
-                                            }
-                                          }
-                                      }
-                                    }
-                                    const sum = chartData.reduce(
-                                      (accumulator, currentValue) => {
-                                        return accumulator + currentValue.value;
-                                      },
-                                      0
-                                    );
-                                    let percent = ((d.value / sum) * 100).toFixed(2);
-                                    return (
-                                      <div className="custom-legend" key={d.name+idx} onClick={()=>onClickLegend(d.name, d.percent)}>
-                                        <span
-                                          className="my_legend"
-                                          style={{
-                                            backgroundColor: colorList[d.name],
-                                          }}
-                                        ></span>
-                                        <i className={"my_legend_text" + (d.selected ? " active": "")}>{getChartData(d.name,percent)}</i>
-                                      </div>
-                                    );
-                                  })}
-                              </div>
+                        <Col flex="auto" className="enrollment-right-section">
+                          <Row>
+                            <Col span={24}><span className="tab-title" onClick={()=>{getPatientFunnel()}}>Enrollment Feasibility</span></Col>
+                          </Row>
+                          <Row>
+                            <Col span={24}>
+                            <span className="tip1-desc">
+                              View the impact of selected inclusion exclusion criteria on propspective patient enrollment.
+                            </span>
+                            </Col>
+                          </Row>
+                          <Row style={{paddingTop: 20}}>
+                            <Col span={24}>
+                              <span className="chart-title">My Protocol</span>
+                            </Col>
+                          </Row>
+                          <Row className="enroll-tab">
+                            <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('1')}>
+                              <Row><Col className="tab-item">
+                                <Row className="tab-desc">Patients Eligible&nbsp;
+                                  {activeEnrollmentTabKey === '1'?(<CaretRightOutlined />):(<></>)}</Row>
+                                <Row className="sub-tab-title">{eliPatient}</Row>
+                                <Row className="tab-desc">{rateEliPatient} of Dataset</Row>
                               </Col></Row>
-                          </Col></Row>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col span={24} className="result-chart" style={{height:"100%"}}>
-                          {activeEnrollmentTabKey === '1' && (
-                            <>
-                              <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{eliPatientChartTitle||""}</div>
+                            </Col>
+                            <Col span={1}></Col>
+                            <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '2' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('2')}>
+                              <Row><Col className="tab-item" span={24}>
+                                <Row className="tab-desc">Female patients eligible&nbsp;
+                                    {activeEnrollmentTabKey === '2'?(<CaretRightOutlined />):(<></>)}</Row>
+                                <Row className="sub-tab-title">{rateFeEliPatient}</Row>
+                              </Col></Row>
+                            </Col>
+                            <Col span={1}></Col>
+                            <Col span={8} className={`chart-tab ${activeEnrollmentTabKey === '3' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('3')}>
+                              <Row><Col className="tab-item chart" span={24}>
+                                <Row className="tab-desc">Race & Ethnicity&nbsp;
+                                    {activeEnrollmentTabKey === '3'?(<CaretRightOutlined />):(<></>)}</Row>
+                                <Row><Col span={24} className="legend-wrapper-father">
+                                  <ReactECharts option={raceOption} style={{ height: 100}}></ReactECharts>
+                                  
+                                  {/* finalEthnicityData */}
+                                  <div className="my-legend-wrapper">
+                                    {finalEthnicityData
+                                      .sort((a, b) => {
+                                        return b.value - a.value;
+                                      })
+                                      .slice(0, 9)
+                                      .map((d, idx) => {
+                                        const chartData = finalEthnicityData;
+                                        function getChartData(name,p) {
+                                          let data = raceOption.series[0].data;
+                                          let total = 0
+                                          for(const d in data){
+                                            total += data[d].value
+                                          }
+                                          for (let i = 0, l = data.length; i < l; i++) {
+                                              if (data[i].name == name) {
+                                                if(data[i].value >0){
+                                                  const p = (data[i].value/total * 100).toFixed(2)
+                                                  if (name === "BLACK/AFRICAN AMERICAN") {
+                                                    name = "BLACK/AFRICAN..."
+                                                  } else if (name === "AMERICAN INDIAN/ALASKA NATIVE") {
+                                                    name = "AMERICAN INDIA..."
+                                                  } else if (name === "NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER") {
+                                                    name = "NATIVE HAWAIIA..."
+                                                  } else if (name ==="MULTI RACE ETHNICITY") {
+                                                    name = "MULTI RACE ETH..."
+                                                  }
+                                                  return name + ' - ' + p + '%';
+                                                }else{
+                                                  if (name === "BLACK/AFRICAN AMERICAN") {
+                                                    name = "BLACK/AFRICAN AM..."
+                                                  } else if (name === "AMERICAN INDIAN/ALASKA NATIVE") {
+                                                    name = "AMERICAN INDIAN/..."
+                                                  } else if (name === "NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER") {
+                                                    name = "NATIVE HAWAIIAN/..."
+                                                  } else if (name ==="MULTI RACE ETHNICITY") {
+                                                    name = "MULTI RACE ETHNI..."
+                                                  }
+                                                  return name + ' - 0'
+                                                }
+                                              }
+                                          }
+                                        }
+                                        const sum = chartData.reduce(
+                                          (accumulator, currentValue) => {
+                                            return accumulator + currentValue.value;
+                                          },
+                                          0
+                                        );
+                                        let percent = ((d.value / sum) * 100).toFixed(2);
+                                        return (
+                                          <div className="custom-legend" key={d.name+idx} onClick={()=>onClickLegend(d.name, d.percent)}>
+                                            <span
+                                              className="my_legend"
+                                              style={{
+                                                backgroundColor: colorList[d.name],
+                                              }}
+                                            ></span>
+                                            <i className={"my_legend_text" + (d.selected ? " active": "")}>{getChartData(d.name,percent)}</i>
+                                          </div>
+                                        );
+                                      })}
+                                  </div>
+                                  </Col></Row>
+                              </Col></Row>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col span={24} className="result-chart" style={{height:"100%"}}>
+                              {activeEnrollmentTabKey === '1' && (
+                                <>
+                                  <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{eliPatientChartTitle||""}</div>
 
-                              <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
-                                <div className="upperChart" >
-                                  <div className="title">
-                                    <span className="caption">
-                                      <span className="line line-l"></span>
-                                      Inclusion Criteria
-                                      <span className="line line-r"></span>
-                                    </span>
+                                  <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
+                                    <div className="upperChart" >
+                                      <div className="title">
+                                        <span className="caption">
+                                          <span className="line line-l"></span>
+                                          Inclusion Criteria
+                                          <span className="line line-r"></span>
+                                        </span>
+                                      </div>
+                                      <ReactECharts option={eliPatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
+                                    </div>
+                                    <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
+                                      <div className="title">
+                                        <span className="caption">
+                                          <span className="line line-l"></span>
+                                          Exclusion Criteria   
+                                          <span className="line line-r"></span>
+                                        </span>
+                                      </div>
+                                      <ReactECharts option={eliPatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }}></ReactECharts>
+                                    </div>
                                   </div>
-                                  <ReactECharts option={eliPatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
-                                </div>
-                                <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
-                                  <div className="title">
-                                    <span className="caption">
-                                      <span className="line line-l"></span>
-                                      Exclusion Criteria   
-                                      <span className="line line-r"></span>
-                                    </span>
+                                </>
+                              )}
+                              {activeEnrollmentTabKey === '2' && (
+                                <>
+                                  <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{fePatientChartTitle||""}</div>
+                                  <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
+                                    <div className="upperChart">
+                                      <div className="title">
+                                        <span className="caption">
+                                          <span className="line line-l"></span>
+                                          Inclusion Criteria
+                                          <span className="line line-r"></span>
+                                        </span>
+                                      </div>
+                                      <ReactECharts option={fePatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
+                                    </div>
+                                    <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
+                                      <div className="title">
+                                        <span className="caption">
+                                          <span className="line line-l"></span>
+                                          Exclusion Criteria   <span className="line line-r"></span>
+                                        </span>
+                                      </div>
+                                      <ReactECharts option={fePatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }}></ReactECharts>
+                                    </div>
                                   </div>
-                                  <ReactECharts option={eliPatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }}></ReactECharts>
-                                </div>
-                              </div>
-                            </>
-                          )}
-                          {activeEnrollmentTabKey === '2' && (
-                            <>
-                              <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{fePatientChartTitle||""}</div>
-                              <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
-                                <div className="upperChart">
-                                  <div className="title">
-                                    <span className="caption">
-                                      <span className="line line-l"></span>
-                                      Inclusion Criteria
-                                      <span className="line line-r"></span>
-                                    </span>
+                                </>
+                              )}
+                              {activeEnrollmentTabKey === '3' && (
+                                <>
+                                  <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{ethPatientChartTitle||""}</div>
+                                  <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
+                                    <div className="upperChart">
+                                      <div className="title">
+                                        <span className="caption">
+                                          <span className="line line-l"></span>
+                                          Inclusion Criteria
+                                          <span className="line line-r"></span>
+                                        </span>
+                                      </div>
+                                      <ReactECharts option={ethPatientOption} style={{ height: funnelChartheight, marginBottom: 15}} ref={eChartsRef}></ReactECharts>
+                                    </div>
+                                    <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
+                                      <div className="title">
+                                        <span className="caption">
+                                          <span className="line line-l"></span>
+                                          Exclusion Criteria   <span className="line line-r"></span>
+                                        </span>
+                                      </div>
+                                      <ReactECharts option={ethPatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }} ref={eChartsBelowRef}></ReactECharts>
                                   </div>
-                                  <ReactECharts option={fePatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
-                                </div>
-                                <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
-                                  <div className="title">
-                                    <span className="caption">
-                                      <span className="line line-l"></span>
-                                      Exclusion Criteria   <span className="line line-r"></span>
-                                    </span>
                                   </div>
-                                  <ReactECharts option={fePatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }}></ReactECharts>
-                                </div>
-                              </div>
-                            </>
-                          )}
-                          {activeEnrollmentTabKey === '3' && (
-                            <>
-                              <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{ethPatientChartTitle||""}</div>
-                              <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
-                                <div className="upperChart">
-                                  <div className="title">
-                                    <span className="caption">
-                                      <span className="line line-l"></span>
-                                      Inclusion Criteria
-                                      <span className="line line-r"></span>
-                                    </span>
-                                  </div>
-                                  <ReactECharts option={ethPatientOption} style={{ height: funnelChartheight, marginBottom: 15}} ref={eChartsRef}></ReactECharts>
-                                </div>
-                                <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
-                                  <div className="title">
-                                    <span className="caption">
-                                      <span className="line line-l"></span>
-                                      Exclusion Criteria   <span className="line line-r"></span>
-                                    </span>
-                                  </div>
-                                  <ReactECharts option={ethPatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }} ref={eChartsBelowRef}></ReactECharts>
-                              </div>
-                              </div>
-                            </>
-                          )}
+                                </>
+                              )}
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col flex="none">
+                          <div style={{ padding: '0 10px' }}></div>
                         </Col>
                       </Row>
                     </Col>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
+                    <Col span={4}></Col>
                   </Row>
-                </Col>
-                <Col span={4}></Col>
-              </Row>
-              </Spin>
-            </TabPane>
-          </Tabs>
-        </div>
-      </div>
+                  </Spin>
+                </TabPane>
+              </Tabs>
+            </div>
+          </div>
 
-      ) : (
-              <div className="ie-container"><ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} history={props.history} setVisibleSOA={showSOAModal} getTrialById={getTrialById}/></div>
-      )}
+          } 
+          {processStep === 1 && 
+          <div>endpoint</div>
+          }
+           { processStep === 2 &&
+                  <div className="ie-container"><ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} history={props.history} setVisibleSOA={showSOAModal} getTrialById={getTrialById}/></div>
+          }
+        </div>
       </Spin>
       <Drawer title="Historical Trial List" placement="right" onClose={handleCancel} visible={showHistorical}>
         <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
