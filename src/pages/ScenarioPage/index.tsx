@@ -2174,6 +2174,21 @@ const ScenarioPage = (props) => {
       return str;
     }
 
+    // it seems like handleExport
+    const handleEndpointExport = (fileType) => {
+      console.log("handleEndpointExport");
+      
+      switch(fileType){
+        case 'csv':
+          // csvExport();
+          break;
+        case 'pdf':
+          // pdfMake()
+          break;
+        default: break;
+      }
+    }
+
     const updateInclusionCriteria = (newData, index) => {
       setReloadPTData(true)
       switch(index){
@@ -2448,6 +2463,7 @@ const ScenarioPage = (props) => {
         message.success("Save successfully");
       }
     }
+
     const submitCriteria = async () => {
       setPageLoading(true)
       let newScenario = trialRecord.scenarios.find( i=> i['scenario_id'] == scenarioId)
@@ -2606,6 +2622,15 @@ const ScenarioPage = (props) => {
         props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})
         message.success("Save successfully");
       }
+    }
+
+    // saveCriteria
+    const saveEndpoint = () => {
+      console.log("saveEndpoint")
+    }
+    // submitCriteria
+    const submitEndpoint = () => {
+      console.log("submitEndpoint")
     }
 
     function formatNumber (str){
@@ -3000,6 +3025,7 @@ const ScenarioPage = (props) => {
     setTrialRecord(newTrial)
     // setProcessStep(0)
     setSubmitType(0)
+    message.success("Save successfully");
   }
 
   const downloadSOA = async () => {
@@ -4621,19 +4647,19 @@ const ScenarioPage = (props) => {
                 <Dropdown.Button style={{zIndex: 1}}
                 overlay={
                   <Menu>
-                    <Menu.Item key="pdf" onClick={() => handleExport('pdf')}>PDF</Menu.Item>
-                    <Menu.Item key="csv" onClick={() => handleExport('csv')}>CSV</Menu.Item>
+                    <Menu.Item key="pdf" onClick={() => handleEndpointExport('pdf')}>PDF</Menu.Item>
+                    <Menu.Item key="csv" onClick={() => handleEndpointExport('csv')}>CSV</Menu.Item>
                   </Menu>
                 }
                   icon={<DownOutlined />}>
                   {/* <DownloadOutlined /> */}
                   EXPORT AS
                 </Dropdown.Button>
-                <Button className="save-btn"  onClick={saveCriteria}>
+                <Button className="save-btn"  onClick={saveEndpoint}>
                     Save And Finish Later
                 </Button>
                 {/* <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}> */}
-                <Button type="primary" className="submit-btn"   onClick={submitCriteria}>
+                <Button type="primary" className="submit-btn"   onClick={submitEndpoint}>
                     Submit
                 </Button>
               </span>
