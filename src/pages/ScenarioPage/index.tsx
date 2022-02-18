@@ -13,6 +13,7 @@ import CriteriaOption from "../../components/CriteriaOption";
 import EditTable from "../../components/EditTable";
 import SelectableTable from "../../components/SelectableTable";
 import ScheduleEvents from "../../components/ScheduleEvents";
+import { setFlagsFromString } from 'v8';
 
 
 const { Panel } = Collapse;
@@ -108,6 +109,8 @@ const ScenarioPage = (props) => {
         (state, newState) => ({ ...state, ...newState }),
         { ...initialScenario }
     );
+
+    const [str, setStr] = useState('')
 
     const [scenarioId, setScenarioId] = useState('')
     const [editFlag, setEditFlag] = useState(false)
@@ -2096,6 +2099,21 @@ const ScenarioPage = (props) => {
       }
     }
 
+    const handleSOAExportClick = () => {
+      let exportContent = "\uFEFF";
+      let blob = new Blob([exportContent + str], {
+        type: "text/plain;charset=utf-8"
+      });
+  
+      const date = Date().split(" ");
+      const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
+      FileSaver.saveAs(blob, `SoA_${dateStr}.csv`);
+
+    }
+    const handleSOAExport = (str) => {
+      setStr(str) 
+    }
+
     const csvExport = async () => {
       let str='';
 
@@ -3590,7 +3608,7 @@ const ScenarioPage = (props) => {
   const clickEnroll = () => {
     changeActiveTabKey('3')
     setProcessStep(0)
-    setSubmitType(1)
+    // setSubmitType(1)
   }
 
   const clickEndpoint = () => {
@@ -3669,59 +3687,49 @@ const ScenarioPage = (props) => {
           {processStep === 0 &&
           <div className="ie-container">
             <div className="process-container">
-                    <span className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
-                        <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
-                    </span>
-                    <span className="content-title">
-                      {activeTabKey === '1' && <>
-                        <span className="tab-title">Add Inclusion Criteria</span>
-                        <span className="tip1-desc">
-                        Use the historical trial library on the left to build the I/E criteria for your trial scenario.
-                        </span>
-                      </>}
-                      {activeTabKey === '2' && <>
-                        <span className="tab-title">Add Exclusion Criteria</span>
-                        <span className="tip1-desc">
-                        Use the historical trial library on the left to build the I/E criteria for your trial scenario.
-                        </span>
-                      </>}
-                      {activeTabKey === '3' && <>
-                        <span className="tab-title">Enrollment Feasibility</span>
-                        <span className="tip1-desc">
-                        View the impact of selected inclusion exclusion criteria on prospective patient enrollment
-                        </span>
-                      </>}
-                    </span>
-                    <span className="button-area">
-                      <Dropdown.Button style={{zIndex: 1}}
-                      overlay={
-                        <Menu>
-                          <Menu.Item key="pdf" onClick={() => handleExport('pdf')}>PDF</Menu.Item>
-                          <Menu.Item key="csv" onClick={() => handleExport('csv')}>CSV</Menu.Item>
-                        </Menu>
-                      }
-                        icon={<DownOutlined />}>
-                        {/* <DownloadOutlined /> */}
-                        EXPORT AS
-                      </Dropdown.Button>
-                      <Button className="save-btn"  onClick={saveCriteria}>
-                          Save And Finish Later
-                      </Button>
-                      {/* <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}> */}
-                      <Button type="primary" className="submit-btn"   onClick={submitCriteria}>
-                          Submit
-                      </Button>
-                    </span>
-            </div>
-            <div className="export-container">
-              <Row>
-                <Col span={17}>
-                  <div style={{ bottom: '0',height: '50px' }}></div>
-                </Col>
-                <Col span={7} style={{paddingRight: '20px'}}>
-                  
-                </Col>
-              </Row>
+              <span className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
+                  <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
+              </span>
+              <span className="content-title">
+                {activeTabKey === '1' && <>
+                  <span className="tab-title">Add Inclusion Criteria</span>
+                  <span className="tip1-desc">
+                  Use the historical trial library on the left to build the I/E criteria for your trial scenario.
+                  </span>
+                </>}
+                {activeTabKey === '2' && <>
+                  <span className="tab-title">Add Exclusion Criteria</span>
+                  <span className="tip1-desc">
+                  Use the historical trial library on the left to build the I/E criteria for your trial scenario.
+                  </span>
+                </>}
+                {activeTabKey === '3' && <>
+                  <span className="tab-title">Enrollment Feasibility</span>
+                  <span className="tip1-desc">
+                  View the impact of selected inclusion exclusion criteria on prospective patient enrollment
+                  </span>
+                </>}
+              </span>
+              <span className="button-area">
+                <Dropdown.Button style={{zIndex: 1}}
+                overlay={
+                  <Menu>
+                    <Menu.Item key="pdf" onClick={() => handleExport('pdf')}>PDF</Menu.Item>
+                    <Menu.Item key="csv" onClick={() => handleExport('csv')}>CSV</Menu.Item>
+                  </Menu>
+                }
+                  icon={<DownOutlined />}>
+                  {/* <DownloadOutlined /> */}
+                  EXPORT AS
+                </Dropdown.Button>
+                <Button className="save-btn"  onClick={saveCriteria}>
+                    Save And Finish Later
+                </Button>
+                {/* <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}> */}
+                <Button type="primary" className="submit-btn"   onClick={submitCriteria}>
+                    Submit
+                </Button>
+              </span>
             </div>
             <div className="tab-container">
               <div className={`side-toolbar ${criteriaLib > 0 || activeTabKey != "1" ? 'hidden' : ''}`} onClick={()=> setCriteriaLib(6)}>
@@ -4596,13 +4604,79 @@ const ScenarioPage = (props) => {
               </Tabs>
             </div>
           </div>
-
           } 
           {processStep === 1 && 
-          <div>endpoint</div>
+          <div className="endpoint-container">
+            <div className="process-container">
+              <span className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
+                  <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
+              </span>
+              <span className="content-title">
+                  <span className="tab-title">Protocol Endpoint</span>
+                  <span className="tip1-desc">
+                  Use the historical trial library on the left to build the endpoint criteria for your trial scenario.
+                  </span>
+              </span>
+              <span className="button-area">
+                <Dropdown.Button style={{zIndex: 1}}
+                overlay={
+                  <Menu>
+                    <Menu.Item key="pdf" onClick={() => handleExport('pdf')}>PDF</Menu.Item>
+                    <Menu.Item key="csv" onClick={() => handleExport('csv')}>CSV</Menu.Item>
+                  </Menu>
+                }
+                  icon={<DownOutlined />}>
+                  {/* <DownloadOutlined /> */}
+                  EXPORT AS
+                </Dropdown.Button>
+                <Button className="save-btn"  onClick={saveCriteria}>
+                    Save And Finish Later
+                </Button>
+                {/* <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}> */}
+                <Button type="primary" className="submit-btn"   onClick={submitCriteria}>
+                    Submit
+                </Button>
+              </span>
+            </div>
+            <div className="endpoint-content">
+              <br/>
+              endpoint content
+            </div>
+          </div>
           }
            { processStep === 2 &&
-                  <div className="ie-container"><ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} history={props.history} setVisibleSOA={showSOAModal} getTrialById={getTrialById}/></div>
+                  <div className="ie-container">
+                    <div className="process-container">
+                      <span className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
+                          <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
+                      </span>
+                      <span className="content-title">
+                          <span className="tab-title">Schedule of Events</span>
+                          <span className="tip1-desc">
+                          Use the historical event library on the left to build the Schedule of Events.
+                          </span>
+                      </span>
+                      <span className="button-area">
+                        <Dropdown.Button style={{zIndex: 1}}
+                        overlay={
+                          <Menu>
+                            <Menu.Item key="csv" onClick={handleSOAExportClick}>CSV</Menu.Item>
+                          </Menu>
+                        }
+                          icon={<DownOutlined />}>
+                          {/* <DownloadOutlined /> */}
+                          EXPORT AS
+                        </Dropdown.Button>
+                        <Button className="save-btn"  onClick={()=> setSubmitType(1)}>
+                            Save And Finish Later
+                        </Button>
+                        <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}>
+                            Submit
+                        </Button>
+                      </span>
+                    </div>
+                    <ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} handleSOAExport={handleSOAExport} history={props.history} setVisibleSOA={showSOAModal} getTrialById={getTrialById}/>
+                  </div>
           }
         </div>
       </Spin>

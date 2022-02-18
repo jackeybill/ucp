@@ -217,6 +217,10 @@ const EventList = (props) => {
     }
   }, [props.submitType])
 
+  useEffect(() => {
+    props.exportEvent()
+  })
+
   const onEndpointChange = (value, evt,idx) => {
     const Categories = evt.Categories
     let tmpCategories;

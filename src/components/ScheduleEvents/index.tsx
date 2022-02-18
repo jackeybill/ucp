@@ -1165,14 +1165,15 @@ const ScheduleEvents = (props) => {
     str += getEventContent(CATEGORY_QUESTIONNAIRES, addedQuestionnaires)
     str += getEventContent(CATEGORY_STUDY_PROCEDURES, addedStudyProcedures)
 
-    let exportContent = "\uFEFF";
-      let blob = new Blob([exportContent + str], {
-        type: "text/plain;charset=utf-8"
-      });
+    props.handleSOAExport(str)
+    // let exportContent = "\uFEFF";
+    //   let blob = new Blob([exportContent + str], {
+    //     type: "text/plain;charset=utf-8"
+    //   });
   
-      const date = Date().split(" ");
-      const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
-      FileSaver.saveAs(blob, `SoA_${dateStr}.csv`);
+    //   const date = Date().split(" ");
+    //   const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
+    //   FileSaver.saveAs(blob, `SoA_${dateStr}.csv`);
   }
 
   function getEventContent(catrgory, events) {
@@ -1431,6 +1432,7 @@ const ScheduleEvents = (props) => {
                     <EventList
                     endpoints={endpoints}
                       saveEvents={saveEvents}
+                      exportEvent={exportEvent}
                       handleEventChange={handleEventChange}
                       numbers={editNumbers}
                       // updateNumbers={setNumbers}
