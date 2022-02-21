@@ -3745,9 +3745,9 @@ const ScenarioPage = (props) => {
                   {/* <DownloadOutlined /> */}
                   EXPORT AS
                 </Dropdown.Button>
-                <Button className="save-btn"  onClick={saveCriteria}>
+                {/* <Button className="save-btn"  onClick={saveCriteria}>
                     Save And Finish Later
-                </Button>
+                </Button> */}
                 {/* <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}> */}
                 <Button type="primary" className="submit-btn"   onClick={submitCriteria}>
                     Submit
@@ -4652,9 +4652,9 @@ const ScenarioPage = (props) => {
                   {/* <DownloadOutlined /> */}
                   EXPORT AS
                 </Dropdown.Button>
-                <Button className="save-btn"  onClick={saveEndpoint}>
+                {/* <Button className="save-btn"  onClick={saveEndpoint}>
                     Save And Finish Later
-                </Button>
+                </Button> */}
                 {/* <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}> */}
                 <Button type="primary" className="submit-btn"   onClick={submitEndpoint}>
                     Submit
@@ -4690,9 +4690,9 @@ const ScenarioPage = (props) => {
                           {/* <DownloadOutlined /> */}
                           EXPORT AS
                         </Dropdown.Button>
-                        <Button className="save-btn"  onClick={()=> setSubmitType(1)}>
+                        {/* <Button className="save-btn"  onClick={()=> setSubmitType(1)}>
                             Save And Finish Later
-                        </Button>
+                        </Button> */}
                         <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}>
                             Submit
                         </Button>

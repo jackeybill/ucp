@@ -183,7 +183,8 @@
                     height: 50px;
                     width: 400px;
                     position: absolute;
-                    right:20px;
+                    // right:20px;
+                    right: -140px;
                     top:9px;
                     
                     .ant-btn-group.ant-dropdown-button{
@@ -221,7 +222,8 @@
 
                     .submit-btn {
                         position: absolute;
-                        right: 0;
+                        // right: 0;
+                        right: 160px;
                         top: 0;
                     }
 
