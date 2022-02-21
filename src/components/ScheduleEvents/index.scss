@@ -1,8 +1,9 @@
 @import "../../styles/variables.scss";
 
-.tab-container{
+.soa-content{
     width: 100%;
-    min-height: calc(100vh - 156px);
+    // min-height: calc(100vh - 156px);
+    min-height: calc(100vh - 118px);
 
     .side-toolbar{
         position: fixed;

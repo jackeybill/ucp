@@ -3766,7 +3766,7 @@ const ScenarioPage = (props) => {
               <Tabs onChange={changeActiveTabKey} activeKey={activeTabKey} centered>
                 <TabPane tab="Inclusion Criteria" key="1">
                   <Row>
-                    <Col span={criteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '340px', minWidth: '340px'}}>
+                    <Col span={criteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '300px', minWidth: '300px'}}>
                       <Row style={{backgroundColor: '#F8F8F8'}}>
                         <Col span={24}>
                           <div className="item-header">
@@ -4091,7 +4091,7 @@ const ScenarioPage = (props) => {
                 </TabPane>
                 <TabPane tab="Exclusion Criteria" key="2" disabled={collapsible}>
                   <Row>
-                    <Col span={excluCriteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '340px', minWidth: '340px'}}>
+                    <Col span={excluCriteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '300px', minWidth: '300px'}}>
                       <Row style={{backgroundColor: '#F8F8F8'}}>
                         <Col span={24}>
                           <div className="item-header">
@@ -4309,17 +4309,6 @@ const ScenarioPage = (props) => {
                         </Col>
                         <Col flex="auto">
                           <Row>
-                            <Col span={24}><span className="tab-title">Add Exclusion Criteria</span></Col>
-                          </Row>
-                          <Row>
-                            <Col span={24}>
-                            <span className="tip1-desc">
-                              Use the historical trial library on the left to build the
-                              I/E criteria for your scenario.
-                            </span>
-                            </Col>
-                          </Row>
-                          <Row>
                             <Col span={24}>
                             <div className="option-item">
                               <div>
@@ -4422,21 +4411,11 @@ const ScenarioPage = (props) => {
                           <div style={{ padding: '0 10px' }}></div>
                         </Col>
                         <Col flex="auto" className="enrollment-right-section">
-                          <Row>
-                            <Col span={24}><span className="tab-title" onClick={()=>{getPatientFunnel()}}>Enrollment Feasibility</span></Col>
-                          </Row>
-                          <Row>
-                            <Col span={24}>
-                            <span className="tip1-desc">
-                              View the impact of selected inclusion exclusion criteria on propspective patient enrollment.
-                            </span>
-                            </Col>
-                          </Row>
-                          <Row style={{paddingTop: 20}}>
+                          {/* <Row style={{paddingTop: 20}}>
                             <Col span={24}>
                               <span className="chart-title">My Protocol</span>
                             </Col>
-                          </Row>
+                          </Row> */}
                           <Row className="enroll-tab">
                             <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('1')}>
                               <Row><Col className="tab-item">
@@ -4663,43 +4642,43 @@ const ScenarioPage = (props) => {
             </div>
             <div className="endpoint-content">
               <br/>
-              endpoint content
+              <br/>
             </div>
           </div>
           }
            { processStep === 2 &&
-                  <div className="ie-container">
-                    <div className="process-container">
-                      <span className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
-                          <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
-                      </span>
-                      <span className="content-title">
-                          <span className="tab-title">Schedule of Events</span>
-                          <span className="tip1-desc">
-                          Use the historical event library on the left to build the Schedule of Events.
-                          </span>
-                      </span>
-                      <span className="button-area">
-                        <Dropdown.Button style={{zIndex: 1}}
-                        overlay={
-                          <Menu>
-                            <Menu.Item key="csv" onClick={handleSOAExportClick}>CSV</Menu.Item>
-                          </Menu>
-                        }
-                          icon={<DownOutlined />}>
-                          {/* <DownloadOutlined /> */}
-                          EXPORT AS
-                        </Dropdown.Button>
-                        {/* <Button className="save-btn"  onClick={()=> setSubmitType(1)}>
-                            Save And Finish Later
-                        </Button> */}
-                        <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}>
-                            Submit
-                        </Button>
-                      </span>
-                    </div>
-                    <ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} handleSOAExport={handleSOAExport} history={props.history} setVisibleSOA={showSOAModal} getTrialById={getTrialById}/>
-                  </div>
+          <div className="soa-container">
+            <div className="process-container">
+              <span className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
+                  <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
+              </span>
+              <span className="content-title">
+                  <span className="tab-title">Schedule of Events</span>
+                  <span className="tip1-desc">
+                  Use the historical event library on the left to build the Schedule of Events.
+                  </span>
+              </span>
+              <span className="button-area">
+                <Dropdown.Button style={{zIndex: 1}}
+                overlay={
+                  <Menu>
+                    <Menu.Item key="csv" onClick={handleSOAExportClick}>CSV</Menu.Item>
+                  </Menu>
+                }
+                  icon={<DownOutlined />}>
+                  {/* <DownloadOutlined /> */}
+                  EXPORT AS
+                </Dropdown.Button>
+                {/* <Button className="save-btn"  onClick={()=> setSubmitType(1)}>
+                    Save And Finish Later
+                </Button> */}
+                <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}>
+                    Submit
+                </Button>
+              </span>
+            </div>
+            <ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} handleSOAExport={handleSOAExport} history={props.history} setVisibleSOA={showSOAModal} getTrialById={getTrialById}/>
+          </div>
           }
         </div>
       </Spin>

@@ -69,7 +69,7 @@ const ScheduleEvents = (props) => {
   const eventsConfigure = scenario['Schedule of Events']
   const [hiddeTags, setHiddeTags] = useState(true)
   const [showConfigure, setShowConfigure] = useState(false)
-  const [eventLib, setEventLib] = useState("340px")
+  const [eventLib, setEventLib] = useState("300px")
   const [activeCollapse, setActiveCollapse] = useState(['1'])
   const [numbers, setNumbers] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -1208,8 +1208,8 @@ const ScheduleEvents = (props) => {
    
 
   return (
-    <div className="tab-container">
-      <div className={`side-toolbar ${eventLib !== "0px" ? 'hidden' : ''}`} onClick={()=> setEventLib("340px")}>
+    <div className="soa-content">
+      <div className={`side-toolbar ${eventLib !== "0px" ? 'hidden' : ''}`} onClick={()=> setEventLib("300px")}>
         <div className="panel-label">Event Library</div>
         <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
       </div>
