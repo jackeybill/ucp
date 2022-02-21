@@ -130,7 +130,8 @@
         .process-container {
             height: 50px;
             line-height: 50px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-top: 1px solid #eee;
+            box-shadow: 0px 5px 10px -5px rgba(0, 0, 0, 0.2);
             background-color: #fff;
             position: relative;
                 .action-title,  .action-title:hover{
@@ -248,7 +249,6 @@
         }
         
         .ie-container{
-            border-top: 1px solid #eee;
             min-height: calc(100vh - 156px);
             overflow: hidden;
            
