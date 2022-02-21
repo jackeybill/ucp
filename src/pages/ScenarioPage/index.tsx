@@ -3658,26 +3658,23 @@ const ScenarioPage = (props) => {
           <div  className="nav-section-wrapper" >
               <div className="ie-wrapper">
                 <div className="ie-text">Inclusion / <br></br>Exclusion Criteria</div>
-                  {activeTabKey === '1' && <Button  className="nav-btn ie-btn selected" onClick={clickInclu}>
+                  <Button  className={"nav-btn ie-btn" + (activeTabKey === '1'?" selected": "")} onClick={clickInclu}>
                       Inclusion Criteria
-                  </Button>}
-                  {activeTabKey !== '1' && <Button  className="nav-btn ie-btn" onClick={clickInclu}>
-                      Inclusion Criteria
-                  </Button>}
-                  <Button  className="nav-btn ie-btn" onClick={clickExclu}>
+                  </Button>
+                  <Button  className={"nav-btn ie-btn" + (activeTabKey === '2'?" selected": "")} onClick={clickExclu}>
                       Exclusion Criteria
                   </Button>
-                  <Button  className="nav-btn ie-btn" onClick={clickEnroll}>
+                  <Button  className={"nav-btn ie-btn" + (activeTabKey === '3'?" selected": "")} onClick={clickEnroll}>
                       Enrollment Feasibility
                   </Button>
               </div>
               <div className="endpoint-wrapper">
-                  <Button className="nav-btn other-btn" onClick={clickEndpoint}>
+                  <Button className={"nav-btn other-btn" + (activeTabKey === '4'?" selected": "")} onClick={clickEndpoint}>
                       Protocol Endpoint
                   </Button>
               </div>
               <div className="soe-wrapper">
-                <Button className="nav-btn other-btn" onClick={clickSOE}>
+                <Button className={"nav-btn other-btn" + (activeTabKey === '5'?" selected": "")} onClick={clickSOE}>
                     Schedule Of Events
                 </Button>
               </div>
