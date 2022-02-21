@@ -3981,15 +3981,9 @@ const ScenarioPage = (props) => {
                           <div style={{ padding: '0 10px' }}></div>
                         </Col>
                         <Col flex="auto">
-                          <Row>
+                          {/* <Row>
                             <Col span={24}></Col>
-                          </Row>
-
-                          <Row>
-                            <Col span={24}>
-                            
-                            </Col>
-                          </Row>
+                          </Row> */}
                           <Row>
                             <Col span={24}>
                             <div className="option-item">

@@ -470,7 +470,7 @@
                         // color:#333;
         
                         .criteria-option-wrapper {
-                            width: 310px;
+                            width: 270px;
                             padding: 6px 15px 6px 20px;
                             border-bottom: 1px solid #E5E5E5;
                             border-left: 1px solid #E5E5E5;
@@ -488,9 +488,27 @@
                                 justify-content: space-between;
                                 color: #4E4E4E;
                                 font-size: 14px;
-                                .select-text {
+                                .left-wrapper {
+                                  width: 218px;
+                                  display: flex;
+                                  justify-content: space-between;
+                                  .select-text {
                                     width: 250px;
+                                  }  
+                                  .right-add {
+                                    color:#CA4A04;
+                                  }
+        
+                                  .right-icon {
+                                    color:#3193E5;
+                                  }
                                 }
+                                .more-button {
+                                    color:#7C7C7C;
+                                    padding:0 7px;
+                                    margin-top: -2px;
+                                }
+                                
                             }
             
                             .select-option:hover {
@@ -501,9 +519,8 @@
                                 color:#3193E5;
                                 // border-color: #3193E5;
                             }
-    
-                            .right-icon {
-                            }
+
+                           
             
                         }
                    

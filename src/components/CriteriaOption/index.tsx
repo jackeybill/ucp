@@ -1,10 +1,11 @@
 import React, { useState, useReducer, useEffect } from "react";
 import { Input, Button, Tooltip } from "antd";
-import { CheckOutlined } from "@ant-design/icons";
+import { CheckOutlined, RightOutlined, LeftOutlined  } from "@ant-design/icons";
 
 const CriteriaOption = (props) => {
   const domain = props.demographic;
   const [activeType, setActiveType] = useState(0);
+  const [activeMore, setActiveMore] = useState(0);
 
   useEffect(() => {
     const res = props.selectedEle.findIndex((e) => {
@@ -23,6 +24,14 @@ const CriteriaOption = (props) => {
     }
   };
 
+  const handleMore = (val, e) => {
+    if (activeMore == 0) {
+      setActiveMore(1);
+    } else {
+      setActiveMore(0);
+    }
+  }
+
   return (
     <div className="criteria-option-wrapper">
       {activeType == 0 ? (
@@ -33,20 +42,32 @@ const CriteriaOption = (props) => {
         >
           <div
             className="select-option"
-            onClick={(e) => handleOptionSelect(domain, e)}
           >
-            <span className="select-text">
-              {domain.Text}
-             </span>
+            <span className="left-wrapper" onClick={(e) => handleOptionSelect(domain, e)}>
+              <span className="select-text">
+                {domain.Text}
+              </span>
+              <span className="right-add">
+                Add
+              </span>
+            </span>
+            <span className="more-button" onClick={(e) => handleMore(domain, e)}>
+              {activeMore== 0 ?<RightOutlined />:<LeftOutlined />}
+            </span>
           </div>
         </Tooltip>
       ) : (
-        <div className="select-option selected" onClick={(e) => handleOptionSelect(domain, e)}>
-          <span className="select-text">
-            {domain.Text}
+        <div className="select-option selected" >
+          <span className="left-wrapper" onClick={(e) => handleOptionSelect(domain, e)}>
+            <span className="select-text">
+              {domain.Text}
+            </span>
+            <span className="right-icon">
+              <CheckOutlined />
+            </span>
           </span>
-          <span className="right-icon">
-            <CheckOutlined />
+          <span className="more-button" onClick={(e) => handleMore(domain, e)}>
+              {activeMore== 0 ?<RightOutlined />:<LeftOutlined />}
           </span>
         </div>
       )}
