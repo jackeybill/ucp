@@ -4263,7 +4263,7 @@ const ScenarioPage = (props) => {
                       </Row>
                       {/* The drawer with wrapper */}
                       <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
-                        <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} onClose={handleCancel} visible={showHistorical}>
+                        <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancel} visible={showHistorical}>
                           <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
                           {activeTabKey === '1' &&<div className="drawer-content-frequency">
                             <span className="left-frequency-text">Set Criteria Frequency</span>
@@ -4736,7 +4736,7 @@ const ScenarioPage = (props) => {
                       </Row>
                       <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
                         {/* The drawer with wrapper */}
-                        <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} onClose={handleCancelExclu} visible={showHistoricalExclu}>
+                        <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelExclu} visible={showHistoricalExclu}>
                           <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
                           {activeTabKey === '1' &&<div className="drawer-content-frequency">
                             <span className="left-frequency-text">Set Criteria Frequency</span>
