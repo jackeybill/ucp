@@ -2,10 +2,10 @@ import React, { useState, useEffect, useReducer, useRef, useMemo, useCallback, m
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
-import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer, Input, AutoComplete, Select,Breadcrumb,} from "antd";
+import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer, Input, AutoComplete, Select,Breadcrumb} from "antd";
 import {updateStudy, getSimilarhistoricalTrialById, getStudy, getCriteriaLibByNctId, getSOAResource, getIEResource, getPatientFunnelData, checkTrialPatientFunnelData} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
-import {LeftOutlined,MenuOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined, SearchOutlined, HomeOutlined, UserOutlined, CheckOutlined,MinusOutlined,PlusOutlined } from "@ant-design/icons";
+import {MenuOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined, SearchOutlined, HomeOutlined, UserOutlined, CheckOutlined,MinusOutlined,PlusOutlined, FileTextOutlined, RightOutlined, LeftOutlined  } from "@ant-design/icons";
 
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
@@ -2060,6 +2060,7 @@ const ScenarioPage = (props) => {
     
     const handleCancel = () => {
       setShowHistorical(false)
+      setVisible(false)
       setVisibleSOA(false)
     }
 
@@ -2069,7 +2070,7 @@ const ScenarioPage = (props) => {
     }
 
     const searchHistoricalTrials = async () => {
-      setShowHistorical(true)
+      !showHistorical?setShowHistorical(true):setShowHistorical(false)
       if(historicalTrialdata.length == 0){
         setSpinning(true)
         const resp = await getSimilarhistoricalTrialById(similarHistoricalTrials);
@@ -3770,13 +3771,21 @@ const ScenarioPage = (props) => {
                       <Row style={{backgroundColor: '#F8F8F8'}}>
                         <Col span={24}>
                           <div className="item-header">
-                            <span>Inclusion Criteria Library</span>
-                            <Tooltip title={'Collapse Inclusion Criteria Library'}>
+                            <div className="item-header-text">Inclusion Criteria Library</div>
+                            {/* <Tooltip title={'Collapse Inclusion Criteria Library'}>
                               <CloseOutlined className="right-icon" onClick={() => setCriteriaLib(0)}></CloseOutlined>
-                              </Tooltip>
-                            <Tooltip title={'View Historical Trial List'}>
-                              <HistoryOutlined className="right-icon" onClick={searchHistoricalTrials}></HistoryOutlined>
-                            </Tooltip>
+                            </Tooltip> */}
+                            <div className="item-header-content" onClick={searchHistoricalTrials}>
+                              <span className="left-icon">
+                                <FileTextOutlined/>
+                              </span>
+                              <span className="middle-text">
+                                Manage Library
+                              </span>
+                              <span className="right-icon" onClick= {searchHistoricalTrials}>
+                                {!showHistorical ?<RightOutlined />:<LeftOutlined />}
+                              </span>
+                            </div>
                           </div>
                         </Col>
                       </Row>
@@ -3785,33 +3794,9 @@ const ScenarioPage = (props) => {
                           <div style={{ padding: '0 10px' }}></div>
                         </Col>
                         <Col className="left-section">
-                          <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
-                            <Col span={16}>
-                              <div className="item-option">
-                                <span>Select criteria to add to Trial</span>
-                              </div>
-                            </Col>
-                            <Col span={8} style={{textAlign:'right'}}>
-                              <Row>
-                              <Col span={24}><span className="frequency" style={{ display: "block",width: "110px" }}>CRITERIA FREQUENCY</span></Col>
-                              </Row>
-                              <Row style={{width:'100%'}}>
-                              <Col span={24}>
-                                <div id="freqModal" ref={null} onClick={() => setVisible(true)}>
-                                  <span className="label">
-                                    {minValue}%-{maxValue}%
-                                  </span>
-                                  <EditFilled className={`${visible ? 'active' : ''}`}/>
-                                </div>
-                                </Col>
-                              </Row>
-                            </Col>
-                          </Row>
-                          
                           {visible ? (
                           <div className="freqSection">
-                            <div className="title">
-                              {/* <span>Set Frequency</span> */}
+                            {/* <div className="title">
                               <CloseOutlined
                                 className="right-icon"
                                 onClick={() => setVisible(false)}
@@ -3829,7 +3814,7 @@ const ScenarioPage = (props) => {
                               defaultValue={[minValue, maxValue]}
                               tipFormatter={formatter}
                               onAfterChange={getFrequency}
-                            />
+                            /> */}
                           </div>
                           ) : (
                           <></>
@@ -4088,14 +4073,22 @@ const ScenarioPage = (props) => {
                     <Col span={excluCriteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '300px', minWidth: '300px'}}>
                       <Row style={{backgroundColor: '#F8F8F8'}}>
                         <Col span={24}>
-                          <div className="item-header">
-                            <span>Exclusion Criteria Library</span>
-                            <Tooltip title={'Collapse Exclusion Criteria Library'}>
+                        <div className="item-header">
+                            <div className="item-header-text">Exclusion Criteria Library</div>
+                            {/* <Tooltip title={'Collapse Exclusion Criteria Library'}>
                               <CloseOutlined className="right-icon" onClick={() => setExcluCriteriaLib(0)}></CloseOutlined>
-                            </Tooltip>
-                            <Tooltip title={'View Historical Trial List'}>
-                              <HistoryOutlined className="right-icon" onClick={searchHistoricalTrials}></HistoryOutlined>
-                            </Tooltip>
+                            </Tooltip> */}
+                            <div className="item-header-content" onClick={searchHistoricalTrials}>
+                              <span className="left-icon">
+                                <FileTextOutlined/>
+                              </span>
+                              <span className="middle-text">
+                                Manage Library
+                              </span>
+                              <span className="right-icon" onClick= {searchHistoricalTrials}>
+                                {!showHistorical ?<RightOutlined />:<LeftOutlined />}
+                              </span>
+                            </div>
                           </div>
                         </Col>
                       </Row>
@@ -4104,12 +4097,8 @@ const ScenarioPage = (props) => {
                           <div style={{ padding: '0 10px' }}></div>
                         </Col>
                         <Col className="left-section">
-                          <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
-                            <Col span={16}>
-                              <div className="item-option">
-                                <span className="tip">Select criteria to add to Trial</span>
-                              </div>
-                            </Col>
+                          {/* <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
+                           
                             <Col span={8} style={{textAlign:'right'}}>
                               <Row>
                               <Col span={24}><span className="frequency" style={{ display: "block",width: "110px" }}>CRITERIA FREQUENCY</span></Col>
@@ -4125,12 +4114,12 @@ const ScenarioPage = (props) => {
                                 </Col>
                               </Row>
                             </Col>
-                          </Row>
+                          </Row> */}
                           
                           {excluVisible ? (
                           <div className="freqSection">
-                            <div className="title">
-                              {/* <span>Set Frequency</span> */}
+                            {/* <div className="title">
+                              <span>Set Frequency</span>
                               <CloseOutlined
                                 className="right-icon"
                                 onClick={() => setExcluVisible(false)}
@@ -4148,7 +4137,7 @@ const ScenarioPage = (props) => {
                               defaultValue={[excluMinValue, excluMaxValue]}
                               tipFormatter={formatter}
                               onAfterChange={getExcluFrequency}
-                            />
+                            /> */}
                           </div>
                           ) : (
                           <></>
@@ -4676,8 +4665,61 @@ const ScenarioPage = (props) => {
           }
         </div>
       </Spin>
-      <Drawer title="Historical Trial List" placement="right" onClose={handleCancel} visible={showHistorical}>
+      <Drawer title="Manage Library" placement="right" onClose={handleCancel} visible={showHistorical}>
         <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
+        {activeTabKey === '1' &&<div className="drawer-content-frequency">
+           <span className="left-frequency-text">Set Criteria Frequency</span>
+            <div className="right-frequency-steps">
+              <div className="freqSection">
+                {/* <div className="title">
+                  <CloseOutlined
+                    className="right-icon"
+                    onClick={() => setVisible(false)}
+                  ></CloseOutlined>
+                </div>
+                <br/> */}
+                <div className="content">
+                  <span>Frequency</span>
+                  <span style={{ float: "right", fontWeight: 'bold' }}>
+                    {minValue}% - {maxValue}%
+                  </span>
+                </div>
+                <Slider
+                  range={{ draggableTrack: true }}
+                  defaultValue={[minValue, maxValue]}
+                  tipFormatter={formatter}
+                  onAfterChange={getFrequency}
+                />
+              </div>
+            </div>
+        </div>}
+        {activeTabKey === '2' &&<div className="drawer-content-frequency">
+          <span className="left-frequency-text">Set Criteria Frequency</span>
+          <div className="right-frequency-steps">
+            <div className="freqSection">
+              {/* <div className="title">
+                <span>Set Frequency</span>
+                <CloseOutlined
+                  className="right-icon"
+                  onClick={() => setExcluVisible(false)}
+                ></CloseOutlined>
+              </div>
+              <br/> */}
+              <div className="content">
+                <span>Frequency</span>
+                <span style={{ float: "right", fontWeight: 'bold' }}>
+                  {excluMinValue}% - {excluMaxValue}%
+                </span>
+              </div>
+              <Slider
+                range={{ draggableTrack: true }}
+                defaultValue={[excluMinValue, excluMaxValue]}
+                tipFormatter={formatter}
+                onAfterChange={getExcluFrequency}
+              />
+            </div>
+          </div>
+        </div>}
         <Row>
             <Col span={24} style={{paddingBottom: '10px'}}>
               {visibleSOA ? (
