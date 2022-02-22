@@ -1101,12 +1101,18 @@ font-size: 12px;
   }
 
 .history-list-drawer-wrapper {
-    
+    border: 2px solid #eee;
+
+    .ant-drawer-content, .ant-drawer-header {
+        background-color: #F8F8F8;
+
+    }
     .drawer-content-frequency {
         display: flex;
         justify-content: space-between;
         padding: 10px;
-        border: 1px solid #f3f3f3;
+        border: 2px solid #f3f3f3;
+        background-color: #fff;
         .left-frequency-text {
             color:#383A3C;
             font-size:18px;
@@ -1214,8 +1220,14 @@ font-size: 12px;
 
         }
     } 
+    .drawer-content-below {
+        border: 2px solid #f3f3f3;
+        margin-top: 10px;
+        background-color: #fff;
+  
+    }
     .drawer-history-text {
-        padding: 20px 10px;
+        padding: 10px 10px;
         .text {
             color:#383A3C;
             font-size:18px;
@@ -1226,8 +1238,8 @@ font-size: 12px;
         }
     }
     .history-chart-wrapper {
-        border-right: 1px solid #31393F33;
-        border-left: 1px solid #31393F33;
+        // border-right: 1px solid #31393F33;
+        // border-left: 1px solid #31393F33;
         padding-bottom: 10px;
         padding-top: 5px;
         display: flex;
@@ -1262,6 +1274,13 @@ font-size: 12px;
       
           }
         }
+    }
+    .ant-table-header thead th{
+        background-color: #666666;
+        color:white;
+    }
+    .ant-table-container, .ant-table {
+        box-shadow: 0 0 0 0 transparent;
     }
 }
 

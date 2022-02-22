@@ -4318,6 +4318,7 @@ const ScenarioPage = (props) => {
                               </div>
                             </div>
                           </div>}
+                          <div className='drawer-content-below'>
                           <Row>
                             <Col span={24} className="drawer-history-text">
                               <span className="text">
@@ -4414,6 +4415,7 @@ const ScenarioPage = (props) => {
                           <Row>
                               <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
                           </Row>
+                          </div>
                           </Spin>
                         </Drawer>
                       </div>
@@ -4789,102 +4791,104 @@ const ScenarioPage = (props) => {
                               </div>
                             </div>
                           </div>}
-                          <Row>
-                            <Col span={24} className="drawer-history-text">
-                              <span className="text">
-                              View Historical Trial List
-                              </span>
-                            </Col>
-                          </Row>
-                          <Row>
-                              <Col span={24} style={{paddingBottom: '10px'}}>
-                                {visibleSOA ? (
-                                  <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
-                                ) : (
-                                  <>
-                                    <Button type="primary" onClick={downloadIE} style={{float: 'right'}}>VIEW SOURCE</Button>
-                                    <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button>
-                                  </>
-                                )}
+                          <div className='drawer-content-below'>
+                            <Row>
+                              <Col span={24} className="drawer-history-text">
+                                <span className="text">
+                                View Historical Trial List
+                                </span>
                               </Col>
-                          </Row>
-                          <Row>
-                              <Col span={24}>
-                              <div className="history-chart-wrapper">
-                                <div className="chart">
-                                  <div className="my-echart-wrapper">
-                                    <ReactECharts option={historySponsorOption}></ReactECharts>
-                                  </div>
-                                  <div className="history-legend-wrapper">
-                                    {sponsorChartData
-                                      .sort((a, b) => {
-                                        return b.value - a.value;
-                                      })
-                                      .slice(0, 5)
-                                      .map((d, idx) => {
-                                        const chartData = sponsorChartData;
-                                        const sum = chartData.reduce(
-                                          (accumulator, currentValue) => {
-                                            return accumulator + currentValue.value;
-                                          },
-                                          0
-                                        );
-                                        let percent = ((d.value / sum) * 100).toFixed(2);
-                                        return (
-                                          <div className="custom-legend">
-                                            <span
-                                              className="my_legend"
-                                              style={{
-                                                backgroundColor: sponsorChartColor[idx],
-                                              }}
-                                            ></span>
-                                            <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
-                                          </div>
-                                        );
-                                      })}
-                                  </div>
-                                </div>
-                                <div className="chart">
-                                <>
-                                      <div className="my-echart-wrapper">
-                                        <ReactECharts option={historyStatusOption}></ReactECharts>
-                                      </div>
-                                      <div className="history-legend-wrapper">
-                                        {statusChartData
-                                          .sort((a, b) => {
-                                            return b.value - a.value;
-                                          })
-                                          .slice(0, 5)
-                                          .map((d, idx) => {
-                                            const chartData = statusChartData;
-                                            const sum = chartData.reduce(
-                                              (accumulator, currentValue) => {
-                                                return accumulator + currentValue.value;
-                                              },
-                                              0
-                                            );
-                                            let percent = ((d.value / sum) * 100).toFixed(2);
-                                            return (
-                                              <div className="custom-legend">
-                                                <span
-                                                  className="my_legend"
-                                                  style={{
-                                                    backgroundColor: statusChartColor[idx],
-                                                  }}
-                                                ></span>
-                                                <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
-                                              </div>
-                                            );
-                                          })}
-                                      </div>
+                            </Row>
+                            <Row>
+                                <Col span={24} style={{paddingBottom: '10px'}}>
+                                  {visibleSOA ? (
+                                    <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
+                                  ) : (
+                                    <>
+                                      <Button type="primary" onClick={downloadIE} style={{float: 'right'}}>VIEW SOURCE</Button>
+                                      <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button>
                                     </>
+                                  )}
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={24}>
+                                <div className="history-chart-wrapper">
+                                  <div className="chart">
+                                    <div className="my-echart-wrapper">
+                                      <ReactECharts option={historySponsorOption}></ReactECharts>
+                                    </div>
+                                    <div className="history-legend-wrapper">
+                                      {sponsorChartData
+                                        .sort((a, b) => {
+                                          return b.value - a.value;
+                                        })
+                                        .slice(0, 5)
+                                        .map((d, idx) => {
+                                          const chartData = sponsorChartData;
+                                          const sum = chartData.reduce(
+                                            (accumulator, currentValue) => {
+                                              return accumulator + currentValue.value;
+                                            },
+                                            0
+                                          );
+                                          let percent = ((d.value / sum) * 100).toFixed(2);
+                                          return (
+                                            <div className="custom-legend">
+                                              <span
+                                                className="my_legend"
+                                                style={{
+                                                  backgroundColor: sponsorChartColor[idx],
+                                                }}
+                                              ></span>
+                                              <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                            </div>
+                                          );
+                                        })}
+                                    </div>
+                                  </div>
+                                  <div className="chart">
+                                  <>
+                                        <div className="my-echart-wrapper">
+                                          <ReactECharts option={historyStatusOption}></ReactECharts>
+                                        </div>
+                                        <div className="history-legend-wrapper">
+                                          {statusChartData
+                                            .sort((a, b) => {
+                                              return b.value - a.value;
+                                            })
+                                            .slice(0, 5)
+                                            .map((d, idx) => {
+                                              const chartData = statusChartData;
+                                              const sum = chartData.reduce(
+                                                (accumulator, currentValue) => {
+                                                  return accumulator + currentValue.value;
+                                                },
+                                                0
+                                              );
+                                              let percent = ((d.value / sum) * 100).toFixed(2);
+                                              return (
+                                                <div className="custom-legend">
+                                                  <span
+                                                    className="my_legend"
+                                                    style={{
+                                                      backgroundColor: statusChartColor[idx],
+                                                    }}
+                                                  ></span>
+                                                  <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                                </div>
+                                              );
+                                            })}
+                                        </div>
+                                      </>
+                                  </div>
                                 </div>
-                              </div>
-                              </Col>
-                          </Row>
-                          <Row>
-                              <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
-                          </Row>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
+                            </Row>
+                          </div>
                           </Spin>
                         </Drawer>
                       </div>
