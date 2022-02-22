@@ -125,7 +125,11 @@ const ScenarioPage = (props) => {
     const [showChartLabel, setShowChartLabel] = useState(false)
     const [pageLoading, setPageLoading] = useState(true)
 
+    const [statusChartData,setStatusChartData] = useState([])
+    const [sponsorChartData,setSponsorChartData] = useState([])
+
     const [showHistorical, setShowHistorical] = useState(false)
+    const [showHistoricalExclu, setShowHistoricalExclu] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
     const [visibleSOA, setVisibleSOA] = useState(false)
     const [soaResource, setSOAResource] = useState([])
@@ -467,6 +471,25 @@ const ScenarioPage = (props) => {
       } else if(list[index]['Intervention'] != undefined){
           return 3;
       }
+    }
+
+    function getChartData(datasource, key) {
+      let keyValues = [];
+      datasource.forEach((e) => {
+        keyValues.push(e[key]);
+      });
+      keyValues = Array.from(new Set(keyValues));
+      const pieChartData = [];
+      keyValues.forEach((v) => {
+        const values = datasource.filter(
+          (d) => d[key].toLowerCase() == v.toLowerCase()
+        );
+        pieChartData.push({
+          value: values.length,
+          name: v,
+        });
+      });
+      return pieChartData;
     }
 
 
@@ -897,6 +920,31 @@ const ScenarioPage = (props) => {
       setExcluActiveKey(key)
     }
 
+    const sponsorChartColor = [
+      "#F53500",
+      // "#E94700",
+      // "#EC5100",
+      // "#EE5B00",
+      "#F06300",
+      // "#F27A26",
+      "#F5924D",
+      // "#F8B180",
+      "#FBD0B3",
+      "#FDECE0",
+    ];
+    const statusChartColor = [
+      "#F53500",
+      // "#E94700",
+      // "#EC5100",
+      // "#EE5B00",
+      "#F06300",
+      // "#F27A26",
+      "#F5924D",
+      // "#F8B180",
+      "#FBD0B3",
+      "#FDECE0",
+    ];
+
     const amendmentRateoption = {
       title : {
         text: 'Protocol Amendment Rate',
@@ -1223,6 +1271,120 @@ const ScenarioPage = (props) => {
           data: excluScreenRateData
         }
       ]
+    };
+
+    const historySponsorOption = {
+      title: {
+        text: "By Sponsor",
+        x: "5%",
+        y: "top",
+        textStyle: {
+          fontSize: 14,
+        },
+      },
+      tooltip: {
+        trigger: "item",
+        formatter: function (params) {
+          return [params.name] + " - " + [params.value];
+        },
+        position: ['5%', '10%'],
+        textStyle:{
+          fontSize: 12,
+        },
+        confine:false,
+      },
+      // legend: {
+      //   show:false,
+      //   x: "left",
+      //   y: "60%",
+      //   itemHeight: 7,
+      //   textStyle: {
+      //     fontSize: 8,
+      //   },
+      //   formatter: function (params) {
+      //     const chartData = optionOne.series[0].data
+      //     const sum = chartData.reduce((accumulator, currentValue) => {
+      //      return accumulator + currentValue.value
+      //     }, 0)
+      //     const targetVal = chartData.find(d => d.name == params).value
+      //     let p = ((targetVal / sum) * 100).toFixed(2);
+      //     return params + " - " + p + "%";
+      //   },
+      // },
+      series: [
+        {
+          type: "pie",
+          center: ["30%", "35%"],
+          radius: ["20%", "40%"],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+          },
+          color: sponsorChartColor,
+          data: sponsorChartData.sort((a, b) => {
+            return b.value - a.value;
+          })
+          .slice(0, 5),
+         
+        },
+      ],
+    };
+  
+    const historyStatusOption = {
+      title: {
+        text: "By Status",
+        x: "5%",
+        y: "top",
+        textStyle: {
+          fontSize: 14,
+          fontWeight: "bold",
+        },
+      },
+      tooltip: {
+        trigger: "item",
+        formatter: function (params) {
+          return [params.name] + " - " + [params.value];
+        },
+        position: ['5%', '10%'],
+        textStyle:{
+          fontSize: 12,
+        },
+        confine:false,
+      },
+      // legend: {
+      //   show:false,
+      //   x: "left",
+      //   y: "60%",
+      //   itemHeight: 7,
+      //   textStyle: {
+      //     fontSize: 8,
+      //   },
+      //   formatter: function (params,idx) {
+      //     const chartData = optionTwo.series[0].data
+      //     const sum = chartData.reduce((accumulator, currentValue) => {
+      //      return accumulator + currentValue.value
+      //     }, 0)
+      //     const targetVal = chartData.find(d => d.name == params).value
+      //     let p = ((targetVal / sum) * 100).toFixed(2);
+      //     return params + " - " + p + "%";
+      //   },
+      // },
+      series: [
+        {
+          type: "pie",
+          center: ["30%", "35%"],
+          radius: ["20%", "40%"],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+          },
+          color: statusChartColor,
+          data: statusChartData.sort((a, b) => {
+            return b.value - a.value;
+          })
+          .slice(0, 5),
+        },
+      ],
     };
 
     // Enrollment Feasibility chart data
@@ -2064,6 +2226,12 @@ const ScenarioPage = (props) => {
       setVisibleSOA(false)
     }
 
+    const handleCancelExclu = () => {
+      setShowHistoricalExclu(false)
+      setVisible(false)
+      setVisibleSOA(false)
+    }
+
     const showSOAModal = async () => {
       setVisibleSOA(true)
       searchHistoricalTrials()
@@ -2076,7 +2244,6 @@ const ScenarioPage = (props) => {
         const resp = await getSimilarhistoricalTrialById(similarHistoricalTrials);
         if (resp.statusCode == 200) {
           setSpinning(false)
-
           const filteredData =  JSON.parse(resp.body).filter((d) => {
             const date = d['start_date'].split('-')[0]
             return (
@@ -2084,6 +2251,35 @@ const ScenarioPage = (props) => {
             );
           });
           setHistoricalTrialdata(filteredData)
+          console.log("getSimilarhistoricalTrialById:",filteredData);
+
+          const statusData = getChartData(filteredData, "study_status");
+          const sponsorData = getChartData(filteredData, "sponsor");
+          setStatusChartData(statusData)
+          setSponsorChartData(sponsorData)
+        }
+      }
+    }
+    const searchHistoricalTrialsExclu = async () => {
+      !showHistoricalExclu?setShowHistoricalExclu(true):setShowHistoricalExclu(false)
+      if(historicalTrialdata.length == 0){
+        setSpinning(true)
+        const resp = await getSimilarhistoricalTrialById(similarHistoricalTrials);
+        if (resp.statusCode == 200) {
+          setSpinning(false)
+          const filteredData =  JSON.parse(resp.body).filter((d) => {
+            const date = d['start_date'].split('-')[0]
+            return (
+              date >= simliarTrialStudyStartDate.dateFrom && date<= simliarTrialStudyStartDate.dateTo
+            );
+          });
+          setHistoricalTrialdata(filteredData)
+          console.log("getSimilarhistoricalTrialById:",filteredData);
+
+          const statusData = getChartData(filteredData, "study_status");
+          const sponsorData = getChartData(filteredData, "sponsor");
+          setStatusChartData(statusData)
+          setSponsorChartData(sponsorData)
         }
       }
     }
@@ -4065,6 +4261,162 @@ const ScenarioPage = (props) => {
                           <div style={{ padding: '0 10px' }}></div>
                         </Col>
                       </Row>
+                      {/* The drawer with wrapper */}
+                      <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
+                        <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} onClose={handleCancel} visible={showHistorical}>
+                          <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
+                          {activeTabKey === '1' &&<div className="drawer-content-frequency">
+                            <span className="left-frequency-text">Set Criteria Frequency</span>
+                              <div className="right-frequency-steps">
+                                <div className="freqSection">
+                                  {/* <div className="title">
+                                    <CloseOutlined
+                                      className="right-icon"
+                                      onClick={() => setVisible(false)}
+                                    ></CloseOutlined>
+                                  </div>
+                                  <br/> */}
+                                  <div className="content">
+                                    <span>Frequency</span>
+                                    <span style={{ float: "right", fontWeight: 'bold' }}>
+                                      {minValue}% - {maxValue}%
+                                    </span>
+                                  </div>
+                                  <Slider
+                                    range={{ draggableTrack: true }}
+                                    defaultValue={[minValue, maxValue]}
+                                    tipFormatter={formatter}
+                                    onAfterChange={getFrequency}
+                                  />
+                                </div>
+                              </div>
+                          </div>}
+                          {activeTabKey === '2' &&<div className="drawer-content-frequency">
+                            <span className="left-frequency-text">Set Criteria Frequency</span>
+                            <div className="right-frequency-steps">
+                              <div className="freqSection">
+                                {/* <div className="title">
+                                  <span>Set Frequency</span>
+                                  <CloseOutlined
+                                    className="right-icon"
+                                    onClick={() => setExcluVisible(false)}
+                                  ></CloseOutlined>
+                                </div>
+                                <br/> */}
+                                <div className="content">
+                                  <span>Frequency</span>
+                                  <span style={{ float: "right", fontWeight: 'bold' }}>
+                                    {excluMinValue}% - {excluMaxValue}%
+                                  </span>
+                                </div>
+                                <Slider
+                                  range={{ draggableTrack: true }}
+                                  defaultValue={[excluMinValue, excluMaxValue]}
+                                  tipFormatter={formatter}
+                                  onAfterChange={getExcluFrequency}
+                                />
+                              </div>
+                            </div>
+                          </div>}
+                          <Row>
+                            <Col span={24} className="drawer-history-text">
+                              <span className="text">
+                              View Historical Trial List
+                              </span>
+                            </Col>
+                          </Row>
+                          <Row>
+                              <Col span={24} style={{paddingBottom: '10px'}}>
+                                {visibleSOA ? (
+                                  <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
+                                ) : (
+                                  <>
+                                    <Button type="primary" onClick={downloadIE} style={{float: 'right'}}>VIEW SOURCE</Button>
+                                    <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button>
+                                  </>
+                                )}
+                              </Col>
+                          </Row>
+                          <Row>
+                              <Col span={24}>
+                              <div className="history-chart-wrapper">
+                                <div className="chart">
+                                  <div className="my-echart-wrapper">
+                                    <ReactECharts option={historySponsorOption}></ReactECharts>
+                                  </div>
+                                  <div className="history-legend-wrapper">
+                                    {sponsorChartData
+                                      .sort((a, b) => {
+                                        return b.value - a.value;
+                                      })
+                                      .slice(0, 5)
+                                      .map((d, idx) => {
+                                        const chartData = sponsorChartData;
+                                        const sum = chartData.reduce(
+                                          (accumulator, currentValue) => {
+                                            return accumulator + currentValue.value;
+                                          },
+                                          0
+                                        );
+                                        let percent = ((d.value / sum) * 100).toFixed(2);
+                                        return (
+                                          <div className="custom-legend">
+                                            <span
+                                              className="my_legend"
+                                              style={{
+                                                backgroundColor: sponsorChartColor[idx],
+                                              }}
+                                            ></span>
+                                            <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                          </div>
+                                        );
+                                      })}
+                                  </div>
+                                </div>
+                                <div className="chart">
+                                <>
+                                      <div className="my-echart-wrapper">
+                                        <ReactECharts option={historyStatusOption}></ReactECharts>
+                                      </div>
+                                      <div className="history-legend-wrapper">
+                                        {statusChartData
+                                          .sort((a, b) => {
+                                            return b.value - a.value;
+                                          })
+                                          .slice(0, 5)
+                                          .map((d, idx) => {
+                                            const chartData = statusChartData;
+                                            const sum = chartData.reduce(
+                                              (accumulator, currentValue) => {
+                                                return accumulator + currentValue.value;
+                                              },
+                                              0
+                                            );
+                                            let percent = ((d.value / sum) * 100).toFixed(2);
+                                            return (
+                                              <div className="custom-legend">
+                                                <span
+                                                  className="my_legend"
+                                                  style={{
+                                                    backgroundColor: statusChartColor[idx],
+                                                  }}
+                                                ></span>
+                                                <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                              </div>
+                                            );
+                                          })}
+                                      </div>
+                                    </>
+                                </div>
+                              </div>
+                              </Col>
+                          </Row>
+                          <Row>
+                              <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
+                          </Row>
+                          </Spin>
+                        </Drawer>
+                      </div>
                     </Col>
                   </Row>
                 </TabPane>
@@ -4078,15 +4430,15 @@ const ScenarioPage = (props) => {
                             {/* <Tooltip title={'Collapse Exclusion Criteria Library'}>
                               <CloseOutlined className="right-icon" onClick={() => setExcluCriteriaLib(0)}></CloseOutlined>
                             </Tooltip> */}
-                            <div className="item-header-content" onClick={searchHistoricalTrials}>
+                            <div className="item-header-content" onClick={searchHistoricalTrialsExclu}>
                               <span className="left-icon">
                                 <FileTextOutlined/>
                               </span>
                               <span className="middle-text">
                                 Manage Library
                               </span>
-                              <span className="right-icon" onClick= {searchHistoricalTrials}>
-                                {!showHistorical ?<RightOutlined />:<LeftOutlined />}
+                              <span className="right-icon" onClick= {searchHistoricalTrialsExclu}>
+                                {!showHistoricalExclu ?<RightOutlined />:<LeftOutlined />}
                               </span>
                             </div>
                           </div>
@@ -4380,6 +4732,162 @@ const ScenarioPage = (props) => {
                           <div style={{ padding: '0 10px' }}></div>
                         </Col>
                       </Row>
+                      <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
+                        {/* The drawer with wrapper */}
+                        <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} onClose={handleCancelExclu} visible={showHistoricalExclu}>
+                          <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
+                          {activeTabKey === '1' &&<div className="drawer-content-frequency">
+                            <span className="left-frequency-text">Set Criteria Frequency</span>
+                              <div className="right-frequency-steps">
+                                <div className="freqSection">
+                                  {/* <div className="title">
+                                    <CloseOutlined
+                                      className="right-icon"
+                                      onClick={() => setVisible(false)}
+                                    ></CloseOutlined>
+                                  </div>
+                                  <br/> */}
+                                  <div className="content">
+                                    <span>Frequency</span>
+                                    <span style={{ float: "right", fontWeight: 'bold' }}>
+                                      {minValue}% - {maxValue}%
+                                    </span>
+                                  </div>
+                                  <Slider
+                                    range={{ draggableTrack: true }}
+                                    defaultValue={[minValue, maxValue]}
+                                    tipFormatter={formatter}
+                                    onAfterChange={getFrequency}
+                                  />
+                                </div>
+                              </div>
+                          </div>}
+                          {activeTabKey === '2' &&<div className="drawer-content-frequency">
+                            <span className="left-frequency-text">Set Criteria Frequency</span>
+                            <div className="right-frequency-steps">
+                              <div className="freqSection">
+                                {/* <div className="title">
+                                  <span>Set Frequency</span>
+                                  <CloseOutlined
+                                    className="right-icon"
+                                    onClick={() => setExcluVisible(false)}
+                                  ></CloseOutlined>
+                                </div>
+                                <br/> */}
+                                <div className="content">
+                                  <span>Frequency</span>
+                                  <span style={{ float: "right", fontWeight: 'bold' }}>
+                                    {excluMinValue}% - {excluMaxValue}%
+                                  </span>
+                                </div>
+                                <Slider
+                                  range={{ draggableTrack: true }}
+                                  defaultValue={[excluMinValue, excluMaxValue]}
+                                  tipFormatter={formatter}
+                                  onAfterChange={getExcluFrequency}
+                                />
+                              </div>
+                            </div>
+                          </div>}
+                          <Row>
+                            <Col span={24} className="drawer-history-text">
+                              <span className="text">
+                              View Historical Trial List
+                              </span>
+                            </Col>
+                          </Row>
+                          <Row>
+                              <Col span={24} style={{paddingBottom: '10px'}}>
+                                {visibleSOA ? (
+                                  <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
+                                ) : (
+                                  <>
+                                    <Button type="primary" onClick={downloadIE} style={{float: 'right'}}>VIEW SOURCE</Button>
+                                    <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button>
+                                  </>
+                                )}
+                              </Col>
+                          </Row>
+                          <Row>
+                              <Col span={24}>
+                              <div className="history-chart-wrapper">
+                                <div className="chart">
+                                  <div className="my-echart-wrapper">
+                                    <ReactECharts option={historySponsorOption}></ReactECharts>
+                                  </div>
+                                  <div className="history-legend-wrapper">
+                                    {sponsorChartData
+                                      .sort((a, b) => {
+                                        return b.value - a.value;
+                                      })
+                                      .slice(0, 5)
+                                      .map((d, idx) => {
+                                        const chartData = sponsorChartData;
+                                        const sum = chartData.reduce(
+                                          (accumulator, currentValue) => {
+                                            return accumulator + currentValue.value;
+                                          },
+                                          0
+                                        );
+                                        let percent = ((d.value / sum) * 100).toFixed(2);
+                                        return (
+                                          <div className="custom-legend">
+                                            <span
+                                              className="my_legend"
+                                              style={{
+                                                backgroundColor: sponsorChartColor[idx],
+                                              }}
+                                            ></span>
+                                            <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                          </div>
+                                        );
+                                      })}
+                                  </div>
+                                </div>
+                                <div className="chart">
+                                <>
+                                      <div className="my-echart-wrapper">
+                                        <ReactECharts option={historyStatusOption}></ReactECharts>
+                                      </div>
+                                      <div className="history-legend-wrapper">
+                                        {statusChartData
+                                          .sort((a, b) => {
+                                            return b.value - a.value;
+                                          })
+                                          .slice(0, 5)
+                                          .map((d, idx) => {
+                                            const chartData = statusChartData;
+                                            const sum = chartData.reduce(
+                                              (accumulator, currentValue) => {
+                                                return accumulator + currentValue.value;
+                                              },
+                                              0
+                                            );
+                                            let percent = ((d.value / sum) * 100).toFixed(2);
+                                            return (
+                                              <div className="custom-legend">
+                                                <span
+                                                  className="my_legend"
+                                                  style={{
+                                                    backgroundColor: statusChartColor[idx],
+                                                  }}
+                                                ></span>
+                                                <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                              </div>
+                                            );
+                                          })}
+                                      </div>
+                                    </>
+                                </div>
+                              </div>
+                              </Col>
+                          </Row>
+                          <Row>
+                              <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
+                          </Row>
+                          </Spin>
+                        </Drawer>
+                      </div>
                     </Col>
                   </Row>
                 </TabPane>
@@ -4665,78 +5173,6 @@ const ScenarioPage = (props) => {
           }
         </div>
       </Spin>
-      <Drawer title="Manage Library" placement="right" onClose={handleCancel} visible={showHistorical}>
-        <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
-        {activeTabKey === '1' &&<div className="drawer-content-frequency">
-           <span className="left-frequency-text">Set Criteria Frequency</span>
-            <div className="right-frequency-steps">
-              <div className="freqSection">
-                {/* <div className="title">
-                  <CloseOutlined
-                    className="right-icon"
-                    onClick={() => setVisible(false)}
-                  ></CloseOutlined>
-                </div>
-                <br/> */}
-                <div className="content">
-                  <span>Frequency</span>
-                  <span style={{ float: "right", fontWeight: 'bold' }}>
-                    {minValue}% - {maxValue}%
-                  </span>
-                </div>
-                <Slider
-                  range={{ draggableTrack: true }}
-                  defaultValue={[minValue, maxValue]}
-                  tipFormatter={formatter}
-                  onAfterChange={getFrequency}
-                />
-              </div>
-            </div>
-        </div>}
-        {activeTabKey === '2' &&<div className="drawer-content-frequency">
-          <span className="left-frequency-text">Set Criteria Frequency</span>
-          <div className="right-frequency-steps">
-            <div className="freqSection">
-              {/* <div className="title">
-                <span>Set Frequency</span>
-                <CloseOutlined
-                  className="right-icon"
-                  onClick={() => setExcluVisible(false)}
-                ></CloseOutlined>
-              </div>
-              <br/> */}
-              <div className="content">
-                <span>Frequency</span>
-                <span style={{ float: "right", fontWeight: 'bold' }}>
-                  {excluMinValue}% - {excluMaxValue}%
-                </span>
-              </div>
-              <Slider
-                range={{ draggableTrack: true }}
-                defaultValue={[excluMinValue, excluMaxValue]}
-                tipFormatter={formatter}
-                onAfterChange={getExcluFrequency}
-              />
-            </div>
-          </div>
-        </div>}
-        <Row>
-            <Col span={24} style={{paddingBottom: '10px'}}>
-              {visibleSOA ? (
-                <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
-              ) : (
-                <>
-                  <Button type="primary" onClick={downloadIE} style={{float: 'right'}}>VIEW SOURCE</Button>
-                  <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button>
-                </>
-              )}
-            </Col>
-        </Row>
-        <Row>
-            <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
-        </Row>
-        </Spin>
-      </Drawer>
     </div>
       
     );
