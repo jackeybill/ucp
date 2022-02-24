@@ -540,11 +540,16 @@ const ScenarioPage = (props) => {
       }))
     }
 
-    const handleCriteriaSelect = (item, activeType, id, key,e) => {
-      console.log("handleCriteriaSelect:",activeType);
-      // setCriteriaDetailActiveTab(activeType)
+    const handleCriteriaSelect = (item, activeMore, id, key,e) => {
+      console.log("click the add button:",activeMore);
+      // if(criteriaDetailActiveTab === 0) {
+      //   setCriteriaDetailActiveTab(1)
+      // } else {
+      //   setCriteriaDetailActiveTab(0)
+      // }
       // setShowMoreDetail(false)
     }
+
     const handleOptionSelect = (item, activeType, id, key) =>{
       switch(id){
         case 0:
@@ -626,17 +631,17 @@ const ScenarioPage = (props) => {
       }
     }
 
-    const handleMoreSelect = (item, activeType, id, key) => {
+    const handleMoreSelect = (item, activeMore, id, key) => {
       console.log("handleMoreSelect-item",item);
-      console.log("handleMoreSelect-activeType",activeType);
+      console.log("handleMoreSelect-activeMore",activeMore);
       console.log("handleMoreSelect-id",id);
       console.log("handleMoreSelect-key",key);
       setCriteriaDetail(item)
-      setCriteriaDetailActiveTab(activeType)
+      // setCriteriaDetailActiveTab(activeMore)
       setCriteriaDetailID(id)
       setCriteriaDetailKey(key)
 
-      if(activeType === 1) {
+      if(activeMore === 1) {
         setShowMoreDetail(true)
       } else {
         setShowMoreDetail(false)
@@ -644,18 +649,18 @@ const ScenarioPage = (props) => {
       
     }
 
-    const handleExcluMoreSelect = (item, activeType, id, key) => {
+    const handleExcluMoreSelect = (item, activeMore, id, key) => {
       console.log("handleExcluMoreSelect-item",item);
-      console.log("handleExcluMoreSelect-activeType",activeType);
+      console.log("handleExcluMoreSelect-activeMore",activeMore);
       console.log("handleExcluMoreSelect-id",id);
       console.log("handleExcluMoreSelect-key",key);
 
       setCriteriaDetail(item)
-      setCriteriaDetailActiveTab(activeType)
+      // setCriteriaDetailActiveTab(activeMore)
       setCriteriaDetailID(id)
       setCriteriaDetailKey(key)
 
-      if(activeType === 1) {
+      if(activeMore === 1) {
         setShowMoreDetail(true)
       } else {
         setShowMoreDetail(false)
@@ -4596,7 +4601,7 @@ const ScenarioPage = (props) => {
                                             );
                                             let percent = ((d.value / sum) * 100).toFixed(2);
                                             return (
-                                              <div className="custom-legend">
+                                              <div className="custom-legend" key={idx}>
                                                 <span
                                                   className="my_legend"
                                                   style={{

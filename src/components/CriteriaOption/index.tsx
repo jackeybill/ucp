@@ -12,13 +12,7 @@ const CriteriaOption = (props) => {
       return e["Eligibility Criteria"] == domain.Text;
     });
     setActiveType(res != -1 ? 1 : 0);
-    // if(props.criteriaDetailActiveTab){
-    //   handleOptionSelect(domain, {})
-    //   handleMore(domain, {})
-    //   console.log("props.criteriaDetailActiveTab");
-      
-    // }
-  }, [props.selectedEle, props.minValue, props.maxValue,props.criteriaDetailActiveTab]);
+  }, [props.selectedEle, props.minValue, props.maxValue]);
 
   const handleOptionSelect = (domain, e) => {
     if (activeType == 0) {
@@ -43,12 +37,14 @@ const CriteriaOption = (props) => {
   return (
     <div className="criteria-option-wrapper">
       {activeType == 0 ? (
-        <Tooltip
-          title={
-            "Frequency " + Math.floor(domain.Frequency * 10000) / 100 + "%"
-          }
-        >
-          <div
+        // <Tooltip
+        //   title={
+        //     "Frequency " + Math.floor(domain.Frequency * 10000) / 100 + "%"
+        //   }
+        // >
+          
+        // </Tooltip>
+        <div
             className="select-option"
           >
             <span className="left-wrapper" onClick={(e) => handleOptionSelect(domain, e)}>
@@ -63,7 +59,6 @@ const CriteriaOption = (props) => {
               {activeMore== 0 ?<RightOutlined />:<LeftOutlined />}
             </span>
           </div>
-        </Tooltip>
       ) : (
         <div className="select-option selected" >
           <span className="left-wrapper" onClick={(e) => handleOptionSelect(domain, e)}>
