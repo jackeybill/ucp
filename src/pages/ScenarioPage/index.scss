@@ -1284,3 +1284,145 @@ font-size: 12px;
     }
 }
 
+.ant-drawer.ant-drawer-left.ant-drawer-open.criteria-drawer-wrapper .ant-drawer-content-wrapper {
+    min-width: 350px !important;
+  }
+
+.criteria-drawer-wrapper {
+    border: 2px solid #eee;
+    .ant-drawer-wrapper-body {
+      padding: 6px;  
+      background-color: #F8F8F8;
+
+    }
+    .ant-drawer-body{
+      padding: 10px;
+    }
+    
+    .ant-drawer-content {
+
+    } 
+    .ant-drawer-header {
+        background-color: #E8E4E4;
+        .ant-drawer-title {
+          font-size: 18px;
+          color:#333333;  
+        }
+        
+
+    }
+    .drawer-content-frequency {
+        padding: 10px;
+        border: 2px solid #f3f3f3;
+        background-color: #F8F8F8;
+        .drawer-content {
+            border-bottom: 1px solid #D8D8D8;
+            padding-bottom: 5px;
+            .left-text {
+                float: left;
+                color:#333333;
+                font-size: 14px;
+            }
+            .right-text {
+                float: right;
+                color:#333333;
+                font-size: 14px;
+            }
+        }
+       
+    } 
+    .drawer-content-sponsor {
+        padding: 10px;
+        border: 2px solid #f3f3f3;
+        margin-top: 10px;
+        background-color: #F8F8F8;
+  
+    }
+    .drawer-content-limit {
+        padding: 10px;
+        border: 2px solid #f3f3f3;
+        margin-top: 10px;
+        background-color: #F8F8F8;
+
+        // background-color: #fff;
+    }
+
+    .drawer-content-button {
+        margin-top: 10px;
+        width: 100%;
+        text-align: center;
+        height: 50px;
+
+        
+        .update-btn{
+            // margin-top: 20px;
+            border: 1.5px solid #CF4500;
+            color: #CA4A04!important;
+            width: 90%;
+            margin: 10px 5% 10px 5%;
+            background-color: #fff;
+            align-items: center;
+            span {
+                color: #CA4A04!important;
+                margin-top: -2px;
+            }
+        }
+    }
+
+    .drawer-title {
+        margin-bottom: 15px;
+        background-color: #F8F8F8;
+        .text {
+            color:#999;
+            font-size:14px;
+            font-weight:600;
+            height: 24px;
+            line-height: 24px;
+            margin-top: 18px;
+        }
+    }
+
+    .history-chart-wrapper {
+        // border-right: 1px solid #31393F33;
+        // border-left: 1px solid #31393F33;
+        padding-bottom: 10px;
+        padding-top: 5px;
+        display: flex;
+        margin-top: -30px;
+        .chart {
+          flex: 1;
+          display: flex;
+      
+          .my-echart-wrapper {
+            width: 200px;
+            height: 200px;
+            // overflow: hidden;
+            margin-left:-15px;
+          }
+          .history-legend-wrapper{
+            margin-top: 45px;
+            margin-left: -70px;
+      
+            .custom-legend{
+              .my_legend{
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border-radius: 1px;
+                margin-right: 4px;
+              }
+              .my_legend_text{
+                color: #666666;
+                font-size: 10px;
+                font-style:normal;
+              }
+            }
+      
+          }
+        }
+    }
+    
+
+    
+}
+

@@ -12,7 +12,13 @@ const CriteriaOption = (props) => {
       return e["Eligibility Criteria"] == domain.Text;
     });
     setActiveType(res != -1 ? 1 : 0);
-  }, [props.selectedEle, props.minValue, props.maxValue]);
+    // if(props.criteriaDetailActiveTab){
+    //   handleOptionSelect(domain, {})
+    //   handleMore(domain, {})
+    //   console.log("props.criteriaDetailActiveTab");
+      
+    // }
+  }, [props.selectedEle, props.minValue, props.maxValue,props.criteriaDetailActiveTab]);
 
   const handleOptionSelect = (domain, e) => {
     if (activeType == 0) {
@@ -27,8 +33,10 @@ const CriteriaOption = (props) => {
   const handleMore = (val, e) => {
     if (activeMore == 0) {
       setActiveMore(1);
+      props.handleMoreSelect(val, 1, props.index, props.idx);
     } else {
       setActiveMore(0);
+      props.handleMoreSelect(val, 0, props.index, props.idx);
     }
   }
 

@@ -191,6 +191,12 @@ const ScenarioPage = (props) => {
   const [visibleValue, setVisibleValue] = useState(false)
   const [visibleValueExclu, setVisibleValueExclu] = useState(false)
 
+  const [showMoreDetail, setShowMoreDetail] = useState(false)
+  const [criteriaDetail, setCriteriaDetail] = useState({Text:'',Frequency:0.5,Value:{sponser_list:[]}})
+  const [criteriaDetailActiveTab, setCriteriaDetailActiveTab] = useState(0)
+  const [criteriaDetailID, setCriteriaDetailID] = useState(0)
+  const [criteriaDetailKey, setCriteriaDetailKey] = useState(0)
+
   // const [whetherClick, setWhetherClick] = useState(false)
 
     //------------------------INCLUSION CRITERIA CONST END-----------------------------
@@ -534,6 +540,11 @@ const ScenarioPage = (props) => {
       }))
     }
 
+    const handleCriteriaSelect = (item, activeType, id, key,e) => {
+      console.log("handleCriteriaSelect:",activeType);
+      // setCriteriaDetailActiveTab(activeType)
+      // setShowMoreDetail(false)
+    }
     const handleOptionSelect = (item, activeType, id, key) =>{
       switch(id){
         case 0:
@@ -612,6 +623,42 @@ const ScenarioPage = (props) => {
             }
           }
           break;
+      }
+    }
+
+    const handleMoreSelect = (item, activeType, id, key) => {
+      console.log("handleMoreSelect-item",item);
+      console.log("handleMoreSelect-activeType",activeType);
+      console.log("handleMoreSelect-id",id);
+      console.log("handleMoreSelect-key",key);
+      setCriteriaDetail(item)
+      setCriteriaDetailActiveTab(activeType)
+      setCriteriaDetailID(id)
+      setCriteriaDetailKey(key)
+
+      if(activeType === 1) {
+        setShowMoreDetail(true)
+      } else {
+        setShowMoreDetail(false)
+      }
+      
+    }
+
+    const handleExcluMoreSelect = (item, activeType, id, key) => {
+      console.log("handleExcluMoreSelect-item",item);
+      console.log("handleExcluMoreSelect-activeType",activeType);
+      console.log("handleExcluMoreSelect-id",id);
+      console.log("handleExcluMoreSelect-key",key);
+
+      setCriteriaDetail(item)
+      setCriteriaDetailActiveTab(activeType)
+      setCriteriaDetailID(id)
+      setCriteriaDetailKey(key)
+
+      if(activeType === 1) {
+        setShowMoreDetail(true)
+      } else {
+        setShowMoreDetail(false)
       }
     }
 
@@ -1383,6 +1430,64 @@ const ScenarioPage = (props) => {
             return b.value - a.value;
           })
           .slice(0, 5),
+        },
+      ],
+    };
+
+    const CriteriaSponsorOption = {
+      title: {
+        text: "By Sponsor",
+        show: false,
+        x: "5%",
+        y: "top",
+        textStyle: {
+          fontSize: 14,
+        },
+      },
+      tooltip: {
+        trigger: "item",
+        formatter: function (params) {
+          return [params.name] + " - " + [params.value];
+        },
+        position: ['5%', '10%'],
+        textStyle:{
+          fontSize: 12,
+        },
+        confine:false,
+      },
+      // legend: {
+      //   show:false,
+      //   x: "left",
+      //   y: "60%",
+      //   itemHeight: 7,
+      //   textStyle: {
+      //     fontSize: 8,
+      //   },
+      //   formatter: function (params) {
+      //     const chartData = optionOne.series[0].data
+      //     const sum = chartData.reduce((accumulator, currentValue) => {
+      //      return accumulator + currentValue.value
+      //     }, 0)
+      //     const targetVal = chartData.find(d => d.name == params).value
+      //     let p = ((targetVal / sum) * 100).toFixed(2);
+      //     return params + " - " + p + "%";
+      //   },
+      // },
+      series: [
+        {
+          type: "pie",
+          center: ["30%", "35%"],
+          radius: ["20%", "40%"],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+          },
+          color: sponsorChartColor,
+          data: criteriaDetail.Value.sponser_list.sort((a, b) => {
+            return b.value - a.value;
+          })
+          .slice(0, 5),
+         
         },
       ],
     };
@@ -2232,6 +2337,12 @@ const ScenarioPage = (props) => {
       setVisibleSOA(false)
     }
 
+    const handleCancelCriteria = () => {
+      setShowMoreDetail(false)
+      // setVisible(false)
+      // setVisibleSOA(false)
+    }
+
     const showSOAModal = async () => {
       setVisibleSOA(true)
       searchHistoricalTrials()
@@ -2260,6 +2371,7 @@ const ScenarioPage = (props) => {
         }
       }
     }
+
     const searchHistoricalTrialsExclu = async () => {
       !showHistoricalExclu?setShowHistoricalExclu(true):setShowHistoricalExclu(false)
       if(historicalTrialdata.length == 0){
@@ -2307,6 +2419,7 @@ const ScenarioPage = (props) => {
       FileSaver.saveAs(blob, `SoA_${dateStr}.csv`);
 
     }
+
     const handleSOAExport = (str) => {
       setStr(str) 
     }
@@ -2502,6 +2615,7 @@ const ScenarioPage = (props) => {
 
       setTrialRecord(newTrial)
     }
+
     const saveCriteria = async () => {
       setPageLoading(true)
       let newScenario = trialRecord.scenarios.find( i=> i['scenario_id'] == scenarioId)
@@ -2825,6 +2939,7 @@ const ScenarioPage = (props) => {
     const saveEndpoint = () => {
       console.log("saveEndpoint")
     }
+
     // submitCriteria
     const submitEndpoint = () => {
       console.log("submitEndpoint")
@@ -2984,6 +3099,7 @@ const ScenarioPage = (props) => {
       })
       return specificScenario
     }
+
     function roundFun(value, n) {
         return Math.round(value*Math.pow(10,n))/Math.pow(10,n);
     }
@@ -4052,7 +4168,9 @@ const ScenarioPage = (props) => {
                                                 demographic={demographic}
                                                 index={0}
                                                 idx={idx}
+                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleOptionSelect}
+                                                handleMoreSelect={handleMoreSelect}
                                               ></CriteriaOption>
                                             );
                                           })}
@@ -4077,7 +4195,9 @@ const ScenarioPage = (props) => {
                                                 demographic={medCon}
                                                 index={1}
                                                 idx={idx}
+                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleOptionSelect}
+                                                handleMoreSelect={handleMoreSelect}
                                               ></CriteriaOption>
                                             );
                                           })}
@@ -4102,7 +4222,9 @@ const ScenarioPage = (props) => {
                                                 demographic={intervent}
                                                 index={2}
                                                 idx={idx}
+                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleOptionSelect}
+                                                handleMoreSelect={handleMoreSelect}
                                               ></CriteriaOption>
                                             );
                                           })}
@@ -4127,7 +4249,9 @@ const ScenarioPage = (props) => {
                                                 demographic={lib}
                                                 index={3}
                                                 idx={idx}
+                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleOptionSelect}
+                                                handleMoreSelect={handleMoreSelect}
                                               ></CriteriaOption>
                                             );
                                           })}
@@ -4263,6 +4387,7 @@ const ScenarioPage = (props) => {
                       </Row>
                       {/* The drawer with wrapper */}
                       <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
+                        {/* historical list drawer */}
                         <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancel} visible={showHistorical}>
                           <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
                           {activeTabKey === '1' &&<div className="drawer-content-frequency">
@@ -4395,7 +4520,7 @@ const ScenarioPage = (props) => {
                                             );
                                             let percent = ((d.value / sum) * 100).toFixed(2);
                                             return (
-                                              <div className="custom-legend">
+                                              <div className="custom-legend" key={idx}>
                                                 <span
                                                   className="my_legend"
                                                   style={{
@@ -4417,6 +4542,92 @@ const ScenarioPage = (props) => {
                           </Row>
                           </div>
                           </Spin>
+                        </Drawer>
+                        <Drawer className="criteria-drawer-wrapper" title={criteriaDetail.Text} placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelCriteria} visible={showMoreDetail}>
+                            <div>
+                              <div className="drawer-content-frequency">
+                                <Row>
+                                  <Col span={24} className="drawer-title">
+                                    <span className="text">
+                                    Frequency
+                                    </span>
+                                  </Col>
+                                </Row>
+                                <Row>
+                                <Col span={24} className="drawer-content">
+                                  <span className="left-text">
+                                  External
+                                  </span>
+                                  <span className="right-text">
+                                  {Math.floor(criteriaDetail.Frequency * 10000) / 100 + "%"}
+                                  </span>
+                                </Col>
+                              </Row>
+                              </div>
+                              
+                              <div className='drawer-content-sponsor'>
+                              <Row>
+                                <Col span={24} className="drawer-title">
+                                  <span className="text">
+                                  By sponsors
+                                  </span>
+                                </Col>
+                              </Row>
+                              <Row>
+                                  <Col span={24}>
+                                  <div className="history-chart-wrapper">
+                                    <div className="chart">
+                                      <div className="my-echart-wrapper">
+                                        <ReactECharts option={CriteriaSponsorOption}></ReactECharts>
+                                      </div>
+                                      <div className="history-legend-wrapper">
+                                        {criteriaDetail.Value.sponser_list
+                                          .sort((a, b) => {
+                                            return b.value - a.value;
+                                          })
+                                          .slice(0, 5)
+                                          .map((d, idx) => {
+                                            const chartData = criteriaDetail.Value.sponser_list;
+                                            const sum = chartData.reduce(
+                                              (accumulator, currentValue) => {
+                                                return accumulator + currentValue.value;
+                                              },
+                                              0
+                                            );
+                                            let percent = ((d.value / sum) * 100).toFixed(2);
+                                            return (
+                                              <div className="custom-legend">
+                                                <span
+                                                  className="my_legend"
+                                                  style={{
+                                                    backgroundColor: sponsorChartColor[idx],
+                                                  }}
+                                                ></span>
+                                                <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                              </div>
+                                            );
+                                          })}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  </Col>
+                              </Row>
+                              </div>
+                              {/* <div className="drawer-content-limit">
+                               <Row>
+                                <Col span={24} className="drawer-title">
+                                  <span className="text">
+                                  Numeric Limits Distribution
+                                  </span>
+                                </Col>
+                              </Row> 
+                              </div> */}
+                              <div className="drawer-content-button">
+                                  <Button className="update-btn" onClick={(e) => handleCriteriaSelect(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
+                                    ADD
+                                  </Button>
+                                </div>
+                            </div>
                         </Drawer>
                       </div>
                     </Col>
@@ -4534,7 +4745,9 @@ const ScenarioPage = (props) => {
                                                 demographic={demographic}
                                                 index={0}
                                                 idx={idx}
+                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleExcluOptionSelect}
+                                                handleMoreSelect={handleExcluMoreSelect}
                                               ></CriteriaOption>
                                             );
                                           })}
@@ -4559,7 +4772,9 @@ const ScenarioPage = (props) => {
                                                 demographic={medCon}
                                                 index={1}
                                                 idx={idx}
+                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleExcluOptionSelect}
+                                                handleMoreSelect={handleExcluMoreSelect}
                                               ></CriteriaOption>
                                             );
                                           })}
@@ -4585,7 +4800,9 @@ const ScenarioPage = (props) => {
                                             demographic={intervent}
                                             index={2}
                                             idx={idx}
+                                            criteriaDetailActiveTab={criteriaDetailActiveTab}
                                             handleOptionSelect={handleExcluOptionSelect}
+                                            handleMoreSelect={handleExcluMoreSelect}
                                           ></CriteriaOption>
                                         );
                                       })}
@@ -4610,7 +4827,9 @@ const ScenarioPage = (props) => {
                                                   demographic={lib}
                                                   index={3}
                                                   idx={idx}
+                                                  criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                   handleOptionSelect={handleExcluOptionSelect}
+                                                  handleMoreSelect={handleExcluMoreSelect}
                                                 ></CriteriaOption>
                                               );
                                             })}
