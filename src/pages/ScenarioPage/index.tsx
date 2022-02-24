@@ -4891,6 +4891,12 @@ const ScenarioPage = (props) => {
                                         option={excluAmendmentRateoption}
                                         style={{ height: 120}}
                                         onEvents={{'click': onExclusionChartClick}}/>
+                                      <div className="legend-wrapper">
+                                        <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
+                                        <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
+                                        <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
+                                        <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
+                                      </div>
                                     </div>
                                     <div className="chart-container  box">
                                       <div className="label">
@@ -4900,6 +4906,12 @@ const ScenarioPage = (props) => {
                                         option={excluScreenFailureOption}
                                         style={{ height: 120}}
                                         onEvents={{'click': onExclusionChartClick}}/>
+                                      <div className="legend-wrapper">
+                                        <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
+                                        <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
+                                        <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
+                                        <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
+                                      </div>
                                     </div>
                                   </Panel>
                                 </Collapse>
