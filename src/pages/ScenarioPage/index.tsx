@@ -4100,7 +4100,7 @@ const ScenarioPage = (props) => {
                                 Manage Library
                               </span>
                               <span className="right-icon" onClick= {searchHistoricalTrials}>
-                                {!showHistorical ?<RightOutlined />:<LeftOutlined />}
+                                {!showHistorical ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}}/>:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
                               </span>
                             </div>
                           </div>
@@ -4656,7 +4656,7 @@ const ScenarioPage = (props) => {
                                 Manage Library
                               </span>
                               <span className="right-icon" onClick= {searchHistoricalTrialsExclu}>
-                                {!showHistoricalExclu ?<RightOutlined />:<LeftOutlined />}
+                                {!showHistoricalExclu ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}} />:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
                               </span>
                             </div>
                           </div>

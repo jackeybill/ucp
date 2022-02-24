@@ -56,7 +56,7 @@ const CriteriaOption = (props) => {
               </span>
             </span>
             <span className="more-button" onClick={(e) => handleMore(domain, e)}>
-              {activeMore== 0 ?<RightOutlined />:<LeftOutlined />}
+              {activeMore== 0 ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}} />:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
             </span>
           </div>
       ) : (
@@ -70,7 +70,7 @@ const CriteriaOption = (props) => {
             </span>
           </span>
           <span className="more-button" onClick={(e) => handleMore(domain, e)}>
-              {activeMore== 0 ?<RightOutlined />:<LeftOutlined />}
+              {activeMore== 0 ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}}/>:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
           </span>
         </div>
       )}
