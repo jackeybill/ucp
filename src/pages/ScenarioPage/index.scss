@@ -600,11 +600,12 @@
         
                 .trial-panelHeader{
                     .bar-desc {
-                        font-size: 18px;
+                        font-size: 14px;
                         color: #333;
+                        font-weight: 500;
                         display:inline-block;
                         min-width:150px;
-                        border-right: 2px solid #ddd;
+                        // border-right: 2px solid #ddd;
                         margin-right:10px;
                     }
         
@@ -682,11 +683,51 @@
                     div.chart-container{
                         display:inline-block;
                         width:45%;
-        
+                        overflow: hidden;
+                        padding-left: 6px;
                         .label{
                             padding-left: calc(80% - 120px);
                             color: #999999;
                         }
+                        .legend-wrapper {
+                            overflow: hidden;
+                            width: 58%;
+                            display: inline-block;
+                            .item-desc {
+                                min-width: 100px;
+                                display:inline-block;
+                                span{
+                                    font-size:12px;
+                                    color: #333;
+                                }
+                
+                                .bar-item{
+                                    display:inline-block;
+                                    content: "";
+                                    width: 7px;
+                                    height: 7px;
+                                    border-radius: 5px;
+                                    margin-right: 3px;
+                                }
+                
+                                .item1{
+                                    background-color: #E53500;
+                                }
+                
+                                .item2{
+                                    background-color: #F27A26;
+                                }
+                
+                                .item3{
+                                    background-color: #F5924D;
+                                }
+                
+                                .item4{
+                                    background-color: #FBD0B3;
+                                }
+                            }
+                        }
+            
                     }
         
                     div.chart-container.box{
@@ -701,9 +742,13 @@
                     // border-bottom: 1px solid #f8f8f8;
                 }
                 .impact-summary{
-                    
-                    font-size: 18px;
+                    height: 42px;
+                    font-size: 14px;
+                    font-weight: 500;
                     color: #333;
+                    .impact-title {
+                        line-height: 32px;
+                    }
                 }
     
                 .criteria-list {

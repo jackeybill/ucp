@@ -45,11 +45,7 @@ const panelHeader = () => {
     return (
         <div className="trial-panelHeader">
             <div>
-                <div className="bar-desc"><span>Impact</span></div>
-                <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
-                <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
-                <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
-                <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
+                <div className="bar-desc"><span>Predicted Impact / Summary</span></div>
             </div>
         </div>
     );
@@ -4308,6 +4304,12 @@ const ScenarioPage = (props) => {
                                         option={amendmentRateoption}
                                         style={{ height: 120}}
                                         onEvents={{'click': onInclusionChartClick}}/>
+                                      <div className="legend-wrapper">
+                                        <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
+                                        <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
+                                        <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
+                                        <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
+                                      </div>
                                     </div>
                                     <div className="chart-container  box">
                                       <div className="label">
@@ -4317,6 +4319,12 @@ const ScenarioPage = (props) => {
                                         option={screenFailureOption}
                                         style={{ height: 120}}
                                         onEvents={{'click': onInclusionChartClick}}/>
+                                      <div className="legend-wrapper">
+                                        <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
+                                        <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
+                                        <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
+                                        <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
+                                      </div>
                                     </div>
                                   </Panel>
                                 </Collapse>
@@ -4327,7 +4335,7 @@ const ScenarioPage = (props) => {
                           <Row className="impact-summary-wrapper">
                             <Col span={24}>
                               <div className="impact-summary">
-                                <span>Inclusion Criteria</span>
+                                <span className="impact-title">View Historical Average</span>
                                 {activeTabKey === '3'? (
                                     <></>
                                   ) : (
@@ -4902,7 +4910,7 @@ const ScenarioPage = (props) => {
                           <Row className="impact-summary-wrapper"> 
                             <Col span={24}>
                               <div className="impact-summary">
-                                <span>Exclusion Criteria</span>
+                                <span>View Historical Average</span>
                                 {activeTabKey === '3'? (
                                   <></>
                                 ) : (
