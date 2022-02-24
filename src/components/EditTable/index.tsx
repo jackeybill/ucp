@@ -374,6 +374,7 @@ const panelHeaderSection = (header, count) => {
     }, {
       title: 'Timeframe',
       dataIndex: 'Timeframe',
+      className:"timeframe",
       // width: '25%',
       editable: true,
       render: (_, record) => {
@@ -394,7 +395,7 @@ const panelHeaderSection = (header, count) => {
       render: (_, record) => {
         const editable = isEditing(record);
         return !viewOnly && (editable ? (
-          <span style={{float:'left'}}>
+          <span style={{float:'left', marginLeft:'-20px'}}>
             <CheckOutlined onClick={() => save(record.Key)}/> &nbsp;&nbsp;
             <CloseOutlined onClick={cancel}/>
           </span>

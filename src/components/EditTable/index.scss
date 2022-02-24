@@ -165,10 +165,13 @@ span.anticon.anticon-close.ant-modal-close-icon {
       }
       .ant-table-cell:nth-child(5) {
         flex: 1;
+        #Timeframe {
+          width: 220px;
+        }
       }
       .ant-table-cell:last-child {
         flex: 0.1;
-
+        
       }
     }
 

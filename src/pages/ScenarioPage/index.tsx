@@ -4286,7 +4286,7 @@ const ScenarioPage = (props) => {
                       </Row>
                     </Col>
                     <Col flex="auto" className={`${ collapsible ? "none-click" : "" } main-content-right`}>
-                      <Row style={{ paddingTop: '10px' }}>
+                      <Row style={{ paddingTop: '10px', position: 'relative', zIndex: 99 }}>
                         <Col flex="none">
                           <div style={{ padding: '0 10px' }}></div>
                         </Col>
@@ -4864,7 +4864,7 @@ const ScenarioPage = (props) => {
                       </Row>
                     </Col>
                     <Col flex="auto" className={`${ excluCollapsible ? "none-click" : "" } main-content-right`}>
-                      <Row style={{ paddingTop: '10px' }}>
+                      <Row style={{ paddingTop: '10px', position: 'relative', zIndex: 99 }}>
                         <Col flex="none">
                           <div style={{ padding: '0 10px' }}></div>
                         </Col>
