@@ -5115,6 +5115,92 @@ const ScenarioPage = (props) => {
                           </div>
                           </Spin>
                         </Drawer>
+                        <Drawer className="criteria-drawer-wrapper" title={criteriaDetail.Text} placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelCriteria} visible={showMoreDetail}>
+                            <div>
+                              <div className="drawer-content-frequency">
+                                <Row>
+                                  <Col span={24} className="drawer-title">
+                                    <span className="text">
+                                    Frequency
+                                    </span>
+                                  </Col>
+                                </Row>
+                                <Row>
+                                <Col span={24} className="drawer-content">
+                                  <span className="left-text">
+                                  External
+                                  </span>
+                                  <span className="right-text">
+                                  {Math.floor(criteriaDetail.Frequency * 10000) / 100 + "%"}
+                                  </span>
+                                </Col>
+                              </Row>
+                              </div>
+                              
+                              <div className='drawer-content-sponsor'>
+                              <Row>
+                                <Col span={24} className="drawer-title">
+                                  <span className="text">
+                                  By sponsors
+                                  </span>
+                                </Col>
+                              </Row>
+                              <Row>
+                                  <Col span={24}>
+                                  <div className="history-chart-wrapper">
+                                    <div className="chart">
+                                      <div className="my-echart-wrapper">
+                                        <ReactECharts option={CriteriaSponsorOption}></ReactECharts>
+                                      </div>
+                                      <div className="history-legend-wrapper">
+                                        {criteriaDetail.Value.sponser_list
+                                          .sort((a, b) => {
+                                            return b.value - a.value;
+                                          })
+                                          .slice(0, 5)
+                                          .map((d, idx) => {
+                                            const chartData = criteriaDetail.Value.sponser_list;
+                                            const sum = chartData.reduce(
+                                              (accumulator, currentValue) => {
+                                                return accumulator + currentValue.value;
+                                              },
+                                              0
+                                            );
+                                            let percent = ((d.value / sum) * 100).toFixed(2);
+                                            return (
+                                              <div className="custom-legend" key={idx}>
+                                                <span
+                                                  className="my_legend"
+                                                  style={{
+                                                    backgroundColor: sponsorChartColor[idx],
+                                                  }}
+                                                ></span>
+                                                <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                              </div>
+                                            );
+                                          })}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  </Col>
+                              </Row>
+                              </div>
+                              {/* <div className="drawer-content-limit">
+                               <Row>
+                                <Col span={24} className="drawer-title">
+                                  <span className="text">
+                                  Numeric Limits Distribution
+                                  </span>
+                                </Col>
+                              </Row> 
+                              </div> */}
+                              <div className="drawer-content-button">
+                                  <Button className="update-btn" onClick={(e) => handleCriteriaSelect(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
+                                    ADD
+                                  </Button>
+                                </div>
+                            </div>
+                        </Drawer>
                       </div>
                     </Col>
                   </Row>
