@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
 import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer, Input, AutoComplete, Select,Breadcrumb} from "antd";
-import {updateStudy, getSimilarhistoricalTrialById, getStudy, getCriteriaLibByNctId, getSOAResource, getIEResource, getPatientFunnelData, checkTrialPatientFunnelData} from "../../utils/ajax-proxy";
+import {updateStudy, getSimilarhistoricalTrialById, getStudy, getCriteriaLibByNctId,getEndpointByNctId, getSOAResource, getIEResource, getPatientFunnelData, checkTrialPatientFunnelData} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {MenuOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined, SearchOutlined, HomeOutlined, UserOutlined, CheckOutlined,MinusOutlined,PlusOutlined, FileTextOutlined, RightOutlined, LeftOutlined  } from "@ant-design/icons";
 
@@ -46,6 +46,16 @@ const panelHeader = () => {
         <div className="trial-panelHeader">
             <div>
                 <div className="bar-desc"><span>Predicted Impact / Summary</span></div>
+            </div>
+        </div>
+    );
+};
+
+const panelHeaderEndpoint = () => {
+    return (
+        <div className="trial-panelHeader">
+            <div>
+                <div className="bar-desc"><span>Summary</span></div>
             </div>
         </div>
     );
@@ -126,6 +136,7 @@ const ScenarioPage = (props) => {
 
     const [showHistorical, setShowHistorical] = useState(false)
     const [showHistoricalExclu, setShowHistoricalExclu] = useState(false)
+    const [showHistoricalEndpoint, setShowHistoricalEndpoint] = useState(false)
     const [historicalTrialdata, setHistoricalTrialdata] = useState([])
     const [visibleSOA, setVisibleSOA] = useState(false)
     const [soaResource, setSOAResource] = useState([])
@@ -267,7 +278,30 @@ const ScenarioPage = (props) => {
   // const [funnelChartheightBelow, setFunnelChartheightBelow] = useState(200)
   const [funnelChartheightOverlap, setFunnelChartheightOverlap] = useState(100)
 
-    //------------------------EXCLUSION CRITERIA CONST END-----------------------------
+     //------------------------EXCLUSION CRITERIA CONST END-----------------------------
+
+  // Endpoint page
+  const [loadEndpoint, setLoadEndpoint] = useState(false)
+  const [reloadEndpointData, setReloadEndpointData] = useState(false)
+  const [initEndpointData, setInitEndpointData] = useState(true)
+
+  const [originEndpoint, setOriginEndpoint] = useState([])
+  const [summaryChart, setSummaryChart] = useState({ category: [],value: []})
+
+
+  const [endpointRollHeight, setEndpointRollHeight] = useState(true)            // Control editTable scroll height
+   const [endpointDefaultActiveKey, setEndpointDefaultActiveKey] = useState([])  //default expanded collapse for edittable
+    const [endpointActiveKey, setEndpointActiveKey] = useState([])                //To control chart collapse expanding
+    const [endpointCollapsible, setEndpointCollapsible] = useState(true) 
+  const [endpointLib, setEndpointLib] = useState(6)
+
+  //To store the selected endpoint
+//  let [excluDemographicsElements, setExcluDemographicsElements] = useState([])
+ let [endpointElements, setEndpointElements] = useState([])
+ // endpoint data for EditTable
+let [endpointTableData, setEndpointTableData] = useState([])
+
+ 
   
     const getTrialById = async () => {
       const resp = await getStudy(props.location.state.trial_id);
@@ -378,6 +412,7 @@ const ScenarioPage = (props) => {
           if(tempEditFlag){
               updateTrial(1, 2)
               updateTrial(2, 2)
+              updateTrial(3, 2)
           }
       }
   };
@@ -663,6 +698,20 @@ const ScenarioPage = (props) => {
       }
     }
 
+    const handleEndpointMoreSelect = (item, activeMore, id, key) => {
+
+      // setCriteriaDetail(item)
+      // setCriteriaDetailActiveTab(activeMore)
+      // setCriteriaDetailID(id)
+      // setCriteriaDetailKey(key)
+
+      if(activeMore === 1) {
+        setShowMoreDetail(true)
+      } else {
+        setShowMoreDetail(false)
+      }
+    }
+
     function formatValue(item){
       console.log(item.Text, item.Value);
       
@@ -814,6 +863,23 @@ const ScenarioPage = (props) => {
       }
     }
 
+    const handleEnpointSelect = (item, activeType, id, key) =>{
+      let index = originEndpoint.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData = [...originEndpoint]
+        const newSelectedData = [...endpointElements]
+
+        if(item.selected){
+          newData.splice(index, 1, { ...item, ...{selected: false}});
+          let selectedIndex = endpointElements.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData.splice(selectedIndex, 1)
+        } else {
+          newData.splice(index, 1, { ...item, ...{selected: true}});
+          newSelectedData.push(Object.assign(item, {selected: true}))
+        }
+        setOriginEndpoint(newData)
+        setEndpointElements(newSelectedData)
+    }
+
   const updateTrial = (type: number, res: number) => {
       // res: 1, update when loading page; 2, update when update criteria
       if(res == 1){
@@ -942,11 +1008,30 @@ const ScenarioPage = (props) => {
         setExcluCollapsible(false)
         setExcluDefaultActiveKey(['2','3','4','5'])
 
-        setExcluRollHeight(false)
+        setEndpointRollHeight(false)
         setExcluActiveKey(['1'])
-      }
+      } else if (type == 3) {//Endpoint
 
-    
+
+        let endpointElementsTmp = endpointElements.map((item,index) =>{
+          return Object.assign(item,{Key:(index + 1) + ''})
+        })
+        let endpointDataTmp = endpointElementsTmp.filter(d => {
+          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+        })
+        setEndpointElements(endpointElementsTmp )
+        setEndpointTableData(endpointDataTmp.map((item, id) =>{
+          item.Key = (id + 1) + ''
+          return item
+        }))
+
+
+        setEndpointCollapsible(false)
+        setEndpointActiveKey(['2'])
+
+        setEndpointRollHeight(false)
+        setEndpointActiveKey(['1'])
+      }
   }
 
 
@@ -966,6 +1051,15 @@ const ScenarioPage = (props) => {
         setExcluRollHeight(false)
       }
       setExcluActiveKey(key)
+    }
+
+    function endpointCallback(key) {
+      if(key.indexOf("1") < 0){
+        setEndpointRollHeight(true)
+      } else {
+        setEndpointRollHeight(false)
+      }
+      setEndpointActiveKey(key)
     }
 
     const sponsorChartColor = [
@@ -2325,6 +2419,40 @@ const ScenarioPage = (props) => {
       setReloadPTData(false)
       setInitPTData(false)
     }
+
+   // fetch the endpoint data when entering endpoint page
+    const getEndpoint = async () => {
+      if (!initEndpointData && !reloadEndpointData){
+        console.log("Already have endpoint data");
+        return
+      }
+      
+      setLoadEndpoint(true)
+      
+      var resp = await getEndpointByNctId(props.location.state.similarHistoricalTrials, props.location.state.trial_id);
+      
+      if (resp.statusCode == 200) {
+          // setAvgFileKey(resp.csvKey)
+          // const response = JSON.parse(resp.body)
+          const response = resp.body
+          console.log("endpoint result: ", response);
+          const endpointList = response.result.list
+          const endpointSummaryChart =response.result.summary.category_summary
+          const selectedEndpointList = endpointList.filter((val, index)=>{
+            return val.selected
+          })
+          setOriginEndpoint(endpointList)
+          setEndpointElements(selectedEndpointList)
+          setSummaryChart(endpointSummaryChart)
+          // setMedCondition(inclusionCriteria[i]['Medical Condition'].filter((d) => {
+          //     return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+          // }))
+      }
+
+      setLoadEndpoint(false)
+      setReloadEndpointData(false)
+      setInitEndpointData(false)
+    }
     
     const handleCancel = () => {
       setShowHistorical(false)
@@ -2334,6 +2462,12 @@ const ScenarioPage = (props) => {
 
     const handleCancelExclu = () => {
       setShowHistoricalExclu(false)
+      setVisible(false)
+      setVisibleSOA(false)
+    }
+
+    const handleCancelHistoricalEndpoint = () => {
+      setShowHistoricalEndpoint(false)
       setVisible(false)
       setVisibleSOA(false)
     }
@@ -2375,6 +2509,30 @@ const ScenarioPage = (props) => {
 
     const searchHistoricalTrialsExclu = async () => {
       !showHistoricalExclu?setShowHistoricalExclu(true):setShowHistoricalExclu(false)
+      if(historicalTrialdata.length == 0){
+        setSpinning(true)
+        const resp = await getSimilarhistoricalTrialById(similarHistoricalTrials);
+        if (resp.statusCode == 200) {
+          setSpinning(false)
+          const filteredData =  JSON.parse(resp.body).filter((d) => {
+            const date = d['start_date'].split('-')[0]
+            return (
+              date >= simliarTrialStudyStartDate.dateFrom && date<= simliarTrialStudyStartDate.dateTo
+            );
+          });
+          setHistoricalTrialdata(filteredData)
+          console.log("getSimilarhistoricalTrialById:",filteredData);
+
+          const statusData = getChartData(filteredData, "study_status");
+          const sponsorData = getChartData(filteredData, "sponsor");
+          setStatusChartData(statusData)
+          setSponsorChartData(sponsorData)
+        }
+      }
+    }
+
+    const searchHistoricalTrialsEndpoint = async () => {
+      !showHistoricalEndpoint?setShowHistoricalEndpoint(true):setShowHistoricalEndpoint(false)
       if(historicalTrialdata.length == 0){
         setSpinning(true)
         const resp = await getSimilarhistoricalTrialById(similarHistoricalTrials);
@@ -2535,6 +2693,19 @@ const ScenarioPage = (props) => {
         default:
           
           setExcluLabTestElements(newData)
+      }
+    }
+
+    const updateEndpoint = (newData, index) => {
+      // setReloadPTData(true)
+      switch(index){
+        case 2: 
+         
+          setEndpointElements(newData)
+          break;
+        default:
+          // secondary
+          setEndpointElements(newData)
       }
     }
 
@@ -3244,6 +3415,10 @@ const ScenarioPage = (props) => {
     if(activeKey === '3'){
       keepUpdatedTrialInfo()
       getPatientFunnel()
+    }
+    if(activeKey === '4'){
+      keepUpdatedTrialInfo()
+      getEndpoint()
     }
   }
 
@@ -4304,12 +4479,12 @@ const ScenarioPage = (props) => {
                                         option={amendmentRateoption}
                                         style={{ height: 120}}
                                         onEvents={{'click': onInclusionChartClick}}/>
-                                      <div className="legend-wrapper">
+                                      {/* <div className="legend-wrapper">
                                         <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
                                         <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
                                         <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
                                         <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
-                                      </div>
+                                      </div> */}
                                     </div>
                                     <div className="chart-container  box">
                                       <div className="label">
@@ -4319,12 +4494,12 @@ const ScenarioPage = (props) => {
                                         option={screenFailureOption}
                                         style={{ height: 120}}
                                         onEvents={{'click': onInclusionChartClick}}/>
-                                      <div className="legend-wrapper">
+                                      {/* <div className="legend-wrapper">
                                         <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
                                         <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
                                         <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
                                         <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
-                                      </div>
+                                      </div> */}
                                     </div>
                                   </Panel>
                                 </Collapse>
@@ -4891,12 +5066,12 @@ const ScenarioPage = (props) => {
                                         option={excluAmendmentRateoption}
                                         style={{ height: 120}}
                                         onEvents={{'click': onExclusionChartClick}}/>
-                                      <div className="legend-wrapper">
+                                      {/* <div className="legend-wrapper">
                                         <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
                                         <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
                                         <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
                                         <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
-                                      </div>
+                                      </div> */}
                                     </div>
                                     <div className="chart-container  box">
                                       <div className="label">
@@ -4906,12 +5081,12 @@ const ScenarioPage = (props) => {
                                         option={excluScreenFailureOption}
                                         style={{ height: 120}}
                                         onEvents={{'click': onExclusionChartClick}}/>
-                                      <div className="legend-wrapper">
+                                      {/* <div className="legend-wrapper">
                                         <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
                                         <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
                                         <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
                                         <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
-                                      </div>
+                                      </div> */}
                                     </div>
                                   </Panel>
                                 </Collapse>
@@ -5466,8 +5641,418 @@ const ScenarioPage = (props) => {
               </span>
             </div>
             <div className="endpoint-content">
-              <br/>
-              <br/>
+            <Spin spinning={loadEndpoint} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
+              <Row>
+                <Col span={endpointLib} style={{backgroundColor: '#F8F8F8',maxWidth: '300px', minWidth: '300px'}}>
+                  <Row style={{backgroundColor: '#F8F8F8'}}>
+                    <Col span={24}>
+                      <div className="item-header">
+                        <div className="item-header-text">Endpoint Library</div>
+                        <div className="item-header-content" onClick={searchHistoricalTrialsEndpoint}>
+                          <span className="left-icon">
+                            <FileTextOutlined/>
+                          </span>
+                          <span className="middle-text">
+                            Manage Library
+                          </span>
+                          <span className="right-icon" onClick= {searchHistoricalTrialsEndpoint}>
+                            {!showHistoricalEndpoint ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}}/>:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
+                          </span>
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row style={{borderBottom:'10px solid #F8F8F8'}}>
+                    <Col flex="none">
+                      <div style={{ padding: '0 10px' }}></div>
+                    </Col>
+                    <Col className="left-section">
+                      <Row>
+                        <Col span={24}>
+                          <div className="content-outer content-sidebar">
+                            <div className="content-over">
+                            <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                    <Panel showArrow={false} header={eventLibHeader("Endpoints", originEndpoint.length, "1")} key="1">
+                                      {originEndpoint.length>0 ? (
+                                          <div className="library box select-option-wrapper">
+                                          {originEndpoint.sort(function(m,n){ var a = Number(m["Frequency"]===''?0:m["Frequency"]); var b = Number(n["Frequency"]===''?0:n["Frequency"]); return b-a;}).map((endpoint, idx) => {                     
+                                            return (
+                                              <CriteriaOption
+                                                selectedEle = {endpointElements}
+                                                minValue={minValue}
+                                                maxValue={maxValue}
+                                                key={`demographic_${idx}`}
+                                                demographic={endpoint}
+                                                index={0}
+                                                idx={idx}
+                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                handleOptionSelect={handleEnpointSelect}
+                                                handleMoreSelect={handleEndpointMoreSelect}
+                                              ></CriteriaOption>
+                                            );
+                                          })}
+                                        </div>
+                                      ): (
+                                        <></>
+                                      )}
+                                    </Panel>
+                                  </Collapse>
+
+                            </div>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col flex="none">
+                      <div style={{ padding: '0 10px' }}></div>
+                    </Col>
+                  </Row>
+                  <Row style={{backgroundColor: '#fff'}}>
+                    <Col span={24}>
+                      <div className="updateTrial">
+                        {/* <Button className="update-btn" onClick={() => updateTrial(3, 1)}> */}
+                        <Button className="update-btn">
+                          UPDATE MY TRIAL
+                        </Button>
+                      </div>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col flex="auto" className={`${ endpointCollapsible ? "none-click" : "" } main-content-right`}>
+                  <Row style={{ paddingTop: '10px', position: 'relative', zIndex: 99 }}>
+                    <Col flex="none">
+                      <div style={{ padding: '0 10px' }}></div>
+                    </Col>
+                    <Col flex="auto">
+                      <Row>
+                        <Col span={24}>
+                        <div className="option-item">
+                          <div className="collapse-section-wrapper">
+                            <Collapse activeKey={endpointActiveKey} onChange={endpointCallback} expandIconPosition="right" >
+                              <Panel header={panelHeaderEndpoint()} key="1" forceRender={false} >
+                                <div className="chart-container">
+                                  {/* <ReactECharts
+                                    option={amendmentRateoption}
+                                    style={{ height: 120}}
+                                    onEvents={{'click': onInclusionChartClick}}/> */}
+                                  {/* <div className="legend-wrapper">
+                                    <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
+                                    <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
+                                    <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
+                                    <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
+                                  </div> */}
+                                </div>
+                              </Panel>
+                            </Collapse>
+                          </div>
+                        </div>
+                        </Col>
+                      </Row>
+                      <Row className="impact-summary-wrapper">
+                        <Col span={24}>
+                          <div className="impact-summary">
+                            <span className="impact-title">View Historical Average</span>
+                            {activeTabKey === '3'? (
+                                <></>
+                              ) : (
+                                <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
+                                  Save
+                                </Button>
+                              )}
+                          </div>
+                          </Col>
+                      </Row>
+                      <Row>
+                        <Col span={24} >
+                          <div className="collapse-container">
+                          <div className="content-outer">
+                            <div id="inclusion-criteria" 
+                              className={`collapse-inner ${endpointRollHeight == true ? "taller" : ""} ${endpointCollapsible == true ? "collapsed" : ""}`}>
+                              <div className="criteria-list">
+                                <div className="list-columns">
+                                  <span className="col-item col-item-before"> </span>
+                                  <span className="col-item col-item-first">Eligibility Criteria</span>
+                                  <span className="col-item col-item-middle">Values</span>
+                                  <span className="col-item col-item-last">Timeframe</span>
+                                  <span className="col-item col-item-after"> </span>
+                                  {/* <Row>
+                                    <Col span={2}><div className="col-item">S/No.</div></Col>
+                                    <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
+                                    <Col span={8}><div className="col-item">Values</div></Col>
+                                    <Col span={8}><div className="col-item">Timeframe</div></Col>
+                                  </Row> */}
+                                </div>
+                              </div>
+                              <div className="sectionPanel">
+                                  <EditTable updateCriteria={updateEndpoint} tableIndex={2}                                
+                                    data={endpointTableData}
+                                    defaultActiveKey={endpointDefaultActiveKey}
+                                    collapsible={endpointCollapsible} panelHeader={"Primary"} updateTrial={() => updateTrial(3, 1)}                                  
+                                  />
+                                  <EditTable updateCriteria={updateEndpoint} tableIndex={3}
+                                    data={endpointTableData}
+                                    defaultActiveKey={endpointDefaultActiveKey}
+                                    collapsible={endpointCollapsible} panelHeader={"Secondary"} updateTrial={() => updateTrial(3, 1)}                               
+                                  />
+                              </div>
+                            </div>
+                          </div>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col flex="none">
+                      <div style={{ padding: '0 10px' }}></div>
+                    </Col>
+                  </Row>
+                  {/* The drawer with wrapper */}
+                  <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
+                    {/* historical list drawer */}
+                    <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelHistoricalEndpoint} visible={showHistoricalEndpoint}>
+                      <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
+                      {activeTabKey === '1' &&<div className="drawer-content-frequency">
+                        <span className="left-frequency-text">Set Criteria Frequency</span>
+                          <div className="right-frequency-steps">
+                            <div className="freqSection">
+                              {/* <div className="title">
+                                <CloseOutlined
+                                  className="right-icon"
+                                  onClick={() => setVisible(false)}
+                                ></CloseOutlined>
+                              </div>
+                              <br/> */}
+                              <div className="content">
+                                <span>Frequency</span>
+                                <span style={{ float: "right", fontWeight: 'bold' }}>
+                                  {minValue}% - {maxValue}%
+                                </span>
+                              </div>
+                              <Slider
+                                range={{ draggableTrack: true }}
+                                defaultValue={[minValue, maxValue]}
+                                tipFormatter={formatter}
+                                onAfterChange={getFrequency}
+                              />
+                            </div>
+                          </div>
+                      </div>}
+                      {activeTabKey === '2' &&<div className="drawer-content-frequency">
+                        <span className="left-frequency-text">Set Criteria Frequency</span>
+                        <div className="right-frequency-steps">
+                          <div className="freqSection">
+                            {/* <div className="title">
+                              <span>Set Frequency</span>
+                              <CloseOutlined
+                                className="right-icon"
+                                onClick={() => setExcluVisible(false)}
+                              ></CloseOutlined>
+                            </div>
+                            <br/> */}
+                            <div className="content">
+                              <span>Frequency</span>
+                              <span style={{ float: "right", fontWeight: 'bold' }}>
+                                {excluMinValue}% - {excluMaxValue}%
+                              </span>
+                            </div>
+                            <Slider
+                              range={{ draggableTrack: true }}
+                              defaultValue={[excluMinValue, excluMaxValue]}
+                              tipFormatter={formatter}
+                              onAfterChange={getExcluFrequency}
+                            />
+                          </div>
+                        </div>
+                      </div>}
+                      <div className='drawer-content-below'>
+                      <Row>
+                        <Col span={24} className="drawer-history-text">
+                          <span className="text">
+                          View Historical Trial List
+                          </span>
+                        </Col>
+                      </Row>
+                      <Row>
+                          <Col span={24} style={{paddingBottom: '10px'}}>
+                            {visibleSOA ? (
+                              <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
+                            ) : (
+                              <>
+                                <Button type="primary" onClick={downloadIE} style={{float: 'right'}}>VIEW SOURCE</Button>
+                                <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button>
+                              </>
+                            )}
+                          </Col>
+                      </Row>
+                      <Row>
+                          <Col span={24}>
+                          <div className="history-chart-wrapper">
+                            <div className="chart">
+                              <div className="my-echart-wrapper">
+                                <ReactECharts option={historySponsorOption}></ReactECharts>
+                              </div>
+                              <div className="history-legend-wrapper">
+                                {sponsorChartData
+                                  .sort((a, b) => {
+                                    return b.value - a.value;
+                                  })
+                                  .slice(0, 5)
+                                  .map((d, idx) => {
+                                    const chartData = sponsorChartData;
+                                    const sum = chartData.reduce(
+                                      (accumulator, currentValue) => {
+                                        return accumulator + currentValue.value;
+                                      },
+                                      0
+                                    );
+                                    let percent = ((d.value / sum) * 100).toFixed(2);
+                                    return (
+                                      <div className="custom-legend">
+                                        <span
+                                          className="my_legend"
+                                          style={{
+                                            backgroundColor: sponsorChartColor[idx],
+                                          }}
+                                        ></span>
+                                        <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                      </div>
+                                    );
+                                  })}
+                              </div>
+                            </div>
+                            <div className="chart">
+                            <>
+                                  <div className="my-echart-wrapper">
+                                    <ReactECharts option={historyStatusOption}></ReactECharts>
+                                  </div>
+                                  <div className="history-legend-wrapper">
+                                    {statusChartData
+                                      .sort((a, b) => {
+                                        return b.value - a.value;
+                                      })
+                                      .slice(0, 5)
+                                      .map((d, idx) => {
+                                        const chartData = statusChartData;
+                                        const sum = chartData.reduce(
+                                          (accumulator, currentValue) => {
+                                            return accumulator + currentValue.value;
+                                          },
+                                          0
+                                        );
+                                        let percent = ((d.value / sum) * 100).toFixed(2);
+                                        return (
+                                          <div className="custom-legend" key={idx}>
+                                            <span
+                                              className="my_legend"
+                                              style={{
+                                                backgroundColor: statusChartColor[idx],
+                                              }}
+                                            ></span>
+                                            <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                          </div>
+                                        );
+                                      })}
+                                  </div>
+                                </>
+                            </div>
+                          </div>
+                          </Col>
+                      </Row>
+                      <Row>
+                          <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
+                      </Row>
+                      </div>
+                      </Spin>
+                    </Drawer>
+                    <Drawer className="criteria-drawer-wrapper" title={criteriaDetail.Text} placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelCriteria} visible={showMoreDetail}>
+                        <div>
+                          <div className="drawer-content-frequency">
+                            <Row>
+                              <Col span={24} className="drawer-title">
+                                <span className="text">
+                                Frequency
+                                </span>
+                              </Col>
+                            </Row>
+                            <Row>
+                            <Col span={24} className="drawer-content">
+                              <span className="left-text">
+                              External
+                              </span>
+                              <span className="right-text">
+                              {Math.floor(criteriaDetail.Frequency * 10000) / 100 + "%"}
+                              </span>
+                            </Col>
+                          </Row>
+                          </div>
+                          
+                          <div className='drawer-content-sponsor'>
+                          <Row>
+                            <Col span={24} className="drawer-title">
+                              <span className="text">
+                              By sponsors
+                              </span>
+                            </Col>
+                          </Row>
+                          <Row>
+                              <Col span={24}>
+                              <div className="history-chart-wrapper">
+                                <div className="chart">
+                                  <div className="my-echart-wrapper">
+                                    <ReactECharts option={CriteriaSponsorOption}></ReactECharts>
+                                  </div>
+                                  <div className="history-legend-wrapper">
+                                    {criteriaDetail.Value.sponser_list
+                                      .sort((a, b) => {
+                                        return b.value - a.value;
+                                      })
+                                      .slice(0, 5)
+                                      .map((d, idx) => {
+                                        const chartData = criteriaDetail.Value.sponser_list;
+                                        const sum = chartData.reduce(
+                                          (accumulator, currentValue) => {
+                                            return accumulator + currentValue.value;
+                                          },
+                                          0
+                                        );
+                                        let percent = ((d.value / sum) * 100).toFixed(2);
+                                        return (
+                                          <div className="custom-legend" key={idx}>
+                                            <span
+                                              className="my_legend"
+                                              style={{
+                                                backgroundColor: sponsorChartColor[idx],
+                                              }}
+                                            ></span>
+                                            <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                          </div>
+                                        );
+                                      })}
+                                  </div>
+                                </div>
+                              </div>
+                              </Col>
+                          </Row>
+                          </div>
+                          {/* <div className="drawer-content-limit">
+                            <Row>
+                            <Col span={24} className="drawer-title">
+                              <span className="text">
+                              Numeric Limits Distribution
+                              </span>
+                            </Col>
+                          </Row> 
+                          </div> */}
+                          <div className="drawer-content-button">
+                              <Button className="update-btn" onClick={(e) => handleCriteriaSelect(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
+                                ADD
+                              </Button>
+                            </div>
+                        </div>
+                    </Drawer>
+                  </div>
+                </Col>
+              </Row>
+            </Spin>
             </div>
           </div>
           }

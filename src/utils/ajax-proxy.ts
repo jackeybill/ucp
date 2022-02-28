@@ -437,6 +437,24 @@ export const getCriteriaLibByNctId = async (nct_list, trialId) => {
   return await response.json();
 }
 
+export const getEndpointByNctId = async (nct_list, trialId) => {
+  const response = await fetch(criteria_url, {
+    method: 'POST',
+  headers: {
+    'Access-Control-Request-Method': 'POST',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+      "findEndpoint": {
+        "nctList": nct_list,
+        "trialId": trialId
+      }
+    })
+  })
+
+  return await response.json();
+}
+
 export const updateStudy = async (params:any) => {
   const response = await fetch(criteria_url, {
     method: 'POST',

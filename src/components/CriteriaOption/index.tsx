@@ -4,12 +4,13 @@ import { CheckOutlined, RightOutlined, LeftOutlined  } from "@ant-design/icons";
 
 const CriteriaOption = (props) => {
   const domain = props.demographic;
+  const optionText = props.demographic.Text?props.demographic.Text:props.demographic['Standard Event']
   const [activeType, setActiveType] = useState(0);
   const [activeMore, setActiveMore] = useState(0);
 
   useEffect(() => {
     const res = props.selectedEle.findIndex((e) => {
-      return e["Eligibility Criteria"] == domain.Text;
+      return props.demographic.Text?e["Eligibility Criteria"] == domain.Text:e["Standard Event"] == props.demographic['Standard Event']
     });
     setActiveType(res != -1 ? 1 : 0);
   }, [props.selectedEle, props.minValue, props.maxValue]);
@@ -49,7 +50,7 @@ const CriteriaOption = (props) => {
           >
             <span className="left-wrapper" onClick={(e) => handleOptionSelect(domain, e)}>
               <span className="select-text">
-                {domain.Text}
+                {optionText}
               </span>
               <span className="right-add">
                 Add
@@ -63,7 +64,7 @@ const CriteriaOption = (props) => {
         <div className="select-option selected" >
           <span className="left-wrapper" onClick={(e) => handleOptionSelect(domain, e)}>
             <span className="select-text">
-              {domain.Text}
+              {optionText}
             </span>
             <span className="right-icon">
               <CheckOutlined />
