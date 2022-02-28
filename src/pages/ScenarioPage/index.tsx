@@ -2463,13 +2463,13 @@ let [endpointTableData, setEndpointTableData] = useState([])
     const handleCancelExclu = () => {
       setShowHistoricalExclu(false)
       setVisible(false)
-      setVisibleSOA(false)
+      // setVisibleSOA(false)
     }
 
     const handleCancelHistoricalEndpoint = () => {
       setShowHistoricalEndpoint(false)
       setVisible(false)
-      setVisibleSOA(false)
+      // setVisibleSOA(false)
     }
 
     const handleCancelCriteria = () => {
