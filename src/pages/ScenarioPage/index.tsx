@@ -296,22 +296,26 @@ const ScenarioPage = (props) => {
 
 
   const [endpointRollHeight, setEndpointRollHeight] = useState(true)            // Control editTable scroll height
-   const [endpointDefaultActiveKey, setEndpointDefaultActiveKey] = useState([])  //default expanded collapse for edittable
-    const [endpointActiveKey, setEndpointActiveKey] = useState([])                //To control chart collapse expanding
-    const [endpointCollapsible, setEndpointCollapsible] = useState(true) 
+  const [endpointDefaultActiveKey, setEndpointDefaultActiveKey] = useState([])  //default expanded collapse for edittable
+  const [endpointActiveKey, setEndpointActiveKey] = useState([])                //To control chart collapse expanding
+  const [endpointCollapsible, setEndpointCollapsible] = useState(true) 
   const [endpointLib, setEndpointLib] = useState(6)
 
   //To store the selected endpoint
-//  let [excluDemographicsElements, setExcluDemographicsElements] = useState([])
- let [endpointElements, setEndpointElements] = useState([])
- // endpoint data for EditTable
-let [endpointTableData, setEndpointTableData] = useState([])
+  //  let [excluDemographicsElements, setExcluDemographicsElements] = useState([])
+  // let [endpointElements, setEndpointElements] = useState([])
+  let [endpointElementsPrimary, setEndpointElementsPrimary] = useState([])
+  let [endpointElementsSecondary, setEndpointElementsSecondary] = useState([])
+  // endpoint data for EditTable
+  let [endpointTableDataPrimary, setEndpointTableDataPrimary] = useState([])
+  let [endpointTableDataSecondary, setEndpointTableDataSecondary] = useState([])
+  let [assignedType, setAssignedType] = useState("")
 
  
   
     const getTrialById = async () => {
       const resp = await getStudy(props.location.state.trial_id);
-      console.log("getlist",resp);
+      console.log("getStudy:",resp);
       
       if(resp.statusCode == 200){
           const tempRecord = JSON.parse(JSON.stringify(resp.body))
@@ -344,9 +348,12 @@ let [endpointTableData, setEndpointTableData] = useState([])
               excluInterventionElements = tempScenario['Exclusion Criteria'].Intervention.Entities
               excluLabTestElements = tempScenario['Exclusion Criteria']['Lab / Test'].Entities
 
+              // endpoint data
+              endpointElementsPrimary = tempScenario['Protocol Endpoint']?tempScenario['Protocol Endpoint'].Primary.Entities:[]
+              endpointElementsSecondary = tempScenario['Protocol Endpoint']?tempScenario['Protocol Endpoint'].Secondary.Entities:[]
+
               //Get inclusion chart info
               var inclu = tempScenario["Inclusion Criteria"]
-              
               setProtocolRateData([
                   {value: formatNumber(inclu['Lab / Test'].protocol_amendment_rate), name: 'Labs / Tests'},
                   {value: formatNumber(inclu.Intervention.protocol_amendment_rate), name: 'Intervention'},
@@ -363,26 +370,26 @@ let [endpointTableData, setEndpointTableData] = useState([])
               var tempScoreA = ''
               var tempScoreB = ''
                   
-                  var score = formatNumber(tempScenario.protocol_amendment_rate)
-                  if(score <= 33){
-                    tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{good|GOOD}'
-                  } else if(score > 33  && score <= 67){
-                    tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{fair|FAIR}'
-                  } else if(score > 67){
-                    tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{poor|POOR}'
-                  }
+              var score = formatNumber(tempScenario.protocol_amendment_rate)
+              if(score <= 33){
+                tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{good|GOOD}'
+              } else if(score > 33  && score <= 67){
+                tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{fair|FAIR}'
+              } else if(score > 67){
+                tempScoreA = '{p|' + tempScenario.protocol_amendment_rate + '}\n{poor|POOR}'
+              }
 
-                  var scoreB = formatNumber(tempScenario.screen_failure_rate)
-                  if(scoreB <= 33){
-                    tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{good|GOOD}'
-                  } else if(scoreB > 33  && scoreB <= 67){
-                    tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{fair|FAIR}'
-                  } else if(scoreB > 67){
-                    tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{poor|POOR}'
-                  }
+              var scoreB = formatNumber(tempScenario.screen_failure_rate)
+              if(scoreB <= 33){
+                tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{good|GOOD}'
+              } else if(scoreB > 33  && scoreB <= 67){
+                tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{fair|FAIR}'
+              } else if(scoreB > 67){
+                tempScoreB = '{p|' + tempScenario.screen_failure_rate + '}\n{poor|POOR}'
+              }
 
-                  setAmend_avg_rate(tempScoreA)
-                  setScreen_avg_rate(tempScoreB)
+              setAmend_avg_rate(tempScoreA)
+              setScreen_avg_rate(tempScoreB)
 
               //Get exclusion chart info
               var exclu = tempScenario["Exclusion Criteria"]
@@ -400,8 +407,8 @@ let [endpointTableData, setEndpointTableData] = useState([])
                   {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical Condition'}
               ])
       
-                  setExcluAmend_avg_rate(tempScoreA)
-                  setExcluScreen_avg_rate(tempScoreB)
+              setExcluAmend_avg_rate(tempScoreA)
+              setExcluScreen_avg_rate(tempScoreB)
 
               setShowChartLabel(true)
               setImpactColors(activeChartColors)
@@ -421,7 +428,8 @@ let [endpointTableData, setEndpointTableData] = useState([])
               updateTrial(3, 2)
           }
       }
-  };
+    };
+
     useEffect(() => {
       if(props.location.state.trial_id == undefined || props.location.state.trial_id == ''){
         props.history.push({pathname: '/trials'})
@@ -432,11 +440,10 @@ let [endpointTableData, setEndpointTableData] = useState([])
     }, []);
 
     useEffect(() => {
-
         const summaryDefaultList = async () => {
           const nctIdList = props.location.state.similarHistoricalTrials
-          console.log("nctIdList",nctIdList);
-          console.log("input",props.location.state.similarHistoricalTrials);
+          // console.log("nctIdList",nctIdList);
+          // console.log("input",props.location.state.similarHistoricalTrials);
           var resp = await getCriteriaLibByNctId(props.location.state.similarHistoricalTrials, props.location.state.trial_id);
           setPageLoading(false)
             if (resp.statusCode == 200) {
@@ -535,12 +542,11 @@ let [endpointTableData, setEndpointTableData] = useState([])
       return pieChartData;
     }
 
-
     const formatter = (value) => {
       return value+'%'
     }
     
-  const getFrequency = (value) => {
+    const getFrequency = (value) => {
 
         setMinValue(value[0])
         setMaxValue(value[1])
@@ -577,27 +583,68 @@ let [endpointTableData, setEndpointTableData] = useState([])
       }))
     }
 
-    const handleCriteriaSelect = (item, activeMore, id, key,e) => {
-      console.log("click the add button:",activeMore);
-      // if(criteriaDetailActiveTab === 0) {
-      //   setCriteriaDetailActiveTab(1)
-      // } else {
-      //   setCriteriaDetailActiveTab(0)
-      // }
-      // setShowMoreDetail(false)
+    function formatValue(item){
+      // console.log(item.Text, item.Value);
+      var tempStr
+      if(item.Text.toString() === "vital signs" && item.BP_value){
+        console.log(item.Text,": ", item.BP_value);
+        // < 150/95 mmHg
+        if (item.BP_value.avg_dbp_lower == 0 && item.BP_value.avg_sbp_lower == 0 && item.BP_value.avg_dbp_upper != 0 && item.BP_value.avg_sbp_upper != 0) {
+          tempStr = "< "+ Number(item.BP_value.avg_sbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
+        // > 150/95 mmHg
+        } else if (item.BP_value.avg_dbp_lower != 0 && item.BP_value.avg_sbp_lower != 0 && item.BP_value.avg_dbp_upper == 0 && item.BP_value.avg_sbp_upper == 0) {
+          tempStr = "> " +  Number(item.BP_value.avg_sbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
+        // 180/90 - 200/95 mmHg
+        } else if (item.BP_value.avg_dbp_lower != 0 && item.BP_value.avg_sbp_lower != 0 && item.BP_value.avg_dbp_upper != 0 && item.BP_value.avg_sbp_upper != 0) {
+          tempStr = Number(item.BP_value.avg_sbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/)) + " - " + Number(item.BP_value.avg_sbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
+        } else {
+          tempStr = '-'
+        }
+      } else {
+          if(item.Value === ''){
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = '-'
+            }
+          } else if (item.Value.avg_value != '' && item.Value.avg_value != 0) {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = Number(item.Value.avg_value.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+            }
+          } else if (item.Value.avg_lower == 0 && item.Value.avg_upper != 0) {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = "< "+ Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
+            }
+          } else if (item.Value.avg_lower != 0 && item.Value.avg_upper == 0) {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = "> "+ Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
+            }
+          } else if (item.Value.avg_lower != 0 && item.Value.avg_upper != 0) {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              // if (Number(item.Value.avg_lower) == Number(item.Value.avg_upper)){
+              //   tempStr = Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+              tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " - " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
+            } 
+          } else {
+            if(item.Text.toString() === "vital signs" && item.BP_value){
+              return
+            } else {
+              tempStr = '-' 
+            }
+          }
+      }
+      return tempStr
     }
 
-    const handleEndpointSelect = (item, activeMore, id, key,e) => {
-      console.log("click the add button:",activeMore);
-      // if(criteriaDetailActiveTab === 0) {
-      //   setCriteriaDetailActiveTab(1)
-      // } else {
-      //   setCriteriaDetailActiveTab(0)
-      // }
-      // setShowMoreDetail(false)
-    }
-
-    const handleOptionSelect = (item, activeType, id, key) =>{
+    const handleOptionSelect = (item, activeType, id, key, endpointType) =>{
       switch(id){
         case 0:
           var index = demographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
@@ -678,139 +725,7 @@ let [endpointTableData, setEndpointTableData] = useState([])
       }
     }
 
-    const handleMoreSelect = (item, activeMore, id, key) => {
-      console.log("handleMoreSelect-item",item);
-      console.log("handleMoreSelect-activeMore",activeMore);
-      console.log("handleMoreSelect-id",id);
-      console.log("handleMoreSelect-key",key);
-      setCriteriaDetail(item)
-      // setCriteriaDetailActiveTab(activeMore)
-      setCriteriaDetailID(id)
-      setCriteriaDetailKey(key)
-
-      if(activeMore === 1) {
-        setShowMoreDetail(true)
-      } else {
-        setShowMoreDetail(false)
-      }
-      
-    }
-
-    const handleExcluMoreSelect = (item, activeMore, id, key) => {
-      console.log("handleExcluMoreSelect-item",item);
-      console.log("handleExcluMoreSelect-activeMore",activeMore);
-      console.log("handleExcluMoreSelect-id",id);
-      console.log("handleExcluMoreSelect-key",key);
-
-      setCriteriaDetail(item)
-      // setCriteriaDetailActiveTab(activeMore)
-      setCriteriaDetailID(id)
-      setCriteriaDetailKey(key)
-
-      if(activeMore === 1) {
-        setShowMoreDetail(true)
-      } else {
-        setShowMoreDetail(false)
-      }
-    }
-
-    const handleEndpointMoreSelect = (item, activeMore, id, key) => {
-
-      setEndpointDetail(item)
-      // setCriteriaDetailActiveTab(activeMore)
-      // setCriteriaDetailID(id)
-      // setCriteriaDetailKey(key)
-      let tempEndpointFrequency = item.frequency_summary.percent.map((val, index)=>{
-        return {
-          name: val.category,
-            type: 'bar', 
-            emphasis: {
-              focus: 'series'
-            },
-            barGap: '0%',
-            // barWidth: '40%',
-            itemStyle: {
-              color: (index===0?frequencyColors['Primary']:frequencyColors['Secondary'])|| '#E86153'
-            },
-            data: val.value.length>5?val.value.slice(val.value.length-5, val.value.length):val.value
-        }
-      })
-      // console.log("tempEndpointFrequency:",tempEndpointFrequency);
-      
-      setEndpointFrequency(tempEndpointFrequency)
-
-
-
-      if(activeMore === 1) {
-        setShowMoreDetailEndpoint(true)
-      } else {
-        setShowMoreDetailEndpoint(false)
-      }
-    }
-
-    function formatValue(item){
-      console.log(item.Text, item.Value);
-      
-      var tempStr
-      if(item.Text.toString() === "vital signs" && item.BP_value){
-        console.log(item.Text,": ", item.BP_value);
-        // < 150/95 mmHg
-        if (item.BP_value.avg_dbp_lower == 0 && item.BP_value.avg_sbp_lower == 0 && item.BP_value.avg_dbp_upper != 0 && item.BP_value.avg_sbp_upper != 0) {
-          tempStr = "< "+ Number(item.BP_value.avg_sbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
-        // > 150/95 mmHg
-        } else if (item.BP_value.avg_dbp_lower != 0 && item.BP_value.avg_sbp_lower != 0 && item.BP_value.avg_dbp_upper == 0 && item.BP_value.avg_sbp_upper == 0) {
-          tempStr = "> " +  Number(item.BP_value.avg_sbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
-        // 180/90 - 200/95 mmHg
-        } else if (item.BP_value.avg_dbp_lower != 0 && item.BP_value.avg_sbp_lower != 0 && item.BP_value.avg_dbp_upper != 0 && item.BP_value.avg_sbp_upper != 0) {
-          tempStr = Number(item.BP_value.avg_sbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_lower.toString().match(/^\d+(?:\.\d{0,2})?/)) + " - " + Number(item.BP_value.avg_sbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " / " + Number(item.BP_value.avg_dbp_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.BP_value.units
-        } else {
-          tempStr = '-'
-        }
-      } else {
-          if(item.Value === ''){
-            if(item.Text.toString() === "vital signs" && item.BP_value){
-              return
-            } else {
-              tempStr = '-'
-            }
-          } else if (item.Value.avg_value != '' && item.Value.avg_value != 0) {
-            if(item.Text.toString() === "vital signs" && item.BP_value){
-              return
-            } else {
-              tempStr = Number(item.Value.avg_value.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
-            }
-          } else if (item.Value.avg_lower == 0 && item.Value.avg_upper != 0) {
-            if(item.Text.toString() === "vital signs" && item.BP_value){
-              return
-            } else {
-              tempStr = "< "+ Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
-            }
-          } else if (item.Value.avg_lower != 0 && item.Value.avg_upper == 0) {
-            if(item.Text.toString() === "vital signs" && item.BP_value){
-              return
-            } else {
-              tempStr = "> "+ Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " " + item.Value.units
-            }
-          } else if (item.Value.avg_lower != 0 && item.Value.avg_upper != 0) {
-            if(item.Text.toString() === "vital signs" && item.BP_value){
-              return
-            } else {
-              // if (Number(item.Value.avg_lower) == Number(item.Value.avg_upper)){
-              //   tempStr = Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
-              tempStr = Number(item.Value.avg_lower.toString().match(/^\d+(?:\.\d{0,2})?/))+ " - " + Number(item.Value.avg_upper.toString().match(/^\d+(?:\.\d{0,2})?/)) + " " + item.Value.units
-            } 
-          } else {
-            if(item.Text.toString() === "vital signs" && item.BP_value){
-              return
-            } else {
-              tempStr = '-' 
-            }
-          }
-      }
-      return tempStr
-    }
-
-    const handleExcluOptionSelect = (item, activeType, id, key) =>{
+    const handleExcluOptionSelect = (item, activeType, id, key, endpointType) =>{
       switch(id){
         case 0:
           var index = excluDemographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
@@ -899,177 +814,424 @@ let [endpointTableData, setEndpointTableData] = useState([])
       }
     }
 
-    const handleEnpointSelect = (item, activeType, id, key) =>{
-      let index = originEndpoint.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData = [...originEndpoint]
-        const newSelectedData = [...endpointElements]
+    const handleEndpointOptionSelect = (item, activeType, id, key, endpointType) =>{
+      setAssignedType(endpointType)
+      var index = endpointElementsPrimary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
+      var indexSecondary = endpointElementsSecondary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
+      if(activeType == 1){
+        if(index < 0){
+          var newItem = {
+            "Eligibility Criteria": item['Standard Event'],
+            "AssignedType": "Primary",
+            "Values": item['Statistical Measure'] === '' ? '-' : item['Statistical Measure'],
+            "rawValue": item.Value,
+            "Timeframe": item['Timeframe'] === '' ? '-' : item['Timeframe'],
+            "Frequency":item.Frequency,
+            "frequency_summary":item['frequency_summary'],
+            "sponsor_summary":item['sponsor_summary'],
+          }
+          endpointElementsPrimary.push(newItem)
+          console.log("add primary endpoint");
 
-        if(item.selected){
-          newData.splice(index, 1, { ...item, ...{selected: false}});
-          let selectedIndex = endpointElements.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData.splice(selectedIndex, 1)
-        } else {
-          newData.splice(index, 1, { ...item, ...{selected: true}});
-          newSelectedData.push(Object.assign(item, {selected: true}))
         }
-        setOriginEndpoint(newData)
-        setEndpointElements(newSelectedData)
+      } else {
+        if(index >= 0){
+          endpointElementsPrimary.splice(index,1)
+          console.log("delete primary endpoint");
+
+        }
+        if(indexSecondary >= 0){
+          endpointElementsSecondary.splice(index,1)
+          console.log("delete secondary endpoint");
+
+        }
+        
+      }
+
+      // switch(id){
+      //   case 0:
+      //     var index = endpointElementsPrimary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
+      //     if(activeType == 1){
+      //       if(index < 0){
+      //         var newItem = {
+      //           "Eligibility Criteria": item['Standard Event'],
+      //           "AssignedType": "Primary",
+      //           "Values": item['Statistical Measure'] === '' ? '-' : item['Statistical Measure'],
+      //           "rawValue": item.Value,
+      //           "Timeframe": item['Timeframe'] === '' ? '-' : item['Timeframe'],
+      //           "Frequency":item.Frequency,
+      //           "frequency_summary":item['frequency_summary'],
+      //           "sponsor_summary":item['sponsor_summary'],
+      //         }
+      //         endpointElementsPrimary.push(newItem)
+      //       }
+      //     } else {
+      //       if(index >= 0){
+      //         endpointElementsPrimary.splice(index,1)
+      //       }
+      //     }
+      //     break;
+      //   case 1:
+      //     var index = endpointElementsSecondary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
+      //     if(activeType == 1){
+      //       if(index < 0){
+      //         var newItem = {
+      //           "Eligibility Criteria": item['Standard Event'],
+      //           "AssignedType": "Secondary",
+      //           "Values": item['Statistical Measure'] === '' ? '-' : item['Statistical Measure'],
+      //           "rawValue": item.Value,
+      //           "Timeframe": item['Timeframe'] === '' ? '-' : item['Timeframe'],
+      //           "Frequency":item.Frequency,
+      //           "frequency_summary":item['frequency_summary'],
+      //           "sponsor_summary":item['sponsor_summary'],
+      //         }
+      //         endpointElementsSecondary.push(newItem)
+      //       }
+      //     } else {
+      //       if(index >= 0){
+      //         endpointElementsSecondary.splice(index,1)
+      //     }
+      //   }
+      //     break;
+       
+      //   default:
+          
+      //   break;
+      // }
+    }
+    const handleEndpointOptionSelectSecondary = (item, activeType, id, key, endpointType) =>{
+      setAssignedType(endpointType)
+      
+      var index = endpointElementsSecondary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
+      if(activeType == 1){
+        if(index < 0){
+          var newItem = {
+            "Eligibility Criteria": item['Standard Event'],
+            "AssignedType": "Secondary",
+            "Values": item['Statistical Measure'] === '' ? '-' : item['Statistical Measure'],
+            "rawValue": item.Value,
+            "Timeframe": item['Timeframe'] === '' ? '-' : item['Timeframe'],
+            "Frequency":item.Frequency,
+            "frequency_summary":item['frequency_summary'],
+            "sponsor_summary":item['sponsor_summary'],
+          }
+          endpointElementsSecondary.push(newItem)
+          console.log("add secondary endpoint");
+
+        }
+      } else {
+        if(index >= 0){
+          endpointElementsSecondary.splice(index,1)
+          console.log("delete secondary endpoint");
+          
+      }
+    }
+      // switch(id){
+      //   case 0:
+      //     var index = endpointElementsPrimary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
+      //     if(activeType == 1){
+      //       if(index < 0){
+      //         var newItem = {
+      //           "Eligibility Criteria": item['Standard Event'],
+      //           "AssignedType": "Primary",
+      //           "Values": item['Statistical Measure'] === '' ? '-' : item['Statistical Measure'],
+      //           "rawValue": item.Value,
+      //           "Timeframe": item['Timeframe'] === '' ? '-' : item['Timeframe'],
+      //           "Frequency":item.Frequency,
+      //           "frequency_summary":item['frequency_summary'],
+      //           "sponsor_summary":item['sponsor_summary'],
+      //         }
+      //         endpointElementsPrimary.push(newItem)
+      //       }
+      //     } else {
+      //       if(index >= 0){
+      //         endpointElementsPrimary.splice(index,1)
+      //       }
+      //     }
+      //     break;
+      //   case 1:
+      //     var index = endpointElementsSecondary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
+      //     if(activeType == 1){
+      //       if(index < 0){
+      //         var newItem = {
+      //           "Eligibility Criteria": item['Standard Event'],
+      //           "AssignedType": "Secondary",
+      //           "Values": item['Statistical Measure'] === '' ? '-' : item['Statistical Measure'],
+      //           "rawValue": item.Value,
+      //           "Timeframe": item['Timeframe'] === '' ? '-' : item['Timeframe'],
+      //           "Frequency":item.Frequency,
+      //           "frequency_summary":item['frequency_summary'],
+      //           "sponsor_summary":item['sponsor_summary'],
+      //         }
+      //         endpointElementsSecondary.push(newItem)
+      //       }
+      //     } else {
+      //       if(index >= 0){
+      //         endpointElementsSecondary.splice(index,1)
+      //     }
+      //   }
+      //     break;
+       
+      //   default:
+          
+      //   break;
+      // }
     }
 
-  const updateTrial = (type: number, res: number) => {
-      // res: 1, update when loading page; 2, update when update criteria
-      if(res == 1){
-        setReloadPTData(true)
+    const handleMoreSelect = (item, activeMore, id, key) => {
+      console.log("handleMoreSelect-item",item);
+      console.log("handleMoreSelect-activeMore",activeMore);
+      console.log("handleMoreSelect-id",id);
+      console.log("handleMoreSelect-key",key);
+      setCriteriaDetail(item)
+      // setCriteriaDetailActiveTab(activeMore)
+      setCriteriaDetailID(id)
+      setCriteriaDetailKey(key)
+
+      if(activeMore === 1) {
+        setShowMoreDetail(true)
+      } else {
+        setShowMoreDetail(false)
       }
-      if (type == 1) {//Inclusion
-        
-        let demographicsElementsTmp = demographicsElements.map((item,index) =>{
-          return Object.assign(item,{Key:(index + 1) + ''})
-        })
-        let demographicsTableDataTmp = demographicsElementsTmp.filter(d => {
-          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-        })
-        setDemographicsElements(demographicsElementsTmp)
-        setDemographicsTableData(demographicsTableDataTmp.map((item, id) =>{
-          item.Key = (id + 1) + ''
-          return item
-        }))
-        console.log("demographicsElementsTmp",demographicsElementsTmp);
-        
-        let medConditionElementsTmp = medConditionElements.map((item,index) =>{
-          return Object.assign(item,{Key:(index + 1) + ''})
-        })
-        let medConditionTableDataTmp = medConditionElementsTmp.filter(d => {
-          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-        })
-        setMedConditionElements(medConditionElementsTmp)
-        setMedConditionTableData(medConditionTableDataTmp.map((item, id) =>{
-          item.Key = demographicsTableDataTmp.length + (id + 1) + ''
-          return item
-        }))
-        console.log("medConditionElementsTmp",medConditionElementsTmp);
-        
+      
+    }
 
-         let interventionElementsTmp = interventionElements.map((item,index) =>{
-          return Object.assign(item,{Key:(index + 1) + ''})
-        })
-         let interventionTableDataTmp = interventionElementsTmp.filter(d => {
-          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-        }) 
-        setInterventionElements(interventionElementsTmp)
-        setInterventionTableData(interventionTableDataTmp.map((item, id) =>{
-          item.Key = demographicsTableDataTmp.length + medConditionTableDataTmp.length + (id + 1) + ''        
-          return item
-        }))
-        console.log("interventionElementsTmp",interventionElementsTmp);
-        
-       
-        let labTestElementsTmp = labTestElements.map((item,index) =>{
-          return Object.assign(item,{Key:(index + 1) + ''})
-        })
-        let labTestTableDataTmp = labTestElementsTmp.filter(d => {
-          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-        }) 
-        setLabTestElements(labTestElementsTmp)
-        setLabTestTableData(labTestTableDataTmp.map((item, id) =>{
-          item.Key = demographicsTableDataTmp.length + medConditionTableDataTmp.length + interventionTableDataTmp.length+(id + 1) + ''
-          return item
-        }))
-        console.log("labTestElementsTmp",labTestElementsTmp);
-        
+    const handleExcluMoreSelect = (item, activeMore, id, key) => {
+      console.log("handleExcluMoreSelect-item",item);
+      console.log("handleExcluMoreSelect-activeMore",activeMore);
+      console.log("handleExcluMoreSelect-id",id);
+      console.log("handleExcluMoreSelect-key",key);
 
-        setCollapsible(false)
-        setDefaultActiveKey(['2', '3', '4', '5'])
+      setCriteriaDetail(item)
+      // setCriteriaDetailActiveTab(activeMore)
+      setCriteriaDetailID(id)
+      setCriteriaDetailKey(key)
 
-        setRollHeight(false)
-        setActiveKey(['1'])
-        
-      } else if (type == 2) {//Exclusion
-
-
-        let excluDemographicsElementsTmp = excluDemographicsElements.map((item,index) =>{
-          return Object.assign(item,{Key:(index + 1) + ''})
-        })
-        let excluDemographicsTableDataTmp = excluDemographicsElementsTmp.filter(d => {
-          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-        })
-        setExcluDemographicsElements(excluDemographicsElementsTmp )
-        setExcluDemographicsTableData(excluDemographicsTableDataTmp.map((item, id) =>{
-          item.Key = (id + 1) + ''
-          return item
-        }))
-
-
-         
-        let excluMedConditionElementsTmp = excluMedConditionElements.map((item,index) =>{
-          return Object.assign(item,{Key:(index + 1) + ''})
-        })
-         let excluMedConditionTableDataTmp = excluMedConditionElementsTmp.filter(d => {
-          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-        }) 
-
-        setExcluMedConditionElements(excluMedConditionElementsTmp )
-        setExcluMedConditionTableData(excluMedConditionTableDataTmp.map((item, id) =>{
-          item.Key = excluDemographicsTableDataTmp.length + (id + 1) + ''
-          return item
-        }))
-
-
-        let excluInterventionElementsTmp = excluInterventionElements.map((item,index) =>{
-          return Object.assign(item,{Key:(index + 1) + ''})
-        })
-         let excluInterventionTableDataTmp = excluInterventionElementsTmp.filter(d => {
-          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-         })
-        setExcluInterventionElements(excluInterventionElementsTmp )
-        setExcluInterventionTableData(excluInterventionTableDataTmp.map((item, id) =>{
-          item.Key = excluDemographicsTableDataTmp.length + excluMedConditionTableDataTmp.length + (id + 1) + ''
-          return item
-        }))
-
-
-        let excluLabTestElementsTmp = excluLabTestElements.map((item,index) =>{
-          return Object.assign(item,{Key:(index + 1) + ''})
-        })
-         let excluLabTestTableDataTmp = excluLabTestElementsTmp.filter(d => {
-          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-         })
-        setExcluLabTestElements(excluLabTestElementsTmp )
-        setExcluLabTestTableData(excluLabTestTableDataTmp.map((item, id) =>{
-          item.Key = excluDemographicsTableDataTmp.length + excluMedConditionTableDataTmp.length + excluInterventionTableDataTmp.length + (id + 1) + ''
-          return item
-        }))
-
-
-        setExcluCollapsible(false)
-        setExcluDefaultActiveKey(['2','3','4','5'])
-
-        setEndpointRollHeight(false)
-        setExcluActiveKey(['1'])
-      } else if (type == 3) {//Endpoint
-
-
-        let endpointElementsTmp = endpointElements.map((item,index) =>{
-          return Object.assign(item,{Key:(index + 1) + ''})
-        })
-        let endpointDataTmp = endpointElementsTmp.filter(d => {
-          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-        })
-        setEndpointElements(endpointElementsTmp )
-        setEndpointTableData(endpointDataTmp.map((item, id) =>{
-          item.Key = (id + 1) + ''
-          return item
-        }))
-
-
-        setEndpointCollapsible(false)
-        setEndpointActiveKey(['2'])
-
-        setEndpointRollHeight(false)
-        setEndpointActiveKey(['1'])
+      if(activeMore === 1) {
+        setShowMoreDetail(true)
+      } else {
+        setShowMoreDetail(false)
       }
-  }
+    }
 
+    const handleEndpointMoreSelect = (item, activeMore, id, key) => {
+
+      setEndpointDetail(item)
+      // setCriteriaDetailActiveTab(activeMore)
+      // setCriteriaDetailID(id)
+      // setCriteriaDetailKey(key)
+      let tempEndpointFrequency = item.frequency_summary.percent.map((val, index)=>{
+        return {
+          name: val.category,
+            type: 'bar', 
+            emphasis: {
+              focus: 'series'
+            },
+            barGap: '0%',
+            // barWidth: '40%',
+            itemStyle: {
+              color: (index===0?frequencyColors['Primary']:frequencyColors['Secondary'])|| '#E86153'
+            },
+            data: val.value.length>5?val.value.slice(val.value.length-5, val.value.length):val.value
+        }
+      })
+      // console.log("tempEndpointFrequency:",tempEndpointFrequency);
+      
+      setEndpointFrequency(tempEndpointFrequency)
+
+
+
+      if(activeMore === 1) {
+        setShowMoreDetailEndpoint(true)
+      } else {
+        setShowMoreDetailEndpoint(false)
+      }
+    }
+
+    const handleCriteriaSelect = (item, activeMore, id, key,e) => {
+      console.log("click the add button:",activeMore);
+      // if(criteriaDetailActiveTab === 0) {
+      //   setCriteriaDetailActiveTab(1)
+      // } else {
+      //   setCriteriaDetailActiveTab(0)
+      // }
+      // setShowMoreDetail(false)
+    }
+
+    const handleEndpointSelect = (item, activeMore, id, key,e) => {
+      console.log("click the add button:",activeMore);
+      // if(criteriaDetailActiveTab === 0) {
+      //   setCriteriaDetailActiveTab(1)
+      // } else {
+      //   setCriteriaDetailActiveTab(0)
+      // }
+      // setShowMoreDetail(false)
+    }
+
+    const updateTrial = (type: number, res: number) => {
+        // res: 1, update when loading page; 2, update when update criteria
+        if(res == 1){
+          setReloadPTData(true)
+        }
+        if (type == 1) {//Inclusion
+          
+          let demographicsElementsTmp = demographicsElements.map((item,index) =>{
+            return Object.assign(item,{Key:(index + 1) + ''})
+          })
+          let demographicsTableDataTmp = demographicsElementsTmp.filter(d => {
+            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+          })
+          setDemographicsElements(demographicsElementsTmp)
+          setDemographicsTableData(demographicsTableDataTmp.map((item, id) =>{
+            item.Key = (id + 1) + ''
+            return item
+          }))
+          console.log("demographicsElementsTmp",demographicsElementsTmp);
+          
+          let medConditionElementsTmp = medConditionElements.map((item,index) =>{
+            return Object.assign(item,{Key:(index + 1) + ''})
+          })
+          let medConditionTableDataTmp = medConditionElementsTmp.filter(d => {
+            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+          })
+          setMedConditionElements(medConditionElementsTmp)
+          setMedConditionTableData(medConditionTableDataTmp.map((item, id) =>{
+            item.Key = demographicsTableDataTmp.length + (id + 1) + ''
+            return item
+          }))
+          console.log("medConditionElementsTmp",medConditionElementsTmp);
+          
+
+          let interventionElementsTmp = interventionElements.map((item,index) =>{
+            return Object.assign(item,{Key:(index + 1) + ''})
+          })
+          let interventionTableDataTmp = interventionElementsTmp.filter(d => {
+            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+          }) 
+          setInterventionElements(interventionElementsTmp)
+          setInterventionTableData(interventionTableDataTmp.map((item, id) =>{
+            item.Key = demographicsTableDataTmp.length + medConditionTableDataTmp.length + (id + 1) + ''        
+            return item
+          }))
+          console.log("interventionElementsTmp",interventionElementsTmp);
+          
+        
+          let labTestElementsTmp = labTestElements.map((item,index) =>{
+            return Object.assign(item,{Key:(index + 1) + ''})
+          })
+          let labTestTableDataTmp = labTestElementsTmp.filter(d => {
+            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+          }) 
+          setLabTestElements(labTestElementsTmp)
+          setLabTestTableData(labTestTableDataTmp.map((item, id) =>{
+            item.Key = demographicsTableDataTmp.length + medConditionTableDataTmp.length + interventionTableDataTmp.length+(id + 1) + ''
+            return item
+          }))
+          console.log("labTestElementsTmp",labTestElementsTmp);
+          
+
+          setCollapsible(false)
+          setDefaultActiveKey(['2', '3', '4', '5'])
+
+          setRollHeight(false)
+          setActiveKey(['1'])
+          
+        } else if (type == 2) {//Exclusion
+
+
+          let excluDemographicsElementsTmp = excluDemographicsElements.map((item,index) =>{
+            return Object.assign(item,{Key:(index + 1) + ''})
+          })
+          let excluDemographicsTableDataTmp = excluDemographicsElementsTmp.filter(d => {
+            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+          })
+          setExcluDemographicsElements(excluDemographicsElementsTmp )
+          setExcluDemographicsTableData(excluDemographicsTableDataTmp.map((item, id) =>{
+            item.Key = (id + 1) + ''
+            return item
+          }))
+
+
+          
+          let excluMedConditionElementsTmp = excluMedConditionElements.map((item,index) =>{
+            return Object.assign(item,{Key:(index + 1) + ''})
+          })
+          let excluMedConditionTableDataTmp = excluMedConditionElementsTmp.filter(d => {
+            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+          }) 
+
+          setExcluMedConditionElements(excluMedConditionElementsTmp )
+          setExcluMedConditionTableData(excluMedConditionTableDataTmp.map((item, id) =>{
+            item.Key = excluDemographicsTableDataTmp.length + (id + 1) + ''
+            return item
+          }))
+
+
+          let excluInterventionElementsTmp = excluInterventionElements.map((item,index) =>{
+            return Object.assign(item,{Key:(index + 1) + ''})
+          })
+          let excluInterventionTableDataTmp = excluInterventionElementsTmp.filter(d => {
+            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+          })
+          setExcluInterventionElements(excluInterventionElementsTmp )
+          setExcluInterventionTableData(excluInterventionTableDataTmp.map((item, id) =>{
+            item.Key = excluDemographicsTableDataTmp.length + excluMedConditionTableDataTmp.length + (id + 1) + ''
+            return item
+          }))
+
+
+          let excluLabTestElementsTmp = excluLabTestElements.map((item,index) =>{
+            return Object.assign(item,{Key:(index + 1) + ''})
+          })
+          let excluLabTestTableDataTmp = excluLabTestElementsTmp.filter(d => {
+            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+          })
+          setExcluLabTestElements(excluLabTestElementsTmp )
+          setExcluLabTestTableData(excluLabTestTableDataTmp.map((item, id) =>{
+            item.Key = excluDemographicsTableDataTmp.length + excluMedConditionTableDataTmp.length + excluInterventionTableDataTmp.length + (id + 1) + ''
+            return item
+          }))
+
+
+          setExcluCollapsible(false)
+          setExcluDefaultActiveKey(['2','3','4','5'])
+
+          setEndpointRollHeight(false)
+          setExcluActiveKey(['1'])
+        } else if (type == 3) {//Endpoint
+
+          let endpointElementsTmpPrimary = endpointElementsPrimary.map((item,index) =>{
+            return Object.assign(item,{Key:(index + 1) + ''})
+          })
+          let endpointDataTmpPrimary = endpointElementsTmpPrimary.filter(d => {
+            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+          })
+          setEndpointElementsPrimary(endpointElementsTmpPrimary )
+          setEndpointTableDataPrimary(endpointDataTmpPrimary.map((item, id) =>{
+            item.Key = (id + 1) + ''
+            return item
+          }))
+          
+          let endpointElementsTmpSecondary = endpointElementsSecondary.map((item,index) =>{
+            return Object.assign(item,{Key:(index + 1) + ''})
+          })
+          let endpointDataTmpSecondary = endpointElementsTmpSecondary.filter(d => {
+            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+          })
+          setEndpointElementsSecondary(endpointElementsTmpSecondary )
+          setEndpointTableDataSecondary(endpointDataTmpSecondary.map((item, id) =>{
+            item.Key = (id + 1) + ''
+            return item
+          }))
+
+
+          setEndpointCollapsible(false)
+          setEndpointDefaultActiveKey(['2','3'])
+
+          setEndpointRollHeight(false)
+          setEndpointActiveKey(['1'])
+        }
+    }
 
     function callback(key) {
       if(key.indexOf("1") < 0){
@@ -2589,11 +2751,11 @@ let [endpointTableData, setEndpointTableData] = useState([])
           console.log("endpoint result: ", response);
           const endpointList = response.result.list
           const endpointSummaryChart =response.result.summary.category_summary
-          const selectedEndpointList = endpointList.filter((val, index)=>{
-            return val.selected
-          })
+          // const selectedEndpointList = endpointList.filter((val, index)=>{
+          //   return val.selected
+          // })
           setOriginEndpoint(endpointList)
-          setEndpointElements(selectedEndpointList)
+          // setEndpointElements(selectedEndpointList)
           setSummaryChart(endpointSummaryChart)
           // setMedCondition(inclusionCriteria[i]['Medical Condition'].filter((d) => {
           //     return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
@@ -2836,19 +2998,15 @@ let [endpointTableData, setEndpointTableData] = useState([])
       setReloadPTData(true)
       switch(index){
         case 2: 
-         
           setExcluDemographicsElements(newData)
           break;
         case 3:
-         
           setExcluMedConditionElements(newData)
           break;
         case 4:
-         
           setExcluDemographicsElements(newData)
           break;
         default:
-          
           setExcluLabTestElements(newData)
       }
     }
@@ -2857,12 +3015,10 @@ let [endpointTableData, setEndpointTableData] = useState([])
       // setReloadPTData(true)
       switch(index){
         case 2: 
-         
-          setEndpointElements(newData)
+          setEndpointElementsPrimary(newData)
           break;
         default:
-          // secondary
-          setEndpointElements(newData)
+          setEndpointElementsSecondary(newData)
       }
     }
 
@@ -2949,54 +3105,65 @@ let [endpointTableData, setEndpointTableData] = useState([])
       setPageLoading(true)
       let newScenario = trialRecord.scenarios.find( i=> i['scenario_id'] == scenarioId)
 
-        var newInclusion = {
-          "Demographics": {
-            "protocol_amendment_rate": '',
-            "patient_burden": '',
-            "Entities": demographicsElements
-          },
-          "Medical Condition": {
-            "protocol_amendment_rate": '',
-            "patient_burden": '',
-            "Entities": medConditionElements
-          },
-          "Intervention": {
-            "protocol_amendment_rate": '',
-            "patient_burden": '',
-            "Entities": interventionElements
-          },
-          "Lab / Test": {
-            "protocol_amendment_rate": '',
-            "patient_burden": '',
-            "Entities": labTestElements
-          }
+      var newInclusion = {
+        "Demographics": {
+          "protocol_amendment_rate": '',
+          "patient_burden": '',
+          "Entities": demographicsElements
+        },
+        "Medical Condition": {
+          "protocol_amendment_rate": '',
+          "patient_burden": '',
+          "Entities": medConditionElements
+        },
+        "Intervention": {
+          "protocol_amendment_rate": '',
+          "patient_burden": '',
+          "Entities": interventionElements
+        },
+        "Lab / Test": {
+          "protocol_amendment_rate": '',
+          "patient_burden": '',
+          "Entities": labTestElements
         }
+      }
 
-        var newExclusion = {
-          "Demographics": {
-            "protocol_amendment_rate": '',
-            "patient_burden": '',
-            "Entities": excluDemographicsElements
-          },
-          "Medical Condition": {
-            "protocol_amendment_rate": '',
-            "patient_burden": '',
-            "Entities": excluMedConditionElements
-          },
-          "Intervention": {
-            "protocol_amendment_rate": '',
-            "patient_burden": '',
-            "Entities": excluInterventionElements
-          },
-          "Lab / Test": {
-            "protocol_amendment_rate": '',
-            "patient_burden": '',
-            "Entities": excluLabTestElements
-          }
+      var newExclusion = {
+        "Demographics": {
+          "protocol_amendment_rate": '',
+          "patient_burden": '',
+          "Entities": excluDemographicsElements
+        },
+        "Medical Condition": {
+          "protocol_amendment_rate": '',
+          "patient_burden": '',
+          "Entities": excluMedConditionElements
+        },
+        "Intervention": {
+          "protocol_amendment_rate": '',
+          "patient_burden": '',
+          "Entities": excluInterventionElements
+        },
+        "Lab / Test": {
+          "protocol_amendment_rate": '',
+          "patient_burden": '',
+          "Entities": excluLabTestElements
         }
-      if(newScenario["Inclusion Criteria"].Demographics === undefined){
+      }
+
+      var newEndpoint = {
+        "Primary":{
+          "Entities": endpointElementsPrimary
+        },
+        "Secondary":{
+          "Entities": endpointElementsSecondary
+        }
+      }
+
+      if(newScenario["Inclusion Criteria"].Demographics === undefined ||newScenario["Protocol Endpoint"]=== undefined ){
         newScenario["Inclusion Criteria"] = newInclusion
         newScenario["Exclusion Criteria"] = newExclusion
+        newScenario["Protocol Endpoint"] = newEndpoint
       } else {
         newScenario["Inclusion Criteria"].Demographics.Entities = demographicsElements
         newScenario["Inclusion Criteria"]['Medical Condition'].Entities = medConditionElements
@@ -3007,6 +3174,9 @@ let [endpointTableData, setEndpointTableData] = useState([])
         newScenario["Exclusion Criteria"]['Medical Condition'].Entities = excluMedConditionElements
         newScenario["Exclusion Criteria"].Intervention.Entities = excluInterventionElements
         newScenario["Exclusion Criteria"]['Lab / Test'].Entities = excluLabTestElements
+
+        newScenario["Protocol Endpoint"]["Primary"].Entities = endpointElementsPrimary
+        newScenario["Protocol Endpoint"]["Secondary"].Entities = endpointElementsSecondary
       }
 
       const newScenarioList = trialRecord.scenarios.map((item, id) =>{
@@ -3054,26 +3224,26 @@ let [endpointTableData, setEndpointTableData] = useState([])
         var tempScoreA = ''
         var tempScoreB = ''
 
-          var score = formatNumber(currentScenario.protocol_amendment_rate)
-          if(score <= 33){
-            tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{good|GOOD}'
-          } else if(score > 33  && score <= 67){
-            tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{fair|FAIR}'
-          } else if(score > 67){
-            tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{poor|POOR}'
-          }
+        var score = formatNumber(currentScenario.protocol_amendment_rate)
+        if(score <= 33){
+          tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{good|GOOD}'
+        } else if(score > 33  && score <= 67){
+          tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{fair|FAIR}'
+        } else if(score > 67){
+          tempScoreA = '{p|' + currentScenario.protocol_amendment_rate + '}\n{poor|POOR}'
+        }
 
-          var scoreB = formatNumber(currentScenario.screen_failure_rate)
-          if(scoreB <= 33){
-            tempScoreB = '{p|' + currentScenario.screen_failure_rate + '}\n{good|GOOD}'
-          } else if(scoreB > 33  && scoreB <= 67){
-            tempScoreB = '{p|' + currentScenario.screen_failure_rate + '}\n{fair|FAIR}'
-          } else if(scoreB > 67){
-            tempScoreB = '{p|' + currentScenario.screen_failure_rate + '}\n{poor|POOR}'
-          }
+        var scoreB = formatNumber(currentScenario.screen_failure_rate)
+        if(scoreB <= 33){
+          tempScoreB = '{p|' + currentScenario.screen_failure_rate + '}\n{good|GOOD}'
+        } else if(scoreB > 33  && scoreB <= 67){
+          tempScoreB = '{p|' + currentScenario.screen_failure_rate + '}\n{fair|FAIR}'
+        } else if(scoreB > 67){
+          tempScoreB = '{p|' + currentScenario.screen_failure_rate + '}\n{poor|POOR}'
+        }
 
-          setAmend_avg_rate(tempScoreA)
-          setScreen_avg_rate(tempScoreB)
+        setAmend_avg_rate(tempScoreA)
+        setScreen_avg_rate(tempScoreB)
 
         //Get exclusion chart info
         var exclu = currentScenario["Exclusion Criteria"]
@@ -3090,8 +3260,8 @@ let [endpointTableData, setEndpointTableData] = useState([])
           {value: formatNumber(exclu.Demographics.screen_failure_rate), name: 'Demographics'},
           {value: formatNumber(exclu['Medical Condition'].screen_failure_rate), name: 'Medical Condition'}
         ])
-          setExcluAmend_avg_rate(tempScoreA)
-          setExcluScreen_avg_rate(tempScoreB)
+        setExcluAmend_avg_rate(tempScoreA)
+        setExcluScreen_avg_rate(tempScoreB)
         if(currentScenario['Therapeutic Area Average']){
           setTherapeutic_Amend_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].protocol_amendment_rate)
           setTherapeutic_Screen_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].screen_failure_rate)
@@ -3153,9 +3323,20 @@ let [endpointTableData, setEndpointTableData] = useState([])
             "Entities": excluLabTestElements
           }
         }
-      if(newScenario["Inclusion Criteria"].Demographics === undefined){
+
+     var newEndpoint = {
+        "Primary":{
+          "Entities": endpointElementsPrimary
+        },
+        "Secondary":{
+          "Entities": endpointElementsSecondary
+        }
+      }
+
+      if(newScenario["Inclusion Criteria"].Demographics === undefined ||newScenario["Protocol Endpoint"]=== undefined ){
         newScenario["Inclusion Criteria"] = newInclusion
         newScenario["Exclusion Criteria"] = newExclusion
+        newScenario["Protocol Endpoint"] = newEndpoint
       } else {
         newScenario["Inclusion Criteria"].Demographics.Entities = demographicsElements
         newScenario["Inclusion Criteria"]['Medical Condition'].Entities = medConditionElements
@@ -3166,6 +3347,9 @@ let [endpointTableData, setEndpointTableData] = useState([])
         newScenario["Exclusion Criteria"]['Medical Condition'].Entities = excluMedConditionElements
         newScenario["Exclusion Criteria"].Intervention.Entities = excluInterventionElements
         newScenario["Exclusion Criteria"]['Lab / Test'].Entities = excluLabTestElements
+
+        newScenario["Protocol Endpoint"]["Primary"].Entities = endpointElementsPrimary
+        newScenario["Protocol Endpoint"]["Secondary"].Entities = endpointElementsSecondary
       }
 
       const newScenarioList = trialRecord.scenarios.map((item, id) =>{
@@ -3270,9 +3454,9 @@ let [endpointTableData, setEndpointTableData] = useState([])
     }
 
     // submitCriteria
-    const submitEndpoint = () => {
-      console.log("submitEndpoint")
-    }
+    // const submitEndpoint = () => {
+    //   console.log("submitEndpoint")
+    // }
 
     function formatNumber (str){
       if(str == undefined || str == ''){
@@ -3513,8 +3697,11 @@ let [endpointTableData, setEndpointTableData] = useState([])
     updateExcluTableData()
   }, [excluDemographicsElements, excluMedConditionElements, excluInterventionElements, excluLabTestElements])
 
-  const updateTableData = () => {
+  useEffect(() => {
+    updateEndpointTableData()
+  }, [endpointElementsPrimary, endpointElementsSecondary])
 
+  const updateTableData = () => {
     let demographicsTmp = demographicsElements.map((e,idx) => {
       e.Key = (idx + 1) + ''
       return e     
@@ -3565,6 +3752,22 @@ let [endpointTableData, setEndpointTableData] = useState([])
         return e
     })
     setExcluLabTestTableData(labTestTmp)   
+  }
+
+  const updateEndpointTableData = () => {
+
+    let endpointTmpPrimary = endpointElementsPrimary.map((e,idx) => {
+      e.Key = (idx + 1) + ''
+      return e     
+    })
+    setEndpointTableDataPrimary(endpointTmpPrimary)
+
+    let endpointTmpSecondary = endpointElementsSecondary.map((e,idx) => {
+      e.Key = (idx + 1) + ''
+      return e     
+    })
+    setEndpointTableDataSecondary(endpointTmpSecondary)
+  
   }
 
   const changeActiveTabKey = (activeKey) => {
@@ -4499,14 +4702,17 @@ let [endpointTableData, setEndpointTableData] = useState([])
                                             return (
                                               <CriteriaOption
                                                 selectedEle = {demographicsElements}
+                                                selectedEleSecondary = {demographicsElements}
                                                 minValue={minValue}
                                                 maxValue={maxValue}
                                                 key={`demographic_${idx}`}
                                                 demographic={demographic}
                                                 index={0}
                                                 idx={idx}
-                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                assignedType={'None'}
+                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleOptionSelect}
+                                                handleOptionSelectSecondary={handleOptionSelect}
                                                 handleMoreSelect={handleMoreSelect}
                                               ></CriteriaOption>
                                             );
@@ -4526,14 +4732,17 @@ let [endpointTableData, setEndpointTableData] = useState([])
                                             return (
                                               <CriteriaOption
                                                 selectedEle = {medConditionElements}
+                                                selectedEleSecondary = {medConditionElements}
                                                 minValue={minValue}
                                                 maxValue={maxValue}
                                                 key={`medCon_${idx}`}
                                                 demographic={medCon}
                                                 index={1}
                                                 idx={idx}
-                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                assignedType={'None'}
+                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleOptionSelect}
+                                                handleOptionSelectSecondary={handleOptionSelect}
                                                 handleMoreSelect={handleMoreSelect}
                                               ></CriteriaOption>
                                             );
@@ -4553,14 +4762,17 @@ let [endpointTableData, setEndpointTableData] = useState([])
                                             return (
                                               <CriteriaOption
                                                 selectedEle = {interventionElements}
+                                                selectedEleSecondary = {interventionElements}
                                                 minValue={minValue}
                                                 maxValue={maxValue}
                                                 key={`intervent_${idx}`}
                                                 demographic={intervent}
                                                 index={2}
                                                 idx={idx}
-                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                assignedType={'None'}
+                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleOptionSelect}
+                                                handleOptionSelectSecondary={handleOptionSelect}
                                                 handleMoreSelect={handleMoreSelect}
                                               ></CriteriaOption>
                                             );
@@ -4580,14 +4792,17 @@ let [endpointTableData, setEndpointTableData] = useState([])
                                             return (
                                               <CriteriaOption
                                                 selectedEle = {labTestElements}
+                                                selectedEleSecondary = {labTestElements}
                                                 minValue={minValue}
                                                 maxValue={maxValue}
                                                 key={`lib_${idx}`}
                                                 demographic={lib}
                                                 index={3}
                                                 idx={idx}
-                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                assignedType={'None'}
+                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleOptionSelect}
+                                                handleOptionSelectSecondary={handleOptionSelect}
                                                 handleMoreSelect={handleMoreSelect}
                                               ></CriteriaOption>
                                             );
@@ -5088,14 +5303,17 @@ let [endpointTableData, setEndpointTableData] = useState([])
                                             return (
                                               <CriteriaOption
                                                 selectedEle = {excluDemographicsElements}
+                                                selectedEleSecondary = {excluDemographicsElements}
                                                 minValue={minValue}
                                                 maxValue={maxValue}
                                                 key={`demographic_${idx}`}
                                                 demographic={demographic}
                                                 index={0}
                                                 idx={idx}
-                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                assignedType={'None'}
+                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleExcluOptionSelect}
+                                                handleOptionSelectSecondary={handleExcluOptionSelect}
                                                 handleMoreSelect={handleExcluMoreSelect}
                                               ></CriteriaOption>
                                             );
@@ -5115,14 +5333,17 @@ let [endpointTableData, setEndpointTableData] = useState([])
                                             return (
                                               <CriteriaOption
                                                 selectedEle = {excluMedConditionElements}
+                                                selectedEleSecondary = {excluMedConditionElements}
                                                 minValue={minValue}
                                                 maxValue={maxValue}
                                                 key={`medCon_${idx}`}
                                                 demographic={medCon}
                                                 index={1}
                                                 idx={idx}
-                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                assignedType={'None'}
+                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleExcluOptionSelect}
+                                                handleOptionSelectSecondary={handleExcluOptionSelect}
                                                 handleMoreSelect={handleExcluMoreSelect}
                                               ></CriteriaOption>
                                             );
@@ -5143,14 +5364,17 @@ let [endpointTableData, setEndpointTableData] = useState([])
                                         return (
                                           <CriteriaOption
                                             selectedEle = {excluInterventionElements}
+                                            selectedEleSecondary = {excluInterventionElements}
                                             minValue={minValue}
                                             maxValue={maxValue}
                                             key={`intervent_${idx}`}
                                             demographic={intervent}
                                             index={2}
                                             idx={idx}
-                                            criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                            assignedType={'None'}
+                                            // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                             handleOptionSelect={handleExcluOptionSelect}
+                                            handleOptionSelectSecondary={handleExcluOptionSelect}
                                             handleMoreSelect={handleExcluMoreSelect}
                                           ></CriteriaOption>
                                         );
@@ -5169,15 +5393,18 @@ let [endpointTableData, setEndpointTableData] = useState([])
                                             {excluLabTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
                                               return (
                                                 <CriteriaOption
-                                                selectedEle = {excluLabTestElements}
+                                                  selectedEle = {excluLabTestElements}
+                                                  selectedEleSecondary = {excluLabTestElements}
                                                   minValue={minValue}
                                                   maxValue={maxValue}
                                                   key={`lib_${idx}`}
                                                   demographic={lib}
                                                   index={3}
                                                   idx={idx}
-                                                  criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                  assignedType={'None'}
+                                                  // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                   handleOptionSelect={handleExcluOptionSelect}
+                                                  handleOptionSelectSecondary={handleExcluOptionSelect}
                                                   handleMoreSelect={handleExcluMoreSelect}
                                                 ></CriteriaOption>
                                               );
@@ -5797,7 +6024,7 @@ let [endpointTableData, setEndpointTableData] = useState([])
                     Save And Finish Later
                 </Button> */}
                 {/* <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}> */}
-                <Button type="primary" className="submit-btn"   onClick={submitEndpoint}>
+                <Button type="primary" className="submit-btn"   onClick={submitCriteria}>
                     Submit
                 </Button>
               </span>
@@ -5840,15 +6067,18 @@ let [endpointTableData, setEndpointTableData] = useState([])
                                           {originEndpoint.sort(function(m,n){ var a = Number(m["Frequency"]===''?0:m["Frequency"]); var b = Number(n["Frequency"]===''?0:n["Frequency"]); return b-a;}).map((endpoint, idx) => {                     
                                             return (
                                               <CriteriaOption
-                                                selectedEle = {endpointElements}
+                                                selectedEle = {endpointElementsPrimary}
+                                                selectedEleSecondary = {endpointElementsSecondary}
                                                 minValue={minValue}
                                                 maxValue={maxValue}
                                                 key={`demographic_${idx}`}
                                                 demographic={endpoint}
-                                                index={0}
+                                                index={assignedType==='Primary'?0:(assignedType==='Secondary'?1:2)}//
                                                 idx={idx}
-                                                criteriaDetailActiveTab={criteriaDetailActiveTab}
-                                                handleOptionSelect={handleEnpointSelect}
+                                                assignedType={assignedType}
+                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                handleOptionSelect={handleEndpointOptionSelect}
+                                                handleOptionSelectSecondary={handleEndpointOptionSelectSecondary}
                                                 handleMoreSelect={handleEndpointMoreSelect}
                                               ></CriteriaOption>
                                             );
@@ -5872,8 +6102,8 @@ let [endpointTableData, setEndpointTableData] = useState([])
                   <Row style={{backgroundColor: '#fff'}}>
                     <Col span={24}>
                       <div className="updateTrial">
-                        {/* <Button className="update-btn" onClick={() => updateTrial(3, 1)}> */}
-                        <Button className="update-btn">
+                        <Button className="update-btn" onClick={() => updateTrial(3, 1)}>
+                        {/* <Button className="update-btn"> */}
                           UPDATE MY TRIAL
                         </Button>
                       </div>
@@ -5933,8 +6163,8 @@ let [endpointTableData, setEndpointTableData] = useState([])
                               <div className="criteria-list">
                                 <div className="list-columns">
                                   <span className="col-item col-item-before"> </span>
-                                  <span className="col-item col-item-first">Eligibility Criteria</span>
-                                  <span className="col-item col-item-middle">Values</span>
+                                  <span className="col-item col-item-first">Endpoint</span>
+                                  <span className="col-item col-item-middle">Statistical Measure</span>
                                   <span className="col-item col-item-last">Timeframe</span>
                                   <span className="col-item col-item-after"> </span>
                                   {/* <Row>
@@ -5947,12 +6177,12 @@ let [endpointTableData, setEndpointTableData] = useState([])
                               </div>
                               <div className="sectionPanel">
                                   <EditTable updateCriteria={updateEndpoint} tableIndex={2}                                
-                                    data={endpointTableData}
+                                    data={endpointTableDataPrimary}
                                     defaultActiveKey={endpointDefaultActiveKey}
                                     collapsible={endpointCollapsible} panelHeader={"Primary"} updateTrial={() => updateTrial(3, 1)}                                  
                                   />
                                   <EditTable updateCriteria={updateEndpoint} tableIndex={3}
-                                    data={endpointTableData}
+                                    data={endpointTableDataSecondary}
                                     defaultActiveKey={endpointDefaultActiveKey}
                                     collapsible={endpointCollapsible} panelHeader={"Secondary"} updateTrial={() => updateTrial(3, 1)}                               
                                   />

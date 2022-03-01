@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useEffect } from "react";
-import { Input, Button, Tooltip } from "antd";
+import { Input, Button, Tooltip, Popover } from "antd";
 import { CheckOutlined, RightOutlined, LeftOutlined  } from "@ant-design/icons";
 
 const CriteriaOption = (props) => {
@@ -9,19 +9,41 @@ const CriteriaOption = (props) => {
   const [activeMore, setActiveMore] = useState(0);
 
   useEffect(() => {
-    const res = props.selectedEle.findIndex((e) => {
-      return props.demographic.Text?e["Eligibility Criteria"] == domain.Text:e["Standard Event"] == props.demographic['Standard Event']
-    });
-    setActiveType(res != -1 ? 1 : 0);
-  }, [props.selectedEle, props.minValue, props.maxValue]);
+
+    if(props.assignedType !=="None"){
+      const res = props.selectedEle.findIndex((e) => {
+        return e["Eligibility Criteria"] == props.demographic['Standard Event']
+      });
+      const resSecondary = props.selectedEleSecondary.findIndex((e) => {
+        return e["Eligibility Criteria"] == props.demographic['Standard Event']
+      });
+      setActiveType(res != -1 ||resSecondary != -1 ? 1 : 0); 
+    } else {
+      const res = props.selectedEle.findIndex((e) => {
+        return props.demographic.Text?e["Eligibility Criteria"] == domain.Text:e["Eligibility Criteria"] == props.demographic['Standard Event']
+      });
+      setActiveType(res != -1? 1 : 0); 
+    } 
+
+  }, [props.selectedEle, props.selectedEleSecondary, props.minValue, props.maxValue]);
 
   const handleOptionSelect = (domain, e) => {
     if (activeType == 0) {
       setActiveType(1);
-      props.handleOptionSelect(domain, 1, props.index, props.idx);
+      props.handleOptionSelect(domain, 1, props.index, props.idx, 'Primary');
     } else {
       setActiveType(0);
-      props.handleOptionSelect(domain, 0, props.index, props.idx);
+      props.handleOptionSelect(domain, 0, props.index, props.idx, 'Primary');
+    }
+  };
+
+  const handleOptionSelectForSecondary = (domain, e) => {
+    if (activeType == 0) {
+      setActiveType(1);
+      props.handleOptionSelectSecondary(domain, 1, props.index, props.idx, 'Secondary');
+    } else {
+      setActiveType(0);
+      props.handleOptionSelectSecondary(domain, 0, props.index, props.idx, 'Secondary');
     }
   };
 
@@ -48,13 +70,26 @@ const CriteriaOption = (props) => {
         <div
             className="select-option"
           >
-            <span className="left-wrapper" onClick={(e) => handleOptionSelect(domain, e)}>
+            <span className="left-wrapper">
               <span className="select-text">
                 {optionText}
               </span>
-              <span className="right-add">
-                Add
-              </span>
+             { props.assignedType !=="None"?(
+                <Popover 
+                  placement="right" 
+                  title={<span>Add to</span>} 
+                  content={<div>
+                            <p style={{cursor: 'pointer'}} onClick={(e) => handleOptionSelect(domain, e)}>Primary Endpoint</p>
+                            <p style={{cursor: 'pointer'}}  onClick={(e) => handleOptionSelectForSecondary(domain, e)}>Secondary Endpoint</p> 
+                          </div>} 
+                  trigger="click">
+                    <span className="right-add">
+                      Add
+                    </span>                
+                </Popover>
+              ):(<span className="right-add" onClick={(e) => handleOptionSelect(domain, e)}>
+              Add
+            </span>)}
             </span>
             <span className="more-button" onClick={(e) => handleMore(domain, e)}>
               {activeMore== 0 ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}} />:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}

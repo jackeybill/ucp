@@ -487,22 +487,28 @@
                                   }  
                                   .right-add {
                                     color:#CA4A04;
+                                    width: 26px;
                                   }
         
                                   .right-icon {
                                     color:#3193E5;
+                                    width: 26px;
                                   }
                                 }
                                 .more-button {
                                     color:#7C7C7C;
-                                    padding:0 7px;
+                                    padding:0 11px 0 7px;
                                     margin-top: -2px;
                                 }
                                 
                             }
             
-                            .select-option:hover {
+                            .more-button:hover,  .right-add:hover, .right-icon:hover{
                                 cursor: pointer;
+                            }
+
+                            .select-text:hover {
+                                // cursor:none;
                             }
             
                             .select-option.selected{
@@ -1179,22 +1185,28 @@
                                   }  
                                   .right-add {
                                     color:#CA4A04;
+                                    width: 26px;
                                   }
         
                                   .right-icon {
                                     color:#3193E5;
+                                    width: 26px;
                                   }
                                 }
                                 .more-button {
                                     color:#7C7C7C;
-                                    padding:0 7px;
+                                    padding:0 11px 0 7px;
                                     margin-top: -2px;
                                 }
                                 
                             }
             
-                            .select-option:hover {
+                            .more-button:hover,  .right-add:hover, .right-icon:hover{
                                 cursor: pointer;
+                            }
+
+                            .select-text:hover {
+                                // cursor:none;
                             }
             
                             .select-option.selected{
