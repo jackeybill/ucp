@@ -25,6 +25,7 @@ const { SubMenu } = Menu;
 const frequencyFilter = [5, 100]
 const inActiveChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA']
 const activeChartColors = ['#E53500', '#F27A26', '#F5924D', '#FBD0B3']
+const frequencyColors = {'Primary':'#E86153','Secondary':'#741910'}
 const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2025}
 const colorList = {
   'AMERICAN INDIAN/ALASKA NATIVE': '#CA4A04', 
@@ -199,7 +200,12 @@ const ScenarioPage = (props) => {
   const [visibleValueExclu, setVisibleValueExclu] = useState(false)
 
   const [showMoreDetail, setShowMoreDetail] = useState(false)
+  const [showMoreDetailEndpoint, setShowMoreDetailEndpoint] = useState(false)
   const [criteriaDetail, setCriteriaDetail] = useState({Text:'',Frequency:0.5,Value:{sponser_list:[]}})
+  const [endpointDetail, setEndpointDetail] = useState({'Standard Event':'',Frequency:0.5,sponsor_summary:[],frequency_summary:{year:[],percent:[]}})
+
+  const [endpointFrequency, setEndpointFrequency] = useState([])
+
   const [criteriaDetailActiveTab, setCriteriaDetailActiveTab] = useState(0)
   const [criteriaDetailID, setCriteriaDetailID] = useState(0)
   const [criteriaDetailKey, setCriteriaDetailKey] = useState(0)
@@ -581,6 +587,16 @@ let [endpointTableData, setEndpointTableData] = useState([])
       // setShowMoreDetail(false)
     }
 
+    const handleEndpointSelect = (item, activeMore, id, key,e) => {
+      console.log("click the add button:",activeMore);
+      // if(criteriaDetailActiveTab === 0) {
+      //   setCriteriaDetailActiveTab(1)
+      // } else {
+      //   setCriteriaDetailActiveTab(0)
+      // }
+      // setShowMoreDetail(false)
+    }
+
     const handleOptionSelect = (item, activeType, id, key) =>{
       switch(id){
         case 0:
@@ -700,15 +716,35 @@ let [endpointTableData, setEndpointTableData] = useState([])
 
     const handleEndpointMoreSelect = (item, activeMore, id, key) => {
 
-      // setCriteriaDetail(item)
+      setEndpointDetail(item)
       // setCriteriaDetailActiveTab(activeMore)
       // setCriteriaDetailID(id)
       // setCriteriaDetailKey(key)
+      let tempEndpointFrequency = item.frequency_summary.percent.map((val, index)=>{
+        return {
+          name: val.category,
+            type: 'bar', 
+            emphasis: {
+              focus: 'series'
+            },
+            barGap: '0%',
+            // barWidth: '40%',
+            itemStyle: {
+              color: (index===0?frequencyColors['Primary']:frequencyColors['Secondary'])|| '#E86153'
+            },
+            data: val.value.length>5?val.value.slice(val.value.length-5, val.value.length):val.value
+        }
+      })
+      // console.log("tempEndpointFrequency:",tempEndpointFrequency);
+      
+      setEndpointFrequency(tempEndpointFrequency)
+
+
 
       if(activeMore === 1) {
-        setShowMoreDetail(true)
+        setShowMoreDetailEndpoint(true)
       } else {
-        setShowMoreDetail(false)
+        setShowMoreDetailEndpoint(false)
       }
     }
 
@@ -1585,6 +1621,121 @@ let [endpointTableData, setEndpointTableData] = useState([])
          
         },
       ],
+    };
+
+    const EndpointSponsorOption = {
+      title: {
+        text: "By Sponsor",
+        show: false,
+        x: "5%",
+        y: "top",
+        textStyle: {
+          fontSize: 14,
+        },
+      },
+      tooltip: {
+        trigger: "item",
+        formatter: function (params) {
+          return [params.name] + " - " + [params.value];
+        },
+        position: ['5%', '10%'],
+        textStyle:{
+          fontSize: 12,
+        },
+        confine:false,
+      },
+      // legend: {
+      //   show:false,
+      //   x: "left",
+      //   y: "60%",
+      //   itemHeight: 7,
+      //   textStyle: {
+      //     fontSize: 8,
+      //   },
+      //   formatter: function (params) {
+      //     const chartData = optionOne.series[0].data
+      //     const sum = chartData.reduce((accumulator, currentValue) => {
+      //      return accumulator + currentValue.value
+      //     }, 0)
+      //     const targetVal = chartData.find(d => d.name == params).value
+      //     let p = ((targetVal / sum) * 100).toFixed(2);
+      //     return params + " - " + p + "%";
+      //   },
+      // },
+      series: [
+        {
+          type: "pie",
+          center: ["30%", "35%"],
+          radius: ["20%", "40%"],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+          },
+          color: sponsorChartColor,
+          data: endpointDetail.sponsor_summary.sort((a, b) => {
+            return b.value - a.value;
+          })
+          .slice(0, 5),
+         
+        },
+      ],
+    };
+
+    const EndpointFrequencyOption = {
+      title : {
+        show: false,
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      grid: {
+          left: '8%',
+          right: '4%',
+          top: '8%',
+          bottom: '15%',
+          containLabel: true
+      },
+      legend: {
+          data: [{name:'Primary',icon:'circle'}, {name:'Secondary',icon:'circle'}],
+          bottom: '0%',
+          left:'center',
+          itemWidth:8,
+          itemHeight:8,
+          // itemStyle:{
+          //     borderRadius: 28,
+          // }
+      },
+      xAxis: [
+          {
+            type: 'category',
+            // name: 'Visit Number',
+            data: endpointDetail.frequency_summary.year.length>5?endpointDetail.frequency_summary.year.slice(endpointDetail.frequency_summary.year.length-5, endpointDetail.frequency_summary.year.length):endpointDetail.frequency_summary.year,
+            // nameLocation: "middle", 
+            // nameRotate: 0, nameGap: 21,
+            axisTick: {
+              show: false,
+              alignWithLabel: true
+            }
+          }
+      ],
+      yAxis: [
+          { 
+            type: 'value', 
+            // name:'Patient Burden', 
+            // nameRotate: 90, nameGap: 40, nameLocation: "middle", 
+            axisLine: { lineStyle: { color: '#666666' } }, 
+            axisLabel : { 
+              formatter : function(value) { value = value*100; return value+'%'; } 
+            }, 
+            // axisLabel:{
+            //   formatter: '{value}%'
+            // }
+          }
+      ],
+      series: endpointFrequency,
     };
 
     // Enrollment Feasibility chart data
@@ -2474,6 +2625,12 @@ let [endpointTableData, setEndpointTableData] = useState([])
 
     const handleCancelCriteria = () => {
       setShowMoreDetail(false)
+      // setVisible(false)
+      // setVisibleSOA(false)
+    }
+
+    const handleCancelEndpoint = () => {
+      setShowMoreDetailEndpoint(false)
       // setVisible(false)
       // setVisibleSOA(false)
     }
@@ -3568,6 +3725,10 @@ let [endpointTableData, setEndpointTableData] = useState([])
       setSpinning(false)
       setIEResource(fileName)
     }
+  }
+
+  const downloadEndpoint = async () => {
+    console.log("Click download Endpont button")
   }
 
   const downloadAverage = async () => {
@@ -5607,7 +5768,8 @@ let [endpointTableData, setEndpointTableData] = useState([])
             </div>
           </div>
           } 
-          {processStep === 1 && 
+         
+         {processStep === 1 && 
           <div className="endpoint-container">
             <div className="process-container">
               <span className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
@@ -5877,8 +6039,8 @@ let [endpointTableData, setEndpointTableData] = useState([])
                               <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
                             ) : (
                               <>
-                                <Button type="primary" onClick={downloadIE} style={{float: 'right'}}>VIEW SOURCE</Button>
-                                <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button>
+                                <Button type="primary" onClick={downloadEndpoint} style={{float: 'right'}}>VIEW SOURCE</Button>
+                                {/* <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button> */}
                               </>
                             )}
                           </Col>
@@ -5963,7 +6125,7 @@ let [endpointTableData, setEndpointTableData] = useState([])
                       </div>
                       </Spin>
                     </Drawer>
-                    <Drawer className="criteria-drawer-wrapper" title={criteriaDetail.Text} placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelCriteria} visible={showMoreDetail}>
+                    <Drawer className="criteria-drawer-wrapper" title={endpointDetail['Standard Event']} placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelEndpoint} visible={showMoreDetailEndpoint}>
                         <div>
                           <div className="drawer-content-frequency">
                             <Row>
@@ -5974,14 +6136,19 @@ let [endpointTableData, setEndpointTableData] = useState([])
                               </Col>
                             </Row>
                             <Row>
-                            <Col span={24} className="drawer-content">
+                            {/* <Col span={24} className="drawer-content">
                               <span className="left-text">
                               External
                               </span>
                               <span className="right-text">
-                              {Math.floor(criteriaDetail.Frequency * 10000) / 100 + "%"}
+                              {Math.floor(Number(endpointDetail.Frequency) * 10000) / 100 + "%"}
                               </span>
-                            </Col>
+                            </Col> */}
+                            <Col span={24}>
+                              <div className="frequency-echart-wrapper">
+                                <ReactECharts option={EndpointFrequencyOption}></ReactECharts>
+                              </div>
+                              </Col>
                           </Row>
                           </div>
                           
@@ -5998,16 +6165,16 @@ let [endpointTableData, setEndpointTableData] = useState([])
                               <div className="history-chart-wrapper">
                                 <div className="chart">
                                   <div className="my-echart-wrapper">
-                                    <ReactECharts option={CriteriaSponsorOption}></ReactECharts>
+                                    <ReactECharts option={EndpointSponsorOption}></ReactECharts>
                                   </div>
                                   <div className="history-legend-wrapper">
-                                    {criteriaDetail.Value.sponser_list
+                                    {endpointDetail.sponsor_summary
                                       .sort((a, b) => {
                                         return b.value - a.value;
                                       })
                                       .slice(0, 5)
                                       .map((d, idx) => {
-                                        const chartData = criteriaDetail.Value.sponser_list;
+                                        const chartData = endpointDetail.sponsor_summary;
                                         const sum = chartData.reduce(
                                           (accumulator, currentValue) => {
                                             return accumulator + currentValue.value;
@@ -6043,7 +6210,7 @@ let [endpointTableData, setEndpointTableData] = useState([])
                           </Row> 
                           </div> */}
                           <div className="drawer-content-button">
-                              <Button className="update-btn" onClick={(e) => handleCriteriaSelect(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
+                              <Button className="update-btn" onClick={(e) => handleEndpointSelect(endpointDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
                                 ADD
                               </Button>
                             </div>
@@ -6056,6 +6223,7 @@ let [endpointTableData, setEndpointTableData] = useState([])
             </div>
           </div>
           }
+
            { processStep === 2 &&
           <div className="soa-container">
             <div className="process-container">
