@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer, useRef, useMemo, useCallback, m
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import FileSaver from 'file-saver';
-import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer, Input, AutoComplete, Select,Breadcrumb} from "antd";
+import {Button, Collapse, Slider, Dropdown,Menu, Row, Col, Tabs, Tooltip, Spin, message, Steps,Drawer, Input, AutoComplete, Select,Breadcrumb, Popover} from "antd";
 import {updateStudy, getSimilarhistoricalTrialById, getStudy, getCriteriaLibByNctId,getEndpointByNctId, getSOAResource, getIEResource, getPatientFunnelData, checkTrialPatientFunnelData} from "../../utils/ajax-proxy";
 import {withRouter } from 'react-router';
 import {MenuOutlined, HistoryOutlined, CloseOutlined, EditFilled, DownOutlined,DownloadOutlined, CaretRightOutlined, LoadingOutlined, ArrowRightOutlined, SearchOutlined, HomeOutlined, UserOutlined, CheckOutlined,MinusOutlined,PlusOutlined, FileTextOutlined, RightOutlined, LeftOutlined  } from "@ant-design/icons";
@@ -1059,7 +1059,16 @@ const ScenarioPage = (props) => {
     }
 
     const handleEndpointSelect = (item, activeMore, id, key,e) => {
-      console.log("click the add button:",activeMore);
+      console.log("click the add primary button:",activeMore);
+      // if(criteriaDetailActiveTab === 0) {
+      //   setCriteriaDetailActiveTab(1)
+      // } else {
+      //   setCriteriaDetailActiveTab(0)
+      // }
+      // setShowMoreDetail(false)
+    }
+    const handleEndpointSelectSecondary = (item, activeMore, id, key,e) => {
+      console.log("click the add secondary button:",activeMore);
       // if(criteriaDetailActiveTab === 0) {
       //   setCriteriaDetailActiveTab(1)
       // } else {
@@ -6440,9 +6449,19 @@ const ScenarioPage = (props) => {
                           </Row> 
                           </div> */}
                           <div className="drawer-content-button">
-                              <Button className="update-btn" onClick={(e) => handleEndpointSelect(endpointDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
-                                ADD
-                              </Button>
+                              <Popover 
+                              placement="right" 
+                              title={<span>Add to</span>} 
+                              content={<div>
+                                        <p style={{cursor: 'pointer'}} onClick={(e) => handleEndpointSelect(endpointDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>Primary Endpoint</p>
+                                        <p style={{cursor: 'pointer'}}  onClick={(e) => handleEndpointSelectSecondary(endpointDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>Secondary Endpoint</p> 
+                                      </div>} 
+                              trigger="click">
+                                <Button className="update-btn">
+                                  ADD
+                                </Button>              
+                            </Popover>
+                             
                             </div>
                         </div>
                     </Drawer>
