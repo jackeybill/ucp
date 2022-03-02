@@ -9,7 +9,6 @@ const CriteriaOption = (props) => {
   const [activeMore, setActiveMore] = useState(0);
 
   useEffect(() => {
-
     if(props.assignedType !=="None"){
       const res = props.selectedEle.findIndex((e) => {
         return e["Eligibility Criteria"] == props.demographic['Standard Event']
@@ -24,8 +23,17 @@ const CriteriaOption = (props) => {
       });
       setActiveType(res != -1? 1 : 0); 
     } 
+    if(activeMore == 1) {
+      if(props.showMoreDetail) {
+        setActiveMore(1);
+        props.handleMoreSelect('', 1, props.index, props.idx);
+      } else {
+        setActiveMore(0);
+        props.handleMoreSelect('', 0, props.index, props.idx);
+      } 
+    } 
 
-  }, [props.selectedEle, props.selectedEleSecondary, props.minValue, props.maxValue]);
+  }, [props.selectedEle, props.selectedEleSecondary, props.minValue, props.maxValue, props.showMoreDetail]);
 
   const handleOptionSelect = (domain, e) => {
     if (activeType == 0) {

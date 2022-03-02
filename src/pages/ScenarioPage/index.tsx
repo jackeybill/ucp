@@ -950,7 +950,7 @@ const ScenarioPage = (props) => {
       console.log("handleMoreSelect-activeMore",activeMore);
       console.log("handleMoreSelect-id",id);
       console.log("handleMoreSelect-key",key);
-      setCriteriaDetail(item)
+      item!==''&&setCriteriaDetail(item)
       // setCriteriaDetailActiveTab(activeMore)
       setCriteriaDetailID(id)
       setCriteriaDetailKey(key)
@@ -969,7 +969,7 @@ const ScenarioPage = (props) => {
       console.log("handleExcluMoreSelect-id",id);
       console.log("handleExcluMoreSelect-key",key);
 
-      setCriteriaDetail(item)
+      item!==''&&setCriteriaDetail(item)
       // setCriteriaDetailActiveTab(activeMore)
       setCriteriaDetailID(id)
       setCriteriaDetailKey(key)
@@ -983,27 +983,29 @@ const ScenarioPage = (props) => {
 
     const handleEndpointMoreSelect = (item, activeMore, id, key) => {
 
-      setEndpointDetail(item)
-      // setCriteriaDetailActiveTab(activeMore)
-      // setCriteriaDetailID(id)
-      // setCriteriaDetailKey(key)
-      let tempEndpointFrequency = item.frequency_summary.percent.map((val, index)=>{
-        return {
-          name: val.category,
-            type: 'bar', 
-            emphasis: {
-              focus: 'series'
-            },
-            barGap: '0%',
-            // barWidth: '40%',
-            itemStyle: {
-              color: (index===0?frequencyColors['Primary']:frequencyColors['Secondary'])|| '#E86153'
-            },
-            data: val.value.length>5?val.value.slice(val.value.length-5, val.value.length):val.value
-        }
-      })
-      // console.log("tempEndpointFrequency:",tempEndpointFrequency);
-      setEndpointFrequency(tempEndpointFrequency)
+      if(item!=='') {
+        setEndpointDetail(item)
+        // setCriteriaDetailActiveTab(activeMore)
+        // setCriteriaDetailID(id)
+        // setCriteriaDetailKey(key)
+        let tempEndpointFrequency = item.frequency_summary.percent.map((val, index)=>{
+          return {
+            name: val.category,
+              type: 'bar', 
+              emphasis: {
+                focus: 'series'
+              },
+              barGap: '0%',
+              // barWidth: '40%',
+              itemStyle: {
+                color: (index===0?frequencyColors['Primary']:frequencyColors['Secondary'])|| '#E86153'
+              },
+              data: val.value.length>5?val.value.slice(val.value.length-5, val.value.length):val.value
+          }
+        })
+        // console.log("tempEndpointFrequency:",tempEndpointFrequency);
+        setEndpointFrequency(tempEndpointFrequency)
+      }
 
       if(activeMore === 1) {
         setShowMoreDetailEndpoint(true)
@@ -4903,6 +4905,7 @@ const ScenarioPage = (props) => {
                                                 index={0}
                                                 idx={idx}
                                                 assignedType={'None'}
+                                                showMoreDetail={showMoreDetail}
                                                 // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleOptionSelect}
                                                 handleOptionSelectSecondary={handleOptionSelect}
@@ -4933,6 +4936,7 @@ const ScenarioPage = (props) => {
                                                 index={1}
                                                 idx={idx}
                                                 assignedType={'None'}
+                                                showMoreDetail={showMoreDetail}
                                                 // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleOptionSelect}
                                                 handleOptionSelectSecondary={handleOptionSelect}
@@ -4963,6 +4967,7 @@ const ScenarioPage = (props) => {
                                                 index={2}
                                                 idx={idx}
                                                 assignedType={'None'}
+                                                showMoreDetail={showMoreDetail}
                                                 // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleOptionSelect}
                                                 handleOptionSelectSecondary={handleOptionSelect}
@@ -4993,6 +4998,7 @@ const ScenarioPage = (props) => {
                                                 index={3}
                                                 idx={idx}
                                                 assignedType={'None'}
+                                                showMoreDetail={showMoreDetail}
                                                 // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleOptionSelect}
                                                 handleOptionSelectSecondary={handleOptionSelect}
@@ -5495,6 +5501,7 @@ const ScenarioPage = (props) => {
                                                 index={0}
                                                 idx={idx}
                                                 assignedType={'None'}
+                                                showMoreDetail={showMoreDetail}
                                                 // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleExcluOptionSelect}
                                                 handleOptionSelectSecondary={handleExcluOptionSelect}
@@ -5525,6 +5532,7 @@ const ScenarioPage = (props) => {
                                                 index={1}
                                                 idx={idx}
                                                 assignedType={'None'}
+                                                showMoreDetail={showMoreDetail}
                                                 // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleExcluOptionSelect}
                                                 handleOptionSelectSecondary={handleExcluOptionSelect}
@@ -5556,6 +5564,7 @@ const ScenarioPage = (props) => {
                                             index={2}
                                             idx={idx}
                                             assignedType={'None'}
+                                            showMoreDetail={showMoreDetail}
                                             // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                             handleOptionSelect={handleExcluOptionSelect}
                                             handleOptionSelectSecondary={handleExcluOptionSelect}
@@ -5586,6 +5595,7 @@ const ScenarioPage = (props) => {
                                                   index={3}
                                                   idx={idx}
                                                   assignedType={'None'}
+                                                  showMoreDetail={showMoreDetail}
                                                   // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                   handleOptionSelect={handleExcluOptionSelect}
                                                   handleOptionSelectSecondary={handleExcluOptionSelect}
@@ -6260,6 +6270,7 @@ const ScenarioPage = (props) => {
                                                 index={assignedType==='Primary'?0:(assignedType==='Secondary'?1:2)}//
                                                 idx={idx}
                                                 assignedType={assignedType}
+                                                showMoreDetail={showMoreDetailEndpoint}
                                                 // criteriaDetailActiveTab={criteriaDetailActiveTab}
                                                 handleOptionSelect={handleEndpointOptionSelect}
                                                 handleOptionSelectSecondary={handleEndpointOptionSelectSecondary}
