@@ -210,7 +210,9 @@ const ScenarioPage = (props) => {
   const [criteriaDetailID, setCriteriaDetailID] = useState(0)
   const [criteriaDetailKey, setCriteriaDetailKey] = useState(0)
 
-  // const [whetherClick, setWhetherClick] = useState(false)
+  const [whetherDisabledAdd, setWhetherDisabledAdd] = useState(false)
+  const [whetherDisabledAddExclu, setWhetherDisabledAddExclu] = useState(false)
+  const [whetherDisabledAddEndpoint, setWhetherDisabledAddEndpoint] = useState(false)
 
     //------------------------INCLUSION CRITERIA CONST END-----------------------------
 
@@ -650,6 +652,7 @@ const ScenarioPage = (props) => {
           var index = demographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
           if(activeType == 1){
             if(index < 0){
+              // setWhetherDisabledAdd(true)
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
@@ -661,6 +664,7 @@ const ScenarioPage = (props) => {
             }
           } else {
             if(index >= 0){
+              // setWhetherDisabledAdd(false)
               demographicsElements.splice(index, 1)         
             }
           }
@@ -669,6 +673,7 @@ const ScenarioPage = (props) => {
           var index = medConditionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
           if(activeType == 1){
             if(index < 0){
+              // setWhetherDisabledAdd(true)
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
@@ -680,6 +685,7 @@ const ScenarioPage = (props) => {
             }
           } else {
             if(index >= 0){
+              // setWhetherDisabledAdd(false)
               medConditionElements.splice(index, 1)
             }
           }
@@ -688,6 +694,7 @@ const ScenarioPage = (props) => {
           var index = interventionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
           if(activeType == 1){
             if(index < 0){
+              // setWhetherDisabledAdd(true)
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
@@ -699,6 +706,7 @@ const ScenarioPage = (props) => {
             }
           } else {
             if(index >= 0){
+              // setWhetherDisabledAdd(false)
               interventionElements.splice(index, 1)             
             }
           }
@@ -707,6 +715,7 @@ const ScenarioPage = (props) => {
           var index = labTestElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
           if(activeType == 1){
             if(index < 0){
+              // setWhetherDisabledAdd(true)
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
@@ -718,6 +727,7 @@ const ScenarioPage = (props) => {
             }
           } else {
             if(index >= 0){
+              // setWhetherDisabledAdd(false)
               labTestElements.splice(index, 1)
             }
           }
@@ -731,6 +741,7 @@ const ScenarioPage = (props) => {
           var index = excluDemographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
           if(activeType == 1){
             if(index < 0){
+              // setWhetherDisabledAddExclu(true)
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 // "Values": formatValue(item),
@@ -744,6 +755,7 @@ const ScenarioPage = (props) => {
             }
           } else {
             if(index >= 0){
+              // setWhetherDisabledAddExclu(false)
               excluDemographicsElements.splice(index,1)
             }
           }
@@ -752,6 +764,7 @@ const ScenarioPage = (props) => {
           var index = excluMedConditionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
           if(activeType == 1){
             if(index < 0){
+              // setWhetherDisabledAddExclu(true)
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 // "Values": formatValue(item),
@@ -765,6 +778,7 @@ const ScenarioPage = (props) => {
             }
           } else {
             if(index >= 0){
+              // setWhetherDisabledAddExclu(false)
               excluMedConditionElements.splice(index,1)
             }
           }
@@ -773,6 +787,7 @@ const ScenarioPage = (props) => {
           var index = excluInterventionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
           if(activeType == 1){
             if(index < 0){
+              // setWhetherDisabledAddExclu(true)
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 // "Values": formatValue(item),
@@ -786,6 +801,7 @@ const ScenarioPage = (props) => {
             }
           } else {
             if(index >= 0){
+              // setWhetherDisabledAddExclu(false)
               excluInterventionElements.splice(index,1)
             }
           }
@@ -794,6 +810,7 @@ const ScenarioPage = (props) => {
           var index = excluLabTestElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
           if(activeType == 1){
             if(index < 0){
+              // setWhetherDisabledAddExclu(true)
               var newItem = {
                 "Eligibility Criteria": item.Text,
                 // "Values": formatValue(item),
@@ -807,6 +824,7 @@ const ScenarioPage = (props) => {
             }
           } else {
             if(index >= 0){
+              // setWhetherDisabledAddExclu(false)
               excluLabTestElements.splice(index,1)
           }
         }
@@ -847,61 +865,10 @@ const ScenarioPage = (props) => {
         }
         
       }
-
-      // switch(id){
-      //   case 0:
-      //     var index = endpointElementsPrimary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
-      //     if(activeType == 1){
-      //       if(index < 0){
-      //         var newItem = {
-      //           "Eligibility Criteria": item['Standard Event'],
-      //           "AssignedType": "Primary",
-      //           "Values": item['Statistical Measure'] === '' ? '-' : item['Statistical Measure'],
-      //           "rawValue": item.Value,
-      //           "Timeframe": item['Timeframe'] === '' ? '-' : item['Timeframe'],
-      //           "Frequency":item.Frequency,
-      //           "frequency_summary":item['frequency_summary'],
-      //           "sponsor_summary":item['sponsor_summary'],
-      //         }
-      //         endpointElementsPrimary.push(newItem)
-      //       }
-      //     } else {
-      //       if(index >= 0){
-      //         endpointElementsPrimary.splice(index,1)
-      //       }
-      //     }
-      //     break;
-      //   case 1:
-      //     var index = endpointElementsSecondary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
-      //     if(activeType == 1){
-      //       if(index < 0){
-      //         var newItem = {
-      //           "Eligibility Criteria": item['Standard Event'],
-      //           "AssignedType": "Secondary",
-      //           "Values": item['Statistical Measure'] === '' ? '-' : item['Statistical Measure'],
-      //           "rawValue": item.Value,
-      //           "Timeframe": item['Timeframe'] === '' ? '-' : item['Timeframe'],
-      //           "Frequency":item.Frequency,
-      //           "frequency_summary":item['frequency_summary'],
-      //           "sponsor_summary":item['sponsor_summary'],
-      //         }
-      //         endpointElementsSecondary.push(newItem)
-      //       }
-      //     } else {
-      //       if(index >= 0){
-      //         endpointElementsSecondary.splice(index,1)
-      //     }
-      //   }
-      //     break;
-       
-      //   default:
-          
-      //   break;
-      // }
     }
+
     const handleEndpointOptionSelectSecondary = (item, activeType, id, key, endpointType) =>{
       setAssignedType(endpointType)
-      
       var index = endpointElementsSecondary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
       if(activeType == 1){
         if(index < 0){
@@ -924,8 +891,8 @@ const ScenarioPage = (props) => {
           endpointElementsSecondary.splice(index,1)
           console.log("delete secondary endpoint");
           
+        }
       }
-    }
       // switch(id){
       //   case 0:
       //     var index = endpointElementsPrimary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
@@ -1036,10 +1003,7 @@ const ScenarioPage = (props) => {
         }
       })
       // console.log("tempEndpointFrequency:",tempEndpointFrequency);
-      
       setEndpointFrequency(tempEndpointFrequency)
-
-
 
       if(activeMore === 1) {
         setShowMoreDetailEndpoint(true)
@@ -1049,24 +1013,222 @@ const ScenarioPage = (props) => {
     }
 
     const handleCriteriaSelect = (item, activeMore, id, key,e) => {
-      console.log("click the add button:",activeMore);
       // if(criteriaDetailActiveTab === 0) {
       //   setCriteriaDetailActiveTab(1)
       // } else {
       //   setCriteriaDetailActiveTab(0)
       // }
       // setShowMoreDetail(false)
+      let indexdemographicsElements = demographicsElements.findIndex((domain) => item['Text'] == domain['Eligibility Criteria']);
+      let indexmedConditionElements = medConditionElements.findIndex((domain) => item['Text'] == domain['Eligibility Criteria']);
+      let indexinterventionElements = interventionElements.findIndex((domain) => item['Text'] == domain['Eligibility Criteria']);
+      let indexlabTestElements = labTestElements.findIndex((domain) => item['Text'] == domain['Eligibility Criteria']);
+      switch(id) {
+        case 0:
+          if(indexdemographicsElements < 0){
+            // setWhetherDisabledAdd(true)
+            var newItem = {
+              "Eligibility Criteria": item['Text'],
+              "Values": item['Text'].trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+              "rawValue": item.Value,
+              "Timeframe": item['Text'].trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
+              "Frequency":item.Frequency
+            }
+            demographicsElements.push(newItem)
+            setDemographicsElements(demographicsElements)
+          }else {
+            // setWhetherDisabledAdd(false)
+            demographicsElements.splice(indexdemographicsElements, 1) 
+            setDemographicsElements(demographicsElements)
+          }
+          break;
+        case 1:
+          if(indexmedConditionElements < 0){
+            // setWhetherDisabledAdd(true)
+            var newItem = {
+              "Eligibility Criteria": item['Text'],
+              "Values": item['Text'].trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+              "rawValue": item.Value,
+              "Timeframe": item['Text'].trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
+              "Frequency":item.Frequency
+            }
+            medConditionElements.push(newItem)
+            setMedConditionElements(medConditionElements)
+          }else {
+            // setWhetherDisabledAdd(false)
+            medConditionElements.splice(indexmedConditionElements, 1) 
+            setMedConditionElements(medConditionElements)
+          }
+        break;
+        case 2:
+          if(indexinterventionElements < 0){
+            // setWhetherDisabledAdd(true)
+            var newItem = {
+              "Eligibility Criteria": item['Text'],
+              "Values": item['Text'].trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+              "rawValue": item.Value,
+              "Timeframe": item['Text'].trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
+              "Frequency":item.Frequency
+            }
+            interventionElements.push(newItem)
+            setInterventionElements(interventionElements)
+          }else {
+            // setWhetherDisabledAdd(false)
+            interventionElements.splice(indexinterventionElements, 1) 
+            setInterventionElements(interventionElements)
+          }
+        break;
+        default:
+          if(indexlabTestElements < 0){
+            // setWhetherDisabledAdd(true)
+            var newItem = {
+              "Eligibility Criteria": item['Text'],
+              "Values": item['Text'].trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+              "rawValue": item.Value,
+              "Timeframe": item['Text'].trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
+              "Frequency":item.Frequency
+            }
+            labTestElements.push(newItem)
+            setLabTestElements(labTestElements)
+          }else {
+            // setWhetherDisabledAdd(false)
+            labTestElements.splice(indexlabTestElements, 1) 
+            setLabTestElements(labTestElements)
+          }
+        break;
+      }
+      updateTrial(1, 1)
+    }
+
+    const handleCriteriaSelectExclu = (item, activeMore, id, key,e) => {
+      console.log("click the exclu add button:",activeMore);
+      // if(criteriaDetailActiveTab === 0) {
+      //   setCriteriaDetailActiveTab(1)
+      // } else {
+      //   setCriteriaDetailActiveTab(0)
+      // }
+      // setShowMoreDetail(false)
+      let indexdemographicsElements = excluDemographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
+      let indexmedConditionElements = excluMedConditionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
+      let indexinterventionElements = excluInterventionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
+      let indexlabTestElements = excluLabTestElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
+      //  if key includes in [], delete; if not includes, push []
+      switch(id) {
+        case 0:
+          if(indexdemographicsElements < 0){
+            // setWhetherDisabledAddExclu(false)
+            var newItem = {
+              "Eligibility Criteria": item.Text,
+              "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+              "rawValue": item.Value,
+              "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
+              "Frequency":item.Frequency
+            }
+            excluDemographicsElements.push(newItem)
+            setExcluDemographicsElements(excluDemographicsElements)
+          }else {
+            // setWhetherDisabledAddExclu(true)
+            excluDemographicsElements.splice(indexdemographicsElements, 1) 
+            setExcluDemographicsElements(excluDemographicsElements)
+          }
+          break;
+        case 1:
+          if(indexmedConditionElements < 0){
+            // setWhetherDisabledAddExclu(false)
+            var newItem = {
+              "Eligibility Criteria": item.Text,
+              "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+              "rawValue": item.Value,
+              "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
+              "Frequency":item.Frequency
+            }
+            excluMedConditionElements.push(newItem)
+            setExcluMedConditionElements(excluMedConditionElements)
+          }else {
+            // setWhetherDisabledAddExclu(true)
+            excluMedConditionElements.splice(indexmedConditionElements, 1) 
+            setExcluMedConditionElements(excluMedConditionElements)
+          }
+        break;
+        case 2:
+          if(indexinterventionElements < 0){
+            // setWhetherDisabledAddExclu(false)
+            var newItem = {
+              "Eligibility Criteria": item.Text,
+              "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+              "rawValue": item.Value,
+              "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
+              "Frequency":item.Frequency
+            }
+            excluInterventionElements.push(newItem)
+            setExcluInterventionElements(excluInterventionElements)
+          }else {
+            // setWhetherDisabledAddExclu(true)
+            excluInterventionElements.splice(indexinterventionElements, 1) 
+            setExcluInterventionElements(excluInterventionElements)
+          }
+        break;
+        default:
+          if(indexlabTestElements < 0){
+            // setWhetherDisabledAddExclu(false)
+            var newItem = {
+              "Eligibility Criteria": item.Text,
+              "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+              "rawValue": item.Value,
+              "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
+              "Frequency":item.Frequency
+            }
+            excluLabTestElements.push(newItem)
+            setExcluLabTestElements(excluLabTestElements)
+          }else {
+            // setWhetherDisabledAddExclu(true)
+            excluLabTestElements.splice(indexlabTestElements, 1) 
+            setExcluLabTestElements(excluLabTestElements)
+          }
+        break;
+      }
+      updateTrial(2, 1)   
     }
 
     const handleEndpointSelect = (item, activeMore, id, key,e) => {
-      console.log("click the add primary button:",activeMore);
+      // console.log("click the add primary button:",activeMore);
       // if(criteriaDetailActiveTab === 0) {
       //   setCriteriaDetailActiveTab(1)
       // } else {
       //   setCriteriaDetailActiveTab(0)
       // }
       // setShowMoreDetail(false)
+      var index = endpointElementsPrimary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
+      var indexSecondary = endpointElementsSecondary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
+
+      if(index < 0){
+        var newItem = {
+          "Eligibility Criteria": item['Standard Event'],
+          "AssignedType": "Primary",
+          "Values": item['Statistical Measure'] === '' ? '-' : item['Statistical Measure'],
+          "rawValue": item.Value,
+          "Timeframe": item['Timeframe'] === '' ? '-' : item['Timeframe'],
+          "Frequency":item.Frequency,
+          "frequency_summary":item['frequency_summary'],
+          "sponsor_summary":item['sponsor_summary'],
+        }
+        endpointElementsPrimary.push(newItem)
+        setEndpointElementsPrimary(endpointElementsPrimary)
+        console.log("add primary endpoint");
+      } 
+      if(index >= 0){
+        endpointElementsPrimary.splice(index,1)
+        setEndpointElementsPrimary(endpointElementsPrimary)
+        console.log("delete primary endpoint");
+      }
+      if(indexSecondary >= 0){
+        endpointElementsSecondary.splice(index,1)
+        setEndpointElementsSecondary(endpointElementsSecondary)
+        console.log("delete secondary endpoint");
+      } 
+      updateTrial(3, 1) 
     }
+
     const handleEndpointSelectSecondary = (item, activeMore, id, key,e) => {
       console.log("click the add secondary button:",activeMore);
       // if(criteriaDetailActiveTab === 0) {
@@ -1075,6 +1237,29 @@ const ScenarioPage = (props) => {
       //   setCriteriaDetailActiveTab(0)
       // }
       // setShowMoreDetail(false)
+      var index = endpointElementsSecondary.findIndex((domain) => item['Standard Event'] == domain['Eligibility Criteria']);
+      if(index < 0){
+        var newItem = {
+          "Eligibility Criteria": item['Standard Event'],
+          "AssignedType": "Secondary",
+          "Values": item['Statistical Measure'] === '' ? '-' : item['Statistical Measure'],
+          "rawValue": item.Value,
+          "Timeframe": item['Timeframe'] === '' ? '-' : item['Timeframe'],
+          "Frequency":item.Frequency,
+          "frequency_summary":item['frequency_summary'],
+          "sponsor_summary":item['sponsor_summary'],
+        }
+        endpointElementsSecondary.push(newItem)
+        setEndpointElementsSecondary(endpointElementsSecondary)
+        console.log("add secondary endpoint");
+      }
+      if(index >= 0){
+        endpointElementsSecondary.splice(index,1)
+        setEndpointElementsSecondary(endpointElementsSecondary)
+        console.log("delete secondary endpoint");
+      }
+
+      updateTrial(3, 1)
     }
 
     const updateTrial = (type: number, res: number) => {
@@ -5186,17 +5371,8 @@ const ScenarioPage = (props) => {
                                   </Col>
                               </Row>
                               </div>
-                              {/* <div className="drawer-content-limit">
-                               <Row>
-                                <Col span={24} className="drawer-title">
-                                  <span className="text">
-                                  Numeric Limits Distribution
-                                  </span>
-                                </Col>
-                              </Row> 
-                              </div> */}
                               <div className="drawer-content-button">
-                                  <Button className="update-btn" onClick={(e) => handleCriteriaSelect(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
+                                  <Button className="update-btn" disabled={whetherDisabledAdd} onClick={(e) => handleCriteriaSelect(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
                                     ADD
                                   </Button>
                                 </div>
@@ -5787,7 +5963,7 @@ const ScenarioPage = (props) => {
                               </Row> 
                               </div> */}
                               <div className="drawer-content-button">
-                                  <Button className="update-btn" onClick={(e) => handleCriteriaSelect(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
+                                  <Button className="update-btn" disabled={whetherDisabledAddExclu} onClick={(e) => handleCriteriaSelectExclu(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
                                     ADD
                                   </Button>
                                 </div>
