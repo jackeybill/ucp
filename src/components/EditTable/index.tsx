@@ -57,7 +57,7 @@ const EditTable = (props) => {
   useEffect(() => {
     let newList = []
 
-    console.log("data: ",props.data);
+    // console.log("data: ",props.data);
     
     props.data.map((item, id) =>{
       if(item['splitPart'] === undefined){
@@ -79,7 +79,7 @@ const EditTable = (props) => {
     }
     
     setData(newList)
-    console.log("newList",newList);
+    // console.log("newList",newList);
     
   }, [props.data])
 
@@ -403,7 +403,7 @@ const panelHeaderSection = (header, count) => {
           <CloseOutlined style={{ color: 'red', float:'left'}} onClick={() =>deleteConditionOrException(record)}/>
         ) : (
           <Popover content={<div style={{display:'grid'}}>
-                      <span className="popover-action" onClick={() => handleAddSubCriteria(record)}>Add sub-criteria</span>
+                      {props.panelHeader!=='Primary'&&props.panelHeader!=='Secondary'&&<span className="popover-action" onClick={() => handleAddSubCriteria(record)}>Add sub-criteria</span>}
                       <span className="popover-action" onClick={() => editConditionOrException(record)}>Add / Edit condition or exception</span>
                       <span className="popover-action" onClick={() => handleDelete(record)}>Delete</span>
                     </div>} 
