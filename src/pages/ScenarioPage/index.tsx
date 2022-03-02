@@ -1258,7 +1258,6 @@ const ScenarioPage = (props) => {
         setEndpointElementsSecondary(endpointElementsSecondary)
         console.log("delete secondary endpoint");
       }
-
       updateTrial(3, 1)
     }
 
