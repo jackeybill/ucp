@@ -26,6 +26,7 @@ const frequencyFilter = [5, 100]
 const inActiveChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA']
 const activeChartColors = ['#E53500', '#F27A26', '#F5924D', '#FBD0B3']
 const frequencyColors = {'Primary':'#E86153','Secondary':'#741910'}
+const summaryCountColors = {'Primary':'#E0301E','Secondary':'#FFDCA9','Third':'#933401'}
 const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2025}
 const colorList = {
   'AMERICAN INDIAN/ALASKA NATIVE': '#CA4A04', 
@@ -83,7 +84,8 @@ const initialScenario = {
     "Inclusion Criteria": {},
     "Exclusion Criteria": {},
     "Enrollment Feasibility": {},
-    "Schedule of Events": {}
+    "Schedule of Events": {},
+    "Protocol Endpoint":{}
 };
 
 const CATEGORY_LABS = 'Labs';
@@ -202,9 +204,6 @@ const ScenarioPage = (props) => {
   const [showMoreDetail, setShowMoreDetail] = useState(false)
   const [showMoreDetailEndpoint, setShowMoreDetailEndpoint] = useState(false)
   const [criteriaDetail, setCriteriaDetail] = useState({Text:'',Frequency:0.5,Value:{sponser_list:[]}})
-  const [endpointDetail, setEndpointDetail] = useState({'Standard Event':'',Frequency:0.5,sponsor_summary:[],frequency_summary:{year:[],percent:[]}})
-
-  const [endpointFrequency, setEndpointFrequency] = useState([])
 
   const [criteriaDetailActiveTab, setCriteriaDetailActiveTab] = useState(0)
   const [criteriaDetailID, setCriteriaDetailID] = useState(0)
@@ -294,8 +293,13 @@ const ScenarioPage = (props) => {
   const [initEndpointData, setInitEndpointData] = useState(true)
 
   const [originEndpoint, setOriginEndpoint] = useState([])
-  const [summaryChart, setSummaryChart] = useState({ category: [],value: []})
 
+  const [endpointDetail, setEndpointDetail] = useState({'Standard Event':'',Frequency:0.5,sponsor_summary:[],frequency_summary:{year:[],percent:[]}})
+
+  const [endpointFrequency, setEndpointFrequency] = useState([])
+  const [summaryData, setSummaryData] = useState({ category: [],value: []})
+  const [summaryChart, setSummaryChart] = useState({ category: [],value: []})
+  const [endpointSummary, setEndpointSummary] = useState([])
 
   const [endpointRollHeight, setEndpointRollHeight] = useState(true)            // Control editTable scroll height
   const [endpointDefaultActiveKey, setEndpointDefaultActiveKey] = useState([])  //default expanded collapse for edittable
@@ -1391,7 +1395,7 @@ const ScenarioPage = (props) => {
           setExcluCollapsible(false)
           setExcluDefaultActiveKey(['2','3','4','5'])
 
-          setEndpointRollHeight(false)
+          setExcluRollHeight(false)
           setExcluActiveKey(['1'])
         } else if (type == 3) {//Endpoint
 
@@ -1402,10 +1406,11 @@ const ScenarioPage = (props) => {
             return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
           })
           setEndpointElementsPrimary(endpointElementsTmpPrimary )
-          setEndpointTableDataPrimary(endpointDataTmpPrimary.map((item, id) =>{
+          const rawEndpointTableDataPrimary = endpointDataTmpPrimary.map((item, id) =>{
             item.Key = (id + 1) + ''
             return item
-          }))
+          })
+          setEndpointTableDataPrimary(rawEndpointTableDataPrimary)
           
           let endpointElementsTmpSecondary = endpointElementsSecondary.map((item,index) =>{
             return Object.assign(item,{Key:(index + 1) + ''})
@@ -1414,11 +1419,21 @@ const ScenarioPage = (props) => {
             return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
           })
           setEndpointElementsSecondary(endpointElementsTmpSecondary )
-          setEndpointTableDataSecondary(endpointDataTmpSecondary.map((item, id) =>{
+          const rawEndpointTableDataSecondary = endpointDataTmpSecondary.map((item, id) =>{
             item.Key = (id + 1) + ''
             return item
-          }))
+          })
+          setEndpointTableDataSecondary(rawEndpointTableDataSecondary)
 
+          const rawsummaryData = JSON.parse(JSON.stringify(summaryData))
+          if(rawsummaryData.value.some((item,index)=>{
+            return item.category === 'My Trial'
+          })) {
+            rawsummaryData.value[0].value = [rawEndpointTableDataPrimary.length,rawEndpointTableDataSecondary.length]
+          } else {
+            rawsummaryData.value.unshift({category: 'My Trial',value: [rawEndpointTableDataPrimary.length,rawEndpointTableDataSecondary.length]})
+          }
+          setSummaryChart(rawsummaryData)  
 
           setEndpointCollapsible(false)
           setEndpointDefaultActiveKey(['2','3'])
@@ -1479,9 +1494,15 @@ const ScenarioPage = (props) => {
       "#FBD0B3",
       "#FDECE0",
     ];
+    const endpointNumberColor = [
+      "#E0301E",
+      "#933401",
+      "#FFDCA9"
+    ]
 
     const amendmentRateoption = {
       title : {
+        show: false,
         text: 'Protocol Amendment Rate',
         subtext: therapeutic_Amend_Avg,
         x:'left',
@@ -1506,7 +1527,7 @@ const ScenarioPage = (props) => {
       series: [
         {
           type: 'pie',
-          center: ['80%', '50%'],
+          center: ['50%', '50%'],
           radius: ['50%', '80%'],
           avoidLabelOverlap: false,
           label: {
@@ -1564,6 +1585,7 @@ const ScenarioPage = (props) => {
   
     const screenFailureOption = {
       title : {
+        show: false,
         text: 'Screen Failure Rate',
         subtext: therapeutic_Screen_Avg,
         x:'left',
@@ -1588,7 +1610,7 @@ const ScenarioPage = (props) => {
       series: [
         {
           type: 'pie',
-          center: ['80%', '50%'],
+          center: ['50%', '50%'],
           radius: ['50%', '80%'],
           avoidLabelOverlap: false,
           label: {
@@ -1646,6 +1668,7 @@ const ScenarioPage = (props) => {
   
     const excluAmendmentRateoption = {
       title : {
+        show: false,
         text: 'Protocol Amendment Rate',
         subtext: exclu_Therapeutic_Amend_Avg,
         x:'left',
@@ -1670,7 +1693,7 @@ const ScenarioPage = (props) => {
       series: [
         {
             type: 'pie',
-            center: ['80%', '50%'],
+            center: ['50%', '50%'],
             radius: ['50%', '80%'],
             avoidLabelOverlap: false,
             label: {
@@ -1728,6 +1751,7 @@ const ScenarioPage = (props) => {
   
     const excluScreenFailureOption = {
       title : {
+        show: false,
         text: 'Screen Failure Rate',
         subtext: exclu_Therapeutic_Screen_Avg,
         x:'left',
@@ -1752,7 +1776,7 @@ const ScenarioPage = (props) => {
       series: [
         {
           type: 'pie',
-          center: ['80%', '50%'],
+          center: ['50%', '50%'],
           radius: ['50%', '80%'],
           avoidLabelOverlap: false,
           label: {
@@ -2093,6 +2117,65 @@ const ScenarioPage = (props) => {
           }
       ],
       series: endpointFrequency,
+    };
+
+    const EndpointSummaryOption = {
+      title : {
+        show: false,
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      grid: {
+          left: '10%',
+          right: '4%',
+          top: '15%',
+          bottom: '6%',
+          containLabel: true
+      },
+      legend: {
+          show: false,
+          data: [{name:'Primary',icon:'circle'}, {name:'Secondary',icon:'circle'}],
+          bottom: '0%',
+          left:'center',
+          itemWidth:8,
+          itemHeight:8,
+          // itemStyle:{
+          //     borderRadius: 28,
+          // }
+      },
+      xAxis: [
+          {
+            type: 'category',
+            data:['Primary', 'Secondary'],
+            // name: 'Visit Number',
+            // data: summaryChart.category,
+            // nameLocation: "middle", 
+            // nameRotate: 0, nameGap: 21,
+            axisTick: {
+              show: false,
+              alignWithLabel: true
+            }
+          }
+      ],
+      yAxis: [
+          { 
+            type: 'value', 
+            // name:'Patient Burden', 
+            // nameRotate: 90, nameGap: 40, nameLocation: "middle", 
+            axisLine: { lineStyle: { color: '#666' } }, 
+            // axisLabel : { 
+            //   formatter : function(value) { value = value*100; return value+'%'; } 
+            // }, 
+            // axisLabel:{
+            //   formatter: '{value}%'
+            // }
+          }
+      ],
+      series: endpointSummary,
     };
 
     // Enrollment Feasibility chart data
@@ -2944,14 +3027,76 @@ const ScenarioPage = (props) => {
           // const response = JSON.parse(resp.body)
           const response = resp.body
           console.log("endpoint result: ", response);
-          const endpointList = response.result.list
-          const endpointSummaryChart =response.result.summary.category_summary
+          const endpointList = response.result&&response.result.list || []
+          // endpoint summary chart data
+          const category_summary_dummy = {
+            category: ['Primary', 'Secondary'],
+            value: [ 
+            // {
+            // category: 'Internal',
+            // value: [2,2]
+            // },
+            {
+            category: 'External',
+            value: [3,5]
+            }
+            ]
+            }
+          const endpointSummaryChart = response.result&&response.result.summary.category_summary.value == undefined?category_summary_dummy:response.result.summary.category_summary
+          // const endpointSummaryChart = {
+          //   category: ['Primary', 'Secondary'],
+          //   value: [ {
+          //   category: 'My Trial',
+          //   value: [1,4]
+          //   },
+          //   {
+          //   category: 'Internal',
+          //   value: [2,2]
+          //   },
+          //   {
+          //   category: 'External',
+          //   value: [3,5]
+          //   }
+          //   ]
+          //   }
+
           // const selectedEndpointList = endpointList.filter((val, index)=>{
           //   return val.selected
           // })
           setOriginEndpoint(endpointList)
           // setEndpointElements(selectedEndpointList)
-          setSummaryChart(endpointSummaryChart)
+          setSummaryData(endpointSummaryChart)  
+          if(endpointSummaryChart.value.some((item,index)=>{
+            return item.category === 'My Trial'            
+          })) {
+            endpointSummaryChart.value[0].value = [endpointTableDataPrimary.length,endpointTableDataSecondary.length]
+          } else {
+            endpointSummaryChart.value.unshift({category: 'My Trial',value: [endpointTableDataPrimary.length,endpointTableDataSecondary.length]})
+          }
+          setSummaryChart(endpointSummaryChart)  
+
+          if(endpointTableDataPrimary.length + endpointTableDataSecondary.length > 0) {
+             // Get endpoint chart info
+            let tempEndpointSummary = endpointSummaryChart.value.map((val, index)=>{
+              return {
+                name: val.category,
+                type: 'bar', 
+                emphasis: {
+                  focus: 'series'
+                },
+                barGap: '0%',
+                barMaxWidth:'16px',
+                itemStyle: {
+                  color: (index===0?summaryCountColors['Primary']:summaryCountColors['Secondary'])|| '#E86153'
+                },
+                data: val.value
+              }
+            })
+
+            setEndpointSummary(tempEndpointSummary)
+          }
+
+                  
           // setMedCondition(inclusionCriteria[i]['Medical Condition'].filter((d) => {
           //     return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
           // }))
@@ -3463,6 +3608,25 @@ const ScenarioPage = (props) => {
           setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].protocol_amendment_rate)
           setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].screen_failure_rate)
         }
+
+          // Get endpoint chart info
+          let tempEndpointSummary = summaryChart.value.map((val, index)=>{
+            return {
+              name: val.category,
+              type: 'bar', 
+              emphasis: {
+                focus: 'series'
+              },
+              barGap: '0%',
+              barMaxWidth:'16px',
+              itemStyle: {
+                color: (index===0?summaryCountColors['Primary']:summaryCountColors['Secondary'])|| '#E86153'
+              },
+              data: val.value
+            }
+          })
+  
+          setEndpointSummary(tempEndpointSummary)
   
         setShowChartLabel(true)
         message.success("Save successfully");
@@ -3636,6 +3800,26 @@ const ScenarioPage = (props) => {
           setExcluTherapeutic_Amend_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].protocol_amendment_rate)
           setExcluTherapeutic_Screen_Avg('Therapeutic Area Average - ' + currentScenario['Therapeutic Area Average'].screen_failure_rate)
         }
+
+        // Get endpoint chart info
+        let tempEndpointSummary = summaryChart.value.map((val, index)=>{
+          return {
+            name: val.category,
+            type: 'bar', 
+            emphasis: {
+              focus: 'series'
+            },
+            barGap: '0%',
+            barMaxWidth:'16px',
+            itemStyle: {
+              color: (index===0?summaryCountColors['Primary']:summaryCountColors['Secondary'])|| '#E86153'
+            },
+            data: val.value
+          }
+        })
+
+        setEndpointSummary(tempEndpointSummary)
+        
   
         setShowChartLabel(true)
         props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})
@@ -3962,6 +4146,17 @@ const ScenarioPage = (props) => {
       return e     
     })
     setEndpointTableDataSecondary(endpointTmpSecondary)
+
+    const rawsummaryData = JSON.parse(JSON.stringify(summaryData))
+    if(rawsummaryData.value.some((item,index)=>{
+      return item.category === 'My Trial'
+    })) {
+      rawsummaryData.value[0].value = [endpointTmpPrimary.length,endpointTmpSecondary.length]
+    } else {
+      rawsummaryData.value.unshift({category: 'My Trial',value: [endpointTmpPrimary.length,endpointTmpSecondary.length]})
+    }
+    
+    setSummaryChart(rawsummaryData) 
   
   }
 
@@ -5047,34 +5242,68 @@ const ScenarioPage = (props) => {
                                 <Collapse activeKey={activeKey} onChange={callback} expandIconPosition="right" >
                                   <Panel header={panelHeader()} key="1" forceRender={false} >
                                     <div className="chart-container">
-                                      <div className="label">
-                                        <span>Click on each metric to filter</span>
+                                      <div className="chart-title">
+                                          <div className="text">
+                                          Protocol Amendment Likelihood
+                                          </div> 
                                       </div>
-                                      <ReactECharts
-                                        option={amendmentRateoption}
-                                        style={{ height: 120}}
-                                        onEvents={{'click': onInclusionChartClick}}/>
-                                      {/* <div className="legend-wrapper">
-                                        <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
-                                        <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
-                                        <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
-                                        <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
-                                      </div> */}
+                                      <div>
+                                        <ReactECharts
+                                              option={amendmentRateoption}
+                                              style={{ height: 120}}
+                                              onEvents={{'click': onInclusionChartClick}}/>
+                                      </div>
+                                      <div className="subtitle">{therapeutic_Amend_Avg}</div>
+                                      <div className="legend-wrapper">
+                                            <div className="item-desc">
+                                              <span className="bar-item item3"></span>
+                                              <span>Demographics</span>
+                                            </div>
+                                            <div className="item-desc">
+                                              <span className="bar-item item4"></span>
+                                              <span>Medical Condition</span>
+                                            </div>
+                                            <div className="item-desc">
+                                              <span className="bar-item item1"></span>
+                                              <span>Intervention</span>
+                                            </div>
+                                            <div className="item-desc">
+                                              <span className="bar-item item2"></span>
+                                              <span>Labs / Tests</span>
+                                            </div>
+                                          </div>
                                     </div>
-                                    <div className="chart-container  box">
-                                      <div className="label">
-                                        <span>Click on each metric to filter</span>
+                                    <div className="chart-container">
+                                      <div className="chart-title">
+                                          <div className="text">
+                                          Screen Failure Rate
+                                          </div> 
                                       </div>
-                                      <ReactECharts
+                                      <div>
+                                        <ReactECharts
                                         option={screenFailureOption}
                                         style={{ height: 120}}
                                         onEvents={{'click': onInclusionChartClick}}/>
-                                      {/* <div className="legend-wrapper">
-                                        <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
-                                        <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
-                                        <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
-                                        <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
-                                      </div> */}
+                                      </div>
+                                      <div className="subtitle">{therapeutic_Screen_Avg}</div>
+                                      <div className="legend-wrapper">
+                                            <div className="item-desc">
+                                              <span className="bar-item item3"></span>
+                                              <span>Demographics</span>
+                                            </div>
+                                            <div className="item-desc">
+                                              <span className="bar-item item4"></span>
+                                              <span>Medical Condition</span>
+                                            </div>
+                                            <div className="item-desc">
+                                              <span className="bar-item item1"></span>
+                                              <span>Intervention</span>
+                                            </div>
+                                            <div className="item-desc">
+                                              <span className="bar-item item2"></span>
+                                              <span>Labs / Tests</span>
+                                            </div>
+                                          </div>
                                     </div>
                                   </Panel>
                                 </Collapse>
@@ -5640,35 +5869,69 @@ const ScenarioPage = (props) => {
                               <div>
                                 <Collapse activeKey={excluActiveKey} onChange={excluCallback} expandIconPosition="right" >
                                   <Panel header={panelHeader()} key="1" forceRender={false} >
-                                    <div className="chart-container">
-                                      <div className="label">
-                                        <span>Click on each metric to filter</span>
+                                  <div className="chart-container">
+                                      <div className="chart-title">
+                                          <div className="text">
+                                          Protocol Amendment Likelihood
+                                          </div> 
                                       </div>
-                                      <ReactECharts
+                                      <div>
+                                        <ReactECharts
                                         option={excluAmendmentRateoption}
                                         style={{ height: 120}}
                                         onEvents={{'click': onExclusionChartClick}}/>
-                                      {/* <div className="legend-wrapper">
-                                        <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
-                                        <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
-                                        <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
-                                        <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
-                                      </div> */}
-                                    </div>
-                                    <div className="chart-container  box">
-                                      <div className="label">
-                                        <span>Click on each metric to filter</span>
                                       </div>
-                                      <ReactECharts
+                                      <div className="subtitle">{exclu_Therapeutic_Amend_Avg}</div>
+                                      <div className="legend-wrapper">
+                                            <div className="item-desc">
+                                              <span className="bar-item item3"></span>
+                                              <span>Demographics</span>
+                                            </div>
+                                            <div className="item-desc">
+                                              <span className="bar-item item4"></span>
+                                              <span>Medical Condition</span>
+                                            </div>
+                                            <div className="item-desc">
+                                              <span className="bar-item item1"></span>
+                                              <span>Intervention</span>
+                                            </div>
+                                            <div className="item-desc">
+                                              <span className="bar-item item2"></span>
+                                              <span>Labs / Tests</span>
+                                            </div>
+                                          </div>
+                                    </div>
+                                    <div className="chart-container">
+                                      <div className="chart-title">
+                                          <div className="text">
+                                          Screen Failure Rate
+                                          </div> 
+                                      </div>
+                                      <div>
+                                        <ReactECharts
                                         option={excluScreenFailureOption}
                                         style={{ height: 120}}
                                         onEvents={{'click': onExclusionChartClick}}/>
-                                      {/* <div className="legend-wrapper">
-                                        <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
-                                        <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
-                                        <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
-                                        <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
-                                      </div> */}
+                                      </div>
+                                      <div className="subtitle">{exclu_Therapeutic_Screen_Avg}</div>
+                                      <div className="legend-wrapper">
+                                            <div className="item-desc">
+                                              <span className="bar-item item3"></span>
+                                              <span>Demographics</span>
+                                            </div>
+                                            <div className="item-desc">
+                                              <span className="bar-item item4"></span>
+                                              <span>Medical Condition</span>
+                                            </div>
+                                            <div className="item-desc">
+                                              <span className="bar-item item1"></span>
+                                              <span>Intervention</span>
+                                            </div>
+                                            <div className="item-desc">
+                                              <span className="bar-item item2"></span>
+                                              <span>Labs / Tests</span>
+                                            </div>
+                                          </div>
                                     </div>
                                   </Panel>
                                 </Collapse>
@@ -6318,16 +6581,25 @@ const ScenarioPage = (props) => {
                             <Collapse activeKey={endpointActiveKey} onChange={endpointCallback} expandIconPosition="right" >
                               <Panel header={panelHeaderEndpoint()} key="1" forceRender={false} >
                                 <div className="chart-container">
-                                  {/* <ReactECharts
-                                    option={amendmentRateoption}
-                                    style={{ height: 120}}
-                                    onEvents={{'click': onInclusionChartClick}}/> */}
-                                  {/* <div className="legend-wrapper">
-                                    <div className="item-desc"><div className="bar-item item1"></div><span>Labs / Tests</span></div>
-                                    <div className="item-desc"><span className="bar-item item2"></span><span>Intervention</span></div>
-                                    <div className="item-desc"><span className="bar-item item3"></span><span>Demographics</span></div>
-                                    <div className="item-desc"><span className="bar-item item4"></span><span>Medical Condition</span></div>
-                                  </div> */}
+                                  <div className="chart-title">
+                                      <div className="text">
+                                        Number of Endpoint
+                                      </div> 
+                                      <div className="legend-wrapper">
+                                        <div className="item-desc">
+                                          <span className="bar-item mytrial"></span>
+                                          <span>My Trial</span></div>
+
+                                        <div className="item-desc">
+                                          <span className="bar-item external"></span>
+                                          <span>External</span>
+                                          </div>
+                                      </div>
+                                  </div>
+                                <div>
+                                 <ReactECharts option={EndpointSummaryOption}
+                                style={{width: '354px', height: '185px'}}></ReactECharts>
+                                </div>
                                 </div>
                               </Panel>
                             </Collapse>
