@@ -34,6 +34,13 @@ const ChartPage = (props: any) => {
     total_document: {
       count:18123,
     },
+    study_indication: [
+      { value: 3500, name: "Type 2 Diabetes" },
+      { value: 1500, name: "Alzheimer's" },
+      { value: 1500, name: "Obesity" },
+      { value: 1500, name: "NASH" },
+      { value: 2000, name: "Oncology" }
+    ]
 
   }
 
@@ -58,6 +65,38 @@ const ChartPage = (props: any) => {
     fetchData();
   }, []);
 
+  const studyIndicationOption = {
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      top: '5%',
+      left: 'center'
+    },
+    series: [
+      {
+        name: 'Access From',
+        type: 'pie',
+        radius: ['40%', '70%'],
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+          position: 'center'
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: '40',
+            fontWeight: 'bold'
+          }
+        },
+        labelLine: {
+          show: false
+        },
+        data: dummay_chart_data.study_indication
+      }
+    ]
+  };
   
 
   return (
@@ -89,7 +128,9 @@ const ChartPage = (props: any) => {
               <div className="middle">
                 <div className="chart__wrapper indication">
                   <div className="title">STUDIES BY INDICATION</div>
-                  <div className="content"></div>
+                  <div className="content">
+                    
+                  </div>
                 </div>
               </div>
               <div className="right">
