@@ -25,6 +25,9 @@ function App() {
           <Route exact path="/">
             <LoginPage />
           </Route>
+          <Route exact path="/summary">
+            <Layout />
+          </Route>
           <Route exact path="/overview">
             <Layout />
           </Route>

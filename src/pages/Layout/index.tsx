@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import ProtocolSection from "../ProtocolSection";
 import Footer from '../../components/Footer'
 import Overview from "../Overview";
+import ChartPage from '../ChartPage'
 import Logo from "../../assets/pwc-logo-dark.svg";
 
 import "./index.scss";
@@ -45,6 +46,11 @@ const GlobalLayout = (props: any) => {
   const renderContent = () => {
     const current = props.location.pathname
     switch (current) {
+      case "/summary":
+        content = (
+          <ChartPage/>
+        );
+        break;
       case "/overview":
         content = (
           <Overview/>
@@ -69,6 +75,8 @@ const GlobalLayout = (props: any) => {
  
   const handleClick = (e) => {
     setCurrent(e.key)
+    console.log(e.key);
+    
     props.history.push('/'+e.key)
   }
 

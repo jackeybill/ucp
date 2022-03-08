@@ -22,7 +22,7 @@ const Login = (props: any) => {
   const [form] = Form.useForm();
   const usernameLogin = async (values: any) => {
     Cookies.set("username", "Test User");
-    props.history.push('/overview') 
+    props.history.push('/summary') 
     // const resp = await login(values);
     // if (resp.statusCode == 200) {
     //   Cookies.set("role", values.role);
