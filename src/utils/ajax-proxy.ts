@@ -29,6 +29,21 @@ export const getOverviewList = async () => {
   return await response.json();
 }
 
+export const getSummaryChart = async () => {
+  const response = await fetch('https://7dx4asj8xj.execute-api.us-east-2.amazonaws.com/dev/dean-dev-protocol-job', {
+    method:'POST',
+    headers: {
+      'Access-Control-Request-Method': 'POST',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "method": "chart"
+    })
+  })
+
+  return await response.json();
+}
+
 export const extractText = async (filepath: string, begin: number) => {
   const response = await fetch(BACKEND_HOST, {
     method: 'POST',
