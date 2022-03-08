@@ -3,35 +3,44 @@
   .chart__wrapper {
     box-shadow: 0 3px 6px #00000029;
     background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .top {
     display: flex;
-    // align-items: center;
     margin-bottom: 20px;
     .left {
       display: flex;
+      flex: 1;
       flex-direction: column;
       justify-content: space-between;
       .total_study, .total_sponsor,  .total_document{
-        width: 323px;
-        height: 150px;
+        width: 100%;
+        min-width: 323px;
+        min-height: 150px;
         padding: 20px 30px;
       }
     }
     .middle {
+      display: flex;
+      flex: 2;
       margin: 0 20px;
       .indication {
-        width: 594px;
-        height: 501px;
+        flex: 1;
+        min-width: 594px;
+        min-height: 501px;
       }
     }
     .right {
       display: flex;
+      flex: 1;
       flex-direction: column;
       justify-content: space-between;
       .study_phases, .study_type {
-        width: 320px;
-        height: 240px;
+        width: 100%;
+        min-width: 320px;
+        min-height: 240px;
       }
     }
   }
@@ -40,9 +49,13 @@
     justify-content: space-between;
     flex-wrap: wrap;
     .study_sponsor, .study_location, .study_status, .study_date {
-      width: 630px;
-      height: 354px;
+      flex: 1;
+      min-width: 630px;
+      min-height: 354px;
       margin-bottom: 20px;
+    }
+    .study_location, .study_date {
+      margin-left: 20px;
     }
   }
 }

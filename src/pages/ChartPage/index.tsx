@@ -54,23 +54,23 @@ const ChartPage = (props: any) => {
         <Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24,color:'#d04a02' }} spin />} >
             <div className="top">
               <div className="left">
-                <div className="chart__wrapper total_study"></div>
-                <div className="chart__wrapper total_sponsor"></div>
-                <div className="chart__wrapper total_document"></div>
+                <div className="chart__wrapper total_study">1</div>
+                <div className="chart__wrapper total_sponsor">1</div>
+                <div className="chart__wrapper total_document">1</div>
               </div>
               <div className="middle">
-                <div className="chart__wrapper indication"></div>
+                <div className="chart__wrapper indication">1</div>
               </div>
               <div className="right">
-                <div className="chart__wrapper study_phases"></div>
-                <div className="chart__wrapper study_type"></div>
+                <div className="chart__wrapper study_phases">1</div>
+                <div className="chart__wrapper study_type">1</div>
               </div>
             </div>
             <div className="below">
-              <div className="chart__wrapper study_sponsor"></div>
-              <div className="chart__wrapper study_location"></div>
-              <div className="chart__wrapper study_status"></div>
-              <div className="chart__wrapper study_date"></div>
+              <div className="chart__wrapper study_sponsor">1</div>
+              <div className="chart__wrapper study_location">1</div>
+              <div className="chart__wrapper study_status">1</div>
+              <div className="chart__wrapper study_date">1</div>
             </div>
         </Spin>
       </div>
