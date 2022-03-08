@@ -1,156 +1,49 @@
-.overview__container {
-  margin: 0 80px 0 80px;
+.chart__container {
+  margin: 50px 80px 0 80px;
+  .chart__wrapper {
+    box-shadow: 0 3px 6px #00000029;
+    background-color: #fff;
+  }
   .top {
     display: flex;
-    align-items: center;
-    padding: 38px 0 19px 0;
-    .title {
-      flex: 1;
-      color: #000000;
-      font-size: 28px;
-    }
-  }
-}
-
-.table__section {
-  background-color: #FFFFFF;
-  .table__section_title {
-    color: #666666;
-    line-height: 55px;
-    font-size: 18px;
-    padding-left: 10px;
-  }
-  .ant-table-wrapper {
-    width: 100%;
-    .ant-table-thead > tr > th {
-      background-color: #666666;
-      color: #ffffff;
-    }
-    .status_circle {
-      display: inline-block;
-      margin-right: 5px;
-      background-color: #999999;
-      width: 8px;
-      height: 8px;
-      border-radius: 4px;
-    }
-    .complete_status {
-      background-color: #00A947;
-    }
-    .inprogress_status {
-      background-color: #FFC107;
-    }
-  }
-
-  .left {
-    width: 200px;
-    padding-right: 30px;
-
-    .prev__icon {
-      cursor: pointer;
-      width: 25px;
-      height: 25px;
-      border-radius: 18px;
-      background-color: white;
-      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 15px;
-    }
-
-    .top {
-      display: flex;
-      font-size: 14px;
-      justify-content: space-between;
-
-      .reset__btn {
-        color: #ec8526;
-        font-weight: 500;
-      }
-    }
-
-    .checkbox__group .ant-checkbox-group {
+    // align-items: center;
+    margin-bottom: 20px;
+    .left {
       display: flex;
       flex-direction: column;
-
-      .ant-checkbox .ant-checkbox-inner {
-        background-color: #e5e5e5;
-        border-color: gray;
+      justify-content: space-between;
+      .total_study, .total_sponsor,  .total_document{
+        width: 323px;
+        height: 150px;
+        padding: 20px 30px;
       }
     }
-
-    .filter__item {
+    .middle {
+      margin: 0 20px;
+      .indication {
+        width: 594px;
+        height: 501px;
+      }
+    }
+    .right {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .study_phases, .study_type {
+        width: 320px;
+        height: 240px;
+      }
+    }
+  }
+  .below {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    .study_sponsor, .study_location, .study_status, .study_date {
+      width: 630px;
+      height: 354px;
       margin-bottom: 20px;
-
-      span:first-child {
-        font-size: 14px;
-        font-weight: 500;
-      }
     }
   }
-  .ant-table-column-sorter-up.active, .ant-table-column-sorter-down.active {
-    color: #d04a02;
-  }
-  // .nct_id_column {
-  //   display: inline-block;
-  //   width: 100px;
-  // }
-  // .protocol_name_column{
-  //   // display: inline-block;
-  //   // width: 680px;
-  // }
-  .status_column {
-    span {
-      white-space: nowrap;
-    }
-  }
-  // .update_column {
-  //   display: inline-block;
-  //   width: 100px;
-  // }
-  
 }
 
-.ant-drawer.upload-drawer {
-  .ant-drawer-body {
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-  }
-  .upload-drawer-title {
-    display: flex;
-    .title {
-      flex: 1;
-    }
-    .close-icon {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      background-color: #fff;
-      color: #000;
-      line-height: 18px;
-      text-align: center;
-      cursor: pointer;
-      font-size: 18px;
-    }
-  }
-  .drawer-actions {
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    box-shadow: 0px -10px 10px -15px #666;
-    padding: 10px 40px;
-    .discard {
-      flex: 1;
-      cursor: pointer;
-      font-weight: 500;
-      color: #000;
-    }
-  }
-  .upload-zone-section {
-    flex: 1;
-    width: 80%;
-    margin: 0 auto;
-  }
-}
