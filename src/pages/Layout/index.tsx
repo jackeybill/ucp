@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
-import { Layout, Popconfirm } from "antd";
+import { Layout, Popconfirm, Menu} from "antd";
 import Cookies from "js-cookie";
 
 import ProtocolSection from "../ProtocolSection";
@@ -23,6 +23,8 @@ const { Header, Content} = Layout;
 
 const GlobalLayout = (props: any) => {
   const [username, setUsername] = useState("");
+  const [current, setCurrent] = useState("summary")
+
   let content:any
 
   useEffect(() => {
@@ -65,12 +67,23 @@ const GlobalLayout = (props: any) => {
   };
 
  
+  const handleClick = (e) => {
+    setCurrent(e.key)
+    props.history.push('/'+e.key)
+  }
+
   return (
     <Layout className="pa__layout">
       <Header>
         <div className="system__info">
           <img src={Logo} alt="" width="44px" height="44px" onClick={()=>props.history.push('/overview') }/>
           <span>Protocol Digitization</span>
+        </div>
+        <div className="menu-box">
+          <Menu mode="horizontal" defaultSelectedKeys={['summary']} selectedKeys={[current]} onClick={handleClick}>
+            <Menu.Item key="summary">Summary</Menu.Item>
+            <Menu.Item key="overview">List</Menu.Item>
+          </Menu>
         </div>
         <div className="user__info">
           <Popconfirm
