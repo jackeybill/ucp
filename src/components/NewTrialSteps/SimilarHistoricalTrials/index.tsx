@@ -272,8 +272,13 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       },
       tooltip: {
         trigger: "item",
-        formatter: function (params) {
-          return [params.name] + " - " + [params.value];
+        formatter: function (params,idx) {
+          const chartData = optionOne.legend.data
+          const sum = chartData.reduce((accumulator, currentValue) => {
+            return accumulator + currentValue.value
+          }, 0)
+          let p = ((params.value / sum) * 100).toFixed(2);
+          return params.name + " - " + p + "%";
         },
         position: ['5%', '10%'],
         textStyle:{
@@ -281,8 +286,9 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         },
         confine:false,
       },
-      // legend: {
-      //   show:false,
+      legend: {
+        show:false,
+        data: this.state.sponsorChartData
       //   x: "left",
       //   y: "60%",
       //   itemHeight: 7,
@@ -298,7 +304,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       //     let p = ((targetVal / sum) * 100).toFixed(2);
       //     return params + " - " + p + "%";
       //   },
-      // },
+      },
       series: [
         {
           type: "pie",
@@ -332,8 +338,13 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       },
       tooltip: {
         trigger: "item",
-        formatter: function (params) {
-          return [params.name] + " - " + [params.value];
+        formatter: function (params,idx) {
+          const chartData = optionTwo.legend.data
+              const sum = chartData.reduce((accumulator, currentValue) => {
+               return accumulator + currentValue.value
+              }, 0)
+              let p = ((params.value / sum) * 100).toFixed(2);
+              return params.name + " - " + p + "%";
         },
         position: ['5%', '10%'],
         textStyle:{
@@ -341,8 +352,9 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
         },
         confine:false,
       },
-      // legend: {
-      //   show:false,
+      legend: {
+        show:false,
+        data: this.state.statusChartData
       //   x: "left",
       //   y: "60%",
       //   itemHeight: 7,
@@ -358,7 +370,7 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
       //     let p = ((targetVal / sum) * 100).toFixed(2);
       //     return params + " - " + p + "%";
       //   },
-      // },
+      },
       series: [
         {
           type: "pie",
