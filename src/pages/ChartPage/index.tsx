@@ -23,6 +23,51 @@ const ChartPage = (props: any) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false)
 
+  const lightBlueColor = [
+    "#2564DF",
+    "#399DEF",
+    "#58ADF2",
+    "#B5DBF8",
+    "#E1F1FD"
+  ]
+
+  const darkBlueColor = [
+    "#1162B4",
+    "#6090C2",
+    "#89AACB",
+    "#C0D3E5",
+    "#E1F1FD"
+  ]
+
+  const locationColor = [
+    "#1162B4",
+    "#6090C2",
+    "#89AACB",
+    "#5D86E2",
+    "#80C4F5",
+    "#B5DBF8",
+    "#C0D3E5",
+    "#E1F1FD"
+  ]
+
+  const PurpleColor = [
+    "#544F95",
+    "#6E6AA2",
+    "#8885AF",
+    "#A4A2BE",
+    "#BFBECC"
+  ]
+
+  const sponsorPhaseColor = [
+    "#1162B4",
+    "#FFDCA9",
+    "#571F01",
+    "#2C8646",
+    "#8885AF",
+    "#58ADF2",
+    "#B5DBF8",
+  ]
+
   const dummay_chart_data = {
     total_study: {
       count: 217440,
@@ -138,11 +183,16 @@ const ChartPage = (props: any) => {
     },
     series: [
       {
-        name: 'Access From',
         type: 'pie',
         radius: ['40%', '80%'],
         center: ['45%', '60%'],
         avoidLabelOverlap: false,
+        color:lightBlueColor,
+        cursor:"auto",
+        emphasis: {
+          scale: true,
+          scaleSize: 1
+        },
         labelLine: {
           lineStyle: {color:'#2D2D2D'},
           length: 0,
@@ -165,6 +215,7 @@ const ChartPage = (props: any) => {
         radius: ['30%', '50%'],
         center: ['25%', '30%'],
         avoidLabelOverlap: false,
+        color:lightBlueColor,
         labelLine: {
           show: false
         },
@@ -188,6 +239,7 @@ const ChartPage = (props: any) => {
         radius: ['30%', '50%'],
         center: ['25%', '30%'],
         avoidLabelOverlap: false,
+        color:darkBlueColor,
         labelLine: {
           show: false
         },
@@ -211,6 +263,7 @@ const ChartPage = (props: any) => {
         radius: ['40%', '70%'],
         center: ['30%', '50%'],
         avoidLabelOverlap: false,
+        color:PurpleColor,
         labelLine: {
           show: false
         },
