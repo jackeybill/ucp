@@ -5437,14 +5437,10 @@ const ScenarioPage = (props) => {
                           </div>}
                           <div className='drawer-content-below'>
                           <Row>
-                            <Col span={24} className="drawer-history-text">
-                              <span className="text">
-                              View Historical Trial List
-                              </span>
-                            </Col>
-                          </Row>
-                          <Row>
-                              <Col span={24} style={{paddingBottom: '10px'}}>
+                              <Col span={24} className="drawer-history-text">
+                                <span className="text">
+                                View Historical Trial List
+                                </span>
                                 {visibleSOA ? (
                                   <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
                                 ) : (
@@ -6132,9 +6128,9 @@ const ScenarioPage = (props) => {
                                               );
                                               let percent = ((d.value / sum) * 100).toFixed(2);
                                               return (
-                                                <div className="custom-legend">
+                                                <div className="custom-legend" key={idx}>
                                                   <span
-                                                    className="my_legend"
+                                                    className="my_legend" key={idx}
                                                     style={{
                                                       backgroundColor: statusChartColor[idx],
                                                     }}
