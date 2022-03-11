@@ -1832,6 +1832,34 @@ const ScenarioPage = (props) => {
       ]
     };
 
+    {sponsorChartData
+      .sort((a, b) => {
+        return b.value - a.value;
+      })
+      .slice(0, 5)
+      .map((d, idx) => {
+        const chartData = sponsorChartData;
+        const sum = chartData.reduce(
+          (accumulator, currentValue) => {
+            return accumulator + currentValue.value;
+          },
+          0
+        );
+        let percent = ((d.value / sum) * 100).toFixed(2);
+        return (
+          <div className="custom-legend">
+            <span
+              className="my_legend"
+              style={{
+                backgroundColor: sponsorChartColor[idx],
+              }}
+            ></span>
+            <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+          </div>
+        );
+      })}
+
+
     const historySponsorOption = {
       title: {
         text: "By Sponsor",
@@ -1843,8 +1871,13 @@ const ScenarioPage = (props) => {
       },
       tooltip: {
         trigger: "item",
-        formatter: function (params) {
-          return [params.name] + " - " + [params.value];
+        formatter: function (params,idx) {
+          const chartData = sponsorChartData
+              const sum = chartData.reduce((accumulator, currentValue) => {
+               return accumulator + currentValue.value
+              }, 0)
+              let p = ((params.value / sum) * 100).toFixed(2);
+              return params.name + " - " + p + "%";
         },
         position: ['5%', '10%'],
         textStyle:{
@@ -1853,22 +1886,14 @@ const ScenarioPage = (props) => {
         confine:false,
       },
       // legend: {
-      //   show:false,
       //   x: "left",
       //   y: "60%",
+      //   orient: "vertical",
       //   itemHeight: 7,
       //   textStyle: {
       //     fontSize: 8,
       //   },
-      //   formatter: function (params) {
-      //     const chartData = optionOne.series[0].data
-      //     const sum = chartData.reduce((accumulator, currentValue) => {
-      //      return accumulator + currentValue.value
-      //     }, 0)
-      //     const targetVal = chartData.find(d => d.name == params).value
-      //     let p = ((targetVal / sum) * 100).toFixed(2);
-      //     return params + " - " + p + "%";
-      //   },
+      //   formatter: `{d}%`,
       // },
       series: [
         {
@@ -1884,7 +1909,6 @@ const ScenarioPage = (props) => {
             return b.value - a.value;
           })
           .slice(0, 5),
-         
         },
       ],
     };
@@ -1901,8 +1925,13 @@ const ScenarioPage = (props) => {
       },
       tooltip: {
         trigger: "item",
-        formatter: function (params) {
-          return [params.name] + " - " + [params.value];
+        formatter: function (params,idx) {
+          const chartData = statusChartData
+              const sum = chartData.reduce((accumulator, currentValue) => {
+               return accumulator + currentValue.value
+              }, 0)
+              let p = ((params.value / sum) * 100).toFixed(2);
+              return params.name + " - " + p + "%";
         },
         position: ['5%', '10%'],
         textStyle:{
@@ -3156,6 +3185,7 @@ const ScenarioPage = (props) => {
             );
           });
           setHistoricalTrialdata(filteredData)
+          console.log(resp);
           console.log("getSimilarhistoricalTrialById:",filteredData);
 
           const statusData = getChartData(filteredData, "study_status");
@@ -5474,9 +5504,10 @@ const ScenarioPage = (props) => {
                                         );
                                         let percent = ((d.value / sum) * 100).toFixed(2);
                                         return (
-                                          <div className="custom-legend">
+                                          <div className="custom-legend" key={idx}>
                                             <span
                                               className="my_legend"
+                                              key={idx}
                                               style={{
                                                 backgroundColor: sponsorChartColor[idx],
                                               }}
