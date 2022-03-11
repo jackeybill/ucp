@@ -2195,7 +2195,9 @@ const ScenarioPage = (props) => {
         trigger: 'item',
         formatter: '{b} - {c} - {d}%'
       },
-      // legend: {
+      legend: {
+        show:false,
+        selectedMode:false,
       //   x: '40%',
       //   y: '10%',
       //   orient: 'vertical',
@@ -2222,7 +2224,7 @@ const ScenarioPage = (props) => {
       //         }
       //     }
       //   }
-      // },
+      },
       series: [
         {
           name: 'Race & Ethnicity',
@@ -2230,6 +2232,10 @@ const ScenarioPage = (props) => {
           center: ['20%', '45%'],
           radius: ['30%', '70%'],
           avoidLabelOverlap: false,
+          selectedOffset:1,
+          emphasis: {
+            scaleSize: 1
+          },
           label: {
             show: false
           },
