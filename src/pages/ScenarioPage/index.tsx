@@ -2283,6 +2283,14 @@ const ScenarioPage = (props) => {
           // Use axis to trigger tooltip
           type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
         },
+        confine: true,
+        appendToBody: true,
+        padding: [
+          5,  // 上
+          30, // 右
+          5,  // 下
+          30, // 左
+        ],
         formatter: function(params){
           // eligible patient chart won't show percentage value
           if(params.length == 2){
@@ -2486,6 +2494,14 @@ const ScenarioPage = (props) => {
           // Use axis to trigger tooltip
           type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
         },
+        confine: true,
+        appendToBody: true,
+        padding: [
+          5,  // 上
+          30, // 右
+          5,  // 下
+          30, // 左
+        ],
         formatter: function(params){
           // eligible patient chart won't show percentage value
           if(params.length == 2){
@@ -2679,6 +2695,14 @@ const ScenarioPage = (props) => {
           // Use axis to trigger tooltip
           type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
         },
+        confine: true,
+        appendToBody: true,
+        padding: [
+          5,  // 上
+          30, // 右
+          5,  // 下
+          30, // 左
+        ],
         formatter: function(params){
           // eligible patient chart won't show percentage value
           // if(params.length == 2){
