@@ -29,19 +29,29 @@ const frequencyColors = {'Primary':'#E86153','Secondary':'#741910'}
 const summaryCountColors = {'Primary':'#E0301E','Secondary':'#FFDCA9','Third':'#933401'}
 const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2025}
 const colorList = {
-  'AMERICAN INDIAN/ALASKA NATIVE': '#CA4A04', 
-  'ASIAN': '#E84F22', 
-  'BLACK/AFRICAN AMERICAN': '#F27A26', 
-  'HISPANIC/LATINO': '#E68700', 
-  'MULTI RACE ETHNICITY': '#F5924D', 
-  'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER': '#CA4A044D', 
-  'OTHER': '#FBD6BD', 
-  'UNKNOWN': '#FBD0B3', 
-  'WHITE': '#FDECE0',
+  'WHITE': "#E53500",
+  'UNKNOWN':"#EC5100",
+  'BLACK/AFRICAN AMERICAN':"#EE5B00",
+  'HISPANIC/LATINO':"#F06300 ",
+  'ASIAN':"#F27A26",
+  'OTHER':"#F5924D",
+  'MULTI RACE ETHNICITY':"#F8B180",
+  'AMERICAN INDIAN/ALASKA NATIVE':"#FBD0B3",
+  'NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER':"#FDECE0",
   "HIGHLIGHTED":'#FDECE0',
   "NOT HIGHLIGHTED": '#E84F22',
   "ACTIVE LEGEND": '#000000'
 }
+ const raceColorList = [
+"#E53500",
+"#EC5100",
+"#EE5B00",
+"#F06300 ",
+"#F27A26",
+"#F5924D",
+"#F8B180",
+"#FBD0B3",
+"#FDECE0",]
 
 const panelHeader = () => {
     return (
@@ -1832,34 +1842,6 @@ const ScenarioPage = (props) => {
       ]
     };
 
-    {sponsorChartData
-      .sort((a, b) => {
-        return b.value - a.value;
-      })
-      .slice(0, 5)
-      .map((d, idx) => {
-        const chartData = sponsorChartData;
-        const sum = chartData.reduce(
-          (accumulator, currentValue) => {
-            return accumulator + currentValue.value;
-          },
-          0
-        );
-        let percent = ((d.value / sum) * 100).toFixed(2);
-        return (
-          <div className="custom-legend">
-            <span
-              className="my_legend"
-              style={{
-                backgroundColor: sponsorChartColor[idx],
-              }}
-            ></span>
-            <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
-          </div>
-        );
-      })}
-
-
     const historySponsorOption = {
       title: {
         text: "By Sponsor",
@@ -2912,7 +2894,7 @@ const ScenarioPage = (props) => {
         for(const e in resp['ethnicity_legend']){
           tempColor.push(colorList[resp['ethnicity_legend'][e].name])
         }
-        setEthLegendColor(tempColor)
+        setEthLegendColor(raceColorList)
         const templegend = []
         for (const val of resp['ethnicity_legend']) {
           templegend.push(Object.assign(val, {"selected":false}))
