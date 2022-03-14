@@ -130,6 +130,7 @@ const ScenarioPage = (props) => {
     );
 
     const [str, setStr] = useState('')
+    const [sidebarWidth, setSidebarWidth] = useState('160px')
 
     const [scenarioId, setScenarioId] = useState('')
     const [editFlag, setEditFlag] = useState(false)
@@ -326,8 +327,6 @@ const ScenarioPage = (props) => {
   let [endpointTableDataPrimary, setEndpointTableDataPrimary] = useState([])
   let [endpointTableDataSecondary, setEndpointTableDataSecondary] = useState([])
   let [assignedType, setAssignedType] = useState("")
-
- 
   
     const getTrialById = async () => {
       const resp = await getStudy(props.location.state.trial_id);
@@ -1478,6 +1477,10 @@ const ScenarioPage = (props) => {
         setEndpointRollHeight(false)
       }
       setEndpointActiveKey(key)
+    }
+
+    const handleCloseMenu = () => {
+      sidebarWidth === "0px"? setSidebarWidth("160px"):setSidebarWidth("0px")
     }
 
     const sponsorChartColor = [
@@ -3344,7 +3347,6 @@ const ScenarioPage = (props) => {
       return str;
     }
 
-    // it seems like handleExport
     const handleEndpointExport = (fileType) => {
       console.log("handleEndpointExport");
       
@@ -3868,16 +3870,6 @@ const ScenarioPage = (props) => {
         message.success("Save successfully");
       }
     }
-
-    // saveCriteria
-    const saveEndpoint = () => {
-      console.log("saveEndpoint")
-    }
-
-    // submitCriteria
-    // const submitEndpoint = () => {
-    //   console.log("submitEndpoint")
-    // }
 
     function formatNumber (str){
       if(str == undefined || str == ''){
@@ -4935,927 +4927,307 @@ const ScenarioPage = (props) => {
     return (
     <div className="scenario-container">
       <Spin spinning={pageLoading} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
-        <div className="left-nav">
-          {/* <div className="nav-trial-title">{trialTitle}&nbsp;:&nbsp;{scenarioType}</div> */}
-          <div className="nav-trial-title ellipsis">{trialTitle}</div>
-          <div className="nav-scenario-name ellipsis">{scenario['scenario_name']}</div>
-          <div className="nav-blank"> </div>  
-          <div  className="nav-section-wrapper" >
-              <div className="ie-wrapper">
-                <div className="ie-text">Inclusion / <br></br>Exclusion Criteria</div>
-                  <Button  className={"nav-btn ie-btn" + (activeTabKey === '1'?" selected": "")} onClick={clickInclu}>
-                      Inclusion Criteria
+       <Row>
+         <Col flex={sidebarWidth}className={`left-nav ${sidebarWidth === "0px"? 'hidden' : ''}`}>
+          <div>
+            <div className="nav-trial-title ellipsis">{trialTitle}</div>
+            <div className="nav-scenario-name ellipsis">{scenario['scenario_name']}</div>
+            <div className="nav-blank"> </div>  
+            <div  className="nav-section-wrapper" >
+                <div className="ie-wrapper">
+                  <div className="ie-text">Inclusion / <br></br>Exclusion Criteria</div>
+                    <Button  className={"nav-btn ie-btn" + (activeTabKey === '1'?" selected": "")} onClick={clickInclu}>
+                        Inclusion Criteria
+                    </Button>
+                    <Button  className={"nav-btn ie-btn" + (activeTabKey === '2'?" selected": "")} onClick={clickExclu}>
+                        Exclusion Criteria
+                    </Button>
+                    <Button  className={"nav-btn ie-btn" + (activeTabKey === '3'?" selected": "")} onClick={clickEnroll}>
+                        Enrollment Feasibility
+                    </Button>
+                </div>
+                <div className="endpoint-wrapper">
+                    <Button className={"nav-btn other-btn" + (activeTabKey === '4'?" selected": "")} onClick={clickEndpoint}>
+                        Protocol Endpoint
+                    </Button>
+                </div>
+                <div className="soe-wrapper">
+                  <Button className={"nav-btn other-btn" + (activeTabKey === '5'?" selected": "")} onClick={clickSOE}>
+                      Schedule Of Events
                   </Button>
-                  <Button  className={"nav-btn ie-btn" + (activeTabKey === '2'?" selected": "")} onClick={clickExclu}>
-                      Exclusion Criteria
-                  </Button>
-                  <Button  className={"nav-btn ie-btn" + (activeTabKey === '3'?" selected": "")} onClick={clickEnroll}>
-                      Enrollment Feasibility
-                  </Button>
-              </div>
-              <div className="endpoint-wrapper">
-                  <Button className={"nav-btn other-btn" + (activeTabKey === '4'?" selected": "")} onClick={clickEndpoint}>
-                      Protocol Endpoint
-                  </Button>
-              </div>
-              <div className="soe-wrapper">
-                <Button className={"nav-btn other-btn" + (activeTabKey === '5'?" selected": "")} onClick={clickSOE}>
-                    Schedule Of Events
-                </Button>
-              </div>
-          <div/> 
+                </div>
+            <div/> 
+            </div>
           </div>
-        </div>
-        <div className="right-content">
-          <div className="process-container-wrapper">
-            <div className="top-process-container">
-              <Breadcrumb>
-                <Breadcrumb.Item
-                  className="homepage"
-                  onClick={()=>props.history.push('/trials')}
-                >
-                  <span>
-                    My Trials
-                  </span>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item 
-                  className="homepage"
-                  onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}
+         </Col>
+       </Row>
+       <Row>
+         <Col flex="auto" style={{paddingLeft: sidebarWidth}} className="right-content">
+         <div>
+            <div className="process-container-wrapper">
+              <div className="top-process-container">
+                <Breadcrumb>
+                  <Breadcrumb.Item
+                    className="homepage"
+                    onClick={()=>props.history.push('/trials')}
                   >
-                    Trial Page
+                    <span>
+                      My Trials
+                    </span>
                   </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  className="currentpage"
-                  >
-                  {scenario['scenario_name']}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </div>
-          </div>
-          {processStep === 0 &&
-          <div className="ie-container">
-            <div className="process-container">
-              <span className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
-                  <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
-              </span>
-              <span className="content-title">
-                {activeTabKey === '1' && <>
-                  <span className="tab-title">Add Inclusion Criteria</span>
-                  <span className="tip1-desc">
-                  Use the historical trial library on the left to build the I/E criteria for your trial scenario.
-                  </span>
-                </>}
-                {activeTabKey === '2' && <>
-                  <span className="tab-title">Add Exclusion Criteria</span>
-                  <span className="tip1-desc">
-                  Use the historical trial library on the left to build the I/E criteria for your trial scenario.
-                  </span>
-                </>}
-                {activeTabKey === '3' && <>
-                  <span className="tab-title">Enrollment Feasibility</span>
-                  <span className="tip1-desc">
-                  View the impact of selected inclusion exclusion criteria on prospective patient enrollment
-                  </span>
-                </>}
-              </span>
-              <span className="button-area">
-                <Dropdown.Button style={{zIndex: 1}}
-                overlay={
-                  <Menu>
-                    <Menu.Item key="pdf" onClick={() => handleExport('pdf')}>PDF</Menu.Item>
-                    <Menu.Item key="csv" onClick={() => handleExport('csv')}>CSV</Menu.Item>
-                  </Menu>
-                }
-                  icon={<DownOutlined />}>
-                  {/* <DownloadOutlined /> */}
-                  EXPORT AS
-                </Dropdown.Button>
-                {/* <Button className="save-btn"  onClick={saveCriteria}>
-                    Save And Finish Later
-                </Button> */}
-                {/* <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}> */}
-                <Button type="primary" className="submit-btn"   onClick={submitCriteria}>
-                    Submit
-                </Button>
-              </span>
-            </div>
-            <div className="tab-container">
-              <div className={`side-toolbar ${criteriaLib > 0 || activeTabKey != "1" ? 'hidden' : ''}`} onClick={()=> setCriteriaLib(6)}>
-                <div className="panel-label">Inclusion Criteria Library</div>
-                <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
+                  <Breadcrumb.Item 
+                    className="homepage"
+                    onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}
+                    >
+                      Trial Page
+                    </Breadcrumb.Item>
+                  <Breadcrumb.Item
+                    className="currentpage"
+                    >
+                    {scenario['scenario_name']}
+                  </Breadcrumb.Item>
+                </Breadcrumb>
               </div>
-              <div className={`side-toolbar ${excluCriteriaLib > 0 || activeTabKey != "2" ? 'hidden' : ''}`} onClick={()=> setExcluCriteriaLib(6)}>
-                <div className="panel-label">Exclusion Criteria Library</div>
-                <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
+            </div>
+            {processStep === 0 &&
+            <div className="ie-container">
+              <div className="process-container">
+                {sidebarWidth === "160px" &&(<span className="action-title" onClick={handleCloseMenu}>
+                    <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
+                </span>)}
+                {sidebarWidth === "0px" &&(<span className="action-title" onClick={handleCloseMenu}>
+                    <RightOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
+                </span>)}
+                <span className="content-title">
+                  {activeTabKey === '1' && <>
+                    <span className="tab-title">Add Inclusion Criteria</span>
+                    <span className="tip1-desc">
+                    Use the historical trial library on the left to build the I/E criteria for your trial scenario.
+                    </span>
+                  </>}
+                  {activeTabKey === '2' && <>
+                    <span className="tab-title">Add Exclusion Criteria</span>
+                    <span className="tip1-desc">
+                    Use the historical trial library on the left to build the I/E criteria for your trial scenario.
+                    </span>
+                  </>}
+                  {activeTabKey === '3' && <>
+                    <span className="tab-title">Enrollment Feasibility</span>
+                    <span className="tip1-desc">
+                    View the impact of selected inclusion exclusion criteria on prospective patient enrollment
+                    </span>
+                  </>}
+                </span>
+                <span className="button-area">
+                  <Dropdown.Button style={{zIndex: 1}}
+                  overlay={
+                    <Menu>
+                      <Menu.Item key="pdf" onClick={() => handleExport('pdf')}>PDF</Menu.Item>
+                      <Menu.Item key="csv" onClick={() => handleExport('csv')}>CSV</Menu.Item>
+                    </Menu>
+                  }
+                    icon={<DownOutlined />}>
+                    {/* <DownloadOutlined /> */}
+                    EXPORT AS
+                  </Dropdown.Button>
+                  {/* <Button className="save-btn"  onClick={saveCriteria}>
+                      Save And Finish Later
+                  </Button> */}
+                  {/* <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}> */}
+                  <Button type="primary" className="submit-btn"   onClick={submitCriteria}>
+                      Submit
+                  </Button>
+                </span>
               </div>
-              <Tabs onChange={changeActiveTabKey} activeKey={activeTabKey} centered>
-                <TabPane tab="Inclusion Criteria" key="1">
-                  <Row>
-                    <Col span={criteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '300px', minWidth: '300px'}}>
-                      <Row style={{backgroundColor: '#F8F8F8'}}>
-                        <Col span={24}>
-                          <div className="item-header">
-                            <div className="item-header-text">Inclusion Criteria Library</div>
-                            {/* <Tooltip title={'Collapse Inclusion Criteria Library'}>
-                              <CloseOutlined className="right-icon" onClick={() => setCriteriaLib(0)}></CloseOutlined>
-                            </Tooltip> */}
-                            <div className="item-header-content" onClick={searchHistoricalTrials}>
-                              <span className="left-icon">
-                                <FileTextOutlined/>
-                              </span>
-                              <span className="middle-text">
-                                Manage Library
-                              </span>
-                              <span className="right-icon" onClick= {searchHistoricalTrials}>
-                                {!showHistorical ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}}/>:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
-                              </span>
-                            </div>
-                          </div>
-                        </Col>
-                      </Row>
-                      <Row style={{borderBottom:'10px solid #F8F8F8'}}>
-                        <Col flex="none">
-                          <div style={{ padding: '0 10px' }}></div>
-                        </Col>
-                        <Col className="left-section">
-                          {visible ? (
-                          <div className="freqSection">
-                            {/* <div className="title">
-                              <CloseOutlined
-                                className="right-icon"
-                                onClick={() => setVisible(false)}
-                              ></CloseOutlined>
-                            </div>
-                            <br/>
-                            <div className="content">
-                              <span>Criteria Frequency</span>
-                              <span style={{ float: "right", fontWeight: 'bold' }}>
-                                {minValue}% - {maxValue}%
-                              </span>
-                            </div>
-                            <Slider
-                              range={{ draggableTrack: true }}
-                              defaultValue={[minValue, maxValue]}
-                              tipFormatter={formatter}
-                              onAfterChange={getFrequency}
-                            /> */}
-                          </div>
-                          ) : (
-                          <></>
-                          )}
-                          {/* search bar */}
-                          <div className="searchSection">
-                            <div className="content">
-                              <Dropdown 
-                                overlay={menu} 
-                                overlayClassName="searchbox"
-                                visible={visibleValue}
-                                onVisibleChange={(visible: boolean) => {!visibleValue?setVisibleValue(true):setVisibleValue(false)}}
-                              >
-                                <Input
-                                    prefix={<SearchOutlined />}
-                                    style={{ width: '100%', height: 37 }}
-                                    allowClear
-                                    onChange={onTextChange}
-                                    onClick={e => e.preventDefault()}
-                                />
-                              </Dropdown>
-                            </div>
-                          </div>
-                          <Row>
-                            <Col span={24}>
-                              <div className="content-outer content-sidebar">
-                                <div className="content-over">
-                                  <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                    <Panel showArrow={false} header={eventLibHeader("Demographics", demographics.length, "1")} key="1">
-                                      {demographics.length>0 ? (
-                                          <div className="library box select-option-wrapper">
-                                          {demographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {                     
-                                            return (
-                                              <CriteriaOption
-                                                selectedEle = {demographicsElements}
-                                                selectedEleSecondary = {demographicsElements}
-                                                minValue={minValue}
-                                                maxValue={maxValue}
-                                                key={`demographic_${idx}`}
-                                                demographic={demographic}
-                                                index={0}
-                                                idx={idx}
-                                                assignedType={'None'}
-                                                showMoreDetail={showMoreDetail}
-                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
-                                                handleOptionSelect={handleOptionSelect}
-                                                handleOptionSelectSecondary={handleOptionSelect}
-                                                handleMoreSelect={handleMoreSelect}
-                                              ></CriteriaOption>
-                                            );
-                                          })}
-                                        </div>
-                                      ): (
-                                        <></>
-                                      )}
-                                    </Panel>
-                                  </Collapse>
-
-                                  <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                    <Panel showArrow={false} header={eventLibHeader("Medical Condition", medCondition.length, "2")} key="2">
-                                      {medCondition.length>0 ? (
-                                          <div className="library box select-option-wrapper">
-                                          {medCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
-                                            return (
-                                              <CriteriaOption
-                                                selectedEle = {medConditionElements}
-                                                selectedEleSecondary = {medConditionElements}
-                                                minValue={minValue}
-                                                maxValue={maxValue}
-                                                key={`medCon_${idx}`}
-                                                demographic={medCon}
-                                                index={1}
-                                                idx={idx}
-                                                assignedType={'None'}
-                                                showMoreDetail={showMoreDetail}
-                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
-                                                handleOptionSelect={handleOptionSelect}
-                                                handleOptionSelectSecondary={handleOptionSelect}
-                                                handleMoreSelect={handleMoreSelect}
-                                              ></CriteriaOption>
-                                            );
-                                          })}
-                                        </div>
-                                      ): (
-                                        <></>
-                                      )}
-                                    </Panel>
-                                  </Collapse>
-
-                                  <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                  <Panel showArrow={false} header={eventLibHeader("Intervention", intervention.length, "3")} key="3">
-                                    {intervention.length>0 ? (
-                                          <div className="library box select-option-wrapper">
-                                          {intervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {              
-                                            return (
-                                              <CriteriaOption
-                                                selectedEle = {interventionElements}
-                                                selectedEleSecondary = {interventionElements}
-                                                minValue={minValue}
-                                                maxValue={maxValue}
-                                                key={`intervent_${idx}`}
-                                                demographic={intervent}
-                                                index={2}
-                                                idx={idx}
-                                                assignedType={'None'}
-                                                showMoreDetail={showMoreDetail}
-                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
-                                                handleOptionSelect={handleOptionSelect}
-                                                handleOptionSelectSecondary={handleOptionSelect}
-                                                handleMoreSelect={handleMoreSelect}
-                                              ></CriteriaOption>
-                                            );
-                                          })}
-                                        </div>
-                                    ): (
-                                      <></>
-                                    )}
-                                  </Panel>
-                                </Collapse>
-
-                                  <Collapse className="eventLib library box lastOne" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                    <Panel showArrow={false} header={eventLibHeader("Lab / Test", labTest.length, "4")} key="4">
-                                      {labTest.length>0 ? (
-                                          <div className="library box select-option-wrapper lastOne">
-                                          {labTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
-                                            return (
-                                              <CriteriaOption
-                                                selectedEle = {labTestElements}
-                                                selectedEleSecondary = {labTestElements}
-                                                minValue={minValue}
-                                                maxValue={maxValue}
-                                                key={`lib_${idx}`}
-                                                demographic={lib}
-                                                index={3}
-                                                idx={idx}
-                                                assignedType={'None'}
-                                                showMoreDetail={showMoreDetail}
-                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
-                                                handleOptionSelect={handleOptionSelect}
-                                                handleOptionSelectSecondary={handleOptionSelect}
-                                                handleMoreSelect={handleMoreSelect}
-                                              ></CriteriaOption>
-                                            );
-                                          })}
-                                        </div>
-                                      ): (
-                                        <></>
-                                      )}
-                                    </Panel>
-                                  </Collapse>
-                                </div>
-                              </div>
-                            </Col>
-                          </Row>
-                        </Col>
-                        <Col flex="none">
-                          <div style={{ padding: '0 10px' }}></div>
-                        </Col>
-                      </Row>
-                      <Row style={{backgroundColor: '#fff'}}>
-                        <Col span={24}>
-                          <div className="updateTrial">
-                            <Button className="update-btn" onClick={() => updateTrial(1, 1)}>
-                              UPDATE MY TRIAL
-                            </Button>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col flex="auto" className={`${ collapsible ? "none-click" : "" } main-content-right`}>
-                      <Row style={{ paddingTop: '10px', position: 'relative', zIndex: 99 }}>
-                        <Col flex="none">
-                          <div style={{ padding: '0 10px' }}></div>
-                        </Col>
-                        <Col flex="auto">
-                          {/* <Row>
-                            <Col span={24}></Col>
-                          </Row> */}
-                          <Row>
-                            <Col span={24}>
-                            <div className="option-item">
-                              <div className="collapse-section-wrapper">
-                                <Collapse activeKey={activeKey} onChange={callback} expandIconPosition="right" >
-                                  <Panel header={panelHeader()} key="1" forceRender={false} >
-                                    <div className="chart-container">
-                                      <div className="chart-title">
-                                          <div className="text">
-                                          Protocol Amendment Likelihood
-                                          </div> 
-                                      </div>
-                                      <div>
-                                        <ReactECharts
-                                              option={amendmentRateoption}
-                                              style={{ height: 120}}
-                                              onEvents={{'click': onInclusionChartClick}}/>
-                                      </div>
-                                      <div className="subtitle">{therapeutic_Amend_Avg}</div>
-                                      <div className="legend-wrapper">
-                                            <div className="item-desc">
-                                              <span className="bar-item item3"></span>
-                                              <span>Demographics</span>
-                                            </div>
-                                            <div className="item-desc">
-                                              <span className="bar-item item4"></span>
-                                              <span>Medical Condition</span>
-                                            </div>
-                                            <div className="item-desc">
-                                              <span className="bar-item item1"></span>
-                                              <span>Intervention</span>
-                                            </div>
-                                            <div className="item-desc">
-                                              <span className="bar-item item2"></span>
-                                              <span>Labs / Tests</span>
-                                            </div>
-                                          </div>
-                                    </div>
-                                    <div className="chart-container">
-                                      <div className="chart-title">
-                                          <div className="text">
-                                          Screen Failure Rate
-                                          </div> 
-                                      </div>
-                                      <div>
-                                        <ReactECharts
-                                        option={screenFailureOption}
-                                        style={{ height: 120}}
-                                        onEvents={{'click': onInclusionChartClick}}/>
-                                      </div>
-                                      <div className="subtitle">{therapeutic_Screen_Avg}</div>
-                                      <div className="legend-wrapper">
-                                            <div className="item-desc">
-                                              <span className="bar-item item3"></span>
-                                              <span>Demographics</span>
-                                            </div>
-                                            <div className="item-desc">
-                                              <span className="bar-item item4"></span>
-                                              <span>Medical Condition</span>
-                                            </div>
-                                            <div className="item-desc">
-                                              <span className="bar-item item1"></span>
-                                              <span>Intervention</span>
-                                            </div>
-                                            <div className="item-desc">
-                                              <span className="bar-item item2"></span>
-                                              <span>Labs / Tests</span>
-                                            </div>
-                                          </div>
-                                    </div>
-                                  </Panel>
-                                </Collapse>
-                              </div>
-                            </div>
-                            </Col>
-                          </Row>
-                          <Row className="impact-summary-wrapper">
-                            <Col span={24}>
-                              <div className="impact-summary">
-                                <span className="impact-title">View Historical Average</span>
-                                {activeTabKey === '3'? (
-                                    <></>
-                                  ) : (
-                                    <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
-                                      Save
-                                    </Button>
-                                  )}
-                              </div>
-                              </Col>
-                          </Row>
-                          <Row>
-                            <Col span={24} >
-                              <div className="collapse-container">
-                              <div className="content-outer">
-                                <div id="inclusion-criteria" 
-                                  className={`collapse-inner ${rollHeight == true ? "taller" : ""} ${collapsible == true ? "collapsed" : ""}`}>
-                                  <div className="criteria-list">
-                                    <div className="list-columns">
-                                      <span className="col-item col-item-before"> </span>
-                                      <span className="col-item col-item-first">Eligibility Criteria</span>
-                                      <span className="col-item col-item-middle">Values</span>
-                                      <span className="col-item col-item-last">Timeframe</span>
-                                      <span className="col-item col-item-after"> </span>
-                                      {/* <Row>
-                                        <Col span={2}><div className="col-item">S/No.</div></Col>
-                                        <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
-                                        <Col span={8}><div className="col-item">Values</div></Col>
-                                        <Col span={8}><div className="col-item">Timeframe</div></Col>
-                                      </Row> */}
-                                    </div>
-                                  </div>
-                                  <div className="sectionPanel">
-                                      <EditTable updateCriteria={updateInclusionCriteria} tableIndex={2}                                
-                                        data={demographicsTableData}
-                                        defaultActiveKey={defaultActiveKey}
-                                        collapsible={collapsible} panelHeader={"Demographics"} updateTrial={() => updateTrial(1, 1)}                                  
-                                      />
-                                      <EditTable updateCriteria={updateInclusionCriteria} tableIndex={3}
-                                        data={medConditionTableData}
-                                        defaultActiveKey={defaultActiveKey}
-                                        collapsible={collapsible} panelHeader={"Medical Condition"} updateTrial={() => updateTrial(1, 1)}                               
-                                      />
-                                  <EditTable updateCriteria={updateInclusionCriteria} tableIndex={4} 
-                                        data={interventionTableData}                                  
-                                        defaultActiveKey={defaultActiveKey}
-                                        collapsible={collapsible} panelHeader={"Intervention"} updateTrial={() => updateTrial(1, 1)}                                   
-                                      />
-                                  <EditTable updateCriteria={updateInclusionCriteria} tableIndex={5} 
-                                        data={labTestTableData}
-                                        defaultActiveKey={defaultActiveKey}
-                                        collapsible={collapsible} panelHeader={"Lab / Test"} updateTrial={() => updateTrial(1, 1)}/>
-                                  </div>
-                                </div>
-                              </div>
-                              </div>
-                            </Col>
-                          </Row>
-                        </Col>
-                        <Col flex="none">
-                          <div style={{ padding: '0 10px' }}></div>
-                        </Col>
-                      </Row>
-                      {/* The drawer with wrapper */}
-                      <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
-                        {/* historical list drawer */}
-                        <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancel} visible={showHistorical}>
-                          <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
-                          {activeTabKey === '1' &&<div className="drawer-content-frequency">
-                            <span className="left-frequency-text">Set Criteria Frequency</span>
-                              <div className="right-frequency-steps">
-                                <div className="freqSection">
-                                  {/* <div className="title">
-                                    <CloseOutlined
-                                      className="right-icon"
-                                      onClick={() => setVisible(false)}
-                                    ></CloseOutlined>
-                                  </div>
-                                  <br/> */}
-                                  <div className="content">
-                                    <span>Frequency</span>
-                                    <span style={{ float: "right", fontWeight: 'bold' }}>
-                                      {minValue}% - {maxValue}%
-                                    </span>
-                                  </div>
-                                  <Slider
-                                    range={{ draggableTrack: true }}
-                                    defaultValue={[minValue, maxValue]}
-                                    tipFormatter={formatter}
-                                    onAfterChange={getFrequency}
-                                  />
-                                </div>
-                              </div>
-                          </div>}
-                          {activeTabKey === '2' &&<div className="drawer-content-frequency">
-                            <span className="left-frequency-text">Set Criteria Frequency</span>
-                            <div className="right-frequency-steps">
-                              <div className="freqSection">
-                                {/* <div className="title">
-                                  <span>Set Frequency</span>
-                                  <CloseOutlined
-                                    className="right-icon"
-                                    onClick={() => setExcluVisible(false)}
-                                  ></CloseOutlined>
-                                </div>
-                                <br/> */}
-                                <div className="content">
-                                  <span>Frequency</span>
-                                  <span style={{ float: "right", fontWeight: 'bold' }}>
-                                    {excluMinValue}% - {excluMaxValue}%
-                                  </span>
-                                </div>
-                                <Slider
-                                  range={{ draggableTrack: true }}
-                                  defaultValue={[excluMinValue, excluMaxValue]}
-                                  tipFormatter={formatter}
-                                  onAfterChange={getExcluFrequency}
-                                />
-                              </div>
-                            </div>
-                          </div>}
-                          <div className='drawer-content-below'>
-                          <Row>
-                              <Col span={24} className="drawer-history-text">
-                                <span className="text">
-                                View Historical Trial List
+              <div className="tab-container">
+                <div className={`side-toolbar ${criteriaLib > 0 || activeTabKey != "1" ? 'hidden' : ''}`} onClick={()=> setCriteriaLib(6)}>
+                  <div className="panel-label">Inclusion Criteria Library</div>
+                  <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
+                </div>
+                <div className={`side-toolbar ${excluCriteriaLib > 0 || activeTabKey != "2" ? 'hidden' : ''}`} onClick={()=> setExcluCriteriaLib(6)}>
+                  <div className="panel-label">Exclusion Criteria Library</div>
+                  <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
+                </div>
+                <Tabs onChange={changeActiveTabKey} activeKey={activeTabKey} centered>
+                  <TabPane tab="Inclusion Criteria" key="1">
+                    <Row>
+                      <Col span={criteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '300px', minWidth: '300px'}}>
+                        <Row style={{backgroundColor: '#F8F8F8'}}>
+                          <Col span={24}>
+                            <div className="item-header">
+                              <div className="item-header-text">Inclusion Criteria Library</div>
+                              {/* <Tooltip title={'Collapse Inclusion Criteria Library'}>
+                                <CloseOutlined className="right-icon" onClick={() => setCriteriaLib(0)}></CloseOutlined>
+                              </Tooltip> */}
+                              <div className="item-header-content" onClick={searchHistoricalTrials}>
+                                <span className="left-icon">
+                                  <FileTextOutlined/>
                                 </span>
-                                {visibleSOA ? (
-                                  <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
-                                ) : (
-                                  <>
-                                    <Button type="primary" onClick={downloadIE} style={{float: 'right'}}>VIEW SOURCE</Button>
-                                    <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button>
-                                  </>
-                                )}
-                              </Col>
-                          </Row>
-                          <Row>
+                                <span className="middle-text">
+                                  Manage Library
+                                </span>
+                                <span className="right-icon" onClick= {searchHistoricalTrials}>
+                                  {!showHistorical ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}}/>:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
+                                </span>
+                              </div>
+                            </div>
+                          </Col>
+                        </Row>
+                        <Row style={{borderBottom:'10px solid #F8F8F8'}}>
+                          <Col flex="none">
+                            <div style={{ padding: '0 10px' }}></div>
+                          </Col>
+                          <Col className="left-section">
+                            {visible ? (
+                            <div className="freqSection">
+                              {/* <div className="title">
+                                <CloseOutlined
+                                  className="right-icon"
+                                  onClick={() => setVisible(false)}
+                                ></CloseOutlined>
+                              </div>
+                              <br/>
+                              <div className="content">
+                                <span>Criteria Frequency</span>
+                                <span style={{ float: "right", fontWeight: 'bold' }}>
+                                  {minValue}% - {maxValue}%
+                                </span>
+                              </div>
+                              <Slider
+                                range={{ draggableTrack: true }}
+                                defaultValue={[minValue, maxValue]}
+                                tipFormatter={formatter}
+                                onAfterChange={getFrequency}
+                              /> */}
+                            </div>
+                            ) : (
+                            <></>
+                            )}
+                            {/* search bar */}
+                            <div className="searchSection">
+                              <div className="content">
+                                <Dropdown 
+                                  overlay={menu} 
+                                  overlayClassName="searchbox"
+                                  visible={visibleValue}
+                                  onVisibleChange={(visible: boolean) => {!visibleValue?setVisibleValue(true):setVisibleValue(false)}}
+                                >
+                                  <Input
+                                      prefix={<SearchOutlined />}
+                                      style={{ width: '100%', height: 37 }}
+                                      allowClear
+                                      onChange={onTextChange}
+                                      onClick={e => e.preventDefault()}
+                                  />
+                                </Dropdown>
+                              </div>
+                            </div>
+                            <Row>
                               <Col span={24}>
-                              <div className="history-chart-wrapper">
-                                <div className="chart">
-                                  <div className="my-echart-wrapper">
-                                    <ReactECharts option={historySponsorOption}></ReactECharts>
-                                  </div>
-                                  <div className="history-legend-wrapper">
-                                    {sponsorChartData
-                                      .sort((a, b) => {
-                                        return b.value - a.value;
-                                      })
-                                      .slice(0, 5)
-                                      .map((d, idx) => {
-                                        const chartData = sponsorChartData;
-                                        const sum = chartData.reduce(
-                                          (accumulator, currentValue) => {
-                                            return accumulator + currentValue.value;
-                                          },
-                                          0
-                                        );
-                                        let percent = ((d.value / sum) * 100).toFixed(2);
-                                        return (
-                                          <div className="custom-legend" key={idx}>
-                                            <span
-                                              className="my_legend"
-                                              key={idx}
-                                              style={{
-                                                backgroundColor: sponsorChartColor[idx],
-                                              }}
-                                            ></span>
-                                            <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
-                                          </div>
-                                        );
-                                      })}
-                                  </div>
-                                </div>
-                                <div className="chart">
-                                <>
-                                      <div className="my-echart-wrapper">
-                                        <ReactECharts option={historyStatusOption}></ReactECharts>
-                                      </div>
-                                      <div className="history-legend-wrapper">
-                                        {statusChartData
-                                          .sort((a, b) => {
-                                            return b.value - a.value;
-                                          })
-                                          .slice(0, 5)
-                                          .map((d, idx) => {
-                                            const chartData = statusChartData;
-                                            const sum = chartData.reduce(
-                                              (accumulator, currentValue) => {
-                                                return accumulator + currentValue.value;
-                                              },
-                                              0
-                                            );
-                                            let percent = ((d.value / sum) * 100).toFixed(2);
-                                            return (
-                                              <div className="custom-legend" key={idx}>
-                                                <span
-                                                  className="my_legend"
-                                                  style={{
-                                                    backgroundColor: statusChartColor[idx],
-                                                  }}
-                                                ></span>
-                                                <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
-                                              </div>
-                                            );
-                                          })}
-                                      </div>
-                                    </>
-                                </div>
-                              </div>
-                              </Col>
-                          </Row>
-                          <Row>
-                              <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
-                          </Row>
-                          </div>
-                          </Spin>
-                        </Drawer>
-                        <Drawer className="criteria-drawer-wrapper" title={criteriaDetail.Text} placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelCriteria} visible={showMoreDetail}>
-                            <div>
-                              <div className="drawer-content-frequency">
-                                <Row>
-                                  <Col span={24} className="drawer-title">
-                                    <span className="text">
-                                    Frequency
-                                    </span>
-                                  </Col>
-                                </Row>
-                                <Row>
-                                <Col span={24} className="drawer-content">
-                                  <span className="left-text">
-                                  External
-                                  </span>
-                                  <span className="right-text">
-                                  {Math.floor(criteriaDetail.Frequency * 10000) / 100 + "%"}
-                                  </span>
-                                </Col>
-                              </Row>
-                              </div>
-                              
-                              <div className='drawer-content-sponsor'>
-                              <Row>
-                                <Col span={24} className="drawer-title">
-                                  <span className="text">
-                                  By sponsors
-                                  </span>
-                                </Col>
-                              </Row>
-                              <Row>
-                                  <Col span={24}>
-                                  <div className="history-chart-wrapper">
-                                    <div className="chart">
-                                      <div className="my-echart-wrapper">
-                                        <ReactECharts option={CriteriaSponsorOption}></ReactECharts>
-                                      </div>
-                                      <div className="history-legend-wrapper">
-                                        {criteriaDetail.Value.sponser_list
-                                          .sort((a, b) => {
-                                            return b.value - a.value;
-                                          })
-                                          .slice(0, 5)
-                                          .map((d, idx) => {
-                                            const chartData = criteriaDetail.Value.sponser_list;
-                                            const sum = chartData.reduce(
-                                              (accumulator, currentValue) => {
-                                                return accumulator + currentValue.value;
-                                              },
-                                              0
-                                            );
-                                            let percent = ((d.value / sum) * 100).toFixed(2);
-                                            return (
-                                              <div className="custom-legend" key={idx}>
-                                                <span
-                                                  className="my_legend"
-                                                  style={{
-                                                    backgroundColor: sponsorChartColor[idx],
-                                                  }}
-                                                ></span>
-                                                <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
-                                              </div>
-                                            );
-                                          })}
-                                      </div>
-                                    </div>
-                                  </div>
-                                  </Col>
-                              </Row>
-                              </div>
-                              <div className="drawer-content-button">
-                                  <Button className="update-btn" disabled={whetherDisabledAdd} onClick={(e) => handleCriteriaSelect(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
-                                    ADD
-                                  </Button>
-                                </div>
-                            </div>
-                        </Drawer>
-                      </div>
-                    </Col>
-                  </Row>
-                </TabPane>
-                <TabPane tab="Exclusion Criteria" key="2" disabled={collapsible}>
-                  <Row>
-                    <Col span={excluCriteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '300px', minWidth: '300px'}}>
-                      <Row style={{backgroundColor: '#F8F8F8'}}>
-                        <Col span={24}>
-                        <div className="item-header">
-                            <div className="item-header-text">Exclusion Criteria Library</div>
-                            {/* <Tooltip title={'Collapse Exclusion Criteria Library'}>
-                              <CloseOutlined className="right-icon" onClick={() => setExcluCriteriaLib(0)}></CloseOutlined>
-                            </Tooltip> */}
-                            <div className="item-header-content" onClick={searchHistoricalTrialsExclu}>
-                              <span className="left-icon">
-                                <FileTextOutlined/>
-                              </span>
-                              <span className="middle-text">
-                                Manage Library
-                              </span>
-                              <span className="right-icon" onClick= {searchHistoricalTrialsExclu}>
-                                {!showHistoricalExclu ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}} />:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
-                              </span>
-                            </div>
-                          </div>
-                        </Col>
-                      </Row>
-                      <Row style={{borderBottom:'10px solid #F8F8F8'}}>
-                        <Col flex="none">
-                          <div style={{ padding: '0 10px' }}></div>
-                        </Col>
-                        <Col className="left-section">
-                          {/* <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
-                           
-                            <Col span={8} style={{textAlign:'right'}}>
-                              <Row>
-                              <Col span={24}><span className="frequency" style={{ display: "block",width: "110px" }}>CRITERIA FREQUENCY</span></Col>
-                              </Row>
-                              <Row style={{width:'100%'}}>
-                              <Col span={24}>
-                                <div id="freqModal" ref={null} onClick={() => setExcluVisible(true)}>
-                                  <span className="label">
-                                    {excluMinValue}%-{excluMaxValue}%
-                                  </span>
-                                  <EditFilled className={`${excluVisible ? 'active' : ''}`}/>
-                                </div>
-                                </Col>
-                              </Row>
-                            </Col>
-                          </Row> */}
-                          
-                          {excluVisible ? (
-                          <div className="freqSection">
-                            {/* <div className="title">
-                              <span>Set Frequency</span>
-                              <CloseOutlined
-                                className="right-icon"
-                                onClick={() => setExcluVisible(false)}
-                              ></CloseOutlined>
-                            </div>
-                            <br/>
-                            <div className="content">
-                              <span>Criteria Frequency</span>
-                              <span style={{ float: "right", fontWeight: 'bold' }}>
-                                {excluMinValue}% - {excluMaxValue}%
-                              </span>
-                            </div>
-                            <Slider
-                              range={{ draggableTrack: true }}
-                              defaultValue={[excluMinValue, excluMaxValue]}
-                              tipFormatter={formatter}
-                              onAfterChange={getExcluFrequency}
-                            /> */}
-                          </div>
-                          ) : (
-                          <></>
-                          )}
-                          {/* search bar */}
-                          <div className="searchSection">
-                            <div className="content">
-                              <Dropdown 
-                                overlay={menuExclu} 
-                                overlayClassName="searchbox"
-                                visible={visibleValueExclu}
-                                onVisibleChange={(visible: boolean) => {!visibleValueExclu?setVisibleValueExclu(true):setVisibleValueExclu(false)}}
-                              >
-                                <Input
-                                    prefix={<SearchOutlined />}
-                                    style={{ width: '100%', height: 37 }}
-                                    allowClear
-                                    onChange={onExcluTextChange}
-                                    onClick={e => e.preventDefault()}
-                                />
-                              </Dropdown>
-                            </div>
-                          </div>
-                          <Row>
-                            <Col span={24}>
-                              <div className="content-outer content-sidebar">
-                                <div className="content-over">
-                                  <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                    <Panel showArrow={false} header={eventLibHeader("Demographics", excluDemographics.length, "5")} key="5">
-                                      {excluDemographics.length>0 ? (
-                                          <div className="library box select-option-wrapper">
-                                          {excluDemographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {
-                                            const activeType = excluDemographicsElements.find(e=> e['Eligibility Criteria']==demographic.Text) ?1:0
-                                            return (
-                                              <CriteriaOption
-                                                selectedEle = {excluDemographicsElements}
-                                                selectedEleSecondary = {excluDemographicsElements}
-                                                minValue={minValue}
-                                                maxValue={maxValue}
-                                                key={`demographic_${idx}`}
-                                                demographic={demographic}
-                                                index={0}
-                                                idx={idx}
-                                                assignedType={'None'}
-                                                showMoreDetail={showMoreDetail}
-                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
-                                                handleOptionSelect={handleExcluOptionSelect}
-                                                handleOptionSelectSecondary={handleExcluOptionSelect}
-                                                handleMoreSelect={handleExcluMoreSelect}
-                                              ></CriteriaOption>
-                                            );
-                                          })}
-                                        </div>
-                                        ): (
-                                        <></>
-                                      )}
-                                    </Panel>
-                                  </Collapse>
-
-                                  <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                    <Panel showArrow={false} header={eventLibHeader("Medical Condition", excluMedCondition.length, "6")} key="6">
-                                      {excluMedCondition.length>0 ? (
-                                          <div className="library box select-option-wrapper">
-                                          {excluMedCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
-                                            return (
-                                              <CriteriaOption
-                                                selectedEle = {excluMedConditionElements}
-                                                selectedEleSecondary = {excluMedConditionElements}
-                                                minValue={minValue}
-                                                maxValue={maxValue}
-                                                key={`medCon_${idx}`}
-                                                demographic={medCon}
-                                                index={1}
-                                                idx={idx}
-                                                assignedType={'None'}
-                                                showMoreDetail={showMoreDetail}
-                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
-                                                handleOptionSelect={handleExcluOptionSelect}
-                                                handleOptionSelectSecondary={handleExcluOptionSelect}
-                                                handleMoreSelect={handleExcluMoreSelect}
-                                              ></CriteriaOption>
-                                            );
-                                          })}
-                                        </div>
-                                        ): (
-                                        <></>
-                                      )}
-                                    </Panel>
-                                  </Collapse>
-
-                                  <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                  <Panel showArrow={false} header={eventLibHeader("Intervention", excluIntervention.length, "7")} key="7">
-                                    {excluIntervention.length>0 ? (
-                                      <div className="library box select-option-wrapper">
-                                      {excluIntervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {
-                                        
-                                        return (
-                                          <CriteriaOption
-                                            selectedEle = {excluInterventionElements}
-                                            selectedEleSecondary = {excluInterventionElements}
-                                            minValue={minValue}
-                                            maxValue={maxValue}
-                                            key={`intervent_${idx}`}
-                                            demographic={intervent}
-                                            index={2}
-                                            idx={idx}
-                                            assignedType={'None'}
-                                            showMoreDetail={showMoreDetail}
-                                            // criteriaDetailActiveTab={criteriaDetailActiveTab}
-                                            handleOptionSelect={handleExcluOptionSelect}
-                                            handleOptionSelectSecondary={handleExcluOptionSelect}
-                                            handleMoreSelect={handleExcluMoreSelect}
-                                          ></CriteriaOption>
-                                        );
-                                      })}
-                                    </div> 
-                                      ): (
-                                    <></>
-                                  )}
-                                  </Panel>
-                                </Collapse>
-
-                                  <Collapse className="eventLib library box lastOne" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                    <Panel showArrow={false} header={eventLibHeader("Lab / Test", excluLabTest.length, "8")} key="8">
-                                      {excluLabTest.length>0 ? (
-                                            <div className="library box select-option-wrapper lastOne">
-                                            {excluLabTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
+                                <div className="content-outer content-sidebar">
+                                  <div className="content-over">
+                                    <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                      <Panel showArrow={false} header={eventLibHeader("Demographics", demographics.length, "1")} key="1">
+                                        {demographics.length>0 ? (
+                                            <div className="library box select-option-wrapper">
+                                            {demographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {                     
                                               return (
                                                 <CriteriaOption
-                                                  selectedEle = {excluLabTestElements}
-                                                  selectedEleSecondary = {excluLabTestElements}
+                                                  selectedEle = {demographicsElements}
+                                                  selectedEleSecondary = {demographicsElements}
+                                                  minValue={minValue}
+                                                  maxValue={maxValue}
+                                                  key={`demographic_${idx}`}
+                                                  demographic={demographic}
+                                                  index={0}
+                                                  idx={idx}
+                                                  assignedType={'None'}
+                                                  showMoreDetail={showMoreDetail}
+                                                  // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                  handleOptionSelect={handleOptionSelect}
+                                                  handleOptionSelectSecondary={handleOptionSelect}
+                                                  handleMoreSelect={handleMoreSelect}
+                                                ></CriteriaOption>
+                                              );
+                                            })}
+                                          </div>
+                                        ): (
+                                          <></>
+                                        )}
+                                      </Panel>
+                                    </Collapse>
+
+                                    <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                      <Panel showArrow={false} header={eventLibHeader("Medical Condition", medCondition.length, "2")} key="2">
+                                        {medCondition.length>0 ? (
+                                            <div className="library box select-option-wrapper">
+                                            {medCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
+                                              return (
+                                                <CriteriaOption
+                                                  selectedEle = {medConditionElements}
+                                                  selectedEleSecondary = {medConditionElements}
+                                                  minValue={minValue}
+                                                  maxValue={maxValue}
+                                                  key={`medCon_${idx}`}
+                                                  demographic={medCon}
+                                                  index={1}
+                                                  idx={idx}
+                                                  assignedType={'None'}
+                                                  showMoreDetail={showMoreDetail}
+                                                  // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                  handleOptionSelect={handleOptionSelect}
+                                                  handleOptionSelectSecondary={handleOptionSelect}
+                                                  handleMoreSelect={handleMoreSelect}
+                                                ></CriteriaOption>
+                                              );
+                                            })}
+                                          </div>
+                                        ): (
+                                          <></>
+                                        )}
+                                      </Panel>
+                                    </Collapse>
+
+                                    <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                    <Panel showArrow={false} header={eventLibHeader("Intervention", intervention.length, "3")} key="3">
+                                      {intervention.length>0 ? (
+                                            <div className="library box select-option-wrapper">
+                                            {intervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {              
+                                              return (
+                                                <CriteriaOption
+                                                  selectedEle = {interventionElements}
+                                                  selectedEleSecondary = {interventionElements}
+                                                  minValue={minValue}
+                                                  maxValue={maxValue}
+                                                  key={`intervent_${idx}`}
+                                                  demographic={intervent}
+                                                  index={2}
+                                                  idx={idx}
+                                                  assignedType={'None'}
+                                                  showMoreDetail={showMoreDetail}
+                                                  // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                  handleOptionSelect={handleOptionSelect}
+                                                  handleOptionSelectSecondary={handleOptionSelect}
+                                                  handleMoreSelect={handleMoreSelect}
+                                                ></CriteriaOption>
+                                              );
+                                            })}
+                                          </div>
+                                      ): (
+                                        <></>
+                                      )}
+                                    </Panel>
+                                  </Collapse>
+
+                                    <Collapse className="eventLib library box lastOne" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                      <Panel showArrow={false} header={eventLibHeader("Lab / Test", labTest.length, "4")} key="4">
+                                        {labTest.length>0 ? (
+                                            <div className="library box select-option-wrapper lastOne">
+                                            {labTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
+                                              return (
+                                                <CriteriaOption
+                                                  selectedEle = {labTestElements}
+                                                  selectedEleSecondary = {labTestElements}
                                                   minValue={minValue}
                                                   maxValue={maxValue}
                                                   key={`lib_${idx}`}
@@ -5865,245 +5237,252 @@ const ScenarioPage = (props) => {
                                                   assignedType={'None'}
                                                   showMoreDetail={showMoreDetail}
                                                   // criteriaDetailActiveTab={criteriaDetailActiveTab}
-                                                  handleOptionSelect={handleExcluOptionSelect}
-                                                  handleOptionSelectSecondary={handleExcluOptionSelect}
-                                                  handleMoreSelect={handleExcluMoreSelect}
+                                                  handleOptionSelect={handleOptionSelect}
+                                                  handleOptionSelectSecondary={handleOptionSelect}
+                                                  handleMoreSelect={handleMoreSelect}
                                                 ></CriteriaOption>
                                               );
                                             })}
                                           </div>
                                         ): (
-                                        <></>
-                                      )}
+                                          <></>
+                                        )}
+                                      </Panel>
+                                    </Collapse>
+                                  </div>
+                                </div>
+                              </Col>
+                            </Row>
+                          </Col>
+                          <Col flex="none">
+                            <div style={{ padding: '0 10px' }}></div>
+                          </Col>
+                        </Row>
+                        <Row style={{backgroundColor: '#fff'}}>
+                          <Col span={24}>
+                            <div className="updateTrial">
+                              <Button className="update-btn" onClick={() => updateTrial(1, 1)}>
+                                UPDATE MY TRIAL
+                              </Button>
+                            </div>
+                          </Col>
+                        </Row>
+                      </Col>
+                      <Col flex="auto" className={`${ collapsible ? "none-click" : "" } main-content-right`}>
+                        <Row style={{ paddingTop: '10px', position: 'relative', zIndex: 99 }}>
+                          <Col flex="none">
+                            <div style={{ padding: '0 10px' }}></div>
+                          </Col>
+                          <Col flex="auto">
+                            {/* <Row>
+                              <Col span={24}></Col>
+                            </Row> */}
+                            <Row>
+                              <Col span={24}>
+                              <div className="option-item">
+                                <div className="collapse-section-wrapper">
+                                  <Collapse activeKey={activeKey} onChange={callback} expandIconPosition="right" >
+                                    <Panel header={panelHeader()} key="1" forceRender={false} >
+                                      <div className="chart-container">
+                                        <div className="chart-title">
+                                            <div className="text">
+                                            Protocol Amendment Likelihood
+                                            </div> 
+                                        </div>
+                                        <div>
+                                          <ReactECharts
+                                                option={amendmentRateoption}
+                                                style={{ height: 120}}
+                                                onEvents={{'click': onInclusionChartClick}}/>
+                                        </div>
+                                        <div className="subtitle">{therapeutic_Amend_Avg}</div>
+                                        <div className="legend-wrapper">
+                                              <div className="item-desc">
+                                                <span className="bar-item item3"></span>
+                                                <span>Demographics</span>
+                                              </div>
+                                              <div className="item-desc">
+                                                <span className="bar-item item4"></span>
+                                                <span>Medical Condition</span>
+                                              </div>
+                                              <div className="item-desc">
+                                                <span className="bar-item item1"></span>
+                                                <span>Intervention</span>
+                                              </div>
+                                              <div className="item-desc">
+                                                <span className="bar-item item2"></span>
+                                                <span>Labs / Tests</span>
+                                              </div>
+                                            </div>
+                                      </div>
+                                      <div className="chart-container">
+                                        <div className="chart-title">
+                                            <div className="text">
+                                            Screen Failure Rate
+                                            </div> 
+                                        </div>
+                                        <div>
+                                          <ReactECharts
+                                          option={screenFailureOption}
+                                          style={{ height: 120}}
+                                          onEvents={{'click': onInclusionChartClick}}/>
+                                        </div>
+                                        <div className="subtitle">{therapeutic_Screen_Avg}</div>
+                                        <div className="legend-wrapper">
+                                              <div className="item-desc">
+                                                <span className="bar-item item3"></span>
+                                                <span>Demographics</span>
+                                              </div>
+                                              <div className="item-desc">
+                                                <span className="bar-item item4"></span>
+                                                <span>Medical Condition</span>
+                                              </div>
+                                              <div className="item-desc">
+                                                <span className="bar-item item1"></span>
+                                                <span>Intervention</span>
+                                              </div>
+                                              <div className="item-desc">
+                                                <span className="bar-item item2"></span>
+                                                <span>Labs / Tests</span>
+                                              </div>
+                                            </div>
+                                      </div>
                                     </Panel>
                                   </Collapse>
                                 </div>
                               </div>
-                            </Col>
-                          </Row>
-                        </Col>
-                        <Col flex="none">
-                          <div style={{ padding: '0 10px' }}></div>
-                        </Col>
-                      </Row>
-                      <Row style={{backgroundColor: '#fff'}}>
-                        <Col span={24}>
-                          <div className="updateTrial">
-                            <Button className="update-btn" onClick={() => updateTrial(2, 1)}>
-                              UPDATE MY TRIAL
-                            </Button>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col flex="auto" className={`${ excluCollapsible ? "none-click" : "" } main-content-right`}>
-                      <Row style={{ paddingTop: '10px', position: 'relative', zIndex: 99 }}>
-                        <Col flex="none">
-                          <div style={{ padding: '0 10px' }}></div>
-                        </Col>
-                        <Col flex="auto">
-                          <Row>
-                            <Col span={24}>
-                            <div className="option-item">
-                              <div>
-                                <Collapse activeKey={excluActiveKey} onChange={excluCallback} expandIconPosition="right" >
-                                  <Panel header={panelHeader()} key="1" forceRender={false} >
-                                  <div className="chart-container">
-                                      <div className="chart-title">
-                                          <div className="text">
-                                          Protocol Amendment Likelihood
-                                          </div> 
-                                      </div>
-                                      <div>
-                                        <ReactECharts
-                                        option={excluAmendmentRateoption}
-                                        style={{ height: 120}}
-                                        onEvents={{'click': onExclusionChartClick}}/>
-                                      </div>
-                                      <div className="subtitle">{exclu_Therapeutic_Amend_Avg}</div>
-                                      <div className="legend-wrapper">
-                                            <div className="item-desc">
-                                              <span className="bar-item item3"></span>
-                                              <span>Demographics</span>
-                                            </div>
-                                            <div className="item-desc">
-                                              <span className="bar-item item4"></span>
-                                              <span>Medical Condition</span>
-                                            </div>
-                                            <div className="item-desc">
-                                              <span className="bar-item item1"></span>
-                                              <span>Intervention</span>
-                                            </div>
-                                            <div className="item-desc">
-                                              <span className="bar-item item2"></span>
-                                              <span>Labs / Tests</span>
-                                            </div>
-                                          </div>
-                                    </div>
-                                    <div className="chart-container">
-                                      <div className="chart-title">
-                                          <div className="text">
-                                          Screen Failure Rate
-                                          </div> 
-                                      </div>
-                                      <div>
-                                        <ReactECharts
-                                        option={excluScreenFailureOption}
-                                        style={{ height: 120}}
-                                        onEvents={{'click': onExclusionChartClick}}/>
-                                      </div>
-                                      <div className="subtitle">{exclu_Therapeutic_Screen_Avg}</div>
-                                      <div className="legend-wrapper">
-                                            <div className="item-desc">
-                                              <span className="bar-item item3"></span>
-                                              <span>Demographics</span>
-                                            </div>
-                                            <div className="item-desc">
-                                              <span className="bar-item item4"></span>
-                                              <span>Medical Condition</span>
-                                            </div>
-                                            <div className="item-desc">
-                                              <span className="bar-item item1"></span>
-                                              <span>Intervention</span>
-                                            </div>
-                                            <div className="item-desc">
-                                              <span className="bar-item item2"></span>
-                                              <span>Labs / Tests</span>
-                                            </div>
-                                          </div>
-                                    </div>
-                                  </Panel>
-                                </Collapse>
-                              </div>
-                            </div>
-                            </Col>
-                          </Row>
-                          <Row className="impact-summary-wrapper"> 
-                            <Col span={24}>
-                              <div className="impact-summary">
-                                <span>View Historical Average</span>
-                                {activeTabKey === '3'? (
-                                  <></>
-                                ) : (
-                                  <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
-                                    Save
-                                  </Button>
-                                )}
-                              </div>
                               </Col>
-                          </Row>
-                          <Row>
-                            <Col span={24} >
-                              <div className="collapse-container">
-                              <div className="content-outer">
-                                <div id="inclusion-criteria" 
-                                  className={`collapse-inner ${excluRollHeight == true ? "taller" : ""} ${excluCollapsible == true ? "collapsed" : ""}`}>
-                                  <div className="criteria-list">
-                                    <div className="list-columns">
-                                      <span className="col-item col-item-before"> </span>
-                                      <span className="col-item col-item-first">Eligibility Criteria</span>
-                                      <span className="col-item col-item-middle">Values</span>
-                                      <span className="col-item col-item-last">Timeframe</span>
-                                      <span className="col-item col-item-after"> </span>
-                                      {/* <Row>
-                                        <Col span={2}><div className="col-item">S/No.</div></Col>
-                                        <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
-                                        <Col span={8}><div className="col-item">Values</div></Col>
-                                        <Col span={8}><div className="col-item">Timeframe</div></Col>
-                                      </Row> */}
+                            </Row>
+                            <Row className="impact-summary-wrapper">
+                              <Col span={24}>
+                                <div className="impact-summary">
+                                  <span className="impact-title">View Historical Average</span>
+                                  {activeTabKey === '3'? (
+                                      <></>
+                                    ) : (
+                                      <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
+                                        Save
+                                      </Button>
+                                    )}
+                                </div>
+                                </Col>
+                            </Row>
+                            <Row>
+                              <Col span={24} >
+                                <div className="collapse-container">
+                                <div className="content-outer">
+                                  <div id="inclusion-criteria" 
+                                    className={`collapse-inner ${rollHeight == true ? "taller" : ""} ${collapsible == true ? "collapsed" : ""}`}>
+                                    <div className="criteria-list">
+                                      <div className="list-columns">
+                                        <span className="col-item col-item-before"> </span>
+                                        <span className="col-item col-item-first">Eligibility Criteria</span>
+                                        <span className="col-item col-item-middle">Values</span>
+                                        <span className="col-item col-item-last">Timeframe</span>
+                                        <span className="col-item col-item-after"> </span>
+                                        {/* <Row>
+                                          <Col span={2}><div className="col-item">S/No.</div></Col>
+                                          <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
+                                          <Col span={8}><div className="col-item">Values</div></Col>
+                                          <Col span={8}><div className="col-item">Timeframe</div></Col>
+                                        </Row> */}
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div className="sectionPanel">
-                                  <EditTable updateCriteria={updateExclusionCriteria} tableIndex={2} 
-                                          data={excluDemographicsTableData} defaultActiveKey={excluDefaultActiveKey}
-                                          collapsible={excluCollapsible} panelHeader={"Demographics"}/>
-                                  <EditTable updateCriteria={updateExclusionCriteria} tableIndex={3} 
-                                          data={excluMedConditionTableData} defaultActiveKey={excluDefaultActiveKey}
-                                          collapsible={excluCollapsible} panelHeader={"Medical Condition"}/>
-                                  <EditTable updateCriteria={updateExclusionCriteria} tableIndex={4} 
-                                          data={excluInterventionTableData} defaultActiveKey={excluDefaultActiveKey}
-                                          collapsible={excluCollapsible} panelHeader={"Intervention"}/>
-                                  <EditTable updateCriteria={updateExclusionCriteria} tableIndex={5} 
-                                          data={excluLabTestTableData} defaultActiveKey={excluDefaultActiveKey}
-                                          collapsible={excluCollapsible} panelHeader={"Lab / Test"}/>
+                                    <div className="sectionPanel">
+                                        <EditTable updateCriteria={updateInclusionCriteria} tableIndex={2}                                
+                                          data={demographicsTableData}
+                                          defaultActiveKey={defaultActiveKey}
+                                          collapsible={collapsible} panelHeader={"Demographics"} updateTrial={() => updateTrial(1, 1)}                                  
+                                        />
+                                        <EditTable updateCriteria={updateInclusionCriteria} tableIndex={3}
+                                          data={medConditionTableData}
+                                          defaultActiveKey={defaultActiveKey}
+                                          collapsible={collapsible} panelHeader={"Medical Condition"} updateTrial={() => updateTrial(1, 1)}                               
+                                        />
+                                    <EditTable updateCriteria={updateInclusionCriteria} tableIndex={4} 
+                                          data={interventionTableData}                                  
+                                          defaultActiveKey={defaultActiveKey}
+                                          collapsible={collapsible} panelHeader={"Intervention"} updateTrial={() => updateTrial(1, 1)}                                   
+                                        />
+                                    <EditTable updateCriteria={updateInclusionCriteria} tableIndex={5} 
+                                          data={labTestTableData}
+                                          defaultActiveKey={defaultActiveKey}
+                                          collapsible={collapsible} panelHeader={"Lab / Test"} updateTrial={() => updateTrial(1, 1)}/>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                              </div>
-                            </Col>
-                          </Row>
-                        </Col>
-                        <Col flex="none">
-                          <div style={{ padding: '0 10px' }}></div>
-                        </Col>
-                      </Row>
-                      <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
+                                </div>
+                              </Col>
+                            </Row>
+                          </Col>
+                          <Col flex="none">
+                            <div style={{ padding: '0 10px' }}></div>
+                          </Col>
+                        </Row>
                         {/* The drawer with wrapper */}
-                        <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelExclu} visible={showHistoricalExclu}>
-                          <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
-                          {activeTabKey === '1' &&<div className="drawer-content-frequency">
-                            <span className="left-frequency-text">Set Criteria Frequency</span>
+                        <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
+                          {/* historical list drawer */}
+                          <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancel} visible={showHistorical}>
+                            <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
+                            {activeTabKey === '1' &&<div className="drawer-content-frequency">
+                              <span className="left-frequency-text">Set Criteria Frequency</span>
+                                <div className="right-frequency-steps">
+                                  <div className="freqSection">
+                                    {/* <div className="title">
+                                      <CloseOutlined
+                                        className="right-icon"
+                                        onClick={() => setVisible(false)}
+                                      ></CloseOutlined>
+                                    </div>
+                                    <br/> */}
+                                    <div className="content">
+                                      <span>Frequency</span>
+                                      <span style={{ float: "right", fontWeight: 'bold' }}>
+                                        {minValue}% - {maxValue}%
+                                      </span>
+                                    </div>
+                                    <Slider
+                                      range={{ draggableTrack: true }}
+                                      defaultValue={[minValue, maxValue]}
+                                      tipFormatter={formatter}
+                                      onAfterChange={getFrequency}
+                                    />
+                                  </div>
+                                </div>
+                            </div>}
+                            {activeTabKey === '2' &&<div className="drawer-content-frequency">
+                              <span className="left-frequency-text">Set Criteria Frequency</span>
                               <div className="right-frequency-steps">
                                 <div className="freqSection">
                                   {/* <div className="title">
+                                    <span>Set Frequency</span>
                                     <CloseOutlined
                                       className="right-icon"
-                                      onClick={() => setVisible(false)}
+                                      onClick={() => setExcluVisible(false)}
                                     ></CloseOutlined>
                                   </div>
                                   <br/> */}
                                   <div className="content">
                                     <span>Frequency</span>
                                     <span style={{ float: "right", fontWeight: 'bold' }}>
-                                      {minValue}% - {maxValue}%
+                                      {excluMinValue}% - {excluMaxValue}%
                                     </span>
                                   </div>
                                   <Slider
                                     range={{ draggableTrack: true }}
-                                    defaultValue={[minValue, maxValue]}
+                                    defaultValue={[excluMinValue, excluMaxValue]}
                                     tipFormatter={formatter}
-                                    onAfterChange={getFrequency}
+                                    onAfterChange={getExcluFrequency}
                                   />
                                 </div>
                               </div>
-                          </div>}
-                          {activeTabKey === '2' &&<div className="drawer-content-frequency">
-                            <span className="left-frequency-text">Set Criteria Frequency</span>
-                            <div className="right-frequency-steps">
-                              <div className="freqSection">
-                                {/* <div className="title">
-                                  <span>Set Frequency</span>
-                                  <CloseOutlined
-                                    className="right-icon"
-                                    onClick={() => setExcluVisible(false)}
-                                  ></CloseOutlined>
-                                </div>
-                                <br/> */}
-                                <div className="content">
-                                  <span>Frequency</span>
-                                  <span style={{ float: "right", fontWeight: 'bold' }}>
-                                    {excluMinValue}% - {excluMaxValue}%
+                            </div>}
+                            <div className='drawer-content-below'>
+                            <Row>
+                                <Col span={24} className="drawer-history-text">
+                                  <span className="text">
+                                  View Historical Trial List
                                   </span>
-                                </div>
-                                <Slider
-                                  range={{ draggableTrack: true }}
-                                  defaultValue={[excluMinValue, excluMaxValue]}
-                                  tipFormatter={formatter}
-                                  onAfterChange={getExcluFrequency}
-                                />
-                              </div>
-                            </div>
-                          </div>}
-                          <div className='drawer-content-below'>
-                            <Row>
-                              <Col span={24} className="drawer-history-text">
-                                <span className="text">
-                                View Historical Trial List
-                                </span>
-                              </Col>
-                            </Row>
-                            <Row>
-                                <Col span={24} style={{paddingBottom: '10px'}}>
                                   {visibleSOA ? (
                                     <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
                                   ) : (
@@ -6137,9 +5516,10 @@ const ScenarioPage = (props) => {
                                           );
                                           let percent = ((d.value / sum) * 100).toFixed(2);
                                           return (
-                                            <div className="custom-legend">
+                                            <div className="custom-legend" key={idx}>
                                               <span
                                                 className="my_legend"
+                                                key={idx}
                                                 style={{
                                                   backgroundColor: sponsorChartColor[idx],
                                                 }}
@@ -6173,7 +5553,7 @@ const ScenarioPage = (props) => {
                                               return (
                                                 <div className="custom-legend" key={idx}>
                                                   <span
-                                                    className="my_legend" key={idx}
+                                                    className="my_legend"
                                                     style={{
                                                       backgroundColor: statusChartColor[idx],
                                                     }}
@@ -6191,54 +5571,564 @@ const ScenarioPage = (props) => {
                             <Row>
                                 <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
                             </Row>
-                          </div>
-                          </Spin>
-                        </Drawer>
-                        <Drawer className="criteria-drawer-wrapper" title={criteriaDetail.Text} placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelCriteria} visible={showMoreDetail}>
-                            <div>
-                              <div className="drawer-content-frequency">
+                            </div>
+                            </Spin>
+                          </Drawer>
+                          <Drawer className="criteria-drawer-wrapper" title={criteriaDetail.Text} placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelCriteria} visible={showMoreDetail}>
+                              <div>
+                                <div className="drawer-content-frequency">
+                                  <Row>
+                                    <Col span={24} className="drawer-title">
+                                      <span className="text">
+                                      Frequency
+                                      </span>
+                                    </Col>
+                                  </Row>
+                                  <Row>
+                                  <Col span={24} className="drawer-content">
+                                    <span className="left-text">
+                                    External
+                                    </span>
+                                    <span className="right-text">
+                                    {Math.floor(criteriaDetail.Frequency * 10000) / 100 + "%"}
+                                    </span>
+                                  </Col>
+                                </Row>
+                                </div>
+                                
+                                <div className='drawer-content-sponsor'>
                                 <Row>
                                   <Col span={24} className="drawer-title">
                                     <span className="text">
-                                    Frequency
+                                    By sponsors
                                     </span>
                                   </Col>
                                 </Row>
                                 <Row>
-                                <Col span={24} className="drawer-content">
-                                  <span className="left-text">
-                                  External
-                                  </span>
-                                  <span className="right-text">
-                                  {Math.floor(criteriaDetail.Frequency * 10000) / 100 + "%"}
+                                    <Col span={24}>
+                                    <div className="history-chart-wrapper">
+                                      <div className="chart">
+                                        <div className="my-echart-wrapper">
+                                          <ReactECharts option={CriteriaSponsorOption}></ReactECharts>
+                                        </div>
+                                        <div className="history-legend-wrapper">
+                                          {criteriaDetail.Value.sponser_list
+                                            .sort((a, b) => {
+                                              return b.value - a.value;
+                                            })
+                                            .slice(0, 5)
+                                            .map((d, idx) => {
+                                              const chartData = criteriaDetail.Value.sponser_list;
+                                              const sum = chartData.reduce(
+                                                (accumulator, currentValue) => {
+                                                  return accumulator + currentValue.value;
+                                                },
+                                                0
+                                              );
+                                              let percent = ((d.value / sum) * 100).toFixed(2);
+                                              return (
+                                                <div className="custom-legend" key={idx}>
+                                                  <span
+                                                    className="my_legend"
+                                                    style={{
+                                                      backgroundColor: sponsorChartColor[idx],
+                                                    }}
+                                                  ></span>
+                                                  <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                                </div>
+                                              );
+                                            })}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    </Col>
+                                </Row>
+                                </div>
+                                <div className="drawer-content-button">
+                                    <Button className="update-btn" disabled={whetherDisabledAdd} onClick={(e) => handleCriteriaSelect(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
+                                      ADD
+                                    </Button>
+                                  </div>
+                              </div>
+                          </Drawer>
+                        </div>
+                      </Col>
+                    </Row>
+                  </TabPane>
+                  <TabPane tab="Exclusion Criteria" key="2" disabled={collapsible}>
+                    <Row>
+                      <Col span={excluCriteriaLib} style={{backgroundColor: '#F8F8F8',maxWidth: '300px', minWidth: '300px'}}>
+                        <Row style={{backgroundColor: '#F8F8F8'}}>
+                          <Col span={24}>
+                          <div className="item-header">
+                              <div className="item-header-text">Exclusion Criteria Library</div>
+                              {/* <Tooltip title={'Collapse Exclusion Criteria Library'}>
+                                <CloseOutlined className="right-icon" onClick={() => setExcluCriteriaLib(0)}></CloseOutlined>
+                              </Tooltip> */}
+                              <div className="item-header-content" onClick={searchHistoricalTrialsExclu}>
+                                <span className="left-icon">
+                                  <FileTextOutlined/>
+                                </span>
+                                <span className="middle-text">
+                                  Manage Library
+                                </span>
+                                <span className="right-icon" onClick= {searchHistoricalTrialsExclu}>
+                                  {!showHistoricalExclu ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}} />:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
+                                </span>
+                              </div>
+                            </div>
+                          </Col>
+                        </Row>
+                        <Row style={{borderBottom:'10px solid #F8F8F8'}}>
+                          <Col flex="none">
+                            <div style={{ padding: '0 10px' }}></div>
+                          </Col>
+                          <Col className="left-section">
+                            {/* <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
+                            
+                              <Col span={8} style={{textAlign:'right'}}>
+                                <Row>
+                                <Col span={24}><span className="frequency" style={{ display: "block",width: "110px" }}>CRITERIA FREQUENCY</span></Col>
+                                </Row>
+                                <Row style={{width:'100%'}}>
+                                <Col span={24}>
+                                  <div id="freqModal" ref={null} onClick={() => setExcluVisible(true)}>
+                                    <span className="label">
+                                      {excluMinValue}%-{excluMaxValue}%
+                                    </span>
+                                    <EditFilled className={`${excluVisible ? 'active' : ''}`}/>
+                                  </div>
+                                  </Col>
+                                </Row>
+                              </Col>
+                            </Row> */}
+                            
+                            {excluVisible ? (
+                            <div className="freqSection">
+                              {/* <div className="title">
+                                <span>Set Frequency</span>
+                                <CloseOutlined
+                                  className="right-icon"
+                                  onClick={() => setExcluVisible(false)}
+                                ></CloseOutlined>
+                              </div>
+                              <br/>
+                              <div className="content">
+                                <span>Criteria Frequency</span>
+                                <span style={{ float: "right", fontWeight: 'bold' }}>
+                                  {excluMinValue}% - {excluMaxValue}%
+                                </span>
+                              </div>
+                              <Slider
+                                range={{ draggableTrack: true }}
+                                defaultValue={[excluMinValue, excluMaxValue]}
+                                tipFormatter={formatter}
+                                onAfterChange={getExcluFrequency}
+                              /> */}
+                            </div>
+                            ) : (
+                            <></>
+                            )}
+                            {/* search bar */}
+                            <div className="searchSection">
+                              <div className="content">
+                                <Dropdown 
+                                  overlay={menuExclu} 
+                                  overlayClassName="searchbox"
+                                  visible={visibleValueExclu}
+                                  onVisibleChange={(visible: boolean) => {!visibleValueExclu?setVisibleValueExclu(true):setVisibleValueExclu(false)}}
+                                >
+                                  <Input
+                                      prefix={<SearchOutlined />}
+                                      style={{ width: '100%', height: 37 }}
+                                      allowClear
+                                      onChange={onExcluTextChange}
+                                      onClick={e => e.preventDefault()}
+                                  />
+                                </Dropdown>
+                              </div>
+                            </div>
+                            <Row>
+                              <Col span={24}>
+                                <div className="content-outer content-sidebar">
+                                  <div className="content-over">
+                                    <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                      <Panel showArrow={false} header={eventLibHeader("Demographics", excluDemographics.length, "5")} key="5">
+                                        {excluDemographics.length>0 ? (
+                                            <div className="library box select-option-wrapper">
+                                            {excluDemographics.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((demographic, idx) => {
+                                              const activeType = excluDemographicsElements.find(e=> e['Eligibility Criteria']==demographic.Text) ?1:0
+                                              return (
+                                                <CriteriaOption
+                                                  selectedEle = {excluDemographicsElements}
+                                                  selectedEleSecondary = {excluDemographicsElements}
+                                                  minValue={minValue}
+                                                  maxValue={maxValue}
+                                                  key={`demographic_${idx}`}
+                                                  demographic={demographic}
+                                                  index={0}
+                                                  idx={idx}
+                                                  assignedType={'None'}
+                                                  showMoreDetail={showMoreDetail}
+                                                  // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                  handleOptionSelect={handleExcluOptionSelect}
+                                                  handleOptionSelectSecondary={handleExcluOptionSelect}
+                                                  handleMoreSelect={handleExcluMoreSelect}
+                                                ></CriteriaOption>
+                                              );
+                                            })}
+                                          </div>
+                                          ): (
+                                          <></>
+                                        )}
+                                      </Panel>
+                                    </Collapse>
+
+                                    <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                      <Panel showArrow={false} header={eventLibHeader("Medical Condition", excluMedCondition.length, "6")} key="6">
+                                        {excluMedCondition.length>0 ? (
+                                            <div className="library box select-option-wrapper">
+                                            {excluMedCondition.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((medCon, idx) => {
+                                              return (
+                                                <CriteriaOption
+                                                  selectedEle = {excluMedConditionElements}
+                                                  selectedEleSecondary = {excluMedConditionElements}
+                                                  minValue={minValue}
+                                                  maxValue={maxValue}
+                                                  key={`medCon_${idx}`}
+                                                  demographic={medCon}
+                                                  index={1}
+                                                  idx={idx}
+                                                  assignedType={'None'}
+                                                  showMoreDetail={showMoreDetail}
+                                                  // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                  handleOptionSelect={handleExcluOptionSelect}
+                                                  handleOptionSelectSecondary={handleExcluOptionSelect}
+                                                  handleMoreSelect={handleExcluMoreSelect}
+                                                ></CriteriaOption>
+                                              );
+                                            })}
+                                          </div>
+                                          ): (
+                                          <></>
+                                        )}
+                                      </Panel>
+                                    </Collapse>
+
+                                    <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                    <Panel showArrow={false} header={eventLibHeader("Intervention", excluIntervention.length, "7")} key="7">
+                                      {excluIntervention.length>0 ? (
+                                        <div className="library box select-option-wrapper">
+                                        {excluIntervention.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((intervent, idx) => {
+                                          
+                                          return (
+                                            <CriteriaOption
+                                              selectedEle = {excluInterventionElements}
+                                              selectedEleSecondary = {excluInterventionElements}
+                                              minValue={minValue}
+                                              maxValue={maxValue}
+                                              key={`intervent_${idx}`}
+                                              demographic={intervent}
+                                              index={2}
+                                              idx={idx}
+                                              assignedType={'None'}
+                                              showMoreDetail={showMoreDetail}
+                                              // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                              handleOptionSelect={handleExcluOptionSelect}
+                                              handleOptionSelectSecondary={handleExcluOptionSelect}
+                                              handleMoreSelect={handleExcluMoreSelect}
+                                            ></CriteriaOption>
+                                          );
+                                        })}
+                                      </div> 
+                                        ): (
+                                      <></>
+                                    )}
+                                    </Panel>
+                                  </Collapse>
+
+                                    <Collapse className="eventLib library box lastOne" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                      <Panel showArrow={false} header={eventLibHeader("Lab / Test", excluLabTest.length, "8")} key="8">
+                                        {excluLabTest.length>0 ? (
+                                              <div className="library box select-option-wrapper lastOne">
+                                              {excluLabTest.sort(function(m,n){ var a = m["Frequency"]; var b = n["Frequency"]; return b-a;}).map((lib, idx) => {
+                                                return (
+                                                  <CriteriaOption
+                                                    selectedEle = {excluLabTestElements}
+                                                    selectedEleSecondary = {excluLabTestElements}
+                                                    minValue={minValue}
+                                                    maxValue={maxValue}
+                                                    key={`lib_${idx}`}
+                                                    demographic={lib}
+                                                    index={3}
+                                                    idx={idx}
+                                                    assignedType={'None'}
+                                                    showMoreDetail={showMoreDetail}
+                                                    // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                    handleOptionSelect={handleExcluOptionSelect}
+                                                    handleOptionSelectSecondary={handleExcluOptionSelect}
+                                                    handleMoreSelect={handleExcluMoreSelect}
+                                                  ></CriteriaOption>
+                                                );
+                                              })}
+                                            </div>
+                                          ): (
+                                          <></>
+                                        )}
+                                      </Panel>
+                                    </Collapse>
+                                  </div>
+                                </div>
+                              </Col>
+                            </Row>
+                          </Col>
+                          <Col flex="none">
+                            <div style={{ padding: '0 10px' }}></div>
+                          </Col>
+                        </Row>
+                        <Row style={{backgroundColor: '#fff'}}>
+                          <Col span={24}>
+                            <div className="updateTrial">
+                              <Button className="update-btn" onClick={() => updateTrial(2, 1)}>
+                                UPDATE MY TRIAL
+                              </Button>
+                            </div>
+                          </Col>
+                        </Row>
+                      </Col>
+                      <Col flex="auto" className={`${ excluCollapsible ? "none-click" : "" } main-content-right`}>
+                        <Row style={{ paddingTop: '10px', position: 'relative', zIndex: 99 }}>
+                          <Col flex="none">
+                            <div style={{ padding: '0 10px' }}></div>
+                          </Col>
+                          <Col flex="auto">
+                            <Row>
+                              <Col span={24}>
+                              <div className="option-item">
+                                <div>
+                                  <Collapse activeKey={excluActiveKey} onChange={excluCallback} expandIconPosition="right" >
+                                    <Panel header={panelHeader()} key="1" forceRender={false} >
+                                    <div className="chart-container">
+                                        <div className="chart-title">
+                                            <div className="text">
+                                            Protocol Amendment Likelihood
+                                            </div> 
+                                        </div>
+                                        <div>
+                                          <ReactECharts
+                                          option={excluAmendmentRateoption}
+                                          style={{ height: 120}}
+                                          onEvents={{'click': onExclusionChartClick}}/>
+                                        </div>
+                                        <div className="subtitle">{exclu_Therapeutic_Amend_Avg}</div>
+                                        <div className="legend-wrapper">
+                                              <div className="item-desc">
+                                                <span className="bar-item item3"></span>
+                                                <span>Demographics</span>
+                                              </div>
+                                              <div className="item-desc">
+                                                <span className="bar-item item4"></span>
+                                                <span>Medical Condition</span>
+                                              </div>
+                                              <div className="item-desc">
+                                                <span className="bar-item item1"></span>
+                                                <span>Intervention</span>
+                                              </div>
+                                              <div className="item-desc">
+                                                <span className="bar-item item2"></span>
+                                                <span>Labs / Tests</span>
+                                              </div>
+                                            </div>
+                                      </div>
+                                      <div className="chart-container">
+                                        <div className="chart-title">
+                                            <div className="text">
+                                            Screen Failure Rate
+                                            </div> 
+                                        </div>
+                                        <div>
+                                          <ReactECharts
+                                          option={excluScreenFailureOption}
+                                          style={{ height: 120}}
+                                          onEvents={{'click': onExclusionChartClick}}/>
+                                        </div>
+                                        <div className="subtitle">{exclu_Therapeutic_Screen_Avg}</div>
+                                        <div className="legend-wrapper">
+                                              <div className="item-desc">
+                                                <span className="bar-item item3"></span>
+                                                <span>Demographics</span>
+                                              </div>
+                                              <div className="item-desc">
+                                                <span className="bar-item item4"></span>
+                                                <span>Medical Condition</span>
+                                              </div>
+                                              <div className="item-desc">
+                                                <span className="bar-item item1"></span>
+                                                <span>Intervention</span>
+                                              </div>
+                                              <div className="item-desc">
+                                                <span className="bar-item item2"></span>
+                                                <span>Labs / Tests</span>
+                                              </div>
+                                            </div>
+                                      </div>
+                                    </Panel>
+                                  </Collapse>
+                                </div>
+                              </div>
+                              </Col>
+                            </Row>
+                            <Row className="impact-summary-wrapper"> 
+                              <Col span={24}>
+                                <div className="impact-summary">
+                                  <span>View Historical Average</span>
+                                  {activeTabKey === '3'? (
+                                    <></>
+                                  ) : (
+                                    <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
+                                      Save
+                                    </Button>
+                                  )}
+                                </div>
+                                </Col>
+                            </Row>
+                            <Row>
+                              <Col span={24} >
+                                <div className="collapse-container">
+                                <div className="content-outer">
+                                  <div id="inclusion-criteria" 
+                                    className={`collapse-inner ${excluRollHeight == true ? "taller" : ""} ${excluCollapsible == true ? "collapsed" : ""}`}>
+                                    <div className="criteria-list">
+                                      <div className="list-columns">
+                                        <span className="col-item col-item-before"> </span>
+                                        <span className="col-item col-item-first">Eligibility Criteria</span>
+                                        <span className="col-item col-item-middle">Values</span>
+                                        <span className="col-item col-item-last">Timeframe</span>
+                                        <span className="col-item col-item-after"> </span>
+                                        {/* <Row>
+                                          <Col span={2}><div className="col-item">S/No.</div></Col>
+                                          <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
+                                          <Col span={8}><div className="col-item">Values</div></Col>
+                                          <Col span={8}><div className="col-item">Timeframe</div></Col>
+                                        </Row> */}
+                                      </div>
+                                    </div>
+                                    <div className="sectionPanel">
+                                    <EditTable updateCriteria={updateExclusionCriteria} tableIndex={2} 
+                                            data={excluDemographicsTableData} defaultActiveKey={excluDefaultActiveKey}
+                                            collapsible={excluCollapsible} panelHeader={"Demographics"}/>
+                                    <EditTable updateCriteria={updateExclusionCriteria} tableIndex={3} 
+                                            data={excluMedConditionTableData} defaultActiveKey={excluDefaultActiveKey}
+                                            collapsible={excluCollapsible} panelHeader={"Medical Condition"}/>
+                                    <EditTable updateCriteria={updateExclusionCriteria} tableIndex={4} 
+                                            data={excluInterventionTableData} defaultActiveKey={excluDefaultActiveKey}
+                                            collapsible={excluCollapsible} panelHeader={"Intervention"}/>
+                                    <EditTable updateCriteria={updateExclusionCriteria} tableIndex={5} 
+                                            data={excluLabTestTableData} defaultActiveKey={excluDefaultActiveKey}
+                                            collapsible={excluCollapsible} panelHeader={"Lab / Test"}/>
+                                    </div>
+                                  </div>
+                                </div>
+                                </div>
+                              </Col>
+                            </Row>
+                          </Col>
+                          <Col flex="none">
+                            <div style={{ padding: '0 10px' }}></div>
+                          </Col>
+                        </Row>
+                        <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
+                          {/* The drawer with wrapper */}
+                          <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelExclu} visible={showHistoricalExclu}>
+                            <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
+                            {activeTabKey === '1' &&<div className="drawer-content-frequency">
+                              <span className="left-frequency-text">Set Criteria Frequency</span>
+                                <div className="right-frequency-steps">
+                                  <div className="freqSection">
+                                    {/* <div className="title">
+                                      <CloseOutlined
+                                        className="right-icon"
+                                        onClick={() => setVisible(false)}
+                                      ></CloseOutlined>
+                                    </div>
+                                    <br/> */}
+                                    <div className="content">
+                                      <span>Frequency</span>
+                                      <span style={{ float: "right", fontWeight: 'bold' }}>
+                                        {minValue}% - {maxValue}%
+                                      </span>
+                                    </div>
+                                    <Slider
+                                      range={{ draggableTrack: true }}
+                                      defaultValue={[minValue, maxValue]}
+                                      tipFormatter={formatter}
+                                      onAfterChange={getFrequency}
+                                    />
+                                  </div>
+                                </div>
+                            </div>}
+                            {activeTabKey === '2' &&<div className="drawer-content-frequency">
+                              <span className="left-frequency-text">Set Criteria Frequency</span>
+                              <div className="right-frequency-steps">
+                                <div className="freqSection">
+                                  {/* <div className="title">
+                                    <span>Set Frequency</span>
+                                    <CloseOutlined
+                                      className="right-icon"
+                                      onClick={() => setExcluVisible(false)}
+                                    ></CloseOutlined>
+                                  </div>
+                                  <br/> */}
+                                  <div className="content">
+                                    <span>Frequency</span>
+                                    <span style={{ float: "right", fontWeight: 'bold' }}>
+                                      {excluMinValue}% - {excluMaxValue}%
+                                    </span>
+                                  </div>
+                                  <Slider
+                                    range={{ draggableTrack: true }}
+                                    defaultValue={[excluMinValue, excluMaxValue]}
+                                    tipFormatter={formatter}
+                                    onAfterChange={getExcluFrequency}
+                                  />
+                                </div>
+                              </div>
+                            </div>}
+                            <div className='drawer-content-below'>
+                              <Row>
+                                <Col span={24} className="drawer-history-text">
+                                  <span className="text">
+                                  View Historical Trial List
                                   </span>
                                 </Col>
                               </Row>
-                              </div>
-                              
-                              <div className='drawer-content-sponsor'>
                               <Row>
-                                <Col span={24} className="drawer-title">
-                                  <span className="text">
-                                  By sponsors
-                                  </span>
-                                </Col>
+                                  <Col span={24} style={{paddingBottom: '10px'}}>
+                                    {visibleSOA ? (
+                                      <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
+                                    ) : (
+                                      <>
+                                        <Button type="primary" onClick={downloadIE} style={{float: 'right'}}>VIEW SOURCE</Button>
+                                        <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button>
+                                      </>
+                                    )}
+                                  </Col>
                               </Row>
                               <Row>
                                   <Col span={24}>
                                   <div className="history-chart-wrapper">
                                     <div className="chart">
                                       <div className="my-echart-wrapper">
-                                        <ReactECharts option={CriteriaSponsorOption}></ReactECharts>
+                                        <ReactECharts option={historySponsorOption}></ReactECharts>
                                       </div>
                                       <div className="history-legend-wrapper">
-                                        {criteriaDetail.Value.sponser_list
+                                        {sponsorChartData
                                           .sort((a, b) => {
                                             return b.value - a.value;
                                           })
                                           .slice(0, 5)
                                           .map((d, idx) => {
-                                            const chartData = criteriaDetail.Value.sponser_list;
+                                            const chartData = sponsorChartData;
                                             const sum = chartData.reduce(
                                               (accumulator, currentValue) => {
                                                 return accumulator + currentValue.value;
@@ -6247,7 +6137,7 @@ const ScenarioPage = (props) => {
                                             );
                                             let percent = ((d.value / sum) * 100).toFixed(2);
                                             return (
-                                              <div className="custom-legend" key={idx}>
+                                              <div className="custom-legend">
                                                 <span
                                                   className="my_legend"
                                                   style={{
@@ -6260,751 +6150,867 @@ const ScenarioPage = (props) => {
                                           })}
                                       </div>
                                     </div>
+                                    <div className="chart">
+                                    <>
+                                          <div className="my-echart-wrapper">
+                                            <ReactECharts option={historyStatusOption}></ReactECharts>
+                                          </div>
+                                          <div className="history-legend-wrapper">
+                                            {statusChartData
+                                              .sort((a, b) => {
+                                                return b.value - a.value;
+                                              })
+                                              .slice(0, 5)
+                                              .map((d, idx) => {
+                                                const chartData = statusChartData;
+                                                const sum = chartData.reduce(
+                                                  (accumulator, currentValue) => {
+                                                    return accumulator + currentValue.value;
+                                                  },
+                                                  0
+                                                );
+                                                let percent = ((d.value / sum) * 100).toFixed(2);
+                                                return (
+                                                  <div className="custom-legend" key={idx}>
+                                                    <span
+                                                      className="my_legend" key={idx}
+                                                      style={{
+                                                        backgroundColor: statusChartColor[idx],
+                                                      }}
+                                                    ></span>
+                                                    <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                                  </div>
+                                                );
+                                              })}
+                                          </div>
+                                        </>
+                                    </div>
                                   </div>
                                   </Col>
                               </Row>
-                              </div>
-                              {/* <div className="drawer-content-limit">
-                               <Row>
-                                <Col span={24} className="drawer-title">
-                                  <span className="text">
-                                  Numeric Limits Distribution
-                                  </span>
-                                </Col>
-                              </Row> 
-                              </div> */}
-                              <div className="drawer-content-button">
-                                  <Button className="update-btn" disabled={whetherDisabledAddExclu} onClick={(e) => handleCriteriaSelectExclu(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
-                                    ADD
-                                  </Button>
-                                </div>
+                              <Row>
+                                  <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
+                              </Row>
                             </div>
-                        </Drawer>
-                      </div>
-                    </Col>
-                  </Row>
-                </TabPane>
-                <TabPane tab="Enrollment Feasibility" key="3" disabled={collapsible}>
-                <Spin spinning={loadPatientFunnel} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
-                <Row>
-                    <Col span={4}>
-                    </Col>
-                    <Col span={16}>
-                      <Row style={{ paddingTop: '10px' }}>
-                        <Col flex="none">
-                          <div style={{ padding: '0 10px' }}></div>
-                        </Col>
-                        <Col flex="auto" className="enrollment-right-section">
-                          {/* <Row style={{paddingTop: 20}}>
-                            <Col span={24}>
-                              <span className="chart-title">My Protocol</span>
-                            </Col>
-                          </Row> */}
-                          <Row className="enroll-tab">
-                            <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('1')}>
-                              <Row><Col className="tab-item">
-                                <Row className="tab-desc">Patients Eligible&nbsp;
-                                  {activeEnrollmentTabKey === '1'?(<CaretRightOutlined />):(<></>)}</Row>
-                                <Row className="sub-tab-title">{eliPatient}</Row>
-                                <Row className="tab-desc">{rateEliPatient} of Dataset</Row>
-                              </Col></Row>
-                            </Col>
-                            <Col span={1}></Col>
-                            <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '2' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('2')}>
-                              <Row><Col className="tab-item" span={24}>
-                                <Row className="tab-desc">Female patients eligible&nbsp;
-                                    {activeEnrollmentTabKey === '2'?(<CaretRightOutlined />):(<></>)}</Row>
-                                <Row className="sub-tab-title">{rateFeEliPatient}</Row>
-                              </Col></Row>
-                            </Col>
-                            <Col span={1}></Col>
-                            <Col span={8} className={`chart-tab ${activeEnrollmentTabKey === '3' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('3')}>
-                              <Row><Col className="tab-item chart" span={24}>
-                                <Row className="tab-desc">Race & Ethnicity&nbsp;
-                                    {activeEnrollmentTabKey === '3'?(<CaretRightOutlined />):(<></>)}</Row>
-                                <Row><Col span={24} className="legend-wrapper-father">
-                                  <ReactECharts option={raceOption} style={{ height: 100}}></ReactECharts>
-                                  
-                                  {/* finalEthnicityData */}
-                                  <div className="my-legend-wrapper">
-                                    {finalEthnicityData
-                                      .sort((a, b) => {
-                                        return b.value - a.value;
-                                      })
-                                      .slice(0, 9)
-                                      .map((d, idx) => {
-                                        const chartData = finalEthnicityData;
-                                        function getChartData(name,p) {
-                                          let data = raceOption.series[0].data;
-                                          let total = 0
-                                          for(const d in data){
-                                            total += data[d].value
-                                          }
-                                          for (let i = 0, l = data.length; i < l; i++) {
-                                              if (data[i].name == name) {
-                                                if(data[i].value >0){
-                                                  const p = (data[i].value/total * 100).toFixed(2)
-                                                  if (name === "BLACK/AFRICAN AMERICAN") {
-                                                    name = "BLACK/AFRICAN..."
-                                                  } else if (name === "AMERICAN INDIAN/ALASKA NATIVE") {
-                                                    name = "AMERICAN INDIA..."
-                                                  } else if (name === "NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER") {
-                                                    name = "NATIVE HAWAIIA..."
-                                                  } else if (name ==="MULTI RACE ETHNICITY") {
-                                                    name = "MULTI RACE ETH..."
-                                                  }
-                                                  return name + ' - ' + p + '%';
-                                                }else{
-                                                  if (name === "BLACK/AFRICAN AMERICAN") {
-                                                    name = "BLACK/AFRICAN AM..."
-                                                  } else if (name === "AMERICAN INDIAN/ALASKA NATIVE") {
-                                                    name = "AMERICAN INDIAN/..."
-                                                  } else if (name === "NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER") {
-                                                    name = "NATIVE HAWAIIAN/..."
-                                                  } else if (name ==="MULTI RACE ETHNICITY") {
-                                                    name = "MULTI RACE ETHNI..."
-                                                  }
-                                                  return name + ' - 0'
-                                                }
-                                              }
-                                          }
-                                        }
-                                        const sum = chartData.reduce(
-                                          (accumulator, currentValue) => {
-                                            return accumulator + currentValue.value;
-                                          },
-                                          0
-                                        );
-                                        let percent = ((d.value / sum) * 100).toFixed(2);
-                                        return (
-                                          <div className="custom-legend" key={d.name+idx} onClick={()=>onClickLegend(d.name, d.percent)}>
-                                            <span
-                                              className="my_legend"
-                                              style={{
-                                                backgroundColor: colorList[d.name],
-                                              }}
-                                            ></span>
-                                            <i className={"my_legend_text" + (d.selected ? " active": "")}>{getChartData(d.name,percent)}</i>
-                                          </div>
-                                        );
-                                      })}
-                                  </div>
-                                  </Col></Row>
-                              </Col></Row>
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col span={24} className="result-chart" style={{height:"100%"}}>
-                              {activeEnrollmentTabKey === '1' && (
-                                <>
-                                  <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{eliPatientChartTitle||""}</div>
-
-                                  <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
-                                    <div className="upperChart" >
-                                      <div className="title">
-                                        <span className="caption">
-                                          <span className="line line-l"></span>
-                                          Inclusion Criteria
-                                          <span className="line line-r"></span>
-                                        </span>
-                                      </div>
-                                      <ReactECharts option={eliPatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
-                                    </div>
-                                    <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
-                                      <div className="title">
-                                        <span className="caption">
-                                          <span className="line line-l"></span>
-                                          Exclusion Criteria   
-                                          <span className="line line-r"></span>
-                                        </span>
-                                      </div>
-                                      <ReactECharts option={eliPatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }}></ReactECharts>
-                                    </div>
-                                  </div>
-                                </>
-                              )}
-                              {activeEnrollmentTabKey === '2' && (
-                                <>
-                                  <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{fePatientChartTitle||""}</div>
-                                  <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
-                                    <div className="upperChart">
-                                      <div className="title">
-                                        <span className="caption">
-                                          <span className="line line-l"></span>
-                                          Inclusion Criteria
-                                          <span className="line line-r"></span>
-                                        </span>
-                                      </div>
-                                      <ReactECharts option={fePatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
-                                    </div>
-                                    <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
-                                      <div className="title">
-                                        <span className="caption">
-                                          <span className="line line-l"></span>
-                                          Exclusion Criteria   <span className="line line-r"></span>
-                                        </span>
-                                      </div>
-                                      <ReactECharts option={fePatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }}></ReactECharts>
-                                    </div>
-                                  </div>
-                                </>
-                              )}
-                              {activeEnrollmentTabKey === '3' && (
-                                <>
-                                  <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{ethPatientChartTitle||""}</div>
-                                  <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
-                                    <div className="upperChart">
-                                      <div className="title">
-                                        <span className="caption">
-                                          <span className="line line-l"></span>
-                                          Inclusion Criteria
-                                          <span className="line line-r"></span>
-                                        </span>
-                                      </div>
-                                      <ReactECharts option={ethPatientOption} style={{ height: funnelChartheight, marginBottom: 15}} ref={eChartsRef}></ReactECharts>
-                                    </div>
-                                    <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
-                                      <div className="title">
-                                        <span className="caption">
-                                          <span className="line line-l"></span>
-                                          Exclusion Criteria   <span className="line line-r"></span>
-                                        </span>
-                                      </div>
-                                      <ReactECharts option={ethPatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }} ref={eChartsBelowRef}></ReactECharts>
-                                  </div>
-                                  </div>
-                                </>
-                              )}
-                            </Col>
-                          </Row>
-                        </Col>
-                        <Col flex="none">
-                          <div style={{ padding: '0 10px' }}></div>
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col span={4}></Col>
-                  </Row>
-                  </Spin>
-                </TabPane>
-              </Tabs>
-            </div>
-          </div>
-          } 
-         
-         {processStep === 1 && 
-          <div className="endpoint-container">
-            <div className="process-container">
-              <span className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
-                  <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
-              </span>
-              <span className="content-title">
-                  <span className="tab-title">Protocol Endpoint</span>
-                  <span className="tip1-desc">
-                  Use the historical trial library on the left to build the endpoint criteria for your trial scenario.
-                  </span>
-              </span>
-              <span className="button-area">
-                <Dropdown.Button style={{zIndex: 1}}
-                overlay={
-                  <Menu>
-                    <Menu.Item key="pdf" onClick={() => handleEndpointExport('pdf')}>PDF</Menu.Item>
-                    <Menu.Item key="csv" onClick={() => handleEndpointExport('csv')}>CSV</Menu.Item>
-                  </Menu>
-                }
-                  icon={<DownOutlined />}>
-                  {/* <DownloadOutlined /> */}
-                  EXPORT AS
-                </Dropdown.Button>
-                {/* <Button className="save-btn"  onClick={saveEndpoint}>
-                    Save And Finish Later
-                </Button> */}
-                {/* <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}> */}
-                <Button type="primary" className="submit-btn"   onClick={submitCriteria}>
-                    Submit
-                </Button>
-              </span>
-            </div>
-            <div className="endpoint-content">
-            <Spin spinning={loadEndpoint} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
-              <Row>
-                <Col span={endpointLib} style={{backgroundColor: '#F8F8F8',maxWidth: '300px', minWidth: '300px'}}>
-                  <Row style={{backgroundColor: '#F8F8F8'}}>
-                    <Col span={24}>
-                      <div className="item-header">
-                        <div className="item-header-text">Endpoint Library</div>
-                        <div className="item-header-content" onClick={searchHistoricalTrialsEndpoint}>
-                          <span className="left-icon">
-                            <FileTextOutlined/>
-                          </span>
-                          <span className="middle-text">
-                            Manage Library
-                          </span>
-                          <span className="right-icon" onClick= {searchHistoricalTrialsEndpoint}>
-                            {!showHistoricalEndpoint ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}}/>:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
-                          </span>
-                        </div>
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row style={{borderBottom:'10px solid #F8F8F8'}}>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                    <Col className="left-section">
-                      <Row>
-                        <Col span={24}>
-                          <div className="content-outer content-sidebar">
-                            <div className="content-over">
-                            <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
-                                    <Panel showArrow={false} header={eventLibHeader("Endpoints", originEndpoint.length, "1")} key="1">
-                                      {originEndpoint.length>0 ? (
-                                          <div className="library box select-option-wrapper">
-                                          {originEndpoint.sort(function(m,n){ var a = Number(m["Frequency"]===''?0:m["Frequency"]); var b = Number(n["Frequency"]===''?0:n["Frequency"]); return b-a;}).map((endpoint, idx) => {                     
-                                            return (
-                                              <CriteriaOption
-                                                selectedEle = {endpointElementsPrimary}
-                                                selectedEleSecondary = {endpointElementsSecondary}
-                                                minValue={minValue}
-                                                maxValue={maxValue}
-                                                key={`demographic_${idx}`}
-                                                demographic={endpoint}
-                                                index={assignedType==='Primary'?0:(assignedType==='Secondary'?1:2)}//
-                                                idx={idx}
-                                                assignedType={assignedType}
-                                                showMoreDetail={showMoreDetailEndpoint}
-                                                // criteriaDetailActiveTab={criteriaDetailActiveTab}
-                                                handleOptionSelect={handleEndpointOptionSelect}
-                                                handleOptionSelectSecondary={handleEndpointOptionSelectSecondary}
-                                                handleMoreSelect={handleEndpointMoreSelect}
-                                              ></CriteriaOption>
-                                            );
-                                          })}
+                            </Spin>
+                          </Drawer>
+                          <Drawer className="criteria-drawer-wrapper" title={criteriaDetail.Text} placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelCriteria} visible={showMoreDetail}>
+                              <div>
+                                <div className="drawer-content-frequency">
+                                  <Row>
+                                    <Col span={24} className="drawer-title">
+                                      <span className="text">
+                                      Frequency
+                                      </span>
+                                    </Col>
+                                  </Row>
+                                  <Row>
+                                  <Col span={24} className="drawer-content">
+                                    <span className="left-text">
+                                    External
+                                    </span>
+                                    <span className="right-text">
+                                    {Math.floor(criteriaDetail.Frequency * 10000) / 100 + "%"}
+                                    </span>
+                                  </Col>
+                                </Row>
+                                </div>
+                                
+                                <div className='drawer-content-sponsor'>
+                                <Row>
+                                  <Col span={24} className="drawer-title">
+                                    <span className="text">
+                                    By sponsors
+                                    </span>
+                                  </Col>
+                                </Row>
+                                <Row>
+                                    <Col span={24}>
+                                    <div className="history-chart-wrapper">
+                                      <div className="chart">
+                                        <div className="my-echart-wrapper">
+                                          <ReactECharts option={CriteriaSponsorOption}></ReactECharts>
                                         </div>
-                                      ): (
-                                        <></>
-                                      )}
-                                    </Panel>
-                                  </Collapse>
-
-                            </div>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                  </Row>
-                  <Row style={{backgroundColor: '#fff'}}>
-                    <Col span={24}>
-                      <div className="updateTrial">
-                        <Button className="update-btn" onClick={() => updateTrial(3, 1)}>
-                        {/* <Button className="update-btn"> */}
-                          UPDATE MY TRIAL
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
-                </Col>
-                <Col flex="auto" className={`${ endpointCollapsible ? "none-click" : "" } main-content-right`}>
-                  <Row style={{ paddingTop: '10px', position: 'relative', zIndex: 99 }}>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                    <Col flex="auto">
-                      <Row>
-                        <Col span={24}>
-                        <div className="option-item">
-                          <div className="collapse-section-wrapper">
-                            <Collapse activeKey={endpointActiveKey} onChange={endpointCallback} expandIconPosition="right" >
-                              <Panel header={panelHeaderEndpoint()} key="1" forceRender={false} >
-                                <div className="chart-container">
-                                  <div className="chart-title">
-                                      <div className="text">
-                                        Number of Endpoint
-                                      </div> 
-                                      <div className="legend-wrapper">
-                                        <div className="item-desc">
-                                          <span className="bar-item mytrial"></span>
-                                          <span>My Trial</span></div>
-
-                                        <div className="item-desc">
-                                          <span className="bar-item external"></span>
-                                          <span>External</span>
-                                          </div>
+                                        <div className="history-legend-wrapper">
+                                          {criteriaDetail.Value.sponser_list
+                                            .sort((a, b) => {
+                                              return b.value - a.value;
+                                            })
+                                            .slice(0, 5)
+                                            .map((d, idx) => {
+                                              const chartData = criteriaDetail.Value.sponser_list;
+                                              const sum = chartData.reduce(
+                                                (accumulator, currentValue) => {
+                                                  return accumulator + currentValue.value;
+                                                },
+                                                0
+                                              );
+                                              let percent = ((d.value / sum) * 100).toFixed(2);
+                                              return (
+                                                <div className="custom-legend" key={idx}>
+                                                  <span
+                                                    className="my_legend"
+                                                    style={{
+                                                      backgroundColor: sponsorChartColor[idx],
+                                                    }}
+                                                  ></span>
+                                                  <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                                </div>
+                                              );
+                                            })}
+                                        </div>
                                       </div>
+                                    </div>
+                                    </Col>
+                                </Row>
+                                </div>
+                                {/* <div className="drawer-content-limit">
+                                <Row>
+                                  <Col span={24} className="drawer-title">
+                                    <span className="text">
+                                    Numeric Limits Distribution
+                                    </span>
+                                  </Col>
+                                </Row> 
+                                </div> */}
+                                <div className="drawer-content-button">
+                                    <Button className="update-btn" disabled={whetherDisabledAddExclu} onClick={(e) => handleCriteriaSelectExclu(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
+                                      ADD
+                                    </Button>
                                   </div>
-                                <div>
-                                 <ReactECharts option={EndpointSummaryOption}
-                                style={{width: '354px', height: '185px'}}></ReactECharts>
-                                </div>
-                                </div>
-                              </Panel>
-                            </Collapse>
+                              </div>
+                          </Drawer>
+                        </div>
+                      </Col>
+                    </Row>
+                  </TabPane>
+                  <TabPane tab="Enrollment Feasibility" key="3" disabled={collapsible}>
+                  <Spin spinning={loadPatientFunnel} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
+                  <Row>
+                      <Col span={4}>
+                      </Col>
+                      <Col span={16}>
+                        <Row style={{ paddingTop: '10px' }}>
+                          <Col flex="none">
+                            <div style={{ padding: '0 10px' }}></div>
+                          </Col>
+                          <Col flex="auto" className="enrollment-right-section">
+                            {/* <Row style={{paddingTop: 20}}>
+                              <Col span={24}>
+                                <span className="chart-title">My Protocol</span>
+                              </Col>
+                            </Row> */}
+                            <Row className="enroll-tab">
+                              <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '1' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('1')}>
+                                <Row><Col className="tab-item">
+                                  <Row className="tab-desc">Patients Eligible&nbsp;
+                                    {activeEnrollmentTabKey === '1'?(<CaretRightOutlined />):(<></>)}</Row>
+                                  <Row className="sub-tab-title">{eliPatient}</Row>
+                                  <Row className="tab-desc">{rateEliPatient} of Dataset</Row>
+                                </Col></Row>
+                              </Col>
+                              <Col span={1}></Col>
+                              <Col span={7} className={`chart-tab ${activeEnrollmentTabKey === '2' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('2')}>
+                                <Row><Col className="tab-item" span={24}>
+                                  <Row className="tab-desc">Female patients eligible&nbsp;
+                                      {activeEnrollmentTabKey === '2'?(<CaretRightOutlined />):(<></>)}</Row>
+                                  <Row className="sub-tab-title">{rateFeEliPatient}</Row>
+                                </Col></Row>
+                              </Col>
+                              <Col span={1}></Col>
+                              <Col span={8} className={`chart-tab ${activeEnrollmentTabKey === '3' ? 'active' : ''}`} onClick={() => setActiveEnrollmentTabKey('3')}>
+                                <Row><Col className="tab-item chart" span={24}>
+                                  <Row className="tab-desc">Race & Ethnicity&nbsp;
+                                      {activeEnrollmentTabKey === '3'?(<CaretRightOutlined />):(<></>)}</Row>
+                                  <Row><Col span={24} className="legend-wrapper-father">
+                                    <ReactECharts option={raceOption} style={{ height: 100}}></ReactECharts>
+                                    
+                                    {/* finalEthnicityData */}
+                                    <div className="my-legend-wrapper">
+                                      {finalEthnicityData
+                                        .sort((a, b) => {
+                                          return b.value - a.value;
+                                        })
+                                        .slice(0, 9)
+                                        .map((d, idx) => {
+                                          const chartData = finalEthnicityData;
+                                          function getChartData(name,p) {
+                                            let data = raceOption.series[0].data;
+                                            let total = 0
+                                            for(const d in data){
+                                              total += data[d].value
+                                            }
+                                            for (let i = 0, l = data.length; i < l; i++) {
+                                                if (data[i].name == name) {
+                                                  if(data[i].value >0){
+                                                    const p = (data[i].value/total * 100).toFixed(2)
+                                                    if (name === "BLACK/AFRICAN AMERICAN") {
+                                                      name = "BLACK/AFRICAN..."
+                                                    } else if (name === "AMERICAN INDIAN/ALASKA NATIVE") {
+                                                      name = "AMERICAN INDIA..."
+                                                    } else if (name === "NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER") {
+                                                      name = "NATIVE HAWAIIA..."
+                                                    } else if (name ==="MULTI RACE ETHNICITY") {
+                                                      name = "MULTI RACE ETH..."
+                                                    }
+                                                    return name + ' - ' + p + '%';
+                                                  }else{
+                                                    if (name === "BLACK/AFRICAN AMERICAN") {
+                                                      name = "BLACK/AFRICAN AM..."
+                                                    } else if (name === "AMERICAN INDIAN/ALASKA NATIVE") {
+                                                      name = "AMERICAN INDIAN/..."
+                                                    } else if (name === "NATIVE HAWAIIAN/OTHER PACIFIC ISLANDER") {
+                                                      name = "NATIVE HAWAIIAN/..."
+                                                    } else if (name ==="MULTI RACE ETHNICITY") {
+                                                      name = "MULTI RACE ETHNI..."
+                                                    }
+                                                    return name + ' - 0'
+                                                  }
+                                                }
+                                            }
+                                          }
+                                          const sum = chartData.reduce(
+                                            (accumulator, currentValue) => {
+                                              return accumulator + currentValue.value;
+                                            },
+                                            0
+                                          );
+                                          let percent = ((d.value / sum) * 100).toFixed(2);
+                                          return (
+                                            <div className="custom-legend" key={d.name+idx} onClick={()=>onClickLegend(d.name, d.percent)}>
+                                              <span
+                                                className="my_legend"
+                                                style={{
+                                                  backgroundColor: colorList[d.name],
+                                                }}
+                                              ></span>
+                                              <i className={"my_legend_text" + (d.selected ? " active": "")}>{getChartData(d.name,percent)}</i>
+                                            </div>
+                                          );
+                                        })}
+                                    </div>
+                                    </Col></Row>
+                                </Col></Row>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col span={24} className="result-chart" style={{height:"100%"}}>
+                                {activeEnrollmentTabKey === '1' && (
+                                  <>
+                                    <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{eliPatientChartTitle||""}</div>
+
+                                    <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
+                                      <div className="upperChart" >
+                                        <div className="title">
+                                          <span className="caption">
+                                            <span className="line line-l"></span>
+                                            Inclusion Criteria
+                                            <span className="line line-r"></span>
+                                          </span>
+                                        </div>
+                                        <ReactECharts option={eliPatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
+                                      </div>
+                                      <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
+                                        <div className="title">
+                                          <span className="caption">
+                                            <span className="line line-l"></span>
+                                            Exclusion Criteria   
+                                            <span className="line line-r"></span>
+                                          </span>
+                                        </div>
+                                        <ReactECharts option={eliPatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }}></ReactECharts>
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
+                                {activeEnrollmentTabKey === '2' && (
+                                  <>
+                                    <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{fePatientChartTitle||""}</div>
+                                    <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
+                                      <div className="upperChart">
+                                        <div className="title">
+                                          <span className="caption">
+                                            <span className="line line-l"></span>
+                                            Inclusion Criteria
+                                            <span className="line line-r"></span>
+                                          </span>
+                                        </div>
+                                        <ReactECharts option={fePatientOption} style={{ height: funnelChartheight, marginBottom: 15}}></ReactECharts>
+                                      </div>
+                                      <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
+                                        <div className="title">
+                                          <span className="caption">
+                                            <span className="line line-l"></span>
+                                            Exclusion Criteria   <span className="line line-r"></span>
+                                          </span>
+                                        </div>
+                                        <ReactECharts option={fePatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }}></ReactECharts>
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
+                                {activeEnrollmentTabKey === '3' && (
+                                  <>
+                                    <div style={{fontWeight:600, fontSize:18, textAlign:"left", marginTop: 15, marginLeft: 20, marginBottom: 10}}>{ethPatientChartTitle||""}</div>
+                                    <div className="chartArea" style={{position:"relative", width: "100%", height: funnelChartheight+49, overflow:"hidden", marginBottom: 15}}>
+                                      <div className="upperChart">
+                                        <div className="title">
+                                          <span className="caption">
+                                            <span className="line line-l"></span>
+                                            Inclusion Criteria
+                                            <span className="line line-r"></span>
+                                          </span>
+                                        </div>
+                                        <ReactECharts option={ethPatientOption} style={{ height: funnelChartheight, marginBottom: 15}} ref={eChartsRef}></ReactECharts>
+                                      </div>
+                                      <div className="belowChart" style={{position:"absolute", left: 0, top: funnelChartheightOverlap+25, backgroundColor:"#fff",width: "100%", height:funnelChartheight+39, overflow:"hidden"}}>
+                                        <div className="title">
+                                          <span className="caption">
+                                            <span className="line line-l"></span>
+                                            Exclusion Criteria   <span className="line line-r"></span>
+                                          </span>
+                                        </div>
+                                        <ReactECharts option={ethPatientOption} style={{ position:"absolute", left: 0, top: -funnelChartheightOverlap+24, width: "100%",height: funnelChartheight, marginBottom: 15, }} ref={eChartsBelowRef}></ReactECharts>
+                                    </div>
+                                    </div>
+                                  </>
+                                )}
+                              </Col>
+                            </Row>
+                          </Col>
+                          <Col flex="none">
+                            <div style={{ padding: '0 10px' }}></div>
+                          </Col>
+                        </Row>
+                      </Col>
+                      <Col span={4}></Col>
+                    </Row>
+                    </Spin>
+                  </TabPane>
+                </Tabs>
+              </div>
+            </div>
+            } 
+          {processStep === 1 && 
+            <div className="endpoint-container">
+              <div className="process-container">
+              {sidebarWidth === "160px" &&(<span className="action-title" onClick={handleCloseMenu}>
+                    <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
+                </span>)}
+                {sidebarWidth === "0px" &&(<span className="action-title" onClick={handleCloseMenu}>
+                    <RightOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
+                </span>)}
+                <span className="content-title">
+                    <span className="tab-title">Protocol Endpoint</span>
+                    <span className="tip1-desc">
+                    Use the historical trial library on the left to build the endpoint criteria for your trial scenario.
+                    </span>
+                </span>
+                <span className="button-area">
+                  <Dropdown.Button style={{zIndex: 1}}
+                  overlay={
+                    <Menu>
+                      <Menu.Item key="pdf" onClick={() => handleEndpointExport('pdf')}>PDF</Menu.Item>
+                      <Menu.Item key="csv" onClick={() => handleEndpointExport('csv')}>CSV</Menu.Item>
+                    </Menu>
+                  }
+                    icon={<DownOutlined />}>
+                    {/* <DownloadOutlined /> */}
+                    EXPORT AS
+                  </Dropdown.Button>
+                  {/* <Button className="save-btn"  onClick={saveEndpoint}>
+                      Save And Finish Later
+                  </Button> */}
+                  {/* <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}> */}
+                  <Button type="primary" className="submit-btn"   onClick={submitCriteria}>
+                      Submit
+                  </Button>
+                </span>
+              </div>
+              <div className="endpoint-content">
+              <Spin spinning={loadEndpoint} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>}>
+                <Row>
+                  <Col span={endpointLib} style={{backgroundColor: '#F8F8F8',maxWidth: '300px', minWidth: '300px'}}>
+                    <Row style={{backgroundColor: '#F8F8F8'}}>
+                      <Col span={24}>
+                        <div className="item-header">
+                          <div className="item-header-text">Endpoint Library</div>
+                          <div className="item-header-content" onClick={searchHistoricalTrialsEndpoint}>
+                            <span className="left-icon">
+                              <FileTextOutlined/>
+                            </span>
+                            <span className="middle-text">
+                              Manage Library
+                            </span>
+                            <span className="right-icon" onClick= {searchHistoricalTrialsEndpoint}>
+                              {!showHistoricalEndpoint ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}}/>:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
+                            </span>
                           </div>
                         </div>
-                        </Col>
-                      </Row>
-                      <Row className="impact-summary-wrapper">
-                        <Col span={24}>
-                          <div className="impact-summary">
-                            <span className="impact-title">View Historical Average</span>
-                            {activeTabKey === '3'? (
-                                <></>
-                              ) : (
-                                <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
-                                  Save
-                                </Button>
-                              )}
+                      </Col>
+                    </Row>
+                    <Row style={{borderBottom:'10px solid #F8F8F8'}}>
+                      <Col flex="none">
+                        <div style={{ padding: '0 10px' }}></div>
+                      </Col>
+                      <Col className="left-section">
+                        <Row>
+                          <Col span={24}>
+                            <div className="content-outer content-sidebar">
+                              <div className="content-over">
+                              <Collapse className="eventLib library box" collapsible="header" onChange={criteriaCallback} activeKey={activeCollapse}>
+                                      <Panel showArrow={false} header={eventLibHeader("Endpoints", originEndpoint.length, "1")} key="1">
+                                        {originEndpoint.length>0 ? (
+                                            <div className="library box select-option-wrapper">
+                                            {originEndpoint.sort(function(m,n){ var a = Number(m["Frequency"]===''?0:m["Frequency"]); var b = Number(n["Frequency"]===''?0:n["Frequency"]); return b-a;}).map((endpoint, idx) => {                     
+                                              return (
+                                                <CriteriaOption
+                                                  selectedEle = {endpointElementsPrimary}
+                                                  selectedEleSecondary = {endpointElementsSecondary}
+                                                  minValue={minValue}
+                                                  maxValue={maxValue}
+                                                  key={`demographic_${idx}`}
+                                                  demographic={endpoint}
+                                                  index={assignedType==='Primary'?0:(assignedType==='Secondary'?1:2)}//
+                                                  idx={idx}
+                                                  assignedType={assignedType}
+                                                  showMoreDetail={showMoreDetailEndpoint}
+                                                  // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                                  handleOptionSelect={handleEndpointOptionSelect}
+                                                  handleOptionSelectSecondary={handleEndpointOptionSelectSecondary}
+                                                  handleMoreSelect={handleEndpointMoreSelect}
+                                                ></CriteriaOption>
+                                              );
+                                            })}
+                                          </div>
+                                        ): (
+                                          <></>
+                                        )}
+                                      </Panel>
+                                    </Collapse>
+
+                              </div>
+                            </div>
+                          </Col>
+                        </Row>
+                      </Col>
+                      <Col flex="none">
+                        <div style={{ padding: '0 10px' }}></div>
+                      </Col>
+                    </Row>
+                    <Row style={{backgroundColor: '#fff'}}>
+                      <Col span={24}>
+                        <div className="updateTrial">
+                          <Button className="update-btn" onClick={() => updateTrial(3, 1)}>
+                          {/* <Button className="update-btn"> */}
+                            UPDATE MY TRIAL
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col flex="auto" className={`${ endpointCollapsible ? "none-click" : "" } main-content-right`}>
+                    <Row style={{ paddingTop: '10px', position: 'relative', zIndex: 99 }}>
+                      <Col flex="none">
+                        <div style={{ padding: '0 10px' }}></div>
+                      </Col>
+                      <Col flex="auto">
+                        <Row>
+                          <Col span={24}>
+                          <div className="option-item">
+                            <div className="collapse-section-wrapper">
+                              <Collapse activeKey={endpointActiveKey} onChange={endpointCallback} expandIconPosition="right" >
+                                <Panel header={panelHeaderEndpoint()} key="1" forceRender={false} >
+                                  <div className="chart-container">
+                                    <div className="chart-title">
+                                        <div className="text">
+                                          Number of Endpoint
+                                        </div> 
+                                        <div className="legend-wrapper">
+                                          <div className="item-desc">
+                                            <span className="bar-item mytrial"></span>
+                                            <span>My Trial</span></div>
+
+                                          <div className="item-desc">
+                                            <span className="bar-item external"></span>
+                                            <span>External</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  <div>
+                                  <ReactECharts option={EndpointSummaryOption}
+                                  style={{width: '354px', height: '185px'}}></ReactECharts>
+                                  </div>
+                                  </div>
+                                </Panel>
+                              </Collapse>
+                            </div>
                           </div>
                           </Col>
-                      </Row>
-                      <Row>
-                        <Col span={24} >
-                          <div className="collapse-container">
-                          <div className="content-outer">
-                            <div id="inclusion-criteria" 
-                              className={`collapse-inner ${endpointRollHeight == true ? "taller" : ""} ${endpointCollapsible == true ? "collapsed" : ""}`}>
-                              <div className="criteria-list">
-                                <div className="list-columns">
-                                  <span className="col-item col-item-before"> </span>
-                                  <span className="col-item col-item-first">Endpoint</span>
-                                  <span className="col-item col-item-middle">Statistical Measure</span>
-                                  <span className="col-item col-item-last">Timeframe</span>
-                                  <span className="col-item col-item-after"> </span>
-                                  {/* <Row>
-                                    <Col span={2}><div className="col-item">S/No.</div></Col>
-                                    <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
-                                    <Col span={8}><div className="col-item">Values</div></Col>
-                                    <Col span={8}><div className="col-item">Timeframe</div></Col>
-                                  </Row> */}
+                        </Row>
+                        <Row className="impact-summary-wrapper">
+                          <Col span={24}>
+                            <div className="impact-summary">
+                              <span className="impact-title">View Historical Average</span>
+                              {activeTabKey === '3'? (
+                                  <></>
+                                ) : (
+                                  <Button type="primary" onClick={saveCriteria} style={{zIndex: 1}}>
+                                    Save
+                                  </Button>
+                                )}
+                            </div>
+                            </Col>
+                        </Row>
+                        <Row>
+                          <Col span={24} >
+                            <div className="collapse-container">
+                            <div className="content-outer">
+                              <div id="inclusion-criteria" 
+                                className={`collapse-inner ${endpointRollHeight == true ? "taller" : ""} ${endpointCollapsible == true ? "collapsed" : ""}`}>
+                                <div className="criteria-list">
+                                  <div className="list-columns">
+                                    <span className="col-item col-item-before"> </span>
+                                    <span className="col-item col-item-first">Endpoint</span>
+                                    <span className="col-item col-item-middle">Statistical Measure</span>
+                                    <span className="col-item col-item-last">Timeframe</span>
+                                    <span className="col-item col-item-after"> </span>
+                                    {/* <Row>
+                                      <Col span={2}><div className="col-item">S/No.</div></Col>
+                                      <Col span={8}><div className="col-item">Eligibility Criteria</div></Col>
+                                      <Col span={8}><div className="col-item">Values</div></Col>
+                                      <Col span={8}><div className="col-item">Timeframe</div></Col>
+                                    </Row> */}
+                                  </div>
+                                </div>
+                                <div className="sectionPanel">
+                                    <EditTable updateCriteria={updateEndpoint} tableIndex={2}                                
+                                      data={endpointTableDataPrimary}
+                                      defaultActiveKey={endpointDefaultActiveKey}
+                                      collapsible={endpointCollapsible} panelHeader={"Primary"} updateTrial={() => updateTrial(3, 1)}                                  
+                                    />
+                                    <EditTable updateCriteria={updateEndpoint} tableIndex={3}
+                                      data={endpointTableDataSecondary}
+                                      defaultActiveKey={endpointDefaultActiveKey}
+                                      collapsible={endpointCollapsible} panelHeader={"Secondary"} updateTrial={() => updateTrial(3, 1)}                               
+                                    />
                                 </div>
                               </div>
-                              <div className="sectionPanel">
-                                  <EditTable updateCriteria={updateEndpoint} tableIndex={2}                                
-                                    data={endpointTableDataPrimary}
-                                    defaultActiveKey={endpointDefaultActiveKey}
-                                    collapsible={endpointCollapsible} panelHeader={"Primary"} updateTrial={() => updateTrial(3, 1)}                                  
-                                  />
-                                  <EditTable updateCriteria={updateEndpoint} tableIndex={3}
-                                    data={endpointTableDataSecondary}
-                                    defaultActiveKey={endpointDefaultActiveKey}
-                                    collapsible={endpointCollapsible} panelHeader={"Secondary"} updateTrial={() => updateTrial(3, 1)}                               
-                                  />
+                            </div>
+                            </div>
+                          </Col>
+                        </Row>
+                      </Col>
+                      <Col flex="none">
+                        <div style={{ padding: '0 10px' }}></div>
+                      </Col>
+                    </Row>
+                    {/* The drawer with wrapper */}
+                    <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
+                      {/* historical list drawer */}
+                      <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelHistoricalEndpoint} visible={showHistoricalEndpoint}>
+                        <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
+                        {activeTabKey === '1' &&<div className="drawer-content-frequency">
+                          <span className="left-frequency-text">Set Criteria Frequency</span>
+                            <div className="right-frequency-steps">
+                              <div className="freqSection">
+                                {/* <div className="title">
+                                  <CloseOutlined
+                                    className="right-icon"
+                                    onClick={() => setVisible(false)}
+                                  ></CloseOutlined>
+                                </div>
+                                <br/> */}
+                                <div className="content">
+                                  <span>Frequency</span>
+                                  <span style={{ float: "right", fontWeight: 'bold' }}>
+                                    {minValue}% - {maxValue}%
+                                  </span>
+                                </div>
+                                <Slider
+                                  range={{ draggableTrack: true }}
+                                  defaultValue={[minValue, maxValue]}
+                                  tipFormatter={formatter}
+                                  onAfterChange={getFrequency}
+                                />
                               </div>
                             </div>
-                          </div>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col flex="none">
-                      <div style={{ padding: '0 10px' }}></div>
-                    </Col>
-                  </Row>
-                  {/* The drawer with wrapper */}
-                  <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
-                    {/* historical list drawer */}
-                    <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelHistoricalEndpoint} visible={showHistoricalEndpoint}>
-                      <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
-                      {activeTabKey === '1' &&<div className="drawer-content-frequency">
-                        <span className="left-frequency-text">Set Criteria Frequency</span>
+                        </div>}
+                        {activeTabKey === '2' &&<div className="drawer-content-frequency">
+                          <span className="left-frequency-text">Set Criteria Frequency</span>
                           <div className="right-frequency-steps">
                             <div className="freqSection">
                               {/* <div className="title">
+                                <span>Set Frequency</span>
                                 <CloseOutlined
                                   className="right-icon"
-                                  onClick={() => setVisible(false)}
+                                  onClick={() => setExcluVisible(false)}
                                 ></CloseOutlined>
                               </div>
                               <br/> */}
                               <div className="content">
                                 <span>Frequency</span>
                                 <span style={{ float: "right", fontWeight: 'bold' }}>
-                                  {minValue}% - {maxValue}%
+                                  {excluMinValue}% - {excluMaxValue}%
                                 </span>
                               </div>
                               <Slider
                                 range={{ draggableTrack: true }}
-                                defaultValue={[minValue, maxValue]}
+                                defaultValue={[excluMinValue, excluMaxValue]}
                                 tipFormatter={formatter}
-                                onAfterChange={getFrequency}
+                                onAfterChange={getExcluFrequency}
                               />
                             </div>
                           </div>
-                      </div>}
-                      {activeTabKey === '2' &&<div className="drawer-content-frequency">
-                        <span className="left-frequency-text">Set Criteria Frequency</span>
-                        <div className="right-frequency-steps">
-                          <div className="freqSection">
-                            {/* <div className="title">
-                              <span>Set Frequency</span>
-                              <CloseOutlined
-                                className="right-icon"
-                                onClick={() => setExcluVisible(false)}
-                              ></CloseOutlined>
-                            </div>
-                            <br/> */}
-                            <div className="content">
-                              <span>Frequency</span>
-                              <span style={{ float: "right", fontWeight: 'bold' }}>
-                                {excluMinValue}% - {excluMaxValue}%
-                              </span>
-                            </div>
-                            <Slider
-                              range={{ draggableTrack: true }}
-                              defaultValue={[excluMinValue, excluMaxValue]}
-                              tipFormatter={formatter}
-                              onAfterChange={getExcluFrequency}
-                            />
-                          </div>
-                        </div>
-                      </div>}
-                      <div className='drawer-content-below'>
-                      <Row>
-                        <Col span={24} className="drawer-history-text">
-                          <span className="text">
-                          View Historical Trial List
-                          </span>
-                        </Col>
-                      </Row>
-                      <Row>
-                          <Col span={24} style={{paddingBottom: '10px'}}>
-                            {visibleSOA ? (
-                              <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
-                            ) : (
-                              <>
-                                <Button type="primary" onClick={downloadEndpoint} style={{float: 'right'}}>VIEW SOURCE</Button>
-                                {/* <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button> */}
-                              </>
-                            )}
+                        </div>}
+                        <div className='drawer-content-below'>
+                        <Row>
+                          <Col span={24} className="drawer-history-text">
+                            <span className="text">
+                            View Historical Trial List
+                            </span>
                           </Col>
-                      </Row>
-                      <Row>
-                          <Col span={24}>
-                          <div className="history-chart-wrapper">
-                            <div className="chart">
-                              <div className="my-echart-wrapper">
-                                <ReactECharts option={historySponsorOption}></ReactECharts>
-                              </div>
-                              <div className="history-legend-wrapper">
-                                {sponsorChartData
-                                  .sort((a, b) => {
-                                    return b.value - a.value;
-                                  })
-                                  .slice(0, 5)
-                                  .map((d, idx) => {
-                                    const chartData = sponsorChartData;
-                                    const sum = chartData.reduce(
-                                      (accumulator, currentValue) => {
-                                        return accumulator + currentValue.value;
-                                      },
-                                      0
-                                    );
-                                    let percent = ((d.value / sum) * 100).toFixed(2);
-                                    return (
-                                      <div className="custom-legend">
-                                        <span
-                                          className="my_legend"
-                                          style={{
-                                            backgroundColor: sponsorChartColor[idx],
-                                          }}
-                                        ></span>
-                                        <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
-                                      </div>
-                                    );
-                                  })}
-                              </div>
-                            </div>
-                            <div className="chart">
-                            <>
-                                  <div className="my-echart-wrapper">
-                                    <ReactECharts option={historyStatusOption}></ReactECharts>
-                                  </div>
-                                  <div className="history-legend-wrapper">
-                                    {statusChartData
-                                      .sort((a, b) => {
-                                        return b.value - a.value;
-                                      })
-                                      .slice(0, 5)
-                                      .map((d, idx) => {
-                                        const chartData = statusChartData;
-                                        const sum = chartData.reduce(
-                                          (accumulator, currentValue) => {
-                                            return accumulator + currentValue.value;
-                                          },
-                                          0
-                                        );
-                                        let percent = ((d.value / sum) * 100).toFixed(2);
-                                        return (
-                                          <div className="custom-legend" key={idx}>
-                                            <span
-                                              className="my_legend"
-                                              style={{
-                                                backgroundColor: statusChartColor[idx],
-                                              }}
-                                            ></span>
-                                            <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
-                                          </div>
-                                        );
-                                      })}
-                                  </div>
+                        </Row>
+                        <Row>
+                            <Col span={24} style={{paddingBottom: '10px'}}>
+                              {visibleSOA ? (
+                                <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
+                              ) : (
+                                <>
+                                  <Button type="primary" onClick={downloadEndpoint} style={{float: 'right'}}>VIEW SOURCE</Button>
+                                  {/* <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button> */}
                                 </>
+                              )}
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={24}>
+                            <div className="history-chart-wrapper">
+                              <div className="chart">
+                                <div className="my-echart-wrapper">
+                                  <ReactECharts option={historySponsorOption}></ReactECharts>
+                                </div>
+                                <div className="history-legend-wrapper">
+                                  {sponsorChartData
+                                    .sort((a, b) => {
+                                      return b.value - a.value;
+                                    })
+                                    .slice(0, 5)
+                                    .map((d, idx) => {
+                                      const chartData = sponsorChartData;
+                                      const sum = chartData.reduce(
+                                        (accumulator, currentValue) => {
+                                          return accumulator + currentValue.value;
+                                        },
+                                        0
+                                      );
+                                      let percent = ((d.value / sum) * 100).toFixed(2);
+                                      return (
+                                        <div className="custom-legend">
+                                          <span
+                                            className="my_legend"
+                                            style={{
+                                              backgroundColor: sponsorChartColor[idx],
+                                            }}
+                                          ></span>
+                                          <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                        </div>
+                                      );
+                                    })}
+                                </div>
+                              </div>
+                              <div className="chart">
+                              <>
+                                    <div className="my-echart-wrapper">
+                                      <ReactECharts option={historyStatusOption}></ReactECharts>
+                                    </div>
+                                    <div className="history-legend-wrapper">
+                                      {statusChartData
+                                        .sort((a, b) => {
+                                          return b.value - a.value;
+                                        })
+                                        .slice(0, 5)
+                                        .map((d, idx) => {
+                                          const chartData = statusChartData;
+                                          const sum = chartData.reduce(
+                                            (accumulator, currentValue) => {
+                                              return accumulator + currentValue.value;
+                                            },
+                                            0
+                                          );
+                                          let percent = ((d.value / sum) * 100).toFixed(2);
+                                          return (
+                                            <div className="custom-legend" key={idx}>
+                                              <span
+                                                className="my_legend"
+                                                style={{
+                                                  backgroundColor: statusChartColor[idx],
+                                                }}
+                                              ></span>
+                                              <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                            </div>
+                                          );
+                                        })}
+                                    </div>
+                                  </>
+                              </div>
                             </div>
-                          </div>
-                          </Col>
-                      </Row>
-                      <Row>
-                          <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
-                      </Row>
-                      </div>
-                      </Spin>
-                    </Drawer>
-                    <Drawer className="criteria-drawer-wrapper" title={endpointDetail['Standard Event']} placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelEndpoint} visible={showMoreDetailEndpoint}>
-                        <div>
-                          <div className="drawer-content-frequency">
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
+                        </Row>
+                        </div>
+                        </Spin>
+                      </Drawer>
+                      <Drawer className="criteria-drawer-wrapper" title={endpointDetail['Standard Event']} placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelEndpoint} visible={showMoreDetailEndpoint}>
+                          <div>
+                            <div className="drawer-content-frequency">
+                              <Row>
+                                <Col span={24} className="drawer-title">
+                                  <span className="text">
+                                  Frequency
+                                  </span>
+                                </Col>
+                              </Row>
+                              <Row>
+                              {/* <Col span={24} className="drawer-content">
+                                <span className="left-text">
+                                External
+                                </span>
+                                <span className="right-text">
+                                {Math.floor(Number(endpointDetail.Frequency) * 10000) / 100 + "%"}
+                                </span>
+                              </Col> */}
+                              <Col span={24}>
+                                <div className="frequency-echart-wrapper">
+                                  <ReactECharts option={EndpointFrequencyOption}></ReactECharts>
+                                </div>
+                                </Col>
+                            </Row>
+                            </div>
+                            
+                            <div className='drawer-content-sponsor'>
                             <Row>
                               <Col span={24} className="drawer-title">
                                 <span className="text">
-                                Frequency
+                                By sponsors
                                 </span>
                               </Col>
                             </Row>
                             <Row>
-                            {/* <Col span={24} className="drawer-content">
-                              <span className="left-text">
-                              External
-                              </span>
-                              <span className="right-text">
-                              {Math.floor(Number(endpointDetail.Frequency) * 10000) / 100 + "%"}
-                              </span>
-                            </Col> */}
-                            <Col span={24}>
-                              <div className="frequency-echart-wrapper">
-                                <ReactECharts option={EndpointFrequencyOption}></ReactECharts>
-                              </div>
-                              </Col>
-                          </Row>
-                          </div>
-                          
-                          <div className='drawer-content-sponsor'>
-                          <Row>
-                            <Col span={24} className="drawer-title">
-                              <span className="text">
-                              By sponsors
-                              </span>
-                            </Col>
-                          </Row>
-                          <Row>
-                              <Col span={24}>
-                              <div className="history-chart-wrapper">
-                                <div className="chart">
-                                  <div className="my-echart-wrapper">
-                                    <ReactECharts option={EndpointSponsorOption}></ReactECharts>
-                                  </div>
-                                  <div className="history-legend-wrapper">
-                                    {endpointDetail.sponsor_summary
-                                      .sort((a, b) => {
-                                        return b.value - a.value;
-                                      })
-                                      .slice(0, 5)
-                                      .map((d, idx) => {
-                                        const chartData = endpointDetail.sponsor_summary;
-                                        const sum = chartData.reduce(
-                                          (accumulator, currentValue) => {
-                                            return accumulator + currentValue.value;
-                                          },
-                                          0
-                                        );
-                                        let percent = ((d.value / sum) * 100).toFixed(2);
-                                        return (
-                                          <div className="custom-legend" key={idx}>
-                                            <span
-                                              className="my_legend"
-                                              style={{
-                                                backgroundColor: sponsorChartColor[idx],
-                                              }}
-                                            ></span>
-                                            <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
-                                          </div>
-                                        );
-                                      })}
+                                <Col span={24}>
+                                <div className="history-chart-wrapper">
+                                  <div className="chart">
+                                    <div className="my-echart-wrapper">
+                                      <ReactECharts option={EndpointSponsorOption}></ReactECharts>
+                                    </div>
+                                    <div className="history-legend-wrapper">
+                                      {endpointDetail.sponsor_summary
+                                        .sort((a, b) => {
+                                          return b.value - a.value;
+                                        })
+                                        .slice(0, 5)
+                                        .map((d, idx) => {
+                                          const chartData = endpointDetail.sponsor_summary;
+                                          const sum = chartData.reduce(
+                                            (accumulator, currentValue) => {
+                                              return accumulator + currentValue.value;
+                                            },
+                                            0
+                                          );
+                                          let percent = ((d.value / sum) * 100).toFixed(2);
+                                          return (
+                                            <div className="custom-legend" key={idx}>
+                                              <span
+                                                className="my_legend"
+                                                style={{
+                                                  backgroundColor: sponsorChartColor[idx],
+                                                }}
+                                              ></span>
+                                              <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                            </div>
+                                          );
+                                        })}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                              </Col>
-                          </Row>
-                          </div>
-                          {/* <div className="drawer-content-limit">
-                            <Row>
-                            <Col span={24} className="drawer-title">
-                              <span className="text">
-                              Numeric Limits Distribution
-                              </span>
-                            </Col>
-                          </Row> 
-                          </div> */}
-                          <div className="drawer-content-button">
-                              <Popover 
-                              placement="right" 
-                              title={<span>Add to</span>} 
-                              content={<div>
-                                        <p style={{cursor: 'pointer'}} onClick={(e) => handleEndpointSelect(endpointDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>Primary Endpoint</p>
-                                        <p style={{cursor: 'pointer'}}  onClick={(e) => handleEndpointSelectSecondary(endpointDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>Secondary Endpoint</p> 
-                                      </div>} 
-                              trigger="click">
-                                <Button className="update-btn">
-                                  ADD
-                                </Button>              
-                            </Popover>
-                             
+                                </Col>
+                            </Row>
                             </div>
-                        </div>
-                    </Drawer>
-                  </div>
-                </Col>
-              </Row>
-            </Spin>
+                            {/* <div className="drawer-content-limit">
+                              <Row>
+                              <Col span={24} className="drawer-title">
+                                <span className="text">
+                                Numeric Limits Distribution
+                                </span>
+                              </Col>
+                            </Row> 
+                            </div> */}
+                            <div className="drawer-content-button">
+                                <Popover 
+                                placement="right" 
+                                title={<span>Add to</span>} 
+                                content={<div>
+                                          <p style={{cursor: 'pointer'}} onClick={(e) => handleEndpointSelect(endpointDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>Primary Endpoint</p>
+                                          <p style={{cursor: 'pointer'}}  onClick={(e) => handleEndpointSelectSecondary(endpointDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>Secondary Endpoint</p> 
+                                        </div>} 
+                                trigger="click">
+                                  <Button className="update-btn">
+                                    ADD
+                                  </Button>              
+                              </Popover>
+                              
+                              </div>
+                          </div>
+                      </Drawer>
+                    </div>
+                  </Col>
+                </Row>
+              </Spin>
+              </div>
             </div>
-          </div>
-          }
-
-           { processStep === 2 &&
-          <div className="soa-container">
-            <div className="process-container">
-              <span className="action-title" onClick={()=>props.history.push({pathname: '/trials', state: {trial_id: props.location.state.trial_id}})}>
-                  <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
-              </span>
-              <span className="content-title">
-                  <span className="tab-title">Schedule of Events</span>
-                  <span className="tip1-desc">
-                  Use the historical event library on the left to build the Schedule of Events.
-                  </span>
-              </span>
-              <span className="button-area">
-                <Dropdown.Button style={{zIndex: 1}}
-                overlay={
-                  <Menu>
-                    <Menu.Item key="csv" onClick={handleSOAExportClick}>CSV</Menu.Item>
-                  </Menu>
-                }
-                  icon={<DownOutlined />}>
-                  {/* <DownloadOutlined /> */}
-                  EXPORT AS
-                </Dropdown.Button>
-                {/* <Button className="save-btn"  onClick={()=> setSubmitType(1)}>
-                    Save And Finish Later
-                </Button> */}
-                <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}>
-                    Submit
-                </Button>
-              </span>
+            }
+            { processStep === 2 &&
+            <div className="soa-container">
+              <div className="process-container">
+              {sidebarWidth === "160px" &&(<span className="action-title" onClick={handleCloseMenu}>
+                    <LeftOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
+                </span>)}
+                {sidebarWidth === "0px" &&(<span className="action-title" onClick={handleCloseMenu}>
+                    <RightOutlined style={{color:"#000000"}}/> &nbsp;<MenuOutlined style={{color:"#000000"}}/>
+                </span>)}
+                <span className="content-title">
+                    <span className="tab-title">Schedule of Events</span>
+                    <span className="tip1-desc">
+                    Use the historical event library on the left to build the Schedule of Events.
+                    </span>
+                </span>
+                <span className="button-area">
+                  <Dropdown.Button style={{zIndex: 1}}
+                  overlay={
+                    <Menu>
+                      <Menu.Item key="csv" onClick={handleSOAExportClick}>CSV</Menu.Item>
+                    </Menu>
+                  }
+                    icon={<DownOutlined />}>
+                    {/* <DownloadOutlined /> */}
+                    EXPORT AS
+                  </Dropdown.Button>
+                  {/* <Button className="save-btn"  onClick={()=> setSubmitType(1)}>
+                      Save And Finish Later
+                  </Button> */}
+                  <Button type="primary" className="submit-btn"  onClick={()=> setSubmitType(2)}>
+                      Submit
+                  </Button>
+                </span>
+              </div>
+              <ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} handleSOAExport={handleSOAExport} history={props.history} setVisibleSOA={showSOAModal} getTrialById={getTrialById}/>
             </div>
-            <ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} handleSOAExport={handleSOAExport} history={props.history} setVisibleSOA={showSOAModal} getTrialById={getTrialById}/>
+            }
           </div>
-          }
-        </div>
+         </Col>
+       </Row>
       </Spin>
     </div>
       
