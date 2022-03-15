@@ -158,7 +158,9 @@ const Overview = (props: any) => {
   };
 
   const handleRowClick = async (record) => {
-    setLoading(true)    
+    setLoading(true)   
+    // remove File_Path
+    // const filepath = `${record.fileName}`
     const filepath = `iso-service-dev/RawDocuments/${record.fileName}`
     let begin = 0
     let resp = ""

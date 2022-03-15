@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect, useRef } from "react";
 import { withRouter } from "react-router";
 import { Tabs, Input, Select, message } from "antd";

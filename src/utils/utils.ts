@@ -1,6 +1,4 @@
-import { } from "./kendraTypes";
-import { AttributeMap, DocumentAttributeKeys } from "../constants";
-
+/* eslint-disable */
 interface HasLength {
   readonly length: number;
 }
@@ -60,25 +58,6 @@ export const localizedDate = (
   return date ? date.toLocaleDateString("en", options) : "";
 };
 
-export const selectMostRecentUpdatedTimestamp = (
-  documentAttributes: AttributeMap
-): Date | undefined => {
-  const updatedAt = documentAttributes[DocumentAttributeKeys.UpdatedAt];
-  const createdAt = documentAttributes[DocumentAttributeKeys.CreatedAt];
-
-  if (updatedAt && updatedAt.StringValue) {
-    return new Date(updatedAt.StringValue);
-  } else if (updatedAt && updatedAt.DateValue) {
-    return updatedAt.DateValue;
-  } else if (createdAt && createdAt.StringValue) {
-    return new Date(createdAt.StringValue);
-  } else if (createdAt && createdAt.DateValue) {
-    return createdAt.DateValue;
-  } else {
-    return undefined;
-  }
-};
-
 export const getURLSearchParams = (locationSearch: string) => {
   const result: any = {};
   new URLSearchParams(locationSearch).forEach((v, k) => {
@@ -87,20 +66,6 @@ export const getURLSearchParams = (locationSearch: string) => {
   return result;
 }
 
-export const submitFeedback = async (queryId: string, resultId: string, relevance: string) => {
-  const response = await fetch('https://hp5pe11vg7.execute-api.us-east-1.amazonaws.com/prod/', {
-    method: 'POST',
-    headers: {
-      'Access-Control-Request-Method': 'POST',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ 'QueryId': queryId, 'ResultId': resultId, 'RelevanceValue': relevance })
-  })
-
-  return await response.json();
-}
-
-
 function _objToStrMap(obj) {
   let strMap = new Map();
   for (let k of Object.keys(obj)) {
@@ -108,9 +73,7 @@ function _objToStrMap(obj) {
   }
   return strMap;
 }
-/**
- *json转换为map
- */
+
 export const _jsonToMap = (jsonStr: string) => {
   return _objToStrMap(JSON.parse(jsonStr));
 }

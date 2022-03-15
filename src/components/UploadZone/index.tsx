@@ -89,10 +89,12 @@ const Dropzone = (props: any) => {
         console.log('file splited:',fileParts.join("").length)
 
         for(let i = 0; i<fileParts.length;i++){
+          // remove File_Path,should be: f.name.split(".")[0].toString()
           res = await uploadFile(nctID, protocolName, f.name, PATH, fileParts[i], `${i}-${fileParts.length}`);
         }
 
-      }else{
+      }else{          
+        // remove File_Path,should be: f.name.split(".")[0].toString()
         res = await uploadFile(nctID, protocolName, f.name, PATH, fileBytes);
       }
       console.log(res);
@@ -104,6 +106,8 @@ const Dropzone = (props: any) => {
           let begin = 0;
           let resultbegin = null;
           while (begin >=0) {
+            // remove File_Path
+            // resultbegin = await extractText(f.name.split(".")[0].toString(), begin);
             resultbegin = await extractText(PATH + f.name, begin);
             begin = resultbegin.begin
             extractedRes += resultbegin.body
