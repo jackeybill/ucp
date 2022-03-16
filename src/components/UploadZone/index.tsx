@@ -105,12 +105,18 @@ const Dropzone = (props: any) => {
           let times = 1;
           let begin = 0;
           let resultbegin = null;
-          while (begin >=0) {
+          while (begin >=0 ||resultbegin.statusCode !== 200) {
             // remove File_Path
             // resultbegin = await extractText(f.name.split(".")[0].toString(), begin);
             resultbegin = await extractText(PATH + f.name, begin);
             begin = resultbegin.begin
-            extractedRes += resultbegin.body
+            if(resultbegin.statusCode === 200) {
+              extractedRes += resultbegin.body
+            }
+            console.log("resultbegin.statusCode:",resultbegin.statusCode);
+            if(resultbegin.statusCode !== 200){
+              await sleep(20000)
+            } 
           }
           do {
             console.log(`waiting ${10 + 10 * times}s`);
@@ -118,7 +124,11 @@ const Dropzone = (props: any) => {
             times++;
             
             try {
+              console.log("extractedRes",extractedRes);
+              
               const result = JSON.parse(extractedRes);
+              console.log("result",result);
+              
               // console.log("--upload new file--", result);
               const availableTabs: string[] = [];
               form.setFieldsValue({
