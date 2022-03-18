@@ -1972,8 +1972,13 @@ const ScenarioPage = (props) => {
       },
       tooltip: {
         trigger: "item",
-        formatter: function (params) {
-          return [params.name] + " - " + [params.value];
+        formatter: function (params,idx) {
+          const chartData = criteriaDetail.Value.sponser_list
+              const sum = chartData.reduce((accumulator, currentValue) => {
+               return accumulator + currentValue.value
+              }, 0)
+              let p = ((params.value / sum) * 100).toFixed(2);
+              return params.name + " - " + p + "%";
         },
         position: ['5%', '10%'],
         textStyle:{
@@ -2030,8 +2035,13 @@ const ScenarioPage = (props) => {
       },
       tooltip: {
         trigger: "item",
-        formatter: function (params) {
-          return [params.name] + " - " + [params.value];
+        formatter: function (params,idx) {
+          const chartData = endpointDetail.sponsor_summary
+              const sum = chartData.reduce((accumulator, currentValue) => {
+               return accumulator + currentValue.value
+              }, 0)
+              let p = ((params.value / sum) * 100).toFixed(2);
+              return params.name + " - " + p + "%";
         },
         position: ['5%', '10%'],
         textStyle:{
@@ -5645,10 +5655,10 @@ const ScenarioPage = (props) => {
                                 </Row>
                                 </div>
                                 <div className="drawer-content-button">
-                                    <Button className="update-btn" disabled={whetherDisabledAdd} onClick={(e) => handleCriteriaSelect(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
-                                      ADD
-                                    </Button>
-                                  </div>
+                                  <Button className="update-btn" disabled={whetherDisabledAdd} onClick={(e) => handleCriteriaSelect(criteriaDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>
+                                    ADD
+                                  </Button>
+                                </div>
                               </div>
                           </Drawer>
                         </div>
@@ -6100,11 +6110,7 @@ const ScenarioPage = (props) => {
                                   <span className="text">
                                   View Historical Trial List
                                   </span>
-                                </Col>
-                              </Row>
-                              <Row>
-                                  <Col span={24} style={{paddingBottom: '10px'}}>
-                                    {visibleSOA ? (
+                                  {visibleSOA ? (
                                       <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
                                     ) : (
                                       <>
@@ -6112,7 +6118,7 @@ const ScenarioPage = (props) => {
                                         <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button>
                                       </>
                                     )}
-                                  </Col>
+                                </Col>
                               </Row>
                               <Row>
                                   <Col span={24}>
@@ -6769,11 +6775,7 @@ const ScenarioPage = (props) => {
                             <span className="text">
                             View Historical Trial List
                             </span>
-                          </Col>
-                        </Row>
-                        <Row>
-                            <Col span={24} style={{paddingBottom: '10px'}}>
-                              {visibleSOA ? (
+                            {visibleSOA ? (
                                 <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
                               ) : (
                                 <>
@@ -6781,7 +6783,7 @@ const ScenarioPage = (props) => {
                                   {/* <Button onClick={downloadAverage} style={{float: 'right', marginRight: '15px', color: '#ca4a04'}}><span style={{color: '#ca4a04'}}>VIEW AVERAGE</span></Button> */}
                                 </>
                               )}
-                            </Col>
+                          </Col>
                         </Row>
                         <Row>
                             <Col span={24}>
@@ -7005,7 +7007,20 @@ const ScenarioPage = (props) => {
                   </Button>
                 </span>
               </div>
-              <ScheduleEvents record={trialRecord} submitType={submitType} scenarioId={scenarioId} handleGoBack={handleGoBack} handleSOAExport={handleSOAExport} history={props.history} setVisibleSOA={showSOAModal} getTrialById={getTrialById}/>
+              <ScheduleEvents 
+              record={trialRecord} 
+              submitType={submitType} 
+              scenarioId={scenarioId} 
+              handleGoBack={handleGoBack} 
+              handleSOAExport={handleSOAExport} 
+              history={props.history} 
+              setVisibleSOA={showSOAModal} 
+              getTrialById={getTrialById}
+              historySponsorOption={historySponsorOption}
+              historyStatusOption={historyStatusOption}
+              sponsorChartColor={sponsorChartColor}
+              statusChartColor={statusChartColor}
+              />
             </div>
             }
           </div>

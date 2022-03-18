@@ -1,12 +1,14 @@
 import React, { useState, useReducer, useEffect } from "react";
-import {Table, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, InputNumber, Tooltip, Button, Spin, message} from "antd";
-import {ArrowRightOutlined, CloseOutlined, EditFilled, MinusOutlined, PlusOutlined, DownOutlined, DownloadOutlined, HistoryOutlined} from "@ant-design/icons";
-import {getStandardEvents, updateStudy} from "../../utils/ajax-proxy";
+import {Table, Collapse, Slider, Dropdown,Menu, Modal, Row, Col, InputNumber, Tooltip, Button, Spin, message,Drawer} from "antd";
+import {ArrowRightOutlined, CloseOutlined, EditFilled, MinusOutlined, PlusOutlined, DownOutlined, DownloadOutlined, HistoryOutlined, FileTextOutlined, LeftOutlined, RightOutlined,LoadingOutlined} from "@ant-design/icons";
+import {getStandardEvents, updateStudy,getSimilarhistoricalTrialById,getSOAResource,} from "../../utils/ajax-proxy";
 import ReactECharts from 'echarts-for-react';
 import "./index.scss";
 import EventList from '../EventList';
 import FileSaver from 'file-saver';
 import {modality_options} from '../EventList'
+import CriteriaOption from "../../components/CriteriaOption";
+import SelectableTable from "../../components/SelectableTable";
 
 const { Panel } = Collapse;
 
@@ -113,10 +115,10 @@ const ScheduleEvents = (props) => {
   // const[modalityOption,setModalityOption] = useState(initModalityOption )
   const modalityOption = {
     title:{
+      show:false,
       text: 'Activities by Modality',
       x:'center',
       y:'top',
-      show:true,
       textStyle: {
         fontSize: 16,
         fontWeight: 'bold',
@@ -151,7 +153,6 @@ const ScheduleEvents = (props) => {
 
   };
  
-
   //Event Libs
   //Original data from backend
   const [orgLabs, setOrgLabs] = useState([])
@@ -363,7 +364,7 @@ const ScheduleEvents = (props) => {
     return (
         <div className="event-panelHeader">
             <div>
-                <div style={{color:'#333', fontSize: '18px'}}><span>Impact</span></div>
+                <div style={{color:'#333', fontSize: '14px', fontWeight: 500}}><span>Predicted Impact / Summary</span></div>
             </div>
         </div>
     );
@@ -396,6 +397,7 @@ const ScheduleEvents = (props) => {
 
   const burdenOption = {
     title : {
+      show:false,
       text: 'Patient Burden Total:'+totalBurden,
       subtext: burdenSubTitle,
       x:'center',
@@ -466,23 +468,8 @@ const ScheduleEvents = (props) => {
   };
 
   const costOption = {
-    title : {
-      text: 'Cost Per Patient',
-      subtext: costSubTitle,
-      x:'left',
-      y:'top',
-      textStyle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#333'
-      },
-      subtextStyle: {
-        fontSize: 12,
-        fontWeight: 'normal',
-        color: '#999'
-      }
-    },
     legend: {
+      show: false,
       x:'left',
       y:'37%',
       orient: 'vertical',
@@ -510,7 +497,7 @@ const ScheduleEvents = (props) => {
     series: [
       {
         type: 'pie',
-        center: ['70%', '50%'],
+        center: ['50%', '50%'],
         radius: ['50%', '80%'],
         avoidLabelOverlap: false,
         label: {
@@ -527,7 +514,7 @@ const ScheduleEvents = (props) => {
           rich: {
             p: {
               color: '#848484',
-              fontSize: 20,
+              fontSize: 16,
               backgroundColor: "white"
             },
             GOOD: {
@@ -928,6 +915,7 @@ const ScheduleEvents = (props) => {
       return roundFun(avg/1000, 2)
     }
   }
+
   function formatBurdenAvg(totalCost, divisor){
     if(totalCost === 0){
       return 0
@@ -1099,11 +1087,6 @@ const ScheduleEvents = (props) => {
           weeksArr.push(numbers.weekNumber)
         }
       }
-      
-      
-      
-      
-
       // weeksArr.push(1)
       // let week = Math.floor((numbers.weekNumber-1) / (numbers.visitNumber-1));
       // let sum = 1;
@@ -1205,35 +1188,552 @@ const ScheduleEvents = (props) => {
     setFilteredStudyProcedures(filterLibs(orgStudyProcedures, addedStudyProcedures, value[0], value[1]))
   }
 
-   
+  const [soaResource, setSOAResource] = useState([])
+
+  const downloadSOA = async () => {
+    let tempResource = []
+    if(soaResource.length == 0){
+      setSpinning(true)
+      const resp = await getSOAResource(similarHistoricalTrials);
+      if (resp.statusCode == 200) {
+        setSpinning(false)
+        setSOAResource(JSON.parse(resp.body).soaItemList)
+        tempResource = JSON.parse(resp.body).soaItemList
+      }
+    } else {
+      tempResource = soaResource
+    }
+
+    //export
+    let str = 'SOA';
+    str += '\n' + 'NCT ID' + ',' + 'Category' + ',' + 'Raw Activity' + ',' + 'Standardized'
+    for(const id in tempResource){
+      str += '\n' + tempResource[id].nctID + ',"' + tempResource[id].category +  '","' + tempResource[id].raw + '","' 
+        + tempResource[id].standardized + '"'
+    }
+
+    let exportContent = "\uFEFF";
+    let blob = new Blob([exportContent + str], {
+      type: "text/plain;charset=utf-8"
+    });
+
+    const date = Date().split(" ");
+    const dateStr = date[1] + '_' + date[2] + '_' + date[3] + '_' + date[4];
+    FileSaver.saveAs(blob, `SOA_Resource_${dateStr}.csv`);
+  }
+
+  function getChartData(datasource, key) {
+    let keyValues = [];
+    datasource.forEach((e) => {
+      keyValues.push(e[key]);
+    });
+    keyValues = Array.from(new Set(keyValues));
+    const pieChartData = [];
+    keyValues.forEach((v) => {
+      const values = datasource.filter(
+        (d) => d[key].toLowerCase() == v.toLowerCase()
+      );
+      pieChartData.push({
+        value: values.length,
+        name: v,
+      });
+    });
+    return pieChartData;
+  }
+
+  const [showHistoricalEndpoint, setShowHistoricalEndpoint] = useState(false)
+  const [historicalTrialdata, setHistoricalTrialdata] = useState([])
+  const [spinning, setSpinning] = useState(false)
+  const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState([])
+  const [statusChartData,setStatusChartData] = useState([])
+  const [sponsorChartData,setSponsorChartData] = useState([])
+  const [showMoreDetailEndpoint, setShowMoreDetailEndpoint] = useState(false)
+  let [assignedType, setAssignedType] = useState("")
+  const [endpointDetail, setEndpointDetail] = useState({'Standard Event':'',Frequency:0.5,sponsor:[]})
+  const [whetherDisabledAdd, setWhetherDisabledAdd] = useState(false)
+  const [visible, setVisible] = useState(false)  
+
+  const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2025}
+
+  const searchHistoricalTrialsEndpoint = async () => {
+    !showHistoricalEndpoint?setShowHistoricalEndpoint(true):setShowHistoricalEndpoint(false)
+    if(historicalTrialdata.length == 0){
+      setSpinning(true)
+      const resp = await getSimilarhistoricalTrialById(similarHistoricalTrials);
+      if (resp.statusCode == 200) {
+        setSpinning(false)
+        const filteredData =  JSON.parse(resp.body).filter((d) => {
+          const date = d['start_date'].split('-')[0]
+          return (
+            date >= simliarTrialStudyStartDate.dateFrom && date<= simliarTrialStudyStartDate.dateTo
+          );
+        });
+        setHistoricalTrialdata(filteredData)
+        console.log("getSimilarhistoricalTrialById:",filteredData);
+
+        const statusData = getChartData(filteredData, "study_status");
+        const sponsorData = getChartData(filteredData, "sponsor");
+        setStatusChartData(statusData)
+        setSponsorChartData(sponsorData)
+      }
+    }
+  }
+
+  const handleExcluOptionSelect = (item, activeType, id, key, endpointType) =>{
+    switch(item.Categories.trim()){
+      case "Labs": 
+        let index = filteredLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData = [...filteredLabs]
+        const newSelectedData = [...addedLabs]
+
+        if(item.selected){
+          newData.splice(index, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          let selectedIndex = addedLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData.splice(selectedIndex, 1)
+        } else {
+          newData.splice(index, 1, { ...item, ...{selected: true}});
+          newSelectedData.push(Object.assign(item, {selected: true}))
+        }
+        setFilteredLabs(newData)
+        setAddedLabs(newSelectedData)
+        break;
+
+      case "Physical Examination": 
+        let index2 = filteredExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData2 = [...filteredExamination]
+        const newSelectedData2 = [...addedExamination]
+
+        if(item.selected){
+          newData2.splice(index2, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          let selectedIndex = addedExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData2.splice(selectedIndex, 1)
+        } else {
+          newData2.splice(index2, 1, { ...item, ...{selected: true}});
+          newSelectedData2.push(Object.assign(item, {selected: true}))
+        }
+        setFilteredExamination(newData2)
+        setAddedExamination(newSelectedData2)
+        break;
+
+      case "Procedures": 
+        let index3 = filteredProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData3 = [...filteredProcedures]
+        const newSelectedData3 = [...addedProcedures]
+
+        if(item.selected){
+          newData3.splice(index3, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          let selectedIndex = addedProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData3.splice(selectedIndex, 1)
+        } else {
+          newData3.splice(index3, 1, { ...item, ...{selected: true}});
+          newSelectedData3.push(Object.assign(item, {selected: true}))
+        }
+        setFilteredProcedures(newData3)
+        setAddedProcedures(newSelectedData3)
+        break;
+
+      case "Questionnaires": 
+        let index4 = filteredQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData4 = [...filteredQuestionnaires]
+        const newSelectedData4 = [...addedQuestionnaires]
+
+        if(item.selected){
+          newData4.splice(index4, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          let selectedIndex = addedQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData4.splice(selectedIndex, 1)
+        } else {
+          newData4.splice(index4, 1, { ...item, ...{selected: true}});
+          newSelectedData4.push(Object.assign(item, {selected: true}))
+        }
+        setFilteredQuestionnaires(newData4)
+        setAddedQuestionnaires(newSelectedData4)
+        break;
+      case "Study Procedures": 
+        let index5 = filteredStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData5 = [...filteredStudyProcedures]
+        const newSelectedData5 = [...addedStudyProcedures]
+
+        if(item.selected){
+          newData5.splice(index5, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          let selectedIndex = addedStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData5.splice(selectedIndex, 1)
+        } else {
+          newData5.splice(index5, 1, { ...item, ...{selected: true}});
+          newSelectedData5.push(Object.assign(item, {selected: true}))
+        }
+        setFilteredStudyProcedures(newData5)
+        setAddedStudyProcedures(newSelectedData5)
+        break;
+      default: break;
+    }
+    handleEventChange([])
+    // switch(id){
+    //   case 0:
+    //     var index = excluDemographicsElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
+    //     if(activeType == 1){
+    //       if(index < 0){
+    //         // setWhetherDisabledAddExclu(true)
+    //         var newItem = {
+    //           "Eligibility Criteria": item.Text,
+    //           // "Values": formatValue(item),
+    //           // "Timeframe": "-",
+    //           "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+    //           "rawValue": item.Value,
+    //           "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
+    //           "Frequency":item.Frequency
+    //         }
+    //         excluDemographicsElements.push(newItem)
+    //       }
+    //     } else {
+    //       if(index >= 0){
+    //         // setWhetherDisabledAddExclu(false)
+    //         excluDemographicsElements.splice(index,1)
+    //       }
+    //     }
+    //     break;
+    //   case 1:
+    //     var index = excluMedConditionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
+    //     if(activeType == 1){
+    //       if(index < 0){
+    //         // setWhetherDisabledAddExclu(true)
+    //         var newItem = {
+    //           "Eligibility Criteria": item.Text,
+    //           // "Values": formatValue(item),
+    //           // "Timeframe": "-",
+    //           "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+    //           "rawValue": item.Value,
+    //           "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
+    //           "Frequency":item.Frequency
+    //         }
+    //         excluMedConditionElements.push(newItem)
+    //       }
+    //     } else {
+    //       if(index >= 0){
+    //         // setWhetherDisabledAddExclu(false)
+    //         excluMedConditionElements.splice(index,1)
+    //       }
+    //     }
+    //     break;
+    //   case 2:
+    //     var index = excluInterventionElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
+    //     if(activeType == 1){
+    //       if(index < 0){
+    //         // setWhetherDisabledAddExclu(true)
+    //         var newItem = {
+    //           "Eligibility Criteria": item.Text,
+    //           // "Values": formatValue(item),
+    //           // "Timeframe": "-",
+    //           "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+    //           "rawValue": item.Value,
+    //           "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
+    //           "Frequency":item.Frequency
+    //         }
+    //         excluInterventionElements.push(newItem)
+    //       }
+    //     } else {
+    //       if(index >= 0){
+    //         // setWhetherDisabledAddExclu(false)
+    //         excluInterventionElements.splice(index,1)
+    //       }
+    //     }
+    //     break;
+    //   default:
+    //     var index = excluLabTestElements.findIndex((domain) => item.Text == domain['Eligibility Criteria']);
+    //     if(activeType == 1){
+    //       if(index < 0){
+    //         // setWhetherDisabledAddExclu(true)
+    //         var newItem = {
+    //           "Eligibility Criteria": item.Text,
+    //           // "Values": formatValue(item),
+    //           // "Timeframe": "-",
+    //           "Values": item.Text.trim().toUpperCase() === 'INSULIN' ? '-' : formatValue(item),
+    //           "rawValue": item.Value,
+    //           "Timeframe": item.Text.trim().toUpperCase() === 'INSULIN' ? formatValue(item) : "-",
+    //           "Frequency":item.Frequency
+    //         }
+    //         excluLabTestElements.push(newItem)
+    //       }
+    //     } else {
+    //       if(index >= 0){
+    //         // setWhetherDisabledAddExclu(false)
+    //         excluLabTestElements.splice(index,1)
+    //     }
+    //   }
+    //   break;
+    // }
+  }
+  
+  const handleEndpointMoreSelect = (item, activeMore, id, key) => {
+
+    if(item!=='') {
+      setEndpointDetail(item)
+      
+    //   let tempEndpointFrequency = item.frequency_summary.percent.map((val, index)=>{
+    //     return {
+    //       name: val.category,
+    //         type: 'bar', 
+    //         emphasis: {
+    //           focus: 'series'
+    //         },
+    //         barGap: '0%',
+    //         // barWidth: '40%',
+    //         itemStyle: {
+    //           color: (index===0?frequencyColors['Primary']:frequencyColors['Secondary'])|| '#E86153'
+    //         },
+    //         data: val.value.length>5?val.value.slice(val.value.length-5, val.value.length):val.value
+    //     }
+    //   })
+    //   // console.log("tempEndpointFrequency:",tempEndpointFrequency);
+    //   setEndpointFrequency(tempEndpointFrequency)
+    }
+
+    if(activeMore === 1) {
+      setShowMoreDetailEndpoint(true)
+    } else {
+      setShowMoreDetailEndpoint(false)
+    }
+  }
+
+  const handleCriteriaSelect = (item, activeMore, id, key,e) => {
+    switch(item.Categories.trim()){
+      case "Labs": 
+        let index = filteredLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData = [...filteredLabs]
+        const newSelectedData = [...addedLabs]
+
+        if(item.selected){
+          newData.splice(index, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          let selectedIndex = addedLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData.splice(selectedIndex, 1)
+          setEndpointDetail(Object.assign(item, {selected: false}))
+        } else {
+          newData.splice(index, 1, { ...item, ...{selected: true}});
+          newSelectedData.push(Object.assign(item, {selected: true}))
+          setEndpointDetail(Object.assign(item, {selected: true}))
+        }
+        setFilteredLabs(newData)
+        setAddedLabs(newSelectedData)
+        break;
+
+      case "Physical Examination": 
+        let index2 = filteredExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData2 = [...filteredExamination]
+        const newSelectedData2 = [...addedExamination]
+
+        if(item.selected){
+          newData2.splice(index2, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          let selectedIndex = addedExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData2.splice(selectedIndex, 1)
+          setEndpointDetail(Object.assign(item, {selected: false}))
+        } else {
+          newData2.splice(index2, 1, { ...item, ...{selected: true}});
+          newSelectedData2.push(Object.assign(item, {selected: true}))
+          setEndpointDetail(Object.assign(item, {selected: true}))
+        }
+        setFilteredExamination(newData2)
+        setAddedExamination(newSelectedData2)
+        break;
+
+      case "Procedures": 
+        let index3 = filteredProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData3 = [...filteredProcedures]
+        const newSelectedData3 = [...addedProcedures]
+
+        if(item.selected){
+          newData3.splice(index3, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          let selectedIndex = addedProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData3.splice(selectedIndex, 1)
+          setEndpointDetail(Object.assign(item, {selected: false}))
+        } else {
+          newData3.splice(index3, 1, { ...item, ...{selected: true}});
+          newSelectedData3.push(Object.assign(item, {selected: true}))
+          setEndpointDetail(Object.assign(item, {selected: true}))
+        }
+        setFilteredProcedures(newData3)
+        setAddedProcedures(newSelectedData3)
+        break;
+
+      case "Questionnaires": 
+        let index4 = filteredQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData4 = [...filteredQuestionnaires]
+        const newSelectedData4 = [...addedQuestionnaires]
+
+        if(item.selected){
+          newData4.splice(index4, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          let selectedIndex = addedQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData4.splice(selectedIndex, 1)
+          setEndpointDetail(Object.assign(item, {selected: false}))
+        } else {
+          newData4.splice(index4, 1, { ...item, ...{selected: true}});
+          newSelectedData4.push(Object.assign(item, {selected: true}))
+          setEndpointDetail(Object.assign(item, {selected: true}))
+        }
+        setFilteredQuestionnaires(newData4)
+        setAddedQuestionnaires(newSelectedData4)
+        break;
+      case "Study Procedures": 
+        let index5 = filteredStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+        const newData5 = [...filteredStudyProcedures]
+        const newSelectedData5 = [...addedStudyProcedures]
+
+        if(item.selected){
+          newData5.splice(index5, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          let selectedIndex = addedStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+          newSelectedData5.splice(selectedIndex, 1)
+          setEndpointDetail(Object.assign(item, {selected: false}))
+        } else {
+          newData5.splice(index5, 1, { ...item, ...{selected: true}});
+          newSelectedData5.push(Object.assign(item, {selected: true}))
+          setEndpointDetail(Object.assign(item, {selected: true}))
+        }
+        setFilteredStudyProcedures(newData5)
+        setAddedStudyProcedures(newSelectedData5)
+        break;
+      default: break;
+    }
+    handleEventChange([])
+  }
+
+  const handleCancelEndpoint = () => {
+    setShowMoreDetailEndpoint(false)
+    // setVisible(false)
+    // setVisibleSOA(false)
+  }
+
+  const handleCancelHistoricalEndpoint = () => {
+    setShowHistoricalEndpoint(false)
+    setVisible(false)
+    // setVisibleSOA(false)
+  }
+
+  const updateTrial = (type: number, res: number) => {
+    console.log("updateTrial");
+    
+    // res: 1, update when loading page; 2, update when update criteria
+    // if(res == 1){
+    //   setReloadPTData(true)
+    // }
+
+    // if (type == 4) {//SOA
+    //   let excluDemographicsElementsTmp = excluDemographicsElements.map((item,index) =>{
+    //     return Object.assign(item,{Key:(index + 1) + ''})
+    //   })
+    //   let excluDemographicsTableDataTmp = excluDemographicsElementsTmp.filter(d => {
+    //     return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+    //   })
+    //   setExcluDemographicsElements(excluDemographicsElementsTmp )
+    //   setExcluDemographicsTableData(excluDemographicsTableDataTmp.map((item, id) =>{
+    //     item.Key = (id + 1) + ''
+    //     return item
+    //   }))
+
+
+      
+    //   let excluMedConditionElementsTmp = excluMedConditionElements.map((item,index) =>{
+    //     return Object.assign(item,{Key:(index + 1) + ''})
+    //   })
+    //   let excluMedConditionTableDataTmp = excluMedConditionElementsTmp.filter(d => {
+    //     return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+    //   }) 
+
+    //   setExcluMedConditionElements(excluMedConditionElementsTmp )
+    //   setExcluMedConditionTableData(excluMedConditionTableDataTmp.map((item, id) =>{
+    //     item.Key = excluDemographicsTableDataTmp.length + (id + 1) + ''
+    //     return item
+    //   }))
+
+
+    //   let excluInterventionElementsTmp = excluInterventionElements.map((item,index) =>{
+    //     return Object.assign(item,{Key:(index + 1) + ''})
+    //   })
+    //   let excluInterventionTableDataTmp = excluInterventionElementsTmp.filter(d => {
+    //     return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+    //   })
+    //   setExcluInterventionElements(excluInterventionElementsTmp )
+    //   setExcluInterventionTableData(excluInterventionTableDataTmp.map((item, id) =>{
+    //     item.Key = excluDemographicsTableDataTmp.length + excluMedConditionTableDataTmp.length + (id + 1) + ''
+    //     return item
+    //   }))
+
+
+    //   let excluLabTestElementsTmp = excluLabTestElements.map((item,index) =>{
+    //     return Object.assign(item,{Key:(index + 1) + ''})
+    //   })
+    //   let excluLabTestTableDataTmp = excluLabTestElementsTmp.filter(d => {
+    //     return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+    //   })
+    //   setExcluLabTestElements(excluLabTestElementsTmp )
+    //   setExcluLabTestTableData(excluLabTestTableDataTmp.map((item, id) =>{
+    //     item.Key = excluDemographicsTableDataTmp.length + excluMedConditionTableDataTmp.length + excluInterventionTableDataTmp.length + (id + 1) + ''
+    //     return item
+    //   }))
+    // } 
+}
+
+  const EndpointSponsorOption = {
+    title: {
+      text: "By Sponsor",
+      show: false,
+      x: "5%",
+      y: "top",
+      textStyle: {
+        fontSize: 14,
+      },
+    },
+    tooltip: {
+      trigger: "item",
+      formatter: function (params,idx) {
+        const chartData = endpointDetail.sponsor
+            const sum = chartData.reduce((accumulator, currentValue) => {
+             return accumulator + currentValue.value
+            }, 0)
+            let p = ((params.value / sum) * 100).toFixed(2);
+            return params.name + " - " + p + "%";
+      },
+      position: ['5%', '10%'],
+      textStyle:{
+        fontSize: 12,
+      },
+      confine:false,
+    },
+    series: [
+      {
+        type: "pie",
+        center: ["30%", "35%"],
+        radius: ["20%", "40%"],
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+        },
+        color: props.sponsorChartColor,
+        data: endpointDetail.sponsor.sort((a, b) => {
+          return b.value - a.value;
+        })
+        .slice(0, 5),
+       
+      },
+    ],
+  };
 
   return (
     <div className="soa-content">
-      <div className={`side-toolbar ${eventLib !== "0px" ? 'hidden' : ''}`} onClick={()=> setEventLib("300px")}>
-        <div className="panel-label">Event Library</div>
-        <div className="icon">&nbsp;<ArrowRightOutlined />&nbsp;</div>
-      </div>
       <Row>
         <Col flex={eventLib} className={`event-left-container ${eventLib === "0px" ? 'hidden' : ''}`}>
           <Row style={{backgroundColor: '#F8F8F8'}}>
             <Col span={24}>
               <div className="item-header">
-                <Row>
-                  <Col span={20}>
-                    <span>Event Library</span>
-                  </Col>
-                  <Col span={2}>
-                  <Tooltip title={'View Historical Trial SOA'}>
-                    <HistoryOutlined className="right-icon" onClick={() => props.setVisibleSOA(true)}></HistoryOutlined>
-                  </Tooltip>
-                  </Col>
-                  <Col span={2}>
-                  <Tooltip title={'Collapse Event Library'}>
-                    <CloseOutlined className="right-icon" onClick={() => setEventLib("0px")}></CloseOutlined>
-                  </Tooltip>
-                  </Col>
-                </Row>
-                
+                <div className="item-header-text">Endpoint Library</div>
+                <div className="item-header-content" onClick={searchHistoricalTrialsEndpoint}>
+                  <span className="left-icon">
+                    <FileTextOutlined/>
+                  </span>
+                  <span className="middle-text">
+                    Manage Library
+                  </span>
+                  <span className="right-icon" onClick= {searchHistoricalTrialsEndpoint}>
+                    {!showHistoricalEndpoint ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}}/>:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
+                  </span>
+                </div>
               </div>
             </Col>
           </Row>
@@ -1242,55 +1742,165 @@ const ScheduleEvents = (props) => {
               <div style={{ padding: '0 10px' }}></div>
             </Col>
             <Col className="left-section">
-              <Row className="head-row" style={{alignItems: 'center', marginBottom: '10px'}}>
-                <Col span={16}>
-                  <div className="item-option">
-                    <span>Select / Unselect events from library</span>
+              <Row>
+                <Col span={24}>
+                  <div className="content-outer content-sidebar">
+                    <div className="content-over">
+                    <Collapse className="eventLib library box" collapsible="header" onChange={callback} activeKey={activeCollapse}>
+                      <Panel showArrow={false} header={eventLibHeader(CATEGORY_LABS, filteredLabs.length, "1")} key="1">
+                        {filteredLabs.length>0 ? (
+                            <div className="library box select-option-wrapper">
+                            {filteredLabs.sort(function(m,n){ var a = Number(m["Frequency"]===''?0:m["Frequency"]); var b = Number(n["Frequency"]===''?0:n["Frequency"]); return b-a;}).map((endpoint, idx) => {        
+                              return (
+                                <CriteriaOption
+                                  selectedEle = {addedLabs}
+                                  selectedEleSecondary = {addedLabs}
+                                  minValue={minV}
+                                  maxValue={maxV}
+                                  key={`demographic_${idx}`}
+                                  demographic={endpoint}
+                                  index={0}//
+                                  idx={idx}
+                                  assignedType={'None'}
+                                  showMoreDetail={showMoreDetailEndpoint}
+                                  // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                  handleOptionSelect={handleExcluOptionSelect}
+                                  handleOptionSelectSecondary={handleExcluOptionSelect}
+                                  handleMoreSelect={handleEndpointMoreSelect}
+                                ></CriteriaOption>
+                              );
+                            })}
+                          </div>
+                        ): (
+                          <></>
+                        )}
+                      </Panel>
+                    </Collapse>
+                    <Collapse className="eventLib library box" collapsible="header" onChange={callback} activeKey={activeCollapse}>
+                      <Panel showArrow={false} header={eventLibHeader(CATEGORY_PHYSICAL_EXAMINATION, filteredExamination.length, "2")}key="2">
+                        {filteredExamination.length>0 ? (
+                            <div className="library box select-option-wrapper">
+                            {filteredExamination.sort(function(m,n){ var a = Number(m["Frequency"]===''?0:m["Frequency"]); var b = Number(n["Frequency"]===''?0:n["Frequency"]); return b-a;}).map((endpoint, idx) => {        
+                              return (
+                                <CriteriaOption
+                                  selectedEle = {addedExamination}
+                                  selectedEleSecondary = {addedExamination}
+                                  minValue={minV}
+                                  maxValue={maxV}
+                                  key={`demographic_${idx}`}
+                                  demographic={endpoint}
+                                  index={0}//
+                                  idx={idx}
+                                  assignedType={'None'}
+                                  showMoreDetail={showMoreDetailEndpoint}
+                                  // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                  handleOptionSelect={handleExcluOptionSelect}
+                                  handleOptionSelectSecondary={handleExcluOptionSelect}
+                                  handleMoreSelect={handleEndpointMoreSelect}
+                                ></CriteriaOption>
+                              );
+                            })}
+                          </div>
+                        ): (
+                          <></>
+                        )}
+                      </Panel>
+                    </Collapse>
+                    <Collapse className="eventLib library box" collapsible="header" onChange={callback} activeKey={activeCollapse}>
+                      <Panel showArrow={false} header={eventLibHeader(CATEGORY_PROCEDURES, filteredProcedures.length, "3")} key="3">
+                        {filteredProcedures.length>0 ? (
+                            <div className="library box select-option-wrapper">
+                            {filteredProcedures.sort(function(m,n){ var a = Number(m["Frequency"]===''?0:m["Frequency"]); var b = Number(n["Frequency"]===''?0:n["Frequency"]); return b-a;}).map((endpoint, idx) => {        
+                              return (
+                                <CriteriaOption
+                                  selectedEle = {addedProcedures}
+                                  selectedEleSecondary = {addedProcedures}
+                                  minValue={minV}
+                                  maxValue={maxV}
+                                  key={`demographic_${idx}`}
+                                  demographic={endpoint}
+                                  index={0}//
+                                  idx={idx}
+                                  assignedType={'None'}
+                                  showMoreDetail={showMoreDetailEndpoint}
+                                  // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                  handleOptionSelect={handleExcluOptionSelect}
+                                  handleOptionSelectSecondary={handleExcluOptionSelect}
+                                  handleMoreSelect={handleEndpointMoreSelect}
+                                ></CriteriaOption>
+                              );
+                            })}
+                          </div>
+                        ): (
+                          <></>
+                        )}
+                      </Panel>
+                    </Collapse>
+                    <Collapse className="eventLib library box" collapsible="header" onChange={callback} activeKey={activeCollapse}>
+                      <Panel showArrow={false} header={eventLibHeader(CATEGORY_QUESTIONNAIRES, filteredQuestionnaires.length, "4")} key="4">
+                        {filteredQuestionnaires.length>0 ? (
+                            <div className="library box select-option-wrapper">
+                            {filteredQuestionnaires.sort(function(m,n){ var a = Number(m["Frequency"]===''?0:m["Frequency"]); var b = Number(n["Frequency"]===''?0:n["Frequency"]); return b-a;}).map((endpoint, idx) => {        
+                              return (
+                                <CriteriaOption
+                                  selectedEle = {addedQuestionnaires}
+                                  selectedEleSecondary = {addedQuestionnaires}
+                                  minValue={minV}
+                                  maxValue={maxV}
+                                  key={`demographic_${idx}`}
+                                  demographic={endpoint}
+                                  index={0}//
+                                  idx={idx}
+                                  assignedType={'None'}
+                                  showMoreDetail={showMoreDetailEndpoint}
+                                  // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                  handleOptionSelect={handleExcluOptionSelect}
+                                  handleOptionSelectSecondary={handleExcluOptionSelect}
+                                  handleMoreSelect={handleEndpointMoreSelect}
+                                ></CriteriaOption>
+                              );
+                            })}
+                          </div>
+                        ): (
+                          <></>
+                        )}
+                      </Panel>
+                    </Collapse>
+                    <Collapse className="eventLib library box" collapsible="header" onChange={callback} activeKey={activeCollapse}>
+                      <Panel showArrow={false} header={eventLibHeader(CATEGORY_STUDY_PROCEDURES, filteredStudyProcedures.length, "5")} key="5">
+                        {filteredStudyProcedures.length>0 ? (
+                            <div className="library box select-option-wrapper">
+                            {filteredStudyProcedures.sort(function(m,n){ var a = Number(m["Frequency"]===''?0:m["Frequency"]); var b = Number(n["Frequency"]===''?0:n["Frequency"]); return b-a;}).map((endpoint, idx) => {        
+                              return (
+                                <CriteriaOption
+                                  selectedEle = {addedStudyProcedures}
+                                  selectedEleSecondary = {addedStudyProcedures}
+                                  minValue={minV}
+                                  maxValue={maxV}
+                                  key={`demographic_${idx}`}
+                                  demographic={endpoint}
+                                  index={0}//
+                                  idx={idx}
+                                  assignedType={'None'}
+                                  showMoreDetail={showMoreDetailEndpoint}
+                                  // criteriaDetailActiveTab={criteriaDetailActiveTab}
+                                  handleOptionSelect={handleExcluOptionSelect}
+                                  handleOptionSelectSecondary={handleExcluOptionSelect}
+                                  handleMoreSelect={handleEndpointMoreSelect}
+                                ></CriteriaOption>
+                              );
+                            })}
+                          </div>
+                        ): (
+                          <></>
+                        )}
+                      </Panel>
+                    </Collapse>
+                    </div>
                   </div>
                 </Col>
-                <Col span={8} style={{textAlign:'right', paddingRight:'10px', fontSize:'14px'}}>
-                  <Row>
-                  <Col span={24}><span className="frequency" style={{ display: "block",width: "100px" }}>EVENT FREQUENCY</span></Col>
-                  </Row>
-                  <Row style={{width:'100%'}}>
-                  <Col span={24}>
-                    <div id="freqModal" ref={null} onClick={() => setVisibleSlider(true)}>
-                      <span className="label">
-                        {minV}%-{maxV}%
-                      </span>
-                      <EditFilled className={`${visibleSlider ? 'active' : ''}`}/>
-                    </div>
-                    </Col>
-                  </Row>
-                </Col>
               </Row>
-              {visibleSlider ? (
-              <div className="freqSection">
-                <div className="title">
-                  <span>Set Frequency</span>
-                  <CloseOutlined
-                    className="right-icon"
-                    onClick={() => setVisibleSlider(false)}
-                  ></CloseOutlined>
-                </div>
-                <br/>
-                <div className="content">
-                  <span>Criteria Frequency</span>
-                  <span style={{ float: "right", fontWeight: 'bold' }}>
-                    {minV}% - {maxV}%
-                  </span>
-                </div>
-                <Slider
-                  range={{ draggableTrack: true }}
-                  defaultValue={[minV, maxV]}
-                  tipFormatter={formatter}
-                  onAfterChange={getFrequency}
-                />
-              </div>
-              ) : (
-              <></>
-              )}
-              <Row className="event-section">
+              {/* <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
                   <Panel showArrow={false} header={eventLibHeader(CATEGORY_LABS, filteredLabs.length, "1")} key="1">
@@ -1303,8 +1913,8 @@ const ScheduleEvents = (props) => {
                   </Panel>
                 </Collapse>
                 </Col>
-              </Row>
-              <Row className="event-section">
+              </Row> */}
+              {/* <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
                   <Panel showArrow={false} header={eventLibHeader(CATEGORY_PHYSICAL_EXAMINATION, filteredExamination.length, "2")} key="2">
@@ -1317,8 +1927,8 @@ const ScheduleEvents = (props) => {
                   </Panel>
                 </Collapse>
                 </Col>
-              </Row>
-              <Row className="event-section">
+              </Row> */}
+              {/* <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
                   <Panel showArrow={false} header={eventLibHeader(CATEGORY_PROCEDURES, filteredProcedures.length, "3")} key="3">
@@ -1331,8 +1941,8 @@ const ScheduleEvents = (props) => {
                   </Panel>
                 </Collapse>
                 </Col>
-              </Row>
-              <Row className="event-section">
+              </Row> */}
+              {/* <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
                   <Panel showArrow={false} header={eventLibHeader(CATEGORY_QUESTIONNAIRES, filteredQuestionnaires.length, "4")} key="4">
@@ -1345,8 +1955,8 @@ const ScheduleEvents = (props) => {
                   </Panel>
                 </Collapse>
                 </Col>
-              </Row>
-              <Row className="event-section">
+              </Row> */}
+              {/* <Row className="event-section">
                 <Col span={24}>
                 <Collapse className="eventLib" collapsible="header" onChange={callback} activeKey={activeCollapse}>
                   <Panel showArrow={false} header={eventLibHeader(CATEGORY_STUDY_PROCEDURES, filteredStudyProcedures.length, "5")} key="5">
@@ -1359,74 +1969,98 @@ const ScheduleEvents = (props) => {
                   </Panel>
                 </Collapse>
                 </Col>
-              </Row>
+              </Row> */}
             </Col>
             <Col flex="none">
               <div style={{ padding: '0 10px' }}></div>
             </Col>
           </Row>
+          <Row style={{backgroundColor: '#fff'}}>
+            <Col span={24}>
+              <div className="updateTrial">
+                <Button className="update-btn" 
+                onClick={() => updateTrial(4, 1)}
+                >
+                  UPDATE MY TRIAL
+                </Button>
+              </div>
+            </Col>
+          </Row>
         </Col>
         <Col flex="auto" className="event-right-container">
           <div style={{ padding: '10px 20px 0px 20px' }}>
-            <Row>
-              <Col span={24}><span className="tab-title">Schedule of Events</span></Col>
-            </Row>
             <Spin spinning={showConfigure}>
-            <Row>
-              <Col span={9}>
-                <span className="tip1-desc">
-                  Use the historical event library on the left to build the Schedule of Events.
-                </span>
-              </Col>
-              <Col span={1}></Col>
-              <Col span={5} className={`${hiddeTags ? 'hidde' : ''}`}>
-                <span className="none-click right">
-                Number of Visits <InputNumber size="small" value={numbers.visitNumber} />
-                </span>
-              </Col>
-              <Col span={6} className={`center ${hiddeTags ? 'hidde' : ''}`}>
-                <span className="none-click">
-                  Number of Weeks <InputNumber size="small" value={numbers.weekNumber} />&nbsp;
-                </span>
-                <EditFilled className="edit-icon" onClick={showConfigureModal}/>
-              </Col>
-              <Col span={3} className={`${hiddeTags ? 'hidde' : ''}`}>
-                <Dropdown.Button style={{zIndex: 1}} size="small"
-                  overlay={
-                    <Menu>
-                      <Menu.Item key="csv" onClick={exportEvent}>CSV</Menu.Item>
-                    </Menu>
-                  }
-                  icon={<DownOutlined />}>
-                  <DownloadOutlined />
-                  EXPORT AS
-                </Dropdown.Button>
-              </Col>
-
+            <Row style={{position: 'relative', zIndex: 99 }}> 
               <Col span={24} className={`${hiddeTags ? 'hidde' : ''}`}>
               <Collapse defaultActiveKey={['1']} onChange={excluCallback} expandIconPosition="right" className="event-chart">
                 <Panel header={panelHeader()} key="1">
-                  <Row>
-                    <Col span={8}>
-                      <ReactECharts option={costOption} style={{ height: 175}}/>
-                      <div style={{paddingLeft: '50%', fontSize: '14px', color: '#999'}}>
-                        <span>Click on each metric to filter</span>
+                <div className="chart-container pie">
+                  <div className="chart-title">
+                      <div className="text">
+                      Cost per patient
+                      </div> 
+                  </div>
+                  <div>
+                    <ReactECharts
+                          option={costOption}
+                          style={{ height: 120}}
+                          />
+                  </div>
+                  <div className="subtitle">{costSubTitle}</div>
+                  <div className="legend-wrapper">
+                        <div className="item-desc">
+                          <span className="bar-item item3"></span>
+                          <span>{CATEGORY_LABS}</span>
+                        </div>
+                        <div className="item-desc">
+                          <span className="bar-item item4"></span>
+                          <span>{CATEGORY_PHYSICAL_EXAMINATION}</span>
+                        </div>
+                        <div className="item-desc">
+                          <span className="bar-item item1"></span>
+                          <span>{CATEGORY_PROCEDURES}</span>
+                        </div>
+                        <div className="item-desc">
+                          <span className="bar-item item2"></span>
+                          <span>{CATEGORY_QUESTIONNAIRES}</span>
+                        </div>
+                        <div className="item-desc">
+                          <span className="bar-item item1"></span>
+                          <span>{CATEGORY_STUDY_PROCEDURES}</span>
+                        </div>
                       </div>
-                    </Col>
-                    <Col span={8}>
-
-                      <ReactECharts option={burdenOption} style={{ height: 200}}/>
-                    </Col>
-                    <Col span={8}>
-                      <ReactECharts option={modalityOption} style={{ height: 200}}/>
-                    </Col>
-                  </Row>
+                </div>
+                <div className="chart-container">
+                  <div className="chart-title">
+                      <div className="text">
+                        {'Patient Burden Total:'+totalBurden}
+                      </div> 
+                  </div>
+                  <div className="subtitleBarChart">
+                  {burdenSubTitle}
+                  </div>
+                  <div>
+                  <ReactECharts option={burdenOption}
+                  style={{width: '310px', height: '180px',marginLeft:10,}}></ReactECharts>
+                  </div>
+                </div>
+                <div className="chart-container">
+                  <div className="chart-title">
+                      <div className="text">
+                      Activities by Modality
+                      </div> 
+                  </div>
+                  <div className="subtitleBarChart">
+                  </div>
+                  <div>
+                  <ReactECharts option={modalityOption}
+                  style={{width: '300px', height: '185px'}}></ReactECharts>
+                  </div>
+                </div>
                 </Panel>
               </Collapse>
               </Col>
-
-              <Col span={24} style={{height: '25px'}}></Col>
-
+              <Col span={24} style={{height: '10px'}}></Col>
               <Col span={24}>
                 <div className="event-dashboard-container">
                     <EventList
@@ -1444,11 +2078,209 @@ const ScheduleEvents = (props) => {
                       weeks={weeks}
                       submitType={submitType}
                       updateWeeks={setWeeks}
+                      hiddeTags={hiddeTags}
+                      numbersData={numbers}
+                      showConfigureModal={showConfigureModal}
                     />
                 </div>
               </Col>
             </Row>
             </Spin>
+            {/* The drawer with wrapper */}
+            <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
+              {/* historical list drawer */}
+              <Drawer className="history-list-drawer-wrapper" title="Manage Library" placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelHistoricalEndpoint} visible={showHistoricalEndpoint}>
+                <Spin spinning={spinning} indicator={<LoadingOutlined style={{ color: "#ca4a04",fontSize: 24 }}/>} >
+                <div className="drawer-content-frequency">
+                  <span className="left-frequency-text">Set Criteria Frequency</span>
+                  <div className="right-frequency-steps">
+                    <div className="freqSection">
+                      <div className="content">
+                        <span>Frequency</span>
+                        <span style={{ float: "right", fontWeight: 'bold' }}>
+                          {minV}% - {maxV}%
+                        </span>
+                      </div>
+                      <Slider
+                        range={{ draggableTrack: true }}
+                        defaultValue={[minV, maxV]}
+                        tipFormatter={formatter}
+                        onAfterChange={getFrequency}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className='drawer-content-below'>
+                <Row>
+                  <Col span={24} className="drawer-history-text">
+                    <span className="text">
+                    View Historical Trial List
+                    </span>
+                    <Button type="primary" onClick={downloadSOA} style={{float: 'right'}}>VIEW SOURCE</Button>
+                  </Col>
+                </Row>
+                <Row>
+                    <Col span={24}>
+                    <div className="history-chart-wrapper">
+                      <div className="chart">
+                        <div className="my-echart-wrapper">
+                          <ReactECharts option={props.historySponsorOption}></ReactECharts>
+                        </div>
+                        <div className="history-legend-wrapper">
+                          {sponsorChartData
+                            .sort((a, b) => {
+                              return b.value - a.value;
+                            })
+                            .slice(0, 5)
+                            .map((d, idx) => {
+                              const chartData = sponsorChartData;
+                              const sum = chartData.reduce(
+                                (accumulator, currentValue) => {
+                                  return accumulator + currentValue.value;
+                                },
+                                0
+                              );
+                              let percent = ((d.value / sum) * 100).toFixed(2);
+                              return (
+                                <div className="custom-legend"
+                                key={idx}>
+                                  <span
+                                    className="my_legend"
+                                    key={idx}
+                                    style={{
+                                      backgroundColor: props.sponsorChartColor[idx],
+                                    }}
+                                  ></span>
+                                  <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div>
+                      <div className="chart">
+                      <>
+                            <div className="my-echart-wrapper">
+                              <ReactECharts option={props.historyStatusOption}></ReactECharts>
+                            </div>
+                            <div className="history-legend-wrapper">
+                              {statusChartData
+                                .sort((a, b) => {
+                                  return b.value - a.value;
+                                })
+                                .slice(0, 5)
+                                .map((d, idx) => {
+                                  const chartData = statusChartData;
+                                  const sum = chartData.reduce(
+                                    (accumulator, currentValue) => {
+                                      return accumulator + currentValue.value;
+                                    },
+                                    0
+                                  );
+                                  let percent = ((d.value / sum) * 100).toFixed(2);
+                                  return (
+                                    <div className="custom-legend" key={idx}>
+                                      <span
+                                        className="my_legend"
+                                        style={{
+                                          backgroundColor: props.statusChartColor[idx],
+                                        }}
+                                      ></span>
+                                      <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                    </div>
+                                  );
+                                })}
+                            </div>
+                          </>
+                      </div>
+                    </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={24}><SelectableTable dataList={historicalTrialdata} /></Col>
+                </Row>
+                </div>
+                </Spin>
+              </Drawer>
+              <Drawer className="criteria-drawer-wrapper" title={endpointDetail['Standard Event']} placement="left" getContainer={false} style={{ position: 'absolute' }} closable={false} onClose={handleCancelEndpoint} visible={showMoreDetailEndpoint}>
+                  <>
+                    <div className="drawer-content-frequency">
+                      <Row>
+                        <Col span={24} className="drawer-title">
+                          <span className="text">
+                          Frequency
+                          </span>
+                        </Col>
+                      </Row>
+                      <Row>
+                      <Col span={24} className="drawer-content">
+                        <span className="left-text">
+                        External
+                        </span>
+                        <span className="right-text">
+                        {Math.floor(Number(endpointDetail.Frequency) * 10000) / 100 + "%"}
+                        </span>
+                      </Col>
+                      
+                    </Row>
+                    </div>
+                    
+                    <div className='drawer-content-sponsor'>
+                    <Row>
+                      <Col span={24} className="drawer-title">
+                        <span className="text">
+                        By sponsors
+                        </span>
+                      </Col>
+                    </Row>
+                    <Row>
+                        <Col span={24}>
+                        <div className="history-chart-wrapper">
+                          <div className="chart">
+                            <div className="my-echart-wrapper">
+                              <ReactECharts option={EndpointSponsorOption}></ReactECharts>
+                            </div>
+                            <div className="history-legend-wrapper">
+                              {endpointDetail.sponsor
+                                .sort((a, b) => {
+                                  return b.value - a.value;
+                                })
+                                .slice(0, 5)
+                                .map((d, idx) => {
+                                  const chartData = endpointDetail.sponsor;
+                                  const sum = chartData.reduce(
+                                    (accumulator, currentValue) => {
+                                      return accumulator + currentValue.value;
+                                    },
+                                    0
+                                  );
+                                  let percent = ((d.value / sum) * 100).toFixed(2);
+                                  return (
+                                    <div className="custom-legend" key={idx}>
+                                      <span
+                                        className="my_legend"
+                                        style={{
+                                          backgroundColor: props.sponsorChartColor[idx],
+                                        }}
+                                      ></span>
+                                      <i className="my_legend_text">{`${d.name} - ${percent}%`}</i>
+                                    </div>
+                                  );
+                                })}
+                            </div>
+                          </div>
+                        </div>
+                        </Col>
+                    </Row>
+                    </div>
+                    
+                    <div className="drawer-content-button">
+                          <Button className="update-btn" disabled={whetherDisabledAdd} onClick={(e) => handleCriteriaSelect(endpointDetail,"criteriaDetailActiveTab","criteriaDetailID","criteriaDetailKey",e)}>
+                            ADD
+                          </Button>
+                        </div>
+                  </>
+              </Drawer>
+            </div>
         </div>
         </Col>
       </Row>

@@ -19,7 +19,7 @@ const CriteriaOption = (props) => {
       setActiveType(res != -1 ||resSecondary != -1 ? 1 : 0); 
     } else {
       const res = props.selectedEle.findIndex((e) => {
-        return props.demographic.Text?e["Eligibility Criteria"] == domain.Text:e["Eligibility Criteria"] == props.demographic['Standard Event']
+        return props.demographic.Text?e["Eligibility Criteria"] == domain.Text:(e["Eligibility Criteria"]?e["Eligibility Criteria"] == props.demographic['Standard Event']:e["Standard Event"] == props.demographic['Standard Event'])
       });
       setActiveType(res != -1? 1 : 0); 
     } 

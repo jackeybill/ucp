@@ -1,5 +1,5 @@
 import React, { useState, useEffect,useReducer } from "react";
-import { Button, Collapse, Select, Input, Popconfirm, Radio,Space,message, Tooltip} from "antd";
+import { Button, Collapse, Select, Input, Popconfirm, Radio,Space,message, Tooltip, Col,InputNumber } from "antd";
 import { withRouter } from 'react-router';
 import { 
   CheckCircleFilled, 
@@ -8,7 +8,8 @@ import {
   CaretDownOutlined,
   MinusCircleOutlined,
   PlusCircleOutlined,
-  CloseCircleOutlined
+  CloseCircleOutlined,
+  EditFilled
 } from "@ant-design/icons";
 import "./index.scss";
 import telehealth_icon from '../../assets/fax.svg';
@@ -663,6 +664,9 @@ const EventList = (props) => {
     props.saveEvents(scheduleOfEvents)
   }
 
+  const showConfigureModal = () =>{
+    props.showConfigureModal()
+  }
 
   function callback(key) {
     setExpandKeys(key)
@@ -886,12 +890,25 @@ const EventList = (props) => {
   return (
     <div className="event-list-container" style={{position: "relative"}}>
       <div className="container-top">
-        <span>Schedule of Events</span>
+        <span className="title">Schedule of Events</span>
         {
           !viewOnly&&(
-            <Button type="primary" size="small" onClick={onSave}>
-            Save
-            </Button>
+            <>
+             <Col span={5} className={`${props.hiddeTags ? 'hidde' : ''}`}>
+                <span className="none-click right" style={{marginTop: 5}}>
+                Number of Visits <InputNumber size="small" value={props.numbersData.visitNumber} />
+                </span>
+              </Col>
+              <Col span={6} className={`center ${props.hiddeTags ? 'hidde' : ''}`}style={{marginTop: 5, marginRight: 20}}>
+                <span className="none-click">
+                  Number of Weeks <InputNumber size="small" value={props.numbersData.weekNumber} />&nbsp;
+                </span>
+                <EditFilled className="edit-icon" onClick={showConfigureModal}/>
+              </Col>
+              <Button type="primary" size="small" onClick={onSave}>
+              Save
+              </Button>
+            </>
           )
         }   
       </div>

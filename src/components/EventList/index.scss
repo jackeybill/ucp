@@ -3,6 +3,10 @@
   border: 1px solid #eeeeee;
   font-size: 12px;
 
+  .hidde{
+    display: none;
+  }
+
   .clearfix::after {
        content: '';
        display: block;
@@ -58,10 +62,20 @@
     padding: 10px;
     display: flex;
     border-bottom: 1px solid #eeeeee;
-    span {
+    .title {
       flex: 1;
-      font-size: 18px;
-      color: #000000;
+      font-size: 14px;
+      color: #333;
+      font-weight: 500;
+      line-height: 35px;
+    }
+    .none-click {
+      font-size: 14px!important;
+      color: #333;
+      pointer-events: none;
+      input{
+          color: #333;
+      }
     }
     .ant-btn.ant-btn-primary.ant-btn-sm span {
       color: #ffffff;

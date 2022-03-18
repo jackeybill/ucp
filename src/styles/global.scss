@@ -148,6 +148,10 @@ ul.ant-table-pagination {
   border-color: $theme-color !important;
 }
 
+.ant-drawer.ant-drawer-right.ant-drawer-open {
+  z-index: 99999999;
+}
+
 .ant-drawer.ant-drawer-right.ant-drawer-open .ant-drawer-content-wrapper {
   min-width: 1000px !important;
 }
