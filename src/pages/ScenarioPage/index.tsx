@@ -451,6 +451,26 @@ const ScenarioPage = (props) => {
       } else {
        
         getTrialById();
+        // get historical list data
+        const getHistoricalData = async () => {
+          if(historicalTrialdata.length == 0){
+            const resp = await getSimilarhistoricalTrialById(similarHistoricalTrials);
+            if (resp.statusCode == 200) {
+              const filteredData =  JSON.parse(resp.body).filter((d) => {
+                const date = d['start_date'].split('-')[0]
+                return (
+                  date >= simliarTrialStudyStartDate.dateFrom && date<= simliarTrialStudyStartDate.dateTo
+                );
+              });
+              setHistoricalTrialdata(filteredData)
+              const statusData = getChartData(filteredData, "study_status");
+              const sponsorData = getChartData(filteredData, "sponsor");
+              setStatusChartData(statusData)
+              setSponsorChartData(sponsorData)
+            }
+          }
+        }
+        getHistoricalData()
       }
     }, []);
 
