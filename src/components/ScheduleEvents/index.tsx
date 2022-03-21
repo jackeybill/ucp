@@ -175,6 +175,13 @@ const ScheduleEvents = (props) => {
   let [addedProcedures, setAddedProcedures] = useState([])
   let [addedStudyProcedures, setAddedStudyProcedures] = useState([])
 
+  //Table data 
+  let [addedLabsTable, setAddedLabsTable] = useState([])
+  let [addedExaminationTable, setAddedExaminationTable] = useState([])
+  let [addedQuestionnairesTable, setAddedQuestionnairesTable] = useState([])
+  let [addedProceduresTable, setAddedProceduresTable] = useState([])
+  let [addedStudyProceduresTable, setAddedStudyProceduresTable] = useState([])
+
   const [resetWeeks, setResetWeeks] = useState(true)
 
   const onStepVisit = (value: number, info: { offset: number, type: 'up' | 'down' }) => {
@@ -1256,6 +1263,10 @@ const ScheduleEvents = (props) => {
 
   const simliarTrialStudyStartDate = { dateFrom: 1990, dateTo: 2025}
 
+  useEffect(() => {
+    updateExcluTableData()
+  }, [addedLabs, addedExamination,addedProcedures, addedQuestionnaires, addedStudyProcedures])
+
   const searchHistoricalTrialsEndpoint = async () => {
     !showHistoricalEndpoint?setShowHistoricalEndpoint(true):setShowHistoricalEndpoint(false)
     if(historicalTrialdata.length == 0){
@@ -1280,90 +1291,124 @@ const ScheduleEvents = (props) => {
     }
   }
 
+  const updateExcluTableData = () => {
+
+    let addedLabsTmp = addedLabs.map((e,idx) => {
+      e.Key = (idx + 1) + ''
+      return e     
+    })
+    setAddedLabsTable(addedLabsTmp)
+
+    let addedExaminationTmp = addedExamination.map((e,idx) => {
+      e.Key = addedLabsTmp.length + (idx + 1) + ''
+        return e
+    })    
+    setAddedExaminationTable(addedExaminationTmp)
+  
+    let addedProceduresTmp =  addedProcedures.map((e,idx) => {
+      e.Key = addedLabsTmp.length + addedExaminationTmp.length + (idx + 1) + ''
+        return e
+    })    
+    setAddedProceduresTable(addedProceduresTmp)
+
+    let addedQuestionnairesTmp =  addedQuestionnaires.map((e,idx) => {
+      e.Key = addedLabsTmp.length + addedExaminationTmp.length + addedProceduresTmp.length + (idx + 1) + ''
+        return e
+    })
+    setAddedQuestionnairesTable(addedQuestionnairesTmp) 
+
+    let addedStudyProceduresTmp =  addedStudyProcedures.map((e,idx) => {
+      e.Key = addedLabsTmp.length + addedExaminationTmp.length + addedProceduresTmp.length + addedQuestionnairesTmp.length + (idx + 1) + ''
+        return e
+    })
+    setAddedStudyProceduresTable(addedStudyProceduresTmp)   
+  }
+
   const handleExcluOptionSelect = (item, activeType, id, key, endpointType) =>{
     switch(item.Categories.trim()){
       case "Labs": 
         let index = filteredLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData = [...filteredLabs]
-        const newSelectedData = [...addedLabs]
+        // const newData = [...filteredLabs]
+        // const newSelectedData = [...addedLabs]
 
         if(item.selected){
-          newData.splice(index, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          filteredLabs.splice(index, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData.splice(selectedIndex, 1)
+          addedLabs.splice(selectedIndex, 1)
         } else {
-          newData.splice(index, 1, { ...item, ...{selected: true}});
-          newSelectedData.push(Object.assign(item, {selected: true}))
+          filteredLabs.splice(index, 1, { ...item, ...{selected: true}});
+          addedLabs.push(Object.assign(item, {selected: true}))
         }
-        setFilteredLabs(newData)
-        setAddedLabs(newSelectedData)
+        // setFilteredLabs(newData)
+        // setAddedLabs(newSelectedData)
         break;
 
       case "Physical Examination": 
         let index2 = filteredExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData2 = [...filteredExamination]
-        const newSelectedData2 = [...addedExamination]
+        // const newData2 = [...filteredExamination]
+        // const newSelectedData2 = [...addedExamination]
 
         if(item.selected){
-          newData2.splice(index2, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          filteredExamination.splice(index2, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData2.splice(selectedIndex, 1)
+          addedExamination.splice(selectedIndex, 1)
         } else {
-          newData2.splice(index2, 1, { ...item, ...{selected: true}});
-          newSelectedData2.push(Object.assign(item, {selected: true}))
+          filteredExamination.splice(index2, 1, { ...item, ...{selected: true}});
+          addedExamination.push(Object.assign(item, {selected: true}))
         }
-        setFilteredExamination(newData2)
-        setAddedExamination(newSelectedData2)
+        // setFilteredExamination(newData2)
+        // setAddedExamination(newSelectedData2)
         break;
 
       case "Procedures": 
         let index3 = filteredProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData3 = [...filteredProcedures]
-        const newSelectedData3 = [...addedProcedures]
+        // const newData3 = [...filteredProcedures]
+        // const newSelectedData3 = [...addedProcedures]
 
         if(item.selected){
-          newData3.splice(index3, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          filteredProcedures.splice(index3, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData3.splice(selectedIndex, 1)
+          addedProcedures.splice(selectedIndex, 1)
         } else {
-          newData3.splice(index3, 1, { ...item, ...{selected: true}});
-          newSelectedData3.push(Object.assign(item, {selected: true}))
+          filteredProcedures.splice(index3, 1, { ...item, ...{selected: true}});
+          addedProcedures.push(Object.assign(item, {selected: true}))
         }
-        setFilteredProcedures(newData3)
-        setAddedProcedures(newSelectedData3)
+        // setFilteredProcedures(newData3)
+        // setAddedProcedures(newSelectedData3)
         break;
 
       case "Questionnaires": 
         let index4 = filteredQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData4 = [...filteredQuestionnaires]
-        const newSelectedData4 = [...addedQuestionnaires]
+        // const newData4 = [...filteredQuestionnaires]
+        // const newSelectedData4 = [...addedQuestionnaires]
 
         if(item.selected){
-          newData4.splice(index4, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          filteredQuestionnaires.splice(index4, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData4.splice(selectedIndex, 1)
+          addedQuestionnaires.splice(selectedIndex, 1)
         } else {
-          newData4.splice(index4, 1, { ...item, ...{selected: true}});
-          newSelectedData4.push(Object.assign(item, {selected: true}))
+          filteredQuestionnaires.splice(index4, 1, { ...item, ...{selected: true}});
+          addedQuestionnaires.push(Object.assign(item, {selected: true}))
         }
-        setFilteredQuestionnaires(newData4)
-        setAddedQuestionnaires(newSelectedData4)
+        // setFilteredQuestionnaires(newData4)
+        // setAddedQuestionnaires(newSelectedData4)
         break;
+
       case "Study Procedures": 
         let index5 = filteredStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData5 = [...filteredStudyProcedures]
-        const newSelectedData5 = [...addedStudyProcedures]
+        // const newData5 = [...filteredStudyProcedures]
+        // const newSelectedData5 = [...addedStudyProcedures]
 
         if(item.selected){
-          newData5.splice(index5, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          filteredStudyProcedures.splice(index5, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData5.splice(selectedIndex, 1)
+          addedStudyProcedures.splice(selectedIndex, 1)
         } else {
-          newData5.splice(index5, 1, { ...item, ...{selected: true}});
-          newSelectedData5.push(Object.assign(item, {selected: true}))
+          filteredStudyProcedures.splice(index5, 1, { ...item, ...{selected: true}});
+          addedStudyProcedures.push(Object.assign(item, {selected: true}))
         }
-        setFilteredStudyProcedures(newData5)
-        setAddedStudyProcedures(newSelectedData5)
+        // setFilteredStudyProcedures(newData5)
+        // setAddedStudyProcedures(newSelectedData5)
         break;
       default: break;
     }
@@ -1499,96 +1544,91 @@ const ScheduleEvents = (props) => {
     switch(item.Categories.trim()){
       case "Labs": 
         let index = filteredLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData = [...filteredLabs]
-        const newSelectedData = [...addedLabs]
-
         if(item.selected){
-          newData.splice(index, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          filteredLabs.splice(index, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData.splice(selectedIndex, 1)
+          addedLabs.splice(selectedIndex, 1)
           setEndpointDetail(Object.assign(item, {selected: false}))
         } else {
-          newData.splice(index, 1, { ...item, ...{selected: true}});
-          newSelectedData.push(Object.assign(item, {selected: true}))
+          filteredLabs.splice(index, 1, { ...item, ...{selected: true}});
+          addedLabs.push(Object.assign(item, {selected: true}))
           setEndpointDetail(Object.assign(item, {selected: true}))
         }
-        setFilteredLabs(newData)
-        setAddedLabs(newSelectedData)
         break;
 
       case "Physical Examination": 
         let index2 = filteredExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData2 = [...filteredExamination]
-        const newSelectedData2 = [...addedExamination]
+        // const newData2 = [...filteredExamination]
+        // const newSelectedData2 = [...addedExamination]
 
         if(item.selected){
-          newData2.splice(index2, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          filteredExamination.splice(index2, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData2.splice(selectedIndex, 1)
+          addedExamination.splice(selectedIndex, 1)
           setEndpointDetail(Object.assign(item, {selected: false}))
         } else {
-          newData2.splice(index2, 1, { ...item, ...{selected: true}});
-          newSelectedData2.push(Object.assign(item, {selected: true}))
+          filteredExamination.splice(index2, 1, { ...item, ...{selected: true}});
+          addedExamination.push(Object.assign(item, {selected: true}))
           setEndpointDetail(Object.assign(item, {selected: true}))
         }
-        setFilteredExamination(newData2)
-        setAddedExamination(newSelectedData2)
+        // setFilteredExamination(newData2)
+        // setAddedExamination(newSelectedData2)
         break;
 
       case "Procedures": 
         let index3 = filteredProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData3 = [...filteredProcedures]
-        const newSelectedData3 = [...addedProcedures]
+        // const newData3 = [...filteredProcedures]
+        // const newSelectedData3 = [...addedProcedures]
 
         if(item.selected){
-          newData3.splice(index3, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          filteredProcedures.splice(index3, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData3.splice(selectedIndex, 1)
+          addedProcedures.splice(selectedIndex, 1)
           setEndpointDetail(Object.assign(item, {selected: false}))
         } else {
-          newData3.splice(index3, 1, { ...item, ...{selected: true}});
-          newSelectedData3.push(Object.assign(item, {selected: true}))
+          filteredProcedures.splice(index3, 1, { ...item, ...{selected: true}});
+          addedProcedures.push(Object.assign(item, {selected: true}))
           setEndpointDetail(Object.assign(item, {selected: true}))
         }
-        setFilteredProcedures(newData3)
-        setAddedProcedures(newSelectedData3)
+        // setFilteredProcedures(newData3)
+        // setAddedProcedures(newSelectedData3)
         break;
 
       case "Questionnaires": 
         let index4 = filteredQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData4 = [...filteredQuestionnaires]
-        const newSelectedData4 = [...addedQuestionnaires]
+        // const newData4 = [...filteredQuestionnaires]
+        // const newSelectedData4 = [...addedQuestionnaires]
 
         if(item.selected){
-          newData4.splice(index4, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          filteredQuestionnaires.splice(index4, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData4.splice(selectedIndex, 1)
+          addedQuestionnaires.splice(selectedIndex, 1)
           setEndpointDetail(Object.assign(item, {selected: false}))
         } else {
-          newData4.splice(index4, 1, { ...item, ...{selected: true}});
-          newSelectedData4.push(Object.assign(item, {selected: true}))
+          filteredQuestionnaires.splice(index4, 1, { ...item, ...{selected: true}});
+          addedQuestionnaires.push(Object.assign(item, {selected: true}))
           setEndpointDetail(Object.assign(item, {selected: true}))
         }
-        setFilteredQuestionnaires(newData4)
-        setAddedQuestionnaires(newSelectedData4)
+        // setFilteredQuestionnaires(newData4)
+        // setAddedQuestionnaires(newSelectedData4)
         break;
       case "Study Procedures": 
         let index5 = filteredStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData5 = [...filteredStudyProcedures]
-        const newSelectedData5 = [...addedStudyProcedures]
+        // const newData5 = [...filteredStudyProcedures]
+        // const newSelectedData5 = [...addedStudyProcedures]
 
         if(item.selected){
-          newData5.splice(index5, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+          filteredStudyProcedures.splice(index5, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
           let selectedIndex = addedStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData5.splice(selectedIndex, 1)
+          addedStudyProcedures.splice(selectedIndex, 1)
           setEndpointDetail(Object.assign(item, {selected: false}))
         } else {
-          newData5.splice(index5, 1, { ...item, ...{selected: true}});
-          newSelectedData5.push(Object.assign(item, {selected: true}))
+          filteredStudyProcedures.splice(index5, 1, { ...item, ...{selected: true}});
+          addedStudyProcedures.push(Object.assign(item, {selected: true}))
           setEndpointDetail(Object.assign(item, {selected: true}))
         }
-        setFilteredStudyProcedures(newData5)
-        setAddedStudyProcedures(newSelectedData5)
+        // setFilteredStudyProcedures(newData5)
+        // setAddedStudyProcedures(newSelectedData5)
         break;
       default: break;
     }
@@ -1608,67 +1648,54 @@ const ScheduleEvents = (props) => {
   }
 
   const updateTrial = (type: number, res: number) => {
-    console.log("updateTrial");
-    
     // res: 1, update when loading page; 2, update when update criteria
     // if(res == 1){
     //   setReloadPTData(true)
     // }
 
     // if (type == 4) {//SOA
-    //   let excluDemographicsElementsTmp = excluDemographicsElements.map((item,index) =>{
-    //     return Object.assign(item,{Key:(index + 1) + ''})
-    //   })
-    //   let excluDemographicsTableDataTmp = excluDemographicsElementsTmp.filter(d => {
-    //     return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-    //   })
-    //   setExcluDemographicsElements(excluDemographicsElementsTmp )
-    //   setExcluDemographicsTableData(excluDemographicsTableDataTmp.map((item, id) =>{
-    //     item.Key = (id + 1) + ''
-    //     return item
-    //   }))
-
-
+      console.log("addedLabs",addedLabs);
+      let addedLabsTmp = addedLabs.map((item,index) =>{
+        return Object.assign(item,{Key:(index + 1) + ''})
+      })
+      let addedLabsTableDataTmp = addedLabsTmp.filter(d => {
+        return d.Frequency * 100 >= minV && d.Frequency * 100 <= maxV;
+      })
+      setAddedLabsTable(addedLabsTableDataTmp)
+      console.log("addedLabsTableDataTmp",addedLabsTableDataTmp);
       
-    //   let excluMedConditionElementsTmp = excluMedConditionElements.map((item,index) =>{
-    //     return Object.assign(item,{Key:(index + 1) + ''})
-    //   })
-    //   let excluMedConditionTableDataTmp = excluMedConditionElementsTmp.filter(d => {
-    //     return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-    //   }) 
+      let addedProceduresTmp = addedProcedures.map((item,index) =>{
+        return Object.assign(item,{Key:(index + 1) + ''})
+      })
+      let addedProceduresTableDataTmp = addedProceduresTmp.filter(d => {
+        return d.Frequency * 100 >= minV && d.Frequency * 100 <= maxV;
+      })
+      setAddedProceduresTable(addedProceduresTableDataTmp)
 
-    //   setExcluMedConditionElements(excluMedConditionElementsTmp )
-    //   setExcluMedConditionTableData(excluMedConditionTableDataTmp.map((item, id) =>{
-    //     item.Key = excluDemographicsTableDataTmp.length + (id + 1) + ''
-    //     return item
-    //   }))
+      let addedQuestionnairesTmp = addedQuestionnaires.map((item,index) =>{
+        return Object.assign(item,{Key:(index + 1) + ''})
+      })
+      let addedQuestionnairesTableDataTmp = addedQuestionnairesTmp.filter(d => {
+        return d.Frequency * 100 >= minV && d.Frequency * 100 <= maxV;
+      })
+      setAddedQuestionnairesTable(addedQuestionnairesTableDataTmp)
 
+      let addedExaminationTmp = addedExamination.map((item,index) =>{
+        return Object.assign(item,{Key:(index + 1) + ''})
+      })
+      let addedExaminationTableDataTmp = addedExaminationTmp.filter(d => {
+        return d.Frequency * 100 >= minV && d.Frequency * 100 <= maxV;
+      })
+      setAddedExaminationTable(addedExaminationTableDataTmp)
 
-    //   let excluInterventionElementsTmp = excluInterventionElements.map((item,index) =>{
-    //     return Object.assign(item,{Key:(index + 1) + ''})
-    //   })
-    //   let excluInterventionTableDataTmp = excluInterventionElementsTmp.filter(d => {
-    //     return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-    //   })
-    //   setExcluInterventionElements(excluInterventionElementsTmp )
-    //   setExcluInterventionTableData(excluInterventionTableDataTmp.map((item, id) =>{
-    //     item.Key = excluDemographicsTableDataTmp.length + excluMedConditionTableDataTmp.length + (id + 1) + ''
-    //     return item
-    //   }))
+      let addedStudyProceduresTmp = addedStudyProcedures.map((item,index) =>{
+        return Object.assign(item,{Key:(index + 1) + ''})
+      })
+      let addedStudyProceduresTableDataTmp = addedStudyProceduresTmp.filter(d => {
+        return d.Frequency * 100 >= minV && d.Frequency * 100 <= maxV;
+      })
+      setAddedStudyProceduresTable(addedStudyProceduresTableDataTmp)
 
-
-    //   let excluLabTestElementsTmp = excluLabTestElements.map((item,index) =>{
-    //     return Object.assign(item,{Key:(index + 1) + ''})
-    //   })
-    //   let excluLabTestTableDataTmp = excluLabTestElementsTmp.filter(d => {
-    //     return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-    //   })
-    //   setExcluLabTestElements(excluLabTestElementsTmp )
-    //   setExcluLabTestTableData(excluLabTestTableDataTmp.map((item, id) =>{
-    //     item.Key = excluDemographicsTableDataTmp.length + excluMedConditionTableDataTmp.length + excluInterventionTableDataTmp.length + (id + 1) + ''
-    //     return item
-    //   }))
-    // } 
 }
 
   const EndpointSponsorOption = {
@@ -2065,17 +2092,17 @@ const ScheduleEvents = (props) => {
               <Col span={24}>
                 <div className="event-dashboard-container">
                     <EventList
-                    endpoints={endpoints}
+                      endpoints={endpoints}
                       saveEvents={saveEvents}
                       exportEvent={exportEvent}
                       handleEventChange={handleEventChange}
                       numbers={editNumbers}
                       // updateNumbers={setNumbers}
-                      labs={addedLabs}
-                      examination={addedExamination}
-                      procedures={addedProcedures}
-                      questionnaire={addedQuestionnaires}
-                      studyProcedures={addedStudyProcedures}
+                      labs={addedLabsTable}
+                      examination={addedExaminationTable}
+                      procedures={addedProceduresTable}
+                      questionnaire={addedQuestionnairesTable}
+                      studyProcedures={addedStudyProceduresTable}
                       weeks={weeks}
                       submitType={submitType}
                       updateWeeks={setWeeks}
