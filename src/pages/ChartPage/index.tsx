@@ -159,7 +159,7 @@ const ChartPage = (props: any) => {
       setLoading(true)
       const resp = await getSummaryChart();
       setLoading(false)
-      console.log(JSON.parse(resp));
+      // console.log(JSON.parse(resp));
       
       // if (resp.statusCode == 200) {
       //   const respData = JSON.parse(resp.body)
