@@ -174,6 +174,7 @@ const ScheduleEvents = (props) => {
   let [addedQuestionnaires, setAddedQuestionnaires] = useState([])
   let [addedProcedures, setAddedProcedures] = useState([])
   let [addedStudyProcedures, setAddedStudyProcedures] = useState([])
+
   const [resetWeeks, setResetWeeks] = useState(true)
 
   const onStepVisit = (value: number, info: { offset: number, type: 'up' | 'down' }) => {
@@ -929,118 +930,118 @@ const ScheduleEvents = (props) => {
     setActiveCollapse(key)
   }
 
-  const columns = [{
-    title: 'Standard Event',
-    dataIndex: 'Standard Event',
-    key: 'Standard Event',
-    width: '70%',
-    render: (_, item) => {
-      return <span className="event-text">{item['Standard Event']}</span>
+  // const columns = [{
+  //   title: 'Standard Event',
+  //   dataIndex: 'Standard Event',
+  //   key: 'Standard Event',
+  //   width: '70%',
+  //   render: (_, item) => {
+  //     return <span className="event-text">{item['Standard Event']}</span>
 
-    }
-  }, {
-    title: 'selected',
-    dataIndex: 'selected',
-    key: 'selected',
-    width: '30%',
-    render: (_, item) => {
-      return item.selected ? (
-        <div className="remove"><span onClick={(e)=> handleEvent(item)}>Remove</span></div>
-      ) : (
-        <div className="add"><span onClick={(e)=> handleEvent(item)}>Add</span></div>
-      );
-    }
-  }]
+  //   }
+  // }, {
+  //   title: 'selected',
+  //   dataIndex: 'selected',
+  //   key: 'selected',
+  //   width: '30%',
+  //   render: (_, item) => {
+  //     return item.selected ? (
+  //       <div className="remove"><span onClick={(e)=> handleEvent(item)}>Remove</span></div>
+  //     ) : (
+  //       <div className="add"><span onClick={(e)=> handleEvent(item)}>Add</span></div>
+  //     );
+  //   }
+  // }]
 
-  const handleEvent = (item) => {
-    switch(item.Categories.trim()){
-      case "Labs": 
-        let index = filteredLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData = [...filteredLabs]
-        const newSelectedData = [...addedLabs]
+  // const handleEvent = (item) => {
+  //   switch(item.Categories.trim()){
+  //     case "Labs": 
+  //       let index = filteredLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+  //       const newData = [...filteredLabs]
+  //       const newSelectedData = [...addedLabs]
 
-        if(item.selected){
-          newData.splice(index, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
-          let selectedIndex = addedLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData.splice(selectedIndex, 1)
-        } else {
-          newData.splice(index, 1, { ...item, ...{selected: true}});
-          newSelectedData.push(Object.assign(item, {selected: true}))
-        }
-        setFilteredLabs(newData)
-        setAddedLabs(newSelectedData)
-        break;
+  //       if(item.selected){
+  //         newData.splice(index, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+  //         let selectedIndex = addedLabs.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+  //         newSelectedData.splice(selectedIndex, 1)
+  //       } else {
+  //         newData.splice(index, 1, { ...item, ...{selected: true}});
+  //         newSelectedData.push(Object.assign(item, {selected: true}))
+  //       }
+  //       setFilteredLabs(newData)
+  //       setAddedLabs(newSelectedData)
+  //       break;
 
-      case "Physical Examination": 
-        let index2 = filteredExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData2 = [...filteredExamination]
-        const newSelectedData2 = [...addedExamination]
+  //     case "Physical Examination": 
+  //       let index2 = filteredExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+  //       const newData2 = [...filteredExamination]
+  //       const newSelectedData2 = [...addedExamination]
 
-        if(item.selected){
-          newData2.splice(index2, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
-          let selectedIndex = addedExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData2.splice(selectedIndex, 1)
-        } else {
-          newData2.splice(index2, 1, { ...item, ...{selected: true}});
-          newSelectedData2.push(Object.assign(item, {selected: true}))
-        }
-        setFilteredExamination(newData2)
-        setAddedExamination(newSelectedData2)
-        break;
+  //       if(item.selected){
+  //         newData2.splice(index2, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+  //         let selectedIndex = addedExamination.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+  //         newSelectedData2.splice(selectedIndex, 1)
+  //       } else {
+  //         newData2.splice(index2, 1, { ...item, ...{selected: true}});
+  //         newSelectedData2.push(Object.assign(item, {selected: true}))
+  //       }
+  //       setFilteredExamination(newData2)
+  //       setAddedExamination(newSelectedData2)
+  //       break;
 
-      case "Procedures": 
-        let index3 = filteredProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData3 = [...filteredProcedures]
-        const newSelectedData3 = [...addedProcedures]
+  //     case "Procedures": 
+  //       let index3 = filteredProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+  //       const newData3 = [...filteredProcedures]
+  //       const newSelectedData3 = [...addedProcedures]
 
-        if(item.selected){
-          newData3.splice(index3, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
-          let selectedIndex = addedProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData3.splice(selectedIndex, 1)
-        } else {
-          newData3.splice(index3, 1, { ...item, ...{selected: true}});
-          newSelectedData3.push(Object.assign(item, {selected: true}))
-        }
-        setFilteredProcedures(newData3)
-        setAddedProcedures(newSelectedData3)
-        break;
+  //       if(item.selected){
+  //         newData3.splice(index3, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+  //         let selectedIndex = addedProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+  //         newSelectedData3.splice(selectedIndex, 1)
+  //       } else {
+  //         newData3.splice(index3, 1, { ...item, ...{selected: true}});
+  //         newSelectedData3.push(Object.assign(item, {selected: true}))
+  //       }
+  //       setFilteredProcedures(newData3)
+  //       setAddedProcedures(newSelectedData3)
+  //       break;
 
-      case "Questionnaires": 
-        let index4 = filteredQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData4 = [...filteredQuestionnaires]
-        const newSelectedData4 = [...addedQuestionnaires]
+  //     case "Questionnaires": 
+  //       let index4 = filteredQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+  //       const newData4 = [...filteredQuestionnaires]
+  //       const newSelectedData4 = [...addedQuestionnaires]
 
-        if(item.selected){
-          newData4.splice(index4, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
-          let selectedIndex = addedQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData4.splice(selectedIndex, 1)
-        } else {
-          newData4.splice(index4, 1, { ...item, ...{selected: true}});
-          newSelectedData4.push(Object.assign(item, {selected: true}))
-        }
-        setFilteredQuestionnaires(newData4)
-        setAddedQuestionnaires(newSelectedData4)
-        break;
-      case "Study Procedures": 
-        let index5 = filteredStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-        const newData5 = [...filteredStudyProcedures]
-        const newSelectedData5 = [...addedStudyProcedures]
+  //       if(item.selected){
+  //         newData4.splice(index4, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+  //         let selectedIndex = addedQuestionnaires.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+  //         newSelectedData4.splice(selectedIndex, 1)
+  //       } else {
+  //         newData4.splice(index4, 1, { ...item, ...{selected: true}});
+  //         newSelectedData4.push(Object.assign(item, {selected: true}))
+  //       }
+  //       setFilteredQuestionnaires(newData4)
+  //       setAddedQuestionnaires(newSelectedData4)
+  //       break;
+  //     case "Study Procedures": 
+  //       let index5 = filteredStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+  //       const newData5 = [...filteredStudyProcedures]
+  //       const newSelectedData5 = [...addedStudyProcedures]
 
-        if(item.selected){
-          newData5.splice(index5, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
-          let selectedIndex = addedStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
-          newSelectedData5.splice(selectedIndex, 1)
-        } else {
-          newData5.splice(index5, 1, { ...item, ...{selected: true}});
-          newSelectedData5.push(Object.assign(item, {selected: true}))
-        }
-        setFilteredStudyProcedures(newData5)
-        setAddedStudyProcedures(newSelectedData5)
-        break;
-      default: break;
-    }
-    handleEventChange([])
-  }
+  //       if(item.selected){
+  //         newData5.splice(index5, 1, { ...item, ...{selected: false, condition: [], totalVisit: 0}});
+  //         let selectedIndex = addedStudyProcedures.findIndex((d) => item['Standard Event'] == d['Standard Event'])
+  //         newSelectedData5.splice(selectedIndex, 1)
+  //       } else {
+  //         newData5.splice(index5, 1, { ...item, ...{selected: true}});
+  //         newSelectedData5.push(Object.assign(item, {selected: true}))
+  //       }
+  //       setFilteredStudyProcedures(newData5)
+  //       setAddedStudyProcedures(newSelectedData5)
+  //       break;
+  //     default: break;
+  //   }
+  //   handleEventChange([])
+  // }
 
   const showConfigureModal = () =>{
     setShowConfigure(true)
