@@ -145,6 +145,8 @@ const ScenarioPage = (props) => {
     const [showChartLabel, setShowChartLabel] = useState(false)
     const [pageLoading, setPageLoading] = useState(true)
 
+    const [popoverVisible, setPopoverVisible] = useState(false)
+
     const [statusChartData,setStatusChartData] = useState([])
     const [sponsorChartData,setSponsorChartData] = useState([])
 
@@ -1225,6 +1227,11 @@ const ScenarioPage = (props) => {
       updateTrial(2, 1)   
     }
 
+    const handlePopoverVisible = (visible) => {
+      console.log("handlePopoverVisible",visible);
+      
+    }
+
     const handleEndpointSelect = (item, activeMore, id, key,e) => {
       // console.log("click the add primary button:",activeMore);
       // if(criteriaDetailActiveTab === 0) {
@@ -1364,6 +1371,7 @@ const ScenarioPage = (props) => {
           setRollHeight(false)
           setActiveKey(['1'])
           
+          setShowMoreDetail(false)
         } else if (type == 2) {//Exclusion
 
 
@@ -1426,6 +1434,9 @@ const ScenarioPage = (props) => {
 
           setExcluRollHeight(false)
           setExcluActiveKey(['1'])
+
+          setShowMoreDetail(false)
+
         } else if (type == 3) {//Endpoint
 
           let endpointElementsTmpPrimary = endpointElementsPrimary.map((item,index) =>{
@@ -1469,6 +1480,10 @@ const ScenarioPage = (props) => {
 
           setEndpointRollHeight(false)
           setEndpointActiveKey(['1'])
+
+          setShowMoreDetailEndpoint(false)
+          setPopoverVisible(false)
+
         }
     }
 
@@ -6972,13 +6987,15 @@ const ScenarioPage = (props) => {
                             <div className="drawer-content-button">
                                 <Popover 
                                 placement="right" 
-                                title={<span>Add to</span>} 
+                                title={<span>Add to</span>}
+                                visible={popoverVisible}
+                                onVisibleChange={handlePopoverVisible} 
                                 content={<div>
                                           <p style={{cursor: 'pointer'}} onClick={(e) => handleEndpointSelect(endpointDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>Primary Endpoint</p>
                                           <p style={{cursor: 'pointer'}}  onClick={(e) => handleEndpointSelectSecondary(endpointDetail,criteriaDetailActiveTab,criteriaDetailID,criteriaDetailKey,e)}>Secondary Endpoint</p> 
                                         </div>} 
                                 trigger="click">
-                                  <Button className="update-btn">
+                                  <Button className="update-btn" onClick={()=>{setPopoverVisible(true)}}>
                                     ADD
                                   </Button>              
                               </Popover>

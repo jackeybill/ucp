@@ -1633,6 +1633,7 @@ const ScheduleEvents = (props) => {
       default: break;
     }
     handleEventChange([])
+    updateTrial(4, 1)
   }
 
   const handleCancelEndpoint = () => {
@@ -1652,6 +1653,8 @@ const ScheduleEvents = (props) => {
     // if(res == 1){
     //   setReloadPTData(true)
     // }
+
+    setShowMoreDetailEndpoint(false)
 
     // if (type == 4) {//SOA
       console.log("addedLabs",addedLabs);
