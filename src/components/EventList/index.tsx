@@ -39,31 +39,31 @@ export const modality_options =[
     key:"patient_at_home",
     name: "Patient at home",
     icon: patient_at_home_icon,
-    color:'#E1619C'
+    color:'#C9DF00'
   },
   {
     key:"telehealth",
     name: "Telehealth",
     icon: telehealth_icon,
-    color:'#2EBCAF'
+    color:'#75C716'
   },
   {
     key:"mobile_health",
     name: "Mobile health",
     icon: mobile_health_icon,
-    color:'#CA4A03'
+    color:'#FFBF00'
   },
   {
     key:"pharmacy",
     name: "Pharmacy",
     icon: pharmacy_icon,
-    color:'#BBECA1'
+    color:'#FF025F'
   },
   {
     key:"hospital",
     name:  "Hospital",
     icon:hospital_icon,
-    color:'#4B8FE2'
+    color:'#CB0147'
   }
 ]
 
