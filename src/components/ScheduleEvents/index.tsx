@@ -1753,7 +1753,7 @@ const ScheduleEvents = (props) => {
           <Row style={{backgroundColor: '#F8F8F8'}}>
             <Col span={24}>
               <div className="item-header">
-                <div className="item-header-text">Endpoint Library</div>
+                <div className="item-header-text">Event Library</div>
                 <div className="item-header-content" onClick={searchHistoricalTrialsEndpoint}>
                   <span className="left-icon">
                     <FileTextOutlined/>
