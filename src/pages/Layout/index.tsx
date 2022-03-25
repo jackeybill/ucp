@@ -24,7 +24,7 @@ const { Header, Content} = Layout;
 
 const GlobalLayout = (props: any) => {
   const [username, setUsername] = useState("");
-  const [current, setCurrent] = useState("summary")
+  const [current, setCurrent] = useState("")
 
   let content:any
 
@@ -36,6 +36,10 @@ const GlobalLayout = (props: any) => {
       // props.history.push("/");
     }
   }, []);
+
+  useEffect(()=>{
+    setCurrent(props.match.path.slice(1))
+  },[])
 
   function confirm() {
     Cookies.set("username", "");
@@ -88,7 +92,7 @@ const GlobalLayout = (props: any) => {
           <span>Protocol Digitization</span>
         </div>
         <div className="menu-box">
-          <Menu mode="horizontal" defaultSelectedKeys={['summary']} selectedKeys={[current]} onClick={handleClick}>
+          <Menu mode="horizontal" selectedKeys={[current]} onClick={handleClick}>
             <Menu.Item key="summary">Summary</Menu.Item>
             <Menu.Item key="overview">List</Menu.Item>
           </Menu>
