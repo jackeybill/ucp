@@ -201,10 +201,13 @@ const ChartPage = (props: any) => {
         label:{
           // distanceToLabelLine: -50,
           alignTo: 'labelLine',
-          formatter: [
-            '{a|{b}}',
-            '{b|{d}%}'
-        ].join('\n'),
+        //   formatter: [
+        //     '{a|{b}}',
+        //     '{b|{d}%}'
+        // ].join('\n'),
+          formatter:function(data){
+            return `{a|${data.name}}`+'\n'+ `{b|${data.percent.toFixed(1)}%}`
+          },
           rich: {
               a: {
                   color: '#2D2D2D',
@@ -223,6 +226,10 @@ const ChartPage = (props: any) => {
       top: '10%',
       left: '55%',
       orient: 'vertical',
+      itemHeight:12,
+      itemWidth:12,
+      selectedMode:false,
+      icon:'rect'
     },
     series: [
       {
@@ -239,7 +246,12 @@ const ChartPage = (props: any) => {
           show: false
         },
         label: {
-          show: false,
+          position: 'inner',
+          fontSize: 10,
+          // formatter: `{d}%`,
+          formatter:function(data){
+            return `${data.percent.toFixed(0)}%`
+          },
         },
         data: dummay_chart_data.study_phase
       }
@@ -250,6 +262,10 @@ const ChartPage = (props: any) => {
       top: '10%',
       left: '55%',
       orient: 'vertical',
+      itemHeight:12,
+      itemWidth:12,
+      selectedMode:false,
+      icon:'rect'
     },
     series: [
       {
@@ -266,7 +282,12 @@ const ChartPage = (props: any) => {
           show: false
         },
         label: {
-          show: false,
+          position: 'inner',
+          fontSize: 10,
+          // formatter: `{d}%`,
+          formatter:function(data){
+            return `${data.percent.toFixed(0)}%`
+          },
         },
         data: dummay_chart_data.study_type
       }
@@ -277,6 +298,10 @@ const ChartPage = (props: any) => {
       top: '30%',
       left: '65%',
       orient: 'vertical',
+      itemHeight:12,
+      itemWidth:12,
+      selectedMode:false,
+      icon:'rect'
     },
     series: [
       {
@@ -284,7 +309,7 @@ const ChartPage = (props: any) => {
         emphasis: {
           scaleSize: 1,
         },
-        radius: ['40%', '70%'],
+        radius: ['45%', '70%'],
         center: ['30%', '50%'],
         avoidLabelOverlap: false,
         color:PurpleColor,
@@ -293,7 +318,11 @@ const ChartPage = (props: any) => {
           show: false
         },
         label: {
-          show: false,
+          position: 'inner',
+          fontSize: 12,
+          formatter:function(data){
+            return `${data.percent.toFixed(0)}%`
+          },
         },
         data: dummay_chart_data.study_status
       }
@@ -308,7 +337,12 @@ const ChartPage = (props: any) => {
         type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
       }
     },
-    legend: {},
+    legend: {
+      itemHeight:12,
+      itemWidth:12,
+      selectedMode:false,
+      icon:'rect'
+    },
     grid: {
       left: '3%',
       right: '4%',
@@ -394,7 +428,12 @@ const ChartPage = (props: any) => {
         type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
       }
     },
-    legend: {},
+    legend: {
+      itemHeight:12,
+      itemWidth:12,
+      selectedMode:false,
+      icon:'rect'
+    },
     grid: {
       left: '3%',
       right: '4%',
