@@ -330,6 +330,12 @@ const ChartPage = (props: any) => {
   };
 
   const sponsorOption = {
+    title: {
+      subtext: 'Phases',
+      subtextStyle: {
+        color: '#2D2D2D'
+      }
+    },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -337,7 +343,9 @@ const ChartPage = (props: any) => {
         type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
       }
     },
+    color:sponsorPhaseColor,
     legend: {
+      top: 10,
       itemHeight:12,
       itemWidth:12,
       selectedMode:false,
@@ -367,7 +375,8 @@ const ChartPage = (props: any) => {
         emphasis: {
           focus: 'series'
         },
-        data: [320, 302, 301, 334, 390, 330]
+        data: [320, 302, 301, 334, 390, 330],
+        barMaxWidth: 22,
       },
       {
         name: 'Phase 1',
@@ -379,7 +388,8 @@ const ChartPage = (props: any) => {
         emphasis: {
           focus: 'series'
         },
-        data: [120, 132, 101, 134, 90, 230]
+        data: [120, 132, 101, 134, 90, 230],
+        barMaxWidth: 22,
       },
       {
         name: 'Phase 2',
@@ -391,7 +401,8 @@ const ChartPage = (props: any) => {
         emphasis: {
           focus: 'series'
         },
-        data: [220, 182, 191, 234, 290, 330]
+        data: [220, 182, 191, 234, 290, 330],
+        barMaxWidth: 22,
       },
       {
         name: 'Phase 3',
@@ -403,7 +414,8 @@ const ChartPage = (props: any) => {
         emphasis: {
           focus: 'series'
         },
-        data: [150, 212, 201, 154, 190, 330]
+        data: [150, 212, 201, 154, 190, 330],
+        barMaxWidth: 22,
       },
       {
         name: 'Phase 4',
@@ -415,12 +427,19 @@ const ChartPage = (props: any) => {
         emphasis: {
           focus: 'series'
         },
-        data: [820, 832, 901, 934, 1290, 1330]
+        data: [820, 832, 901, 934, 1290, 1330],
+        barMaxWidth: 22,
       }
     ]
   };
   
   const dateOption = {
+    title: {
+      subtext: 'Phases',
+      subtextStyle: {
+        color: '#2D2D2D'
+      }
+    },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -429,11 +448,13 @@ const ChartPage = (props: any) => {
       }
     },
     legend: {
+      top: 10,
       itemHeight:12,
       itemWidth:12,
       selectedMode:false,
       icon:'rect'
     },
+    color:darkBlueColor,
     grid: {
       left: '3%',
       right: '4%',
@@ -441,7 +462,8 @@ const ChartPage = (props: any) => {
       containLabel: true
     },
     yAxis: {
-      type: 'value'
+      type: 'value',
+      // name: 'Phases',
     },
     xAxis: {
       type: 'category',
@@ -453,60 +475,79 @@ const ChartPage = (props: any) => {
         type: 'bar',
         stack: 'total',
         label: {
-          show: true
+          show: false
         },
         emphasis: {
           focus: 'series'
         },
-        data: [320, 302, 301, 334, 390, 330, 320]
+        data: [320, 302, 301, 334, 390, 330, 320],
+        barMaxWidth:12,
+        borderRadius: [10, 10, 0, 0],
       },
       {
         name: 'Phase 1',
         type: 'bar',
         stack: 'total',
         label: {
-          show: true
+          show: false
         },
         emphasis: {
           focus: 'series'
         },
-        data: [120, 132, 101, 134, 90, 230, 210]
+        data: [120, 132, 101, 134, 90, 230, 210],
+        barMaxWidth:12,
+        borderRadius: [10, 10, 0, 0],
       },
       {
         name: 'Phase 2',
         type: 'bar',
         stack: 'total',
         label: {
-          show: true
+          show: false
         },
         emphasis: {
           focus: 'series'
         },
-        data: [220, 182, 191, 234, 290, 330, 310]
+        data: [220, 182, 191, 234, 290, 330, 310],
+        barMaxWidth:12,
+        borderRadius: [10, 10, 0, 0],
       },
       {
         name: 'Phase 3',
         type: 'bar',
         stack: 'total',
         label: {
-          show: true
+          show: false
         },
         emphasis: {
           focus: 'series'
         },
-        data: [150, 212, 201, 154, 190, 330, 410]
+        data: [150, 212, 201, 154, 190, 330, 410],
+        barMaxWidth:12,
+        borderRadius: [10, 10, 0, 0],
       },
       {
         name: 'Phase 4',
         type: 'bar',
         stack: 'total',
+        // this is different from other series
+        // label: {
+        //   show: false
+        // },
         label: {
-          show: true
-        },
+          show: true, 
+          position: 'top',
+          formatter: function (params) {
+            return [890, 895, 880, 930, 1290, 1330, 1340][params.dataIndex]
+          },
+          textStyle: { color: '#000' }
+        },
         emphasis: {
           focus: 'series'
         },
-        data: [820, 832, 901, 934, 1290, 1330, 1320]
+        data: [82, 83, 90, 93, 129, 133, 130],
+        barMaxWidth:12,
+        borderRadius: [10, 10, 0, 0],
       }
     ]
   };
