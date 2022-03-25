@@ -71,7 +71,6 @@ const ChartPage = (props: any) => {
   const dummay_chart_data = {
     total_study: {
       count: 217440,
-      // 注意字符串内日期格式，年月日用‘-’相连
       date: '2022-3-7 8:8:8',
     },
     total_sponsor: {
@@ -160,6 +159,8 @@ const ChartPage = (props: any) => {
       const resp = await getSummaryChart();
       setLoading(false)
       // console.log(JSON.parse(resp));
+      console.log(resp);
+      
       
       // if (resp.statusCode == 200) {
       //   const respData = JSON.parse(resp.body)
@@ -184,19 +185,34 @@ const ChartPage = (props: any) => {
     series: [
       {
         type: 'pie',
+        emphasis: {
+          scaleSize: 1,
+        },
         radius: ['40%', '80%'],
         center: ['45%', '60%'],
         avoidLabelOverlap: false,
         color:lightBlueColor,
         cursor:"auto",
-        emphasis: {
-          scale: true,
-          scaleSize: 1
-        },
         labelLine: {
           lineStyle: {color:'#2D2D2D'},
           length: 0,
-          length2: 80,
+          length2: 70,
+        },
+        label:{
+          // distanceToLabelLine: -50,
+          alignTo: 'labelLine',
+          formatter: [
+            '{a|{b}}',
+            '{b|{d}%}'
+        ].join('\n'),
+          rich: {
+              a: {
+                  color: '#2D2D2D',
+              },
+              b: {
+                  color:'#9E9E9E'
+              }
+          }
         },
         data: dummay_chart_data.study_indication
       }
@@ -210,12 +226,15 @@ const ChartPage = (props: any) => {
     },
     series: [
       {
-        name: 'Access From',
         type: 'pie',
+        emphasis: {
+          scaleSize: 1,
+        },
         radius: ['30%', '50%'],
         center: ['25%', '30%'],
         avoidLabelOverlap: false,
         color:lightBlueColor,
+        cursor:"auto",
         labelLine: {
           show: false
         },
@@ -234,12 +253,15 @@ const ChartPage = (props: any) => {
     },
     series: [
       {
-        name: 'Access From',
         type: 'pie',
+        emphasis: {
+          scaleSize: 1,
+        },
         radius: ['30%', '50%'],
         center: ['25%', '30%'],
         avoidLabelOverlap: false,
         color:darkBlueColor,
+        cursor:"auto",
         labelLine: {
           show: false
         },
@@ -258,12 +280,15 @@ const ChartPage = (props: any) => {
     },
     series: [
       {
-        name: 'Access From',
         type: 'pie',
+        emphasis: {
+          scaleSize: 1,
+        },
         radius: ['40%', '70%'],
         center: ['30%', '50%'],
         avoidLabelOverlap: false,
         color:PurpleColor,
+        cursor:"auto",
         labelLine: {
           show: false
         },
