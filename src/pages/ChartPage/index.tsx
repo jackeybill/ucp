@@ -10,15 +10,6 @@ import moment from 'moment';
 import { getSummaryChart } from "../../utils/ajax-proxy";
 import "./index.scss";
 
-// interface dataProps {
-//   nctID?: string;
-//   protocolName?: string;
-//   fileName?: string;
-//   status?: string;
-//   lastUpdate?: string;
-//   key?: string;
-// }
-
 const ChartPage = (props: any) => {
   const [chartData, setChartData] = useState({study_indication: [], study_date:{phases: [], data: []},study_locaiton:[],study_phase:[],study_sponsor:{phases: [], data: []},study_status:[],study_type:[],total_document:{count:0},total_sponsor:{count:0},total_study:{count: 0, date: ""}});
   const [loading, setLoading] = useState(false)
@@ -162,13 +153,6 @@ const ChartPage = (props: any) => {
       setLoading(false)
       console.log(resp);
       if (resp.study_indication.length > 0) {
-        // const respData = JSON.parse(resp.body)
-        // const tmpData = respData.length>0 && respData.map((d,idx) => {
-        //   let obj: dataProps = {};
-        //   obj.protocolName = d.protocolName||d["file_name"];
-         
-        //   return obj;
-        // });
         setChartData(resp);
 
         let tempSponsorSeries = resp.study_sponsor.data.map((item, index, arr)=>{
@@ -270,19 +254,13 @@ const ChartPage = (props: any) => {
         center: ['45%', '60%'],
         avoidLabelOverlap: true,
         color:lightBlueColor,
-        // cursor:"auto",
         labelLine: {
           lineStyle: {color:'#999999'},
           length: 0,
           length2: 40,
         },
         label:{
-          // distanceToLabelLine: -50,
           alignTo: 'labelLine',
-        //   formatter: [
-        //     '{a|{b}}',
-        //     '{b|{d}%}'
-        // ].join('\n'),
           formatter:function(data){
             return `{a|${data.name}}`+'\n'+ `{b|${data.percent.toFixed(1)}%}`
           },
@@ -325,14 +303,12 @@ const ChartPage = (props: any) => {
         center: ['25%', '30%'],
         avoidLabelOverlap: false,
         color:lightBlueColor,
-        cursor:"auto",
         labelLine: {
           show: false
         },
         label: {
           position: 'inner',
           fontSize: 10,
-          // formatter: `{d}%`,
           formatter:function(data){
             return `${data.percent.toFixed(0)}%`
           },
@@ -367,14 +343,12 @@ const ChartPage = (props: any) => {
         center: ['25%', '30%'],
         avoidLabelOverlap: false,
         color:darkBlueColor,
-        cursor:"auto",
         labelLine: {
           show: false
         },
         label: {
           position: 'inner',
           fontSize: 10,
-          // formatter: `{d}%`,
           formatter:function(data){
             return `${data.percent.toFixed(0)}%`
           },
@@ -409,7 +383,6 @@ const ChartPage = (props: any) => {
         center: ['30%', '50%'],
         avoidLabelOverlap: false,
         color:PurpleColor,
-        cursor:"auto",
         labelLine: {
           show: false
         },
@@ -478,7 +451,7 @@ const ChartPage = (props: any) => {
       trigger: 'axis',
       axisPointer: {
         // Use axis to trigger tooltip
-        type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+        type: 'shadow'
       }
     },
     legend: {
@@ -497,7 +470,6 @@ const ChartPage = (props: any) => {
     },
     yAxis: {
       type: 'value',
-      // name: 'Phases',
     },
     xAxis: {
       type: 'category',
