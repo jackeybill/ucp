@@ -10,18 +10,20 @@ import moment from 'moment';
 import { getSummaryChart } from "../../utils/ajax-proxy";
 import "./index.scss";
 
-interface dataProps {
-  nctID?: string;
-  protocolName?: string;
-  fileName?: string;
-  status?: string;
-  lastUpdate?: string;
-  key?: string;
-}
+// interface dataProps {
+//   nctID?: string;
+//   protocolName?: string;
+//   fileName?: string;
+//   status?: string;
+//   lastUpdate?: string;
+//   key?: string;
+// }
 
 const ChartPage = (props: any) => {
-  const [data, setData] = useState([]);
+  const [chartData, setChartData] = useState({study_indication: [], study_date:{phases: [], data: []},study_locaiton:[],study_phase:[],study_sponsor:{phases: [], data: []},study_status:[],study_type:[],total_document:{count:0},total_sponsor:{count:0},total_study:{count: 0, date: ""}});
   const [loading, setLoading] = useState(false)
+  const [sponsorSeriesData, setSponsorSeriesData] = useState([])
+  const [dateSeriesData, setDateSeriesData] = useState([])
 
   const lightBlueColor = [
     "#2564DF",
@@ -158,20 +160,85 @@ const ChartPage = (props: any) => {
       setLoading(true)
       const resp = await getSummaryChart();
       setLoading(false)
-      // console.log(JSON.parse(resp));
       console.log(resp);
-      
-      
-      // if (resp.statusCode == 200) {
-      //   const respData = JSON.parse(resp.body)
-      //   const tmpData = respData.length>0 && respData.map((d,idx) => {
-      //     let obj: dataProps = {};
-      //     obj.protocolName = d.protocolName||d["file_name"];
+      if (resp.study_indication.length > 0) {
+        // const respData = JSON.parse(resp.body)
+        // const tmpData = respData.length>0 && respData.map((d,idx) => {
+        //   let obj: dataProps = {};
+        //   obj.protocolName = d.protocolName||d["file_name"];
          
-      //     return obj;
-      //   });
-      //   setData(tmpData);
-      // }
+        //   return obj;
+        // });
+        setChartData(resp);
+
+        let tempSponsorSeries = resp.study_sponsor.data.map((item, index, arr)=>{
+          return  {
+            name: Object.keys(item)[0],
+            type: 'bar',
+            stack: 'total',
+            label: {
+              show: false
+            },
+            emphasis: {
+              focus: 'series'
+            },
+            data: Object.values(item)[0],
+            barMaxWidth: 24,
+          }
+        })
+        setSponsorSeriesData(tempSponsorSeries)
+
+        let totalNum = []
+        for (let i=0; i < resp.study_date.phases.length; i++) {
+          let sum = 0  
+          resp.study_date.data.forEach((item,index,arr)=>{          
+            sum = sum + Object.values(item)[0][i]
+          })
+          totalNum[i] = sum
+        } 
+        
+        let tempDateSeries = resp.study_date.data.map((item, index, arr)=>{
+          let dateLength = resp.study_date.data.length
+          if (index < dateLength - 1) {
+            return  {
+              name: Object.keys(item)[0],
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: false
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: Object.values(item)[0],
+              barMaxWidth:12,
+              borderRadius: [10, 10, 0, 0],
+            }
+          } else {
+            return {
+              name:  Object.keys(item)[0],
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true, 
+                position: 'top',
+                formatter: function (params) {
+                  return totalNum[params.dataIndex]
+                },
+                textStyle: { color: '#000' }
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: Object.values(item)[0],
+              barMaxWidth:12,
+              borderRadius: [10, 10, 0, 0],
+            }
+          }
+          
+        })
+        setDateSeriesData(tempDateSeries)
+      }
     };
     fetchData();
   }, []);
@@ -182,21 +249,32 @@ const ChartPage = (props: any) => {
       top: '5%',
       left: 'center'
     },
+    tooltip: {
+      trigger: 'item',
+      formatter:function(data){
+        return `${data.name}: `+`${data.percent.toFixed(1)}%`
+      },
+    },
     series: [
       {
         type: 'pie',
         emphasis: {
           scaleSize: 1,
+          label: {
+            show: true,
+            fontSize: '14',
+            fontWeight: 'bold'
+          }
         },
         radius: ['40%', '80%'],
         center: ['45%', '60%'],
-        avoidLabelOverlap: false,
+        avoidLabelOverlap: true,
         color:lightBlueColor,
-        cursor:"auto",
+        // cursor:"auto",
         labelLine: {
-          lineStyle: {color:'#2D2D2D'},
+          lineStyle: {color:'#999999'},
           length: 0,
-          length2: 70,
+          length2: 40,
         },
         label:{
           // distanceToLabelLine: -50,
@@ -217,7 +295,7 @@ const ChartPage = (props: any) => {
               }
           }
         },
-        data: dummay_chart_data.study_indication
+        data: chartData.study_indication
       }
     ]
   };
@@ -230,6 +308,12 @@ const ChartPage = (props: any) => {
       itemWidth:12,
       selectedMode:false,
       icon:'rect'
+    },
+    tooltip: {
+      trigger: 'item',
+      formatter:function(data){
+        return `${data.name}: `+`${data.percent.toFixed(0)}%`
+      }
     },
     series: [
       {
@@ -253,7 +337,7 @@ const ChartPage = (props: any) => {
             return `${data.percent.toFixed(0)}%`
           },
         },
-        data: dummay_chart_data.study_phase
+        data: chartData.study_phase
       }
     ]
   };
@@ -266,6 +350,12 @@ const ChartPage = (props: any) => {
       itemWidth:12,
       selectedMode:false,
       icon:'rect'
+    },
+    tooltip: {
+      trigger: 'item',
+      formatter:function(data){
+        return `${data.name}: `+`${data.percent.toFixed(0)}%`
+      }
     },
     series: [
       {
@@ -289,7 +379,7 @@ const ChartPage = (props: any) => {
             return `${data.percent.toFixed(0)}%`
           },
         },
-        data: dummay_chart_data.study_type
+        data: chartData.study_type
       }
     ]
   };
@@ -302,6 +392,12 @@ const ChartPage = (props: any) => {
       itemWidth:12,
       selectedMode:false,
       icon:'rect'
+    },
+    tooltip: {
+      trigger: 'item',
+      formatter:function(data){
+        return `${data.name}: `+`${data.percent.toFixed(0)}%`
+      }
     },
     series: [
       {
@@ -324,7 +420,7 @@ const ChartPage = (props: any) => {
             return `${data.percent.toFixed(0)}%`
           },
         },
-        data: dummay_chart_data.study_status
+        data: chartData.study_status
       }
     ]
   };
@@ -340,7 +436,7 @@ const ChartPage = (props: any) => {
       trigger: 'axis',
       axisPointer: {
         // Use axis to trigger tooltip
-        type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+        type: 'shadow'
       }
     },
     color:sponsorPhaseColor,
@@ -357,80 +453,18 @@ const ChartPage = (props: any) => {
       bottom: '3%',
       containLabel: true
     },
-    xAxis: {
+    xAxis: [{
       type: 'value'
-    },
-    yAxis: {
+    }],
+    yAxis: [{
       type: 'category',
-      data: ['Eli Lily', 'Mayo clinic', 'GSK', 'Merck', 'Pfizer', 'Astra Zeneca'],
-    },
-    series: [
-      {
-        name: 'Phase 0',
-        type: 'bar',
-        stack: 'total',
-        label: {
-          show: true
-        },
-        emphasis: {
-          focus: 'series'
-        },
-        data: [320, 302, 301, 334, 390, 330],
-        barMaxWidth: 22,
-      },
-      {
-        name: 'Phase 1',
-        type: 'bar',
-        stack: 'total',
-        label: {
-          show: true
-        },
-        emphasis: {
-          focus: 'series'
-        },
-        data: [120, 132, 101, 134, 90, 230],
-        barMaxWidth: 22,
-      },
-      {
-        name: 'Phase 2',
-        type: 'bar',
-        stack: 'total',
-        label: {
-          show: true
-        },
-        emphasis: {
-          focus: 'series'
-        },
-        data: [220, 182, 191, 234, 290, 330],
-        barMaxWidth: 22,
-      },
-      {
-        name: 'Phase 3',
-        type: 'bar',
-        stack: 'total',
-        label: {
-          show: true
-        },
-        emphasis: {
-          focus: 'series'
-        },
-        data: [150, 212, 201, 154, 190, 330],
-        barMaxWidth: 22,
-      },
-      {
-        name: 'Phase 4',
-        type: 'bar',
-        stack: 'total',
-        label: {
-          show: true
-        },
-        emphasis: {
-          focus: 'series'
-        },
-        data: [820, 832, 901, 934, 1290, 1330],
-        barMaxWidth: 22,
+      data: chartData.study_sponsor.phases,
+      axisLabel: {
+        width: 150,
+        overflow: "truncate"
       }
-    ]
+    }],
+    series: sponsorSeriesData
   };
   
   const dateOption = {
@@ -467,93 +501,11 @@ const ChartPage = (props: any) => {
     },
     xAxis: {
       type: 'category',
-      data: ['2015', '2016', '2017', '2018', '2019', '2020', '2021']
+      data: chartData.study_date.phases
     },
-    series: [
-      {
-        name: 'Phase 0',
-        type: 'bar',
-        stack: 'total',
-        label: {
-          show: false
-        },
-        emphasis: {
-          focus: 'series'
-        },
-        data: [320, 302, 301, 334, 390, 330, 320],
-        barMaxWidth:12,
-        borderRadius: [10, 10, 0, 0],
-      },
-      {
-        name: 'Phase 1',
-        type: 'bar',
-        stack: 'total',
-        label: {
-          show: false
-        },
-        emphasis: {
-          focus: 'series'
-        },
-        data: [120, 132, 101, 134, 90, 230, 210],
-        barMaxWidth:12,
-        borderRadius: [10, 10, 0, 0],
-      },
-      {
-        name: 'Phase 2',
-        type: 'bar',
-        stack: 'total',
-        label: {
-          show: false
-        },
-        emphasis: {
-          focus: 'series'
-        },
-        data: [220, 182, 191, 234, 290, 330, 310],
-        barMaxWidth:12,
-        borderRadius: [10, 10, 0, 0],
-      },
-      {
-        name: 'Phase 3',
-        type: 'bar',
-        stack: 'total',
-        label: {
-          show: false
-        },
-        emphasis: {
-          focus: 'series'
-        },
-        data: [150, 212, 201, 154, 190, 330, 410],
-        barMaxWidth:12,
-        borderRadius: [10, 10, 0, 0],
-      },
-      {
-        name: 'Phase 4',
-        type: 'bar',
-        stack: 'total',
-        // this is different from other series
-        // label: {
-        //   show: false
-        // },
-        label: {
-          show: true, 
-          position: 'top',
-          formatter: function (params) {
-            return [890, 895, 880, 930, 1290, 1330, 1340][params.dataIndex]
-          },
-          textStyle: { color: '#000' }
-        },
-        emphasis: {
-          focus: 'series'
-        },
-        data: [82, 83, 90, 93, 129, 133, 130],
-        barMaxWidth:12,
-        borderRadius: [10, 10, 0, 0],
-      }
-    ]
+    series: dateSeriesData
   };
   
-  
-
   return (
     <>
       <div className="chart__container">
@@ -563,20 +515,20 @@ const ChartPage = (props: any) => {
                 <div className="chart__wrapper total_study">
                   <div className="title">TOTAL NO. OF STUDIES</div>
                   <div className="content">
-                    <Statistic title="" value={217440} valueStyle={{fontSize:42, color:'#1162B4', fontWeight: 600}}/>
-                    <span style={{color:'#999999', fontSize:14}}>Last updated - {moment(new Date('2022-3-7 8:8:8')).subtract('days').fromNow()}</span>
+                    <Statistic title="" value={chartData.total_study.count} valueStyle={{fontSize:42, color:'#1162B4', fontWeight: 600}}/>
+                    <span style={{color:'#999999', fontSize:14}}>Last updated - {moment(new Date(chartData.total_study.date)).subtract('days').fromNow()}</span>
                   </div>
                 </div>
                 <div className="chart__wrapper total_sponsor">
                   <div className="title">TOTAL NO. OF SPONSORS</div>
                   <div className="content">
-                    <Statistic title="" value={20345} valueStyle={{fontSize:42, color:'#333333', fontWeight: 600}}/>
+                    <Statistic title="" value={chartData.total_sponsor.count} valueStyle={{fontSize:42, color:'#333333', fontWeight: 600}}/>
                   </div>
                 </div>
                 <div className="chart__wrapper total_document">
                   <div className="title">TOTAL NO. OF CLINICAL DOCUMENTS</div>
                   <div className="content">
-                    <Statistic title="" value={18123} valueStyle={{fontSize:42, color:'#333333', fontWeight: 600}}/>
+                    <Statistic title="" value={chartData.total_document.count} valueStyle={{fontSize:42, color:'#333333', fontWeight: 600}}/>
                   </div>
                 </div>
               </div>
