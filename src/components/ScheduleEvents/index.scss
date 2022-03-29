@@ -767,7 +767,7 @@
 
 .event-right-container{
     // height: 100%;
-    width: 75%;
+    width: 70%;
     .ant-dropdown-button{
         border: 1px solid #CA4A04;
     }
@@ -890,6 +890,12 @@
 
     .ant-collapse-content > .ant-collapse-content-box{
         padding: 0;
+        .chart-container-wrapper {
+            overflow-x: scroll;
+            .chart-container-fixedWidth {
+                width: 936px;
+            }
+        }
         div.chart-container{
             display:inline-block;
             overflow: hidden;

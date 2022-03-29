@@ -2053,69 +2053,73 @@ const ScheduleEvents = (props) => {
               <Col span={24} className={`${hiddeTags ? 'hidde' : ''}`}>
               <Collapse defaultActiveKey={['1']} onChange={excluCallback} expandIconPosition="right" className="event-chart">
                 <Panel header={panelHeader()} key="1">
-                <div className="chart-container pie">
-                  <div className="chart-title">
-                      <div className="text">
-                      Cost per patient
-                      </div> 
-                  </div>
-                  <div>
-                    <ReactECharts
-                          option={costOption}
-                          style={{ height: 120}}
-                          />
-                  </div>
-                  <div className="subtitle">{costSubTitle}</div>
-                  <div className="legend-wrapper">
-                        <div className="item-desc">
-                          <span className="bar-item item3"></span>
-                          <span>{CATEGORY_LABS}</span>
+                  <div className="chart-container-wrapper">
+                    <div className="chart-container-fixedWidth">
+                      <div className="chart-container pie">
+                        <div className="chart-title">
+                            <div className="text">
+                            Cost per patient
+                            </div> 
                         </div>
-                        <div className="item-desc">
-                          <span className="bar-item item4"></span>
-                          <span>{CATEGORY_PHYSICAL_EXAMINATION}</span>
+                        <div>
+                          <ReactECharts
+                                option={costOption}
+                                style={{ height: 120}}
+                                />
                         </div>
-                        <div className="item-desc">
-                          <span className="bar-item item1"></span>
-                          <span>{CATEGORY_PROCEDURES}</span>
+                        <div className="subtitle">{costSubTitle}</div>
+                        <div className="legend-wrapper">
+                              <div className="item-desc">
+                                <span className="bar-item item3"></span>
+                                <span>{CATEGORY_LABS}</span>
+                              </div>
+                              <div className="item-desc">
+                                <span className="bar-item item4"></span>
+                                <span>{CATEGORY_PHYSICAL_EXAMINATION}</span>
+                              </div>
+                              <div className="item-desc">
+                                <span className="bar-item item1"></span>
+                                <span>{CATEGORY_PROCEDURES}</span>
+                              </div>
+                              <div className="item-desc">
+                                <span className="bar-item item2"></span>
+                                <span>{CATEGORY_QUESTIONNAIRES}</span>
+                              </div>
+                              <div className="item-desc">
+                                <span className="bar-item item1"></span>
+                                <span>{CATEGORY_STUDY_PROCEDURES}</span>
+                              </div>
+                            </div>
+                      </div>
+                      <div className="chart-container">
+                        <div className="chart-title">
+                            <div className="text">
+                              {'Patient Burden Total:'+totalBurden}
+                            </div> 
                         </div>
-                        <div className="item-desc">
-                          <span className="bar-item item2"></span>
-                          <span>{CATEGORY_QUESTIONNAIRES}</span>
+                        <div className="subtitleBarChart">
+                        {burdenSubTitle}
                         </div>
-                        <div className="item-desc">
-                          <span className="bar-item item1"></span>
-                          <span>{CATEGORY_STUDY_PROCEDURES}</span>
+                        <div>
+                        <ReactECharts option={burdenOption}
+                        style={{width: '310px', height: '180px',marginLeft:10,}}></ReactECharts>
                         </div>
                       </div>
-                </div>
-                <div className="chart-container">
-                  <div className="chart-title">
-                      <div className="text">
-                        {'Patient Burden Total:'+totalBurden}
-                      </div> 
+                      <div className="chart-container">
+                        <div className="chart-title">
+                            <div className="text">
+                            Activities by Modality
+                            </div> 
+                        </div>
+                        <div className="subtitleBarChart">
+                        </div>
+                        <div>
+                        <ReactECharts option={modalityOption}
+                        style={{width: '300px', height: '185px'}}></ReactECharts>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="subtitleBarChart">
-                  {burdenSubTitle}
-                  </div>
-                  <div>
-                  <ReactECharts option={burdenOption}
-                  style={{width: '310px', height: '180px',marginLeft:10,}}></ReactECharts>
-                  </div>
-                </div>
-                <div className="chart-container">
-                  <div className="chart-title">
-                      <div className="text">
-                      Activities by Modality
-                      </div> 
-                  </div>
-                  <div className="subtitleBarChart">
-                  </div>
-                  <div>
-                  <ReactECharts option={modalityOption}
-                  style={{width: '300px', height: '185px'}}></ReactECharts>
-                  </div>
-                </div>
                 </Panel>
               </Collapse>
               </Col>
