@@ -358,10 +358,11 @@ const ScheduleEvents = (props) => {
         if(index > -1){
           return Object.assign(d, {
             selected: true, 
+            showMore: false,
             condition: addedEvents[index].condition, 
             totalVisit: addedEvents[index].totalVisit})
         } else {
-          return Object.assign(d, {selected: false, condition: [], totalVisit: 0})
+          return Object.assign(d, {selected: false, showMore: false, condition: [], totalVisit: 0})
         }
       }
     })
@@ -1514,26 +1515,53 @@ const ScheduleEvents = (props) => {
     if(item!=='') {
       setEndpointDetail(item)
       
-    //   let tempEndpointFrequency = item.frequency_summary.percent.map((val, index)=>{
-    //     return {
-    //       name: val.category,
-    //         type: 'bar', 
-    //         emphasis: {
-    //           focus: 'series'
-    //         },
-    //         barGap: '0%',
-    //         // barWidth: '40%',
-    //         itemStyle: {
-    //           color: (index===0?frequencyColors['Primary']:frequencyColors['Secondary'])|| '#E86153'
-    //         },
-    //         data: val.value.length>5?val.value.slice(val.value.length-5, val.value.length):val.value
-    //     }
-    //   })
-    //   // console.log("tempEndpointFrequency:",tempEndpointFrequency);
-    //   setEndpointFrequency(tempEndpointFrequency)
+      let tempFilteredLabs = [...filteredLabs]
+      tempFilteredLabs.forEach(item=>{
+        item.showMore = false
+      })
+      if(id === 0){
+        tempFilteredLabs[key].showMore = true
+      }
+      setFilteredLabs(tempFilteredLabs)
+
+      let tempFilteredExamination = [...filteredExamination]
+      tempFilteredExamination.forEach(item=>{
+        item.showMore = false
+      })
+      if(id === 1){
+        tempFilteredExamination[key].showMore = true
+      }
+      setFilteredExamination(tempFilteredExamination)
+
+      let tempFilteredQuestionnaires = [...filteredQuestionnaires]
+      tempFilteredQuestionnaires.forEach(item=>{
+        item.showMore = false
+      })
+      if(id === 3){
+        tempFilteredQuestionnaires[key].showMore = true
+      }
+      setFilteredQuestionnaires(tempFilteredQuestionnaires)
+
+      let tempFilteredProcedures = [...filteredProcedures]
+      tempFilteredProcedures.forEach(item=>{
+        item.showMore = false
+      })
+      if(id === 2){
+        tempFilteredProcedures[key].showMore = true
+      }
+      setFilteredProcedures(tempFilteredProcedures)
+
+      let tempFilteredStudyProcedures = [...filteredStudyProcedures]
+      tempFilteredStudyProcedures.forEach(item=>{
+        item.showMore = false
+      })
+      if(id === 4){
+        tempFilteredStudyProcedures[key].showMore = true
+      }
+      setFilteredStudyProcedures(tempFilteredStudyProcedures)
     }
 
-    if(activeMore === 1) {
+    if(activeMore === true) {
       setShowMoreDetailEndpoint(true)
     } else {
       setShowMoreDetailEndpoint(false)
@@ -1820,7 +1848,7 @@ const ScheduleEvents = (props) => {
                                   maxValue={maxV}
                                   key={`demographic_${idx}`}
                                   demographic={endpoint}
-                                  index={0}//
+                                  index={1}//
                                   idx={idx}
                                   assignedType={'None'}
                                   showMoreDetail={showMoreDetailEndpoint}
@@ -1850,7 +1878,7 @@ const ScheduleEvents = (props) => {
                                   maxValue={maxV}
                                   key={`demographic_${idx}`}
                                   demographic={endpoint}
-                                  index={0}//
+                                  index={2}//
                                   idx={idx}
                                   assignedType={'None'}
                                   showMoreDetail={showMoreDetailEndpoint}
@@ -1880,7 +1908,7 @@ const ScheduleEvents = (props) => {
                                   maxValue={maxV}
                                   key={`demographic_${idx}`}
                                   demographic={endpoint}
-                                  index={0}//
+                                  index={3}//
                                   idx={idx}
                                   assignedType={'None'}
                                   showMoreDetail={showMoreDetailEndpoint}
@@ -1910,7 +1938,7 @@ const ScheduleEvents = (props) => {
                                   maxValue={maxV}
                                   key={`demographic_${idx}`}
                                   demographic={endpoint}
-                                  index={0}//
+                                  index={4}//
                                   idx={idx}
                                   assignedType={'None'}
                                   showMoreDetail={showMoreDetailEndpoint}

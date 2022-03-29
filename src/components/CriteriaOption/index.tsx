@@ -23,17 +23,19 @@ const CriteriaOption = (props) => {
       });
       setActiveType(res != -1? 1 : 0); 
     } 
-    if(activeMore == 1) {
+    if(props.demographic.showMore === true) {
       if(props.showMoreDetail) {
         setActiveMore(1);
-        props.handleMoreSelect('', 1, props.index, props.idx);
+        props.handleMoreSelect('', true, props.index, props.idx);
       } else {
         setActiveMore(0);
-        props.handleMoreSelect('', 0, props.index, props.idx);
+        props.handleMoreSelect('', false, props.index, props.idx);
       } 
-    } 
+    } else {
+        setActiveMore(0);
+    }
 
-  }, [props.selectedEle, props.selectedEleSecondary, props.minValue, props.maxValue, props.showMoreDetail]);
+  }, [props.selectedEle, props.selectedEleSecondary, props.minValue, props.maxValue, props.showMoreDetail,props.demographic.showMore]);
 
   const handleOptionSelect = (domain, e) => {
     if (activeType == 0) {
@@ -58,10 +60,10 @@ const CriteriaOption = (props) => {
   const handleMore = (val, e) => {
     if (activeMore == 0) {
       setActiveMore(1);
-      props.handleMoreSelect(val, 1, props.index, props.idx);
+      props.handleMoreSelect(val, true, props.index, props.idx);
     } else {
       setActiveMore(0);
-      props.handleMoreSelect(val, 0, props.index, props.idx);
+      props.handleMoreSelect(val, false, props.index, props.idx);
     }
   }
 
@@ -100,7 +102,7 @@ const CriteriaOption = (props) => {
             </span>)}
             </span>
             <span className="more-button" onClick={(e) => handleMore(domain, e)}>
-              {activeMore== 0 ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}} />:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
+              {activeMore === 0 ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}} />:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
             </span>
           </div>
       ) : (
@@ -114,7 +116,7 @@ const CriteriaOption = (props) => {
             </span>
           </span>
           <span className="more-button" onClick={(e) => handleMore(domain, e)}>
-              {activeMore== 0 ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}}/>:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
+              {activeMore === 0 ?<RightOutlined style={{color: '#7C7C7C', fontSize: 13}}/>:<LeftOutlined style={{color: '#7C7C7C', fontSize: 13}}/>}
           </span>
         </div>
       )}

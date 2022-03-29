@@ -496,21 +496,29 @@ const ScenarioPage = (props) => {
                         // originMedCondition
                         setMedCondition(inclusionCriteria[i]['Medical Condition'].filter((d) => {
                             return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+                        }).map((d)=>{
+                          return Object.assign(d, {showMore: false})
                         }))
                     } else if(incluIndex == 1){ 
                         setOriginDemographics(inclusionCriteria[i]['Demographics'])
                         setDemographics(inclusionCriteria[i]['Demographics'].filter((d) => {
-                            return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
-                        }))
+                          return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+                      }).map((d)=>{
+                        return Object.assign(d, {showMore: false})
+                      }))
                     } else if(incluIndex == 2){
                         setOriginLabTest(inclusionCriteria[i]['Lab/Test'])
                         setLabTest(inclusionCriteria[i]['Lab/Test'].filter((d) => {
                             return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+                        }).map((d)=>{
+                          return Object.assign(d, {showMore: false})
                         }))
                     } else if(incluIndex == 3){
                         setOriginIntervention(inclusionCriteria[i]['Intervention'])
                         setIntervention(inclusionCriteria[i]['Intervention'].filter((d) => {
                             return d.Frequency * 100 >= minValue && d.Frequency * 100 <= maxValue;
+                        }).map((d)=>{
+                          return Object.assign(d, {showMore: false})
                         }))
                     }
                 }
@@ -522,21 +530,29 @@ const ScenarioPage = (props) => {
                         setOriginExcluMedCondition(exclusionCriteria[i]['Medical Condition'])
                         setExcluMedCondition(exclusionCriteria[i]['Medical Condition'].filter((d) => {
                             return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
+                        }).map((d)=>{
+                          return Object.assign(d, {showMore: false})
                         }))
                     } else if(excluIndex == 1){ 
                         setOriginExcluDemographics(exclusionCriteria[i]['Demographics'])
                         setExcluDemographics(exclusionCriteria[i]['Demographics'].filter((d) => {
                             return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
+                        }).map((d)=>{
+                          return Object.assign(d, {showMore: false})
                         }))
                     } else if(excluIndex == 2){
                         setOriginExcluLabTest(exclusionCriteria[i]['Lab/Test'])
                         setExcluLabTest(exclusionCriteria[i]['Lab/Test'].filter((d) => {
                             return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
+                        }).map((d)=>{
+                          return Object.assign(d, {showMore: false})
                         }))
                     } else if(excluIndex == 3){
                         setOriginExcluIntervention(exclusionCriteria[i]['Intervention'])
                         setExcluIntervention(exclusionCriteria[i]['Intervention'].filter((d) => {
                             return d.Frequency * 100 >= excluMinValue && d.Frequency * 100 <= excluMaxValue;
+                        }).map((d)=>{
+                          return Object.assign(d, {showMore: false})
                         }))
                     }
                 }
@@ -981,16 +997,50 @@ const ScenarioPage = (props) => {
     }
 
     const handleMoreSelect = (item, activeMore, id, key) => {
-      console.log("handleMoreSelect-item",item);
-      console.log("handleMoreSelect-activeMore",activeMore);
-      console.log("handleMoreSelect-id",id);
-      console.log("handleMoreSelect-key",key);
-      item!==''&&setCriteriaDetail(item)
-      // setCriteriaDetailActiveTab(activeMore)
-      setCriteriaDetailID(id)
-      setCriteriaDetailKey(key)
+      
+      if(item!==''){
+        setCriteriaDetail(item)
+        setCriteriaDetailID(id)
+        setCriteriaDetailKey(key)
 
-      if(activeMore === 1) {
+        let tempDemographics = [...demographics]
+        tempDemographics.forEach(item=>{
+          item.showMore = false
+        })
+        if(id === 0){
+          tempDemographics[key].showMore = true
+        }
+        setDemographics(tempDemographics)
+  
+        let tempMedCondition = [...medCondition]
+        tempMedCondition.forEach(item=>{
+          item.showMore = false
+        })
+        if(id === 1){
+          tempMedCondition[key].showMore = true
+        }
+        setMedCondition(tempMedCondition)
+
+        let tempIntervention = [...intervention]
+        tempIntervention.forEach(item=>{
+          item.showMore = false
+        })
+        if(id === 2){
+          tempIntervention[key].showMore = true
+        }
+        setIntervention(tempIntervention)
+  
+        let tempLabTest = [...labTest]
+        tempLabTest.forEach(item=>{
+          item.showMore = false
+        })
+        if(id === 3){
+          tempLabTest[key].showMore = true
+        }
+        setLabTest(tempLabTest)
+      }
+      
+      if(activeMore === true) {
         setShowMoreDetail(true)
       } else {
         setShowMoreDetail(false)
@@ -999,17 +1049,50 @@ const ScenarioPage = (props) => {
     }
 
     const handleExcluMoreSelect = (item, activeMore, id, key) => {
-      console.log("handleExcluMoreSelect-item",item);
-      console.log("handleExcluMoreSelect-activeMore",activeMore);
-      console.log("handleExcluMoreSelect-id",id);
-      console.log("handleExcluMoreSelect-key",key);
+      
+      if(item!==''){
+        setCriteriaDetail(item)
+        setCriteriaDetailID(id)
+        setCriteriaDetailKey(key)
 
-      item!==''&&setCriteriaDetail(item)
-      // setCriteriaDetailActiveTab(activeMore)
-      setCriteriaDetailID(id)
-      setCriteriaDetailKey(key)
+        let tempDemographics = [...excluDemographics]
+        tempDemographics.forEach(item=>{
+          item.showMore = false
+        })
+        if(id === 0){
+          tempDemographics[key].showMore = true
+        }
+        setExcluDemographics(tempDemographics)
+  
+        let tempMedCondition = [...excluMedCondition]
+        tempMedCondition.forEach(item=>{
+          item.showMore = false
+        })
+        if(id === 1){
+          tempMedCondition[key].showMore = true
+        }
+        setExcluMedCondition(tempMedCondition)
 
-      if(activeMore === 1) {
+        let tempIntervention = [...excluIntervention]
+        tempIntervention.forEach(item=>{
+          item.showMore = false
+        })
+        if(id === 2){
+          tempIntervention[key].showMore = true
+        }
+        setExcluIntervention(tempIntervention)
+  
+        let tempLabTest = [...excluLabTest]
+        tempLabTest.forEach(item=>{
+          item.showMore = false
+        })
+        if(id === 3){
+          tempLabTest[key].showMore = true
+        }
+        setExcluLabTest(tempLabTest)
+      }
+
+      if(activeMore === true) {
         setShowMoreDetail(true)
       } else {
         setShowMoreDetail(false)
@@ -1020,9 +1103,14 @@ const ScenarioPage = (props) => {
 
       if(item!=='') {
         setEndpointDetail(item)
-        // setCriteriaDetailActiveTab(activeMore)
-        // setCriteriaDetailID(id)
-        // setCriteriaDetailKey(key)
+
+        let tempOriginEndpoint = [...originEndpoint]
+        tempOriginEndpoint.forEach(item=>{
+          item.showMore = false
+        })
+        tempOriginEndpoint[key].showMore = true
+        setOriginEndpoint(tempOriginEndpoint)
+
         let tempEndpointFrequency = item.frequency_summary.percent.map((val, index)=>{
           return {
             name: val.category,
@@ -1038,11 +1126,10 @@ const ScenarioPage = (props) => {
               data: val.value.length>5?val.value.slice(val.value.length-5, val.value.length):val.value
           }
         })
-        // console.log("tempEndpointFrequency:",tempEndpointFrequency);
         setEndpointFrequency(tempEndpointFrequency)
       }
 
-      if(activeMore === 1) {
+      if(activeMore === true) {
         setShowMoreDetailEndpoint(true)
       } else {
         setShowMoreDetailEndpoint(false)
@@ -3152,7 +3239,16 @@ const ScenarioPage = (props) => {
           // const selectedEndpointList = endpointList.filter((val, index)=>{
           //   return val.selected
           // })
+
+          if(endpointList.length>0){
+          let newEndpointList = endpointList.map((d)=>{
+              return Object.assign(d, { 
+                showMore: false})
+            })
+          setOriginEndpoint(newEndpointList)
+          } else {
           setOriginEndpoint(endpointList)
+          }
           // setEndpointElements(selectedEndpointList)
           setSummaryData(endpointSummaryChart)  
           if(endpointSummaryChart.value.some((item,index)=>{
