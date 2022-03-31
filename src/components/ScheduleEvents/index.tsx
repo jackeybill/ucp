@@ -2086,7 +2086,7 @@ const ScheduleEvents = (props) => {
                                 <span>{CATEGORY_QUESTIONNAIRES}</span>
                               </div>
                               <div className="item-desc">
-                                <span className="bar-item item1"></span>
+                                <span className="bar-item item5"></span>
                                 <span>{CATEGORY_STUDY_PROCEDURES}</span>
                               </div>
                             </div>

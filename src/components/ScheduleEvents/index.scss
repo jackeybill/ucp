@@ -861,25 +861,21 @@
                 border-radius: 5px;
                 margin-right:5px;
             }
-
+            // '#d04a02', '#ed7738', '#ed9d72', '#f5b795', '#f5ddcf'
             .item1{
-                background-color: #d04a02;
-            }
-
-            .item2{
-                background-color: #ed7738;
-            }
-
-            .item3{
                 background-color: #ed9d72;
             }
-
-            .item4{
+            .item2{
                 background-color: #f5b795;
             }
-
+            .item3{
+                background-color:#d04a02;
+            }
+            .item4{
+                background-color: #ed7738;
+            }
             .item5{
-                background-color: #f3d5c5;
+                background-color: #f5ddcf;
             }
         }
 
@@ -955,25 +951,24 @@
                         border-radius: 5px;
                         margin-right: 3px;
                     }
-    
                     .item1{
                         background-color: #F27A26;
 
                     }
-    
                     .item2{
                         background-color: #E53500;
 
                         margin-left: 25px;
                     }
-    
                     .item3{
                         background-color: #F5924D;
                     }
-    
                     .item4{
                         background-color: #FBD0B3;
                         margin-left: 10px;
+                    }
+                    .item5{
+                        background-color: #f5ddcf;
                     }
                 }
             }
