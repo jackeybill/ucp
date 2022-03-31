@@ -12,9 +12,11 @@ import SelectableTable from "../../components/SelectableTable";
 
 const { Panel } = Collapse;
 
-const iChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA', '#DADADA']
+// const iChartColors = ['#DADADA', '#DADADA', '#DADADA', '#DADADA', '#DADADA']
+const iChartColors = ['#d04a02', '#ed7738', '#ed9d72', '#f5b795', '#f5ddcf']
 const aChartColors = ['#d04a02', '#ed7738', '#ed9d72', '#f5b795', '#f5ddcf']
-const burdenColors = {active: '#E53500', inactive: '#DADADA'}
+// const burdenColors = {active: '#E53500', inactive: '#DADADA'}
+const burdenColors = {active: '#E53500', inactive: '#E53500'}
 const aLabelColors = {GOOD: '#00A947', FAIR: '#0084A9', POOR: '#c33232'}
 const iLabelColors = {GOOD: burdenColors.inactive, FAIR: burdenColors.inactive, POOR: burdenColors.inactive}
 
@@ -570,9 +572,9 @@ const ScheduleEvents = (props) => {
       setWeeks(tmpWeeks)
     }
     setResetWeeks(false)
-    setPatientChartColor(iChartColors)
-    setBurdenChartColor(burdenColors.inactive)
-    setLabelColors(iLabelColors)
+    // setPatientChartColor(iChartColors)
+    // setBurdenChartColor(burdenColors.inactive)
+    // setLabelColors(iLabelColors)
     setEventCriteria({
       'Finished' : false
     })
@@ -1125,9 +1127,9 @@ const ScheduleEvents = (props) => {
     
     setWeeks(weeksArr)
     setEditNumbers(numbers)
-    setPatientChartColor(iChartColors)
-    setBurdenChartColor(burdenColors.inactive)
-    setLabelColors(iLabelColors)
+    // setPatientChartColor(iChartColors)
+    // setBurdenChartColor(burdenColors.inactive)
+    // setLabelColors(iLabelColors)
     setEventCriteria({
       'Finished' : false
     })
