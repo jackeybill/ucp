@@ -17,11 +17,42 @@ const ChartPage = (props: any) => {
   const [dateSeriesData, setDateSeriesData] = useState([])
 
   const lightBlueColor = [
-    "#2564DF",
-    "#399DEF",
-    "#58ADF2",
-    "#B5DBF8",
-    "#E1F1FD"
+    "#004992",
+    "#005DBB",
+    "#0682FF",
+    "#168AFF",
+    "#2692FF",
+    "#379AFF",
+    "#47A2FF",
+    "#57ABFF",
+    "#68B3FF",
+    "#78BBFF",
+    "#88C3FF",
+    "#99CBFF",
+    "#A9D3FF",
+    "#B9DCFE",
+    "#EAF4FF",
+    // "#2564DF",
+    // "#399DEF",
+    // "#58ADF2",
+    // "#B5DBF8",
+    // "#E1F1FD"
+  ]
+
+  const studyPhaseColor = [
+  "#1192E8",
+  "#33B1FF",
+  "#82CFFF",
+  "#BAE6FF",
+  "#E5F6FF"
+  ]
+
+  const studyTypeColor = [
+    "#009D9A",
+    "#08BDBA",
+    "#3DDBD9",
+    "#9EF0F0",
+    "#D9FBFB"
   ]
 
   const darkBlueColor = [
@@ -33,14 +64,23 @@ const ChartPage = (props: any) => {
   ]
 
   const locationColor = [
-    "#1162B4",
-    "#6090C2",
-    "#89AACB",
-    "#5D86E2",
-    "#80C4F5",
-    "#B5DBF8",
-    "#C0D3E5",
-    "#E1F1FD"
+    // "#1162B4",
+    // "#6090C2",
+    // "#89AACB",
+    // "#5D86E2",
+    // "#80C4F5",
+    // "#B5DBF8",
+    // "#C0D3E5",
+    // "#E1F1FD"
+    "#491D8B",
+    "#6929C4",
+    "#8A3FFC",
+    "#A56EFF",
+    "#BE95FF",
+    "#D4BBFF",
+    "#E8DAFF",
+    "#F6F2FF",
+    // "#ECECEC",
   ]
 
   const PurpleColor = [
@@ -52,13 +92,11 @@ const ChartPage = (props: any) => {
   ]
 
   const sponsorPhaseColor = [
-    "#1162B4",
-    "#FFDCA9",
-    "#571F01",
-    "#2C8646",
-    "#8885AF",
-    "#58ADF2",
-    "#B5DBF8",
+    "#1192E8",
+    "#33B1FF",
+    "#82CFFF",
+    "#BAE6FF",
+    "#E5F6FF",
   ]
 
   const dummay_chart_data = {
@@ -302,7 +340,7 @@ const ChartPage = (props: any) => {
         radius: ['30%', '50%'],
         center: ['25%', '30%'],
         avoidLabelOverlap: false,
-        color:lightBlueColor,
+        color:studyPhaseColor,
         labelLine: {
           show: false
         },
@@ -342,7 +380,7 @@ const ChartPage = (props: any) => {
         radius: ['30%', '50%'],
         center: ['25%', '30%'],
         avoidLabelOverlap: false,
-        color:darkBlueColor,
+        color:studyTypeColor,
         labelLine: {
           show: false
         },
@@ -461,7 +499,7 @@ const ChartPage = (props: any) => {
       selectedMode:false,
       icon:'rect'
     },
-    color:darkBlueColor,
+    color:sponsorPhaseColor,
     grid: {
       left: '3%',
       right: '4%',
