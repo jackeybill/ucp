@@ -5,7 +5,9 @@ import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
 import { LoadingOutlined } from '@ant-design/icons';
 import ReactECharts from "echarts-for-react";
+import * as echarts from "echarts";
 import moment from 'moment';
+import geoJson from "../../assets/world.json"
 
 import { getSummaryChart } from "../../utils/ajax-proxy";
 import "./index.scss";
@@ -15,6 +17,8 @@ const ChartPage = (props: any) => {
   const [loading, setLoading] = useState(false)
   const [sponsorSeriesData, setSponsorSeriesData] = useState([])
   const [dateSeriesData, setDateSeriesData] = useState([])
+
+  echarts.registerMap("world", (geoJson) as any);
 
   const lightBlueColor = [
     "#004992",
@@ -435,7 +439,6 @@ const ChartPage = (props: any) => {
       }
     ]
   };
-
   const sponsorOption = {
     title: {
       subtext: 'Phases',
@@ -477,7 +480,6 @@ const ChartPage = (props: any) => {
     }],
     series: sponsorSeriesData
   };
-  
   const dateOption = {
     title: {
       subtext: 'Phases',
@@ -515,6 +517,53 @@ const ChartPage = (props: any) => {
     },
     series: dateSeriesData
   };
+
+  const locationOption = {
+  tooltip : {
+      trigger: 'item',
+      // formatter:'{b}<br/>{c}',
+      // formatter : function (params) {
+      //     var value = (params.value + '').split('.');
+      //     value = value[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,')
+      //             + '.' + value[1];
+      //     return params.seriesName + '<br/>' + params.name + ' : ' + value;
+      // }
+  },
+  dataRange: {
+      show: false,
+      min: 0,
+      max: 20,
+      text:['High','Low'],
+      realtime: false,
+      calculable : true,
+      color: locationColor
+  },
+  series : [
+      {
+          type: 'map',
+          name: 'Location',
+          mapType: 'world',
+          roam: false,
+          zoom: 1.2,
+          mapLocation: {
+              y : 60
+          },
+          itemStyle:{
+              borderColor:'#fff'
+          },
+          emphasis:{
+            label:{
+              show:false
+            },
+            itemStyle:{
+              areaColor:'#999',
+            }
+          },
+          data:chartData.study_locaiton,
+          nameMap:{}
+      }
+  ]
+  }
   
   return (
     <>
@@ -574,7 +623,9 @@ const ChartPage = (props: any) => {
               </div>
               <div className="chart__wrapper study_location">
                   <div className="title">STUDIES BY LOCATION</div>
-                  <div className="content"></div>
+                  <div className="content">
+                    <ReactECharts option={locationOption} style={{}}/>
+                  </div>
               </div>
               <div className="chart__wrapper study_status">
                   <div className="title">STUDIES BY STATUS</div>
