@@ -160,6 +160,7 @@
         // height:400px;
         height: calc(100vh - 374px)!important;
         overflow-y:scroll;
+        overflow-x:hidden;
         box-sizing: content-box;
             
         // .library.box{
@@ -625,6 +626,7 @@
         width: calc(100%);
         height: calc(100vh - 327px)!important;
         overflow-y:scroll;
+        overflow-x:hidden;
         box-sizing: content-box;
 
         .section-header{

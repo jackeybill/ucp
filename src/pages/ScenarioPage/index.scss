@@ -419,6 +419,7 @@
                     width: calc(100%);
                     height: calc(100vh - 376px)!important;
                     overflow-y:scroll;
+                    overflow-x:hidden;
                     box-sizing: content-box;
     
                     .section-header{
@@ -1146,6 +1147,7 @@
                     width: calc(100%);
                     height: calc(100vh - 327px)!important;
                     overflow-y:scroll;
+                    overflow-x:hidden;
                     box-sizing: content-box;
     
                     .section-header{
