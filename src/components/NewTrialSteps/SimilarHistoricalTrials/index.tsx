@@ -75,28 +75,32 @@ const sponsorChartColor = [
   // "#e47d47",
   // "#e68d5e",
   // "#e8aa89",
-  "#F53500",
-  "#E94700",
-  "#EC5100",
-  "#EE5B00",
-  "#F06300",
-  "#F27A26",
-  "#F5924D",
-  "#F8B180",
-  "#FBD0B3",
-  "#FDECE0",
+
+  // "#F53500",
+  // "#E94700",
+  // "#EC5100",
+  // "#EE5B00",
+  // "#F06300",
+  // "#F27A26",
+  // "#F5924D",
+  // "#F8B180",
+  // "#FBD0B3",
+  // "#FDECE0",
+
+  "#E84F21", "#EC6F49", "#EE8060", "#F09276", "#F3A48C", "#F5B5A2", "#F7C7B8", "#FBD0B3", "#FAD8CE", "#FFFBF8"
 ];
 const statusChartColor = [
-  "#F53500",
-  "#E94700",
-  "#EC5100",
-  "#EE5B00",
-  "#F06300",
-  "#F27A26",
-  "#F5924D",
-  "#F8B180",
-  "#FBD0B3",
-  "#FDECE0",
+  // "#F53500",
+  // "#E94700",
+  // "#EC5100",
+  // "#EE5B00",
+  // "#F06300",
+  // "#F27A26",
+  // "#F5924D",
+  // "#F8B180",
+  // "#FBD0B3",
+  // "#FDECE0",
+  "#E84F21", "#EC6F49", "#EE8060", "#F09276", "#F3A48C", "#F5B5A2", "#F7C7B8", "#FBD0B3", "#FAD8CE", "#FFFBF8"
 ];
 
 class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
