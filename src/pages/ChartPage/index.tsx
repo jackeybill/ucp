@@ -439,6 +439,7 @@ const ChartPage = (props: any) => {
       }
     ]
   };
+
   const sponsorOption = {
     title: {
       subtext: 'Phases',
@@ -456,6 +457,7 @@ const ChartPage = (props: any) => {
     color:sponsorPhaseColor,
     legend: {
       top: 10,
+      left: 50,
       itemHeight:12,
       itemWidth:12,
       selectedMode:false,
@@ -480,6 +482,7 @@ const ChartPage = (props: any) => {
     }],
     series: sponsorSeriesData
   };
+
   const dateOption = {
     title: {
       subtext: 'Phases',
@@ -496,6 +499,7 @@ const ChartPage = (props: any) => {
     },
     legend: {
       top: 10,
+      left: 50,
       itemHeight:12,
       itemWidth:12,
       selectedMode:false,
