@@ -412,7 +412,10 @@ const ProtocolSection = (props: any) => {
     ) {
       setSections([]);
     }
-    if (e.target.value == "sections") setSections(initSelectedSections);
+    if (e.target.value == "sections") {
+      setSections(initSelectedSections);
+      setCheckSections(initSelectedSections);
+    }
   };
 
   function handleButtonClick(e) {
