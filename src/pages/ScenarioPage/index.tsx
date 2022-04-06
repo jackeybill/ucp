@@ -5076,7 +5076,8 @@ const ScenarioPage = (props) => {
             <div className="nav-blank"> </div>  
             <div  className="nav-section-wrapper" >
                 <div className="ie-wrapper">
-                  <div className="ie-text">Inclusion / <br></br>Exclusion Criteria</div>
+                  {/* <div className="ie-text">Inclusion / <br></br>Exclusion Criteria</div> */}
+                  <div className="ie-text">Eligibility Criteria</div>
                     <Button  className={"nav-btn ie-btn" + (activeTabKey === '1'?" selected": "")} onClick={clickInclu}>
                         Inclusion Criteria
                     </Button>
