@@ -85,7 +85,7 @@ const initialTrial = {
 }
 const initialScenario = {
     scenario_id: "",
-    scenario_name: "",
+    scenario_name: "-",
     scenario_description: "",
     protocol_amendment_rate: "",
     screen_failure_rate: "",
@@ -119,7 +119,7 @@ const visitDimensionalScore = [
 
 const ScenarioPage = (props) => {
     //Common cons
-    const [trialTitle, setTrialTitle] = useState('')
+    const [trialTitle, setTrialTitle] = useState('-')
     const [trialRecord, setTrialRecord] = useReducer(
         (state, newState) => ({ ...state, ...newState }),
         { ...initialTrial }
