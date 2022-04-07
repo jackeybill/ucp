@@ -2049,7 +2049,7 @@ const ScheduleEvents = (props) => {
           </Row>
         </Col>
         <Col flex="auto" className="event-right-container">
-          <div style={{ padding: '10px 20px 0px 20px' }}>
+          <div style={{ padding: '15px 15px 0px 15px' }}>
             <Spin spinning={showConfigure}>
             <Row style={{position: 'relative', zIndex: 99 }}> 
               <Col span={24} className={`${hiddeTags ? 'hidde' : ''}`}>
@@ -2125,7 +2125,7 @@ const ScheduleEvents = (props) => {
                 </Panel>
               </Collapse>
               </Col>
-              <Col span={24} style={{height: '10px'}}></Col>
+              <Col span={24} style={{height: '15px'}}></Col>
               <Col span={24}>
                 <div className="event-dashboard-container">
                     <EventList

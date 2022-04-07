@@ -5411,9 +5411,9 @@ const ScenarioPage = (props) => {
                         </Row>
                       </Col>
                       <Col flex="auto" className={`${ collapsible ? "none-click" : "" } main-content-right`}>
-                        <Row style={{ paddingTop: '10px', position: 'relative', zIndex: 99 }}>
+                        <Row style={{ paddingTop: '15px', position: 'relative', zIndex: 99 }}>
                           <Col flex="none">
-                            <div style={{ padding: '0 10px' }}></div>
+                            <div style={{ padding: '0 15px 0 0' }}></div>
                           </Col>
                           <Col flex="auto">
                             {/* <Row>
@@ -5558,7 +5558,7 @@ const ScenarioPage = (props) => {
                             </Row>
                           </Col>
                           <Col flex="none">
-                            <div style={{ padding: '0 10px' }}></div>
+                            <div style={{ padding: '0 15px 0 0' }}></div>
                           </Col>
                         </Row>
                         {/* The drawer with wrapper */}
@@ -6039,9 +6039,9 @@ const ScenarioPage = (props) => {
                         </Row>
                       </Col>
                       <Col flex="auto" className={`${ excluCollapsible ? "none-click" : "" } main-content-right`}>
-                        <Row style={{ paddingTop: '10px', position: 'relative', zIndex: 99 }}>
+                        <Row style={{ paddingTop: '15px', position: 'relative', zIndex: 99 }}>
                           <Col flex="none">
-                            <div style={{ padding: '0 10px' }}></div>
+                            <div style={{ padding: '0 15px 0 0' }}></div>
                           </Col>
                           <Col flex="auto">
                             <Row>
@@ -6123,7 +6123,7 @@ const ScenarioPage = (props) => {
                             <Row className="impact-summary-wrapper"> 
                               <Col span={24}>
                                 <div className="impact-summary">
-                                  <span>View Historical Average</span>
+                                  <span className="impact-title">View Historical Average</span>
                                   {activeTabKey === '3'? (
                                     <></>
                                   ) : (
@@ -6176,7 +6176,7 @@ const ScenarioPage = (props) => {
                             </Row>
                           </Col>
                           <Col flex="none">
-                            <div style={{ padding: '0 10px' }}></div>
+                            <div style={{ padding: '0 15px 0 0' }}></div>
                           </Col>
                         </Row>
                         <div style={{position:'absolute', top:0,left:0,width:'100%', height:'100%', overflow:'hidden'}}>
@@ -6748,9 +6748,9 @@ const ScenarioPage = (props) => {
                     </Row>
                   </Col>
                   <Col flex="auto" className={`${ endpointCollapsible ? "none-click" : "" } main-content-right`}>
-                    <Row style={{ paddingTop: '10px', position: 'relative', zIndex: 99 }}>
+                    <Row style={{ paddingTop: '15px', position: 'relative', zIndex: 99 }}>
                       <Col flex="none">
-                        <div style={{ padding: '0 10px' }}></div>
+                        <div style={{ padding: '0 15px 0 0' }}></div>
                       </Col>
                       <Col flex="auto">
                         <Row>
@@ -6840,7 +6840,7 @@ const ScenarioPage = (props) => {
                         </Row>
                       </Col>
                       <Col flex="none">
-                        <div style={{ padding: '0 10px' }}></div>
+                        <div style={{ padding: '0 15px 0 0' }}></div>
                       </Col>
                     </Row>
                     {/* The drawer with wrapper */}
