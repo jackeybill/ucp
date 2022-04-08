@@ -16,6 +16,24 @@
       color: #999999;
       font-weight: 600;
     }
+    .showMore {
+      font-size: 14px;
+      color: #999999;
+      font-weight: 400;
+      .link {
+        color: #004992;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+    .newLine {
+      margin-top: 5px;
+      margin-bottom: 3px;
+    }
+    .right {
+      float: right;
+      margin-right: 5px;
+    }
     .content {
 
     }

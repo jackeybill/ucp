@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
-import {  Spin, Statistic } from "antd";
+import {  Spin, Statistic, Modal, Button  } from "antd";
 import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
 import { LoadingOutlined } from '@ant-design/icons';
@@ -13,10 +13,15 @@ import { getSummaryChart } from "../../utils/ajax-proxy";
 import "./index.scss";
 
 const ChartPage = (props: any) => {
-  const [chartData, setChartData] = useState({study_indication: [], study_date:{phases: [], data: []},study_locaiton:[],study_phase:[],study_sponsor:{phases: [], data: []},study_status:[],study_type:[],total_document:{count:0},total_sponsor:{count:0},total_study:{count: 0, date: ""}});
+  const [chartData, setChartData] = useState({study_indication: [], study_date:{phases: [], data: []},study_locaiton:[],study_phase:[],study_sponsor:{phases: [], data: []},study_sponsor_top10:{phases: [], data: []},study_status:[],study_type:[],total_document:{count:0},total_sponsor:{count:0},total_study:{count: 0, date: ""}});
   const [loading, setLoading] = useState(false)
   const [sponsorSeriesData, setSponsorSeriesData] = useState([])
+  const [sponsorSeriesDataTopTen, setSponsorSeriesDataTopTen] = useState([])
   const [dateSeriesData, setDateSeriesData] = useState([])
+
+  const [visible, setVisible] = useState(false);
+  const [sponsorVisible, setSponsorVisible] = useState(false);
+
 
   echarts.registerMap("world", (geoJson) as any);
 
@@ -41,6 +46,18 @@ const ChartPage = (props: any) => {
     // "#58ADF2",
     // "#B5DBF8",
     // "#E1F1FD"
+  ]
+  const lightBlueColorTopTen = [
+    "#004992",
+    "#0682FF",
+    "#2692FF",
+    "#47A2FF",
+    "#68B3FF",
+    "#88C3FF",
+    "#99CBFF",
+    "#A9D3FF",
+    "#B9DCFE",
+    "#EAF4FF",
   ]
 
   const studyPhaseColor = [
@@ -217,6 +234,27 @@ const ChartPage = (props: any) => {
       })
       setSponsorSeriesData(tempSponsorSeries)
 
+      if(resp.study_sponsor_top10){
+        let tempSponsorSeriesTopTen = resp.study_sponsor_top10.data.map((item, index, arr)=>{
+          return  {
+            name: Object.keys(item)[0],
+            type: 'bar',
+            stack: 'total',
+            label: {
+              show: false
+            },
+            emphasis: {
+              focus: 'series'
+            },
+            data: Object.values(item)[0],
+            barMaxWidth: 24,
+          }
+        })
+        setSponsorSeriesDataTopTen(tempSponsorSeriesTopTen)
+      } else {
+        setSponsorSeriesDataTopTen(tempSponsorSeries)
+      }
+
       let totalNum = []
       for (let i=0; i < resp.study_date.phases.length; i++) {
         let sum = 0  
@@ -270,7 +308,6 @@ const ChartPage = (props: any) => {
     }
   };
 
-
   const indicationOption = {
     legend: {
       show: false,
@@ -321,6 +358,60 @@ const ChartPage = (props: any) => {
       }
     ]
   };
+
+  const indicationOptionForTen = {
+    legend: {
+      show: false,
+      top: '5%',
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item',
+      formatter:function(data){
+        return `${data.name}: `+`${data.percent.toFixed(1)}%`
+      },
+    },
+    series: [
+      {
+        type: 'pie',
+        emphasis: {
+          scaleSize: 1,
+          label: {
+            show: true,
+            fontSize: '14',
+            fontWeight: 'bold'
+          }
+        },
+        radius: ['40%', '80%'],
+        center: ['45%', '60%'],
+        avoidLabelOverlap: true,
+        color:lightBlueColorTopTen,
+        labelLine: {
+          lineStyle: {color:'#999999'},
+          length: 0,
+          length2: 40,
+        },
+        label:{
+          alignTo: 'labelLine',
+          formatter:function(data){
+            return `{a|${data.name}}`+'\n'+ `{b|${data.percent.toFixed(1)}%}`
+          },
+          rich: {
+              a: {
+                  color: '#2D2D2D',
+              },
+              b: {
+                  color:'#9E9E9E'
+              }
+          }
+        },
+        data: chartData.study_indication.sort((a,b)=>{
+          return b.value -a.value
+        }).slice(0,10)
+      }
+    ]
+  };
+
   const phaseOption = {
     legend: {
       top: '10%',
@@ -468,7 +559,8 @@ const ChartPage = (props: any) => {
     grid: {
       left: '3%',
       right: '4%',
-      bottom: '3%',
+      // bottom: '3%',
+      height: 7000,
       containLabel: true
     },
     xAxis: [{
@@ -483,6 +575,50 @@ const ChartPage = (props: any) => {
       }
     }],
     series: sponsorSeriesData
+  };
+
+  const sponsorOptionForTen = {
+    title: {
+      subtext: 'Phases',
+      subtextStyle: {
+        color: '#2D2D2D'
+      }
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        // Use axis to trigger tooltip
+        type: 'shadow'
+      }
+    },
+    color:sponsorPhaseColor,
+    legend: {
+      top: 10,
+      left: 50,
+      itemHeight:12,
+      itemWidth:12,
+      selectedMode:false,
+      icon:'rect'
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: [{
+      type: 'value'
+    }],
+    yAxis: [{
+      type: 'category',
+      data: chartData.study_sponsor_top10?chartData.study_sponsor_top10.phases:chartData.study_sponsor.phases, 
+      // data: chartData.study_sponsor.phases, 
+      axisLabel: {
+        width: 150,
+        overflow: "truncate"
+      }
+    }],
+    series: sponsorSeriesDataTopTen
   };
 
   const dateOption = {
@@ -600,8 +736,13 @@ const ChartPage = (props: any) => {
               <div className="middle">
                 <div className="chart__wrapper indication">
                   <div className="title">STUDIES BY INDICATION</div>
+                  <div className="showMore newLine">
+                    <span>Showing 10 of {chartData.study_indication.length} Records. </span> 
+                    <span className="link" onClick={() => setVisible(true)}>Click here</span>
+                    <span> for more details.</span>
+                  </div>
                   <div className="content">
-                    <ReactECharts option={indicationOption} style={{height: 350}}/>
+                    <ReactECharts option={indicationOptionForTen} style={{height: 360}}/>
                   </div>
                 </div>
               </div>
@@ -622,9 +763,16 @@ const ChartPage = (props: any) => {
             </div>
             <div className="below">
               <div className="chart__wrapper study_sponsor">
-                  <div className="title">STUDIES BY SPONSOR</div>
+                  <div className="title">
+                    STUDIES BY SPONSOR
+                    <span className="showMore right">
+                      <span>Showing 10 of {chartData.study_sponsor.phases.length} Records. </span> 
+                      <span className="link" onClick={() => setSponsorVisible(true)}>Click here</span>
+                      <span> for more details.</span>
+                    </span>
+                  </div>
                   <div className="content">
-                    <ReactECharts option={sponsorOption} style={{}}/>
+                    <ReactECharts option={sponsorOptionForTen} style={{}}/>
                   </div>
               </div>
               <div className="chart__wrapper study_location">
@@ -647,6 +795,42 @@ const ChartPage = (props: any) => {
               </div>
             </div>
         </Spin>
+        <Modal
+          centered
+          visible={visible}
+          onCancel={() => setVisible(false)}
+          footer={null}
+          width={1094}
+        >
+          <div className="chart__wrapper indication">
+            <div className="title" style={{color:'#999999', fontSize: 16, fontWeight: 600}}>STUDIES BY INDICATION</div>
+            <div className="showMore newLine">
+              <span style={{color:'#999999'}}>Showing {chartData.study_indication.length} Records. </span> 
+            </div>
+            <div className="content">
+              <ReactECharts option={indicationOption} style={{height: 360}}/>
+            </div>
+          </div>
+        </Modal>
+        <Modal
+          centered
+          visible={sponsorVisible}
+          onCancel={() => setSponsorVisible(false)}
+          footer={null}
+          width={1094}
+        >
+          <div className="chart__wrapper study_sponsor" style={{height: 590}}>
+              <div className="title" >
+                <span style={{color:'#999999', fontSize: 16, fontWeight: 600}}>STUDIES BY SPONSOR</span>
+              </div>
+              <div className="showMore newLine">
+              <span style={{color:'#999999'}}>Showing {chartData.study_sponsor.phases.length} Records. </span> 
+            </div>
+              <div className="content" style={{height: 500, overflowY: 'scroll'}}>
+                <ReactECharts option={sponsorOption} style={{height: 7000}}/>
+              </div>
+          </div>
+        </Modal>
       </div>
     </>
   );
