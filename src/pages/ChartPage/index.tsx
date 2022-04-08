@@ -189,15 +189,46 @@ const ChartPage = (props: any) => {
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      const resp = await getSummaryChart();
-      setLoading(false)
-      console.log(resp);
-      if (resp.study_indication.length > 0) {
-        setChartData(resp);
+    fetchData('','');
+  }, []);
 
-        let tempSponsorSeries = resp.study_sponsor.data.map((item, index, arr)=>{
+  const fetchData = async (therapeutic_area,study_phase) => {
+    setLoading(true)
+    const resp = await getSummaryChart(therapeutic_area,study_phase);
+    setLoading(false)
+    console.log(resp);
+    if (resp.study_indication.length > 0) {
+      setChartData(resp);
+
+      let tempSponsorSeries = resp.study_sponsor.data.map((item, index, arr)=>{
+        return  {
+          name: Object.keys(item)[0],
+          type: 'bar',
+          stack: 'total',
+          label: {
+            show: false
+          },
+          emphasis: {
+            focus: 'series'
+          },
+          data: Object.values(item)[0],
+          barMaxWidth: 24,
+        }
+      })
+      setSponsorSeriesData(tempSponsorSeries)
+
+      let totalNum = []
+      for (let i=0; i < resp.study_date.phases.length; i++) {
+        let sum = 0  
+        resp.study_date.data.forEach((item,index,arr)=>{          
+          sum = sum + Object.values(item)[0][i]
+        })
+        totalNum[i] = sum
+      } 
+      
+      let tempDateSeries = resp.study_date.data.map((item, index, arr)=>{
+        let dateLength = resp.study_date.data.length
+        if (index < dateLength - 1) {
           return  {
             name: Object.keys(item)[0],
             type: 'bar',
@@ -209,65 +240,36 @@ const ChartPage = (props: any) => {
               focus: 'series'
             },
             data: Object.values(item)[0],
-            barMaxWidth: 24,
+            barMaxWidth:12,
+            borderRadius: [10, 10, 0, 0],
           }
-        })
-        setSponsorSeriesData(tempSponsorSeries)
-
-        let totalNum = []
-        for (let i=0; i < resp.study_date.phases.length; i++) {
-          let sum = 0  
-          resp.study_date.data.forEach((item,index,arr)=>{          
-            sum = sum + Object.values(item)[0][i]
-          })
-          totalNum[i] = sum
-        } 
+        } else {
+          return {
+            name:  Object.keys(item)[0],
+            type: 'bar',
+            stack: 'total',
+            label: {
+              show: true, 
+              position: 'top',
+              formatter: function (params) {
+                return totalNum[params.dataIndex]
+              },
+              textStyle: { color: '#000' }
+            },
+            emphasis: {
+              focus: 'series'
+            },
+            data: Object.values(item)[0],
+            barMaxWidth:12,
+            borderRadius: [10, 10, 0, 0],
+          }
+        }
         
-        let tempDateSeries = resp.study_date.data.map((item, index, arr)=>{
-          let dateLength = resp.study_date.data.length
-          if (index < dateLength - 1) {
-            return  {
-              name: Object.keys(item)[0],
-              type: 'bar',
-              stack: 'total',
-              label: {
-                show: false
-              },
-              emphasis: {
-                focus: 'series'
-              },
-              data: Object.values(item)[0],
-              barMaxWidth:12,
-              borderRadius: [10, 10, 0, 0],
-            }
-          } else {
-            return {
-              name:  Object.keys(item)[0],
-              type: 'bar',
-              stack: 'total',
-              label: {
-                show: true, 
-                position: 'top',
-                formatter: function (params) {
-                  return totalNum[params.dataIndex]
-                },
-                textStyle: { color: '#000' }
-              },
-              emphasis: {
-                focus: 'series'
-              },
-              data: Object.values(item)[0],
-              barMaxWidth:12,
-              borderRadius: [10, 10, 0, 0],
-            }
-          }
-          
-        })
-        setDateSeriesData(tempDateSeries)
-      }
-    };
-    fetchData();
-  }, []);
+      })
+      setDateSeriesData(tempDateSeries)
+    }
+  };
+
 
   const indicationOption = {
     legend: {

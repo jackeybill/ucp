@@ -29,7 +29,7 @@ export const getOverviewList = async () => {
   return await response.json();
 }
 
-export const getSummaryChart = async () => {
+export const getSummaryChart = async (therapeutic_area='',study_phase='') => {
   const response = await fetch('https://7dx4asj8xj.execute-api.us-east-2.amazonaws.com/dev/dean-dev-protocol-job', {
     method:'POST',
     headers: {
@@ -37,7 +37,11 @@ export const getSummaryChart = async () => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      "method": "chart"
+      "method": "chart",
+      "params": {
+        "therapeutic_area": therapeutic_area,
+        "study_phase": study_phase,
+      }
     })
   })
 
