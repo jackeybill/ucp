@@ -61,11 +61,18 @@ const ChartPage = (props: any) => {
   ]
 
   const studyPhaseColor = [
-  "#1192E8",
-  "#33B1FF",
-  "#82CFFF",
-  "#BAE6FF",
-  "#E5F6FF"
+  // "#1192E8",
+  // "#33B1FF",
+  // "#82CFFF",
+  // "#BAE6FF",
+  // "#E5F6FF"
+    "#0682FF",
+    "#2692FF",
+    "#47A2FF",
+    "#68B3FF",
+    "#88C3FF",
+    "#B9DCFE",
+    "#EAF4FF",
   ]
 
   const studyTypeColor = [
@@ -113,11 +120,18 @@ const ChartPage = (props: any) => {
   ]
 
   const sponsorPhaseColor = [
-    "#1192E8",
-    "#33B1FF",
-    "#82CFFF",
-    "#BAE6FF",
-    "#E5F6FF",
+    // "#1192E8",
+    // "#33B1FF",
+    // "#82CFFF",
+    // "#BAE6FF",
+    // "#E5F6FF",
+    "#0682FF",
+    "#2692FF",
+    "#47A2FF",
+    "#68B3FF",
+    "#88C3FF",
+    "#B9DCFE",
+    "#EAF4FF",
   ]
 
   const dummay_chart_data = {
