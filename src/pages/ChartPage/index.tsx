@@ -270,7 +270,7 @@ const ChartPage = (props: any) => {
     const resp = await getSummaryChart(therapeutic_area,study_phase);
     setLoading(false)
     console.log(resp);
-    if (resp.study_indication.length > 0) {
+    if (resp.study_indication&&resp.study_indication.length > 0) {
       setChartData(resp);
 
       let tempSponsorSeries = resp.study_sponsor.data.map((item, index, arr)=>{
