@@ -320,28 +320,54 @@ const ChartPage = (props: any) => {
         totalNum[i] = sum
       } 
       
-      let tempDateSeries = resp.study_date.data.map((item, index, arr)=>{
-        let dateLength = resp.study_date.data.length
-        if (index < dateLength - 1) {
-          return  {
-            name: Object.keys(item)[0],
-            type: 'bar',
-            stack: 'total',
-            label: {
-              show: false
-            },
-            emphasis: {
-              focus: 'series'
-            },
-            data: Object.values(item)[0],
-            barMaxWidth:12,
-            borderRadius: [10, 10, 0, 0],
+      if(resp.study_date.data.length > 1) {
+        let tempDateSeries = resp.study_date.data.map((item, index, arr)=>{
+          let dateLength = resp.study_date.data.length
+          if (index < dateLength - 1) {
+            return  {
+              name: Object.keys(item)[0],
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: false
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: Object.values(item)[0],
+              barMaxWidth:12,
+              borderRadius: [10, 10, 0, 0],
+            }
+          } else {
+            return {
+              name:  Object.keys(item)[0],
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true, 
+                position: 'top',
+                formatter: function (params) {
+                  return totalNum[params.dataIndex]
+                },
+                textStyle: { color: '#000' }
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: Object.values(item)[0],
+              barMaxWidth:12,
+              borderRadius: [10, 10, 0, 0],
+            }
           }
-        } else {
+        })
+        setDateSeriesData(tempDateSeries)
+      } else {
+        let tempDateSeries = resp.study_date.data.map((item, index, arr)=>{
+          let dateLength = resp.study_date.data.length
           return {
             name:  Object.keys(item)[0],
             type: 'bar',
-            stack: 'total',
+            // stack: 'total',
             label: {
               show: true, 
               position: 'top',
@@ -357,10 +383,9 @@ const ChartPage = (props: any) => {
             barMaxWidth:12,
             borderRadius: [10, 10, 0, 0],
           }
-        }
-        
-      })
-      setDateSeriesData(tempDateSeries)
+        })
+        setDateSeriesData(tempDateSeries)
+      }
     }
   };
 
@@ -850,12 +875,12 @@ const ChartPage = (props: any) => {
                 <div className="chart__wrapper indication">
                   <div className="title">STUDIES BY INDICATION</div>
                   <div className="showMore newLine">
-                    <span>Showing 10 of {chartData.study_indication.length} Records. </span> 
+                    <span>Showing {chartData.study_indication.length>10?10:chartData.study_indication.length} of {chartData.study_indication.length} Records. </span> 
                     <span className="link" onClick={() => setVisible(true)}>Click here</span>
                     <span> for more details.</span>
                   </div>
                   <div className="content">
-                    <ReactECharts option={indicationOptionForTen} style={{height: 360}}/>
+                    <ReactECharts option={indicationOptionForTen} notMerge={true}  style={{height: 360}}/>
                   </div>
                 </div>
               </div>
@@ -863,13 +888,13 @@ const ChartPage = (props: any) => {
                 <div className="chart__wrapper study_phases">
                   <div className="title">STUDIES BY PHASES</div>
                   <div className="content">
-                    <ReactECharts option={phaseOption} style={{height: 300}}/>
+                    <ReactECharts option={phaseOption} notMerge={true} style={{height: 300}}/>
                   </div>
                 </div>
                 <div className="chart__wrapper study_type">
                   <div className="title">STUDIES BY TYPE</div>
                   <div className="content">
-                    <ReactECharts option={typeOption} style={{height: 300}}/>
+                    <ReactECharts option={typeOption}  notMerge={true} style={{height: 300}}/>
                   </div>
                 </div>
               </div>
@@ -879,13 +904,13 @@ const ChartPage = (props: any) => {
                   <div className="title">
                     STUDIES BY SPONSOR
                     <span className="showMore right">
-                      <span>Showing 10 of {chartData.study_sponsor.phases.length} Records. </span> 
+                      <span>Showing {chartData.study_sponsor.phases.length>10?10:chartData.study_sponsor.phases.length} of {chartData.study_sponsor.phases.length} Records. </span> 
                       <span className="link" onClick={() => setSponsorVisible(true)}>Click here</span>
                       <span> for more details.</span>
                     </span>
                   </div>
                   <div className="content">
-                    <ReactECharts option={sponsorOptionForTen} style={{}}/>
+                    <ReactECharts option={sponsorOptionForTen} notMerge={true} style={{}}/>
                   </div>
               </div>
               <div className="chart__wrapper study_location">
@@ -903,7 +928,7 @@ const ChartPage = (props: any) => {
               <div className="chart__wrapper study_date">
                   <div className="title">STUDIES BY START DATE</div>
                   <div className="content">
-                    <ReactECharts option={dateOption} style={{}}/>
+                    <ReactECharts option={dateOption} notMerge={true} style={{}}/>
                   </div>
               </div>
             </div>
@@ -921,7 +946,7 @@ const ChartPage = (props: any) => {
               <span style={{color:'#999999'}}>Showing {chartData.study_indication.length} Records. </span> 
             </div>
             <div className="content">
-              <ReactECharts option={indicationOption} style={{height: 360}}/>
+              <ReactECharts option={indicationOption} notMerge={true} style={{height: 360}}/>
             </div>
           </div>
         </Modal>
@@ -940,7 +965,7 @@ const ChartPage = (props: any) => {
               <span style={{color:'#999999'}}>Showing {chartData.study_sponsor.phases.length} Records. </span> 
             </div>
               <div className="content" style={{height: 500, overflowY: 'scroll'}}>
-                <ReactECharts option={sponsorOption} style={{height: 7000}}/>
+                <ReactECharts option={sponsorOption} notMerge={true} style={{height: 7000}}/>
               </div>
           </div>
         </Modal>
