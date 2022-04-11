@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
-import {  Spin, Statistic, Modal, Button  } from "antd";
+import {  Spin, Statistic, Modal, Button, Select  } from "antd";
 import { connect } from "react-redux";
 import * as fileActions from "../../actions/file.js";
 import { LoadingOutlined } from '@ant-design/icons';
@@ -12,8 +12,10 @@ import geoJson from "../../assets/world.json"
 import { getSummaryChart } from "../../utils/ajax-proxy";
 import "./index.scss";
 
+const { Option } = Select;
+
 const ChartPage = (props: any) => {
-  const [chartData, setChartData] = useState({study_indication: [], study_date:{phases: [], data: []},study_locaiton:[],study_phase:[],study_sponsor:{phases: [], data: []},study_sponsor_top10:{phases: [], data: []},study_status:[],study_type:[],total_document:{count:0},total_sponsor:{count:0},total_study:{count: 0, date: ""}});
+  const [chartData, setChartData] = useState({aragements:{study_phase:[]},study_indication: [], study_date:{phases: [], data: []},study_locaiton:[],study_phase:[],study_sponsor:{phases: [], data: []},study_sponsor_top10:{phases: [], data: []},study_status:[],study_type:[],total_document:{count:0},total_sponsor:{count:0},total_study:{count: 0, date: ""}});
   const [loading, setLoading] = useState(false)
   const [sponsorSeriesData, setSponsorSeriesData] = useState([])
   const [sponsorSeriesDataTopTen, setSponsorSeriesDataTopTen] = useState([])
@@ -22,8 +24,47 @@ const ChartPage = (props: any) => {
   const [visible, setVisible] = useState(false);
   const [sponsorVisible, setSponsorVisible] = useState(false);
 
+  const [phase, setPhase] = useState("All");
+  const [area, setArea] = useState("All");
 
   echarts.registerMap("world", (geoJson) as any);
+
+
+  const Therapeutic_Area_Map = [
+    "All",
+    "Endocrinology",
+    // "Breast Ptosis",
+    // "Portosystemic Collateral Veins",
+    // "Cerebral Cavernous Hemangioma",
+    // "Impacted Stones",
+    // "Laparoscopic Gastric Banding",
+    // "Respiratory Infection Other",
+    // "Prostatectomy",
+    // "Stable Angina (SA)",
+    // "Cervical Lymphadenopathy",
+    // "Neoplasms/Therapy",
+    // "Obese Patients With Prostate Cancer Disease",
+    // "Spinal Degenerative Disorder",
+    // "OVCA",
+    // "Viral Infections After HSCT",
+    // "Peripheral Post-surgical Neuropathic Pain",
+    // "Degenerative; Dementia",
+    // "Diabetes Mellitus in Pregnancy",
+    // "Malignant Primary Brain Tumors",
+    // "Stable (MSS) Colon Cancer",
+    // "Sentinel Lymph Node Biopsy",
+    // "Invasive Mycosis",
+    // "Laryngeal Cancer Stage III",
+    // "Neuromuscular Blockade Reversal Agent",
+    // "Cost Per Patient Rate",
+    // "Determination of Death",
+    // "Brainstem Glioma, Pediatric",
+    // "Procedural Skill Competency",
+    // "Invasive Cancer",
+    ]
+
+  const raw_phase = ["All",...chartData.aragements.study_phase]
+  const phase_options = raw_phase||["All"]
 
   const lightBlueColor = [
     "#004992",
@@ -47,6 +88,7 @@ const ChartPage = (props: any) => {
     // "#B5DBF8",
     // "#E1F1FD"
   ]
+
   const lightBlueColorTopTen = [
     "#004992",
     "#0682FF",
@@ -320,6 +362,20 @@ const ChartPage = (props: any) => {
       })
       setDateSeriesData(tempDateSeries)
     }
+  };
+
+  const handlePhaseChange = (value) => {
+    setPhase(value);
+    console.log(value);
+    if(value==='All'){
+      fetchData('','')
+    } else {
+      fetchData('', value)
+    }
+  };
+  const handleAreaChange = (value) => {
+    setArea(value);
+    console.log(value);
   };
 
   const indicationOption = {
@@ -725,6 +781,49 @@ const ChartPage = (props: any) => {
     <>
       <div className="chart__container">
         <Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24,color:'#d04a02' }} spin />} >
+            <div className="header">
+            <div className="selector-item">
+                <label>THERAPEUTIC AREAS</label> <br />
+                <Select
+                  defaultValue="All"
+                  value={area}
+                  showSearch
+                  style={{ width: 200 }}
+                  onChange={handleAreaChange}
+                  filterOption={(input, option) =>
+                    option.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {Therapeutic_Area_Map.map((o) => {
+                    return (
+                      <Option value={o} key={o}>
+                        {o}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </div>
+              <div className="selector-item space">
+                <label> PHASES</label>
+                <br />
+                <Select
+                  value={phase}
+                  defaultValue="All"
+                  style={{ width: 200 }}
+                  onChange={handlePhaseChange}
+                >
+                  {phase_options.map((o) => {
+                    return (
+                      <Option value={o} key={o}>
+                        {o}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </div>
+            </div>
             <div className="top">
               <div className="left">
                 <div className="chart__wrapper total_study">
