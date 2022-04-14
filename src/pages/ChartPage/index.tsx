@@ -965,7 +965,7 @@ const ChartPage = (props: any) => {
               <span style={{color:'#999999'}}>Showing {chartData.study_sponsor.phases.length} Records. </span> 
             </div>
               <div className="content" style={{height: 500, overflowY: 'scroll'}}>
-                <ReactECharts option={sponsorOption} notMerge={true} style={{height: 7000}}/>
+                <ReactECharts option={sponsorOption} notMerge={true} style={{height: 7100}}/>
               </div>
           </div>
         </Modal>
