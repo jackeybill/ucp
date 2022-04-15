@@ -125,8 +125,7 @@ const Overview = (props: any) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
       setLoading(true)
       const resp = await getOverviewList();
       setLoading(false)
@@ -146,8 +145,19 @@ const Overview = (props: any) => {
         setData(tmpData);
       }
     };
+    
+  useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(()=>{
+    if(props.fileReader.afterUpload){
+      setVisible(false); 
+      message.success('Your document has been submitted for processing. Please check back later. ') 
+      fetchData(); 
+    }
+    
+  },[props.fileReader.afterUpload])
 
   const showDrawer = () => {
     setVisible(true);

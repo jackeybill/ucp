@@ -98,6 +98,9 @@ const Dropzone = (props: any) => {
       console.log(res);
         
         if (res.body === "success") {
+          props.readFile({
+            afterUpload:true,
+          })
           // await sleep(5000)
           let extractedRes = "";
           let times = 1;
