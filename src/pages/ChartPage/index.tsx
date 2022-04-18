@@ -541,7 +541,7 @@ const ChartPage = (props: any) => {
         radius: ['30%', '50%'],
         center: ['25%', '30%'],
         avoidLabelOverlap: false,
-        color:studyPhaseColor,
+        color:lightBlueColorTopTen,
         labelLine: {
           show: false
         },
@@ -651,7 +651,7 @@ const ChartPage = (props: any) => {
         type: 'shadow'
       }
     },
-    color:sponsorPhaseColor,
+    color:lightBlueColorTopTen,
     legend: {
       top: 10,
       left: 50,
@@ -695,7 +695,7 @@ const ChartPage = (props: any) => {
         type: 'shadow'
       }
     },
-    color:sponsorPhaseColor,
+    color:lightBlueColorTopTen,
     legend: {
       top: 10,
       left: 50,
@@ -884,9 +884,10 @@ const ChartPage = (props: any) => {
                 <div className="chart__wrapper indication">
                   <div className="title">STUDIES BY INDICATION</div>
                   <div className="showMore newLine">
-                    <span>Showing {chartData.study_indication.length>10?10:chartData.study_indication.length} of {chartData.study_indication.length} Records. </span> 
+                    {/* <span>Showing {chartData.study_indication.length>10?10:chartData.study_indication.length} of {chartData.study_indication.length} Records. </span>  */}
+                    <span>Showing Top 10 Indications. </span>
                     <span className="link" onClick={() => setVisible(true)}>Click here</span>
-                    <span> for more details.</span>
+                    <span> to see all indications.</span>
                   </div>
                   <div className="content">
                     <ReactECharts option={indicationOptionForTen} notMerge={true}  style={{height: 360}}/>
@@ -913,9 +914,10 @@ const ChartPage = (props: any) => {
                   <div className="title">
                     STUDIES BY SPONSOR
                     <span className="showMore right">
-                      <span>Showing {chartData.study_sponsor.phases.length>10?10:chartData.study_sponsor.phases.length} of {chartData.study_sponsor.phases.length} Records. </span> 
+                      {/* <span>Showing {chartData.study_sponsor.phases.length>10?10:chartData.study_sponsor.phases.length} of {chartData.study_sponsor.phases.length} Records. </span>  */}
+                      <span>Showing Top 10 Sponsors. </span>
                       <span className="link" onClick={() => setSponsorVisible(true)}>Click here</span>
-                      <span> for more details.</span>
+                      <span> to see all sponsors.</span>
                     </span>
                   </div>
                   <div className="content">
