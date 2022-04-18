@@ -885,7 +885,7 @@ const ChartPage = (props: any) => {
                   <div className="title">STUDIES BY INDICATION</div>
                   <div className="showMore newLine">
                     {/* <span>Showing {chartData.study_indication.length>10?10:chartData.study_indication.length} of {chartData.study_indication.length} Records. </span>  */}
-                    <span>Showing Top 10 Indications. </span>
+                    <span>Showing Top 10 indications. </span>
                     <span className="link" onClick={() => setVisible(true)}>Click here</span>
                     <span> to see all indications.</span>
                   </div>
@@ -915,7 +915,7 @@ const ChartPage = (props: any) => {
                     STUDIES BY SPONSOR
                     <span className="showMore right">
                       {/* <span>Showing {chartData.study_sponsor.phases.length>10?10:chartData.study_sponsor.phases.length} of {chartData.study_sponsor.phases.length} Records. </span>  */}
-                      <span>Showing Top 10 Sponsors. </span>
+                      <span>Showing Top 10 sponsors. </span>
                       <span className="link" onClick={() => setSponsorVisible(true)}>Click here</span>
                       <span> to see all sponsors.</span>
                     </span>
