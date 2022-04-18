@@ -864,7 +864,7 @@ const ChartPage = (props: any) => {
                   <div className="title">TOTAL NO. OF STUDIES</div>
                   <div className="content">
                     <Statistic title="" value={chartData.total_study.count} valueStyle={{fontSize:42, color:'#1162B4', fontWeight: 600}}/>
-                    <span style={{color:'#999999', fontSize:14}}>Last updated - {moment(new Date(chartData.total_study.date)).subtract('days').fromNow()}</span>
+                    <span style={{color:'#999999', fontSize:14}}>Last updated - {moment(new Date(chartData.total_study.date)).format('LL')}</span>
                   </div>
                 </div>
                 <div className="chart__wrapper total_sponsor">
