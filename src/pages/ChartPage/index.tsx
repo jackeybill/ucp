@@ -15,7 +15,7 @@ import "./index.scss";
 const { Option } = Select;
 
 const ChartPage = (props: any) => {
-  const [chartData, setChartData] = useState({aragements:{study_phase:[]},study_indication: [], study_date:{phases: [], data: []},study_locaiton:[],study_phase:[],study_sponsor:{phases: [], data: []},study_sponsor_top10:{phases: [], data: []},study_status:[],study_type:[],total_document:{count:0},total_sponsor:{count:0},total_study:{count: 0, date: ""}});
+  const [chartData, setChartData] = useState({aragements:{study_phase:[],study_indication:[]},study_indication: [], study_date:{phases: [], data: []},study_locaiton:[],study_phase:[],study_sponsor:{phases: [], data: []},study_sponsor_top10:{phases: [], data: []},study_status:[],study_type:[],total_document:{count:0},total_sponsor:{count:0},total_study:{count: 0, date: ""}});
   const [loading, setLoading] = useState(false)
   const [sponsorSeriesData, setSponsorSeriesData] = useState([])
   const [sponsorSeriesDataTopTen, setSponsorSeriesDataTopTen] = useState([])
@@ -30,7 +30,7 @@ const ChartPage = (props: any) => {
   echarts.registerMap("world", (geoJson) as any);
 
 
-  const Therapeutic_Area_Map = [
+  const INDICATION_Map = [
     "All",
     "Endocrinology",
     // "Breast Ptosis",
@@ -65,6 +65,8 @@ const ChartPage = (props: any) => {
 
   const raw_phase = ["All",...chartData.aragements.study_phase]
   const phase_options = raw_phase||["All"]
+  const raw_indication = ["All",...chartData.aragements.study_indication]
+  const indication_option = raw_indication||["All"]
 
   const lightBlueColor = [
     "#004992",
@@ -391,6 +393,7 @@ const ChartPage = (props: any) => {
 
   const handlePhaseChange = (value) => {
     setPhase(value);
+    setArea('All');
     console.log(value);
     if(value==='All'){
       fetchData('','')
@@ -400,7 +403,13 @@ const ChartPage = (props: any) => {
   };
   const handleAreaChange = (value) => {
     setArea(value);
+    setPhase('All');
     console.log(value);
+    if(value==='All'){
+      fetchData('','')
+    } else {
+      fetchData(value,'')
+    }
   };
 
   const indicationOption = {
@@ -808,7 +817,7 @@ const ChartPage = (props: any) => {
         <Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24,color:'#d04a02' }} spin />} >
             <div className="header">
             <div className="selector-item">
-                <label>THERAPEUTIC AREAS</label> <br />
+                <label>INDICATION</label> <br />
                 <Select
                   defaultValue="All"
                   value={area}
@@ -821,7 +830,7 @@ const ChartPage = (props: any) => {
                       .indexOf(input.toLowerCase()) >= 0
                   }
                 >
-                  {Therapeutic_Area_Map.map((o) => {
+                  {indication_option.map((o) => {
                     return (
                       <Option value={o} key={o}>
                         {o}
