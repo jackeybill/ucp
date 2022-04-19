@@ -816,7 +816,7 @@ const ChartPage = (props: any) => {
       <div className="chart__container">
         <Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24,color:'#d04a02' }} spin />} >
             <div className="header">
-            <div className="selector-item">
+              <div className="selector-item">
                 <label>INDICATION</label> <br />
                 <Select
                   defaultValue="All"
@@ -858,7 +858,7 @@ const ChartPage = (props: any) => {
                 </Select>
               </div>
             </div>
-            <div className="top">
+            <div className="top_chart">
               <div className="left">
                 <div className="chart__wrapper total_study">
                   <div className="title">TOTAL NO. OF STUDIES</div>
@@ -909,8 +909,8 @@ const ChartPage = (props: any) => {
                 </div>
               </div>
             </div>
-            <div className="below">
-              <div className="chart__wrapper study_sponsor">
+            <div className="middle_chart">
+                <div className="chart__wrapper study_sponsor">
                   <div className="title">
                     STUDIES BY SPONSOR
                     <span className="showMore right">
@@ -923,13 +923,15 @@ const ChartPage = (props: any) => {
                   <div className="content">
                     <ReactECharts option={sponsorOptionForTen} notMerge={true} style={{}}/>
                   </div>
-              </div>
-              <div className="chart__wrapper study_location">
+                </div>
+                <div className="chart__wrapper study_location">
                   <div className="title">STUDIES BY LOCATION</div>
                   <div className="content">
                     <ReactECharts option={locationOption} style={{}}/>
                   </div>
+                </div>
               </div>
+            <div className="bottom_chart">
               <div className="chart__wrapper study_status">
                   <div className="title">STUDIES BY STATUS</div>
                   <div className="content">
