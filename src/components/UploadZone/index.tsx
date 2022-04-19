@@ -174,6 +174,8 @@ const Dropzone = (props: any) => {
   return (
     <React.Fragment>
       <Spin
+        tip="Your document has been submitted for processing..."
+        style={{ fontSize: 16, color: "#d04a02" }}
         spinning={loading}
         indicator={
           <LoadingOutlined style={{ fontSize: 24, color: "#d04a02" }} spin />
