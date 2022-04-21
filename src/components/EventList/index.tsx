@@ -958,7 +958,11 @@ const EventList = (props) => {
                       <div className="column-action-container">              
                       {
                         visits.map( (visit,idx)=>{
-                          return(
+                          return viewOnly?(
+                            <div className="td num-cell" key={idx}>
+                              <PlusCircleOutlined /> 
+                            </div>                 
+                          ):(
                             <div className="td num-cell" key={idx}>
                               <Tooltip                        
                                 title={
@@ -1061,12 +1065,19 @@ const EventList = (props) => {
                             >
                             <PlusCircleOutlined /> 
                             </Tooltip> 
-
                           </div>                   
                             {evt.condition.length > 0 &&
                               evt.condition.map((con, idx) => {
                                 const targetItem =modality_options.find(m=>m.name==con.modality)   
-                                return (
+                                return viewOnly?(
+                                  <div className="td" key={`labs_event_${idx}`}>
+                                    <span
+                                      className={`${viewOnly?'viewOnly':''} incon-wrapper`}
+                                    >
+                                      {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                    </span>
+                                  </div>
+                                ):(
                                   <div className="td" key={`labs_event_${idx}`}>
                                     <span
                                       className={`${viewOnly?'viewOnly':''} incon-wrapper`}
@@ -1185,7 +1196,16 @@ const EventList = (props) => {
                             {evt.condition.length > 0 &&
                               evt.condition.map((con, idx) => {
                               const targetItem =modality_options.find(m=>m.name==con.modality)                        
-                              return (
+                              return viewOnly?(
+                                <div className="td" key={`exam_event_${idx}`}>
+                                  <span
+                                    className="incon-wrapper"
+                                    // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                  >
+                                    {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> }                                                                                    
+                                  </span>
+                                </div>
+                              ):(
                                 <div className="td" key={`exam_event_${idx}`}>
                                   <span
                                     className="incon-wrapper"
@@ -1290,7 +1310,16 @@ const EventList = (props) => {
                           {evt.condition.length > 0 &&
                             evt.condition.map((con, idx) => {
                               const targetItem =modality_options.find(m=>m.name==con.modality)                        
-                              return (
+                              return viewOnly?(
+                                <div className="td" key={`procedure_event_${idx}`}>
+                                  <span
+                                    className="incon-wrapper"
+                                    // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                  >
+                                    {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                  </span>
+                                </div>
+                              ):(
                                 <div className="td" key={`procedure_event_${idx}`}>
                                   <span
                                     className="incon-wrapper"
@@ -1394,7 +1423,16 @@ const EventList = (props) => {
                           {evt.condition.length > 0 &&
                             evt.condition.map((con, idx) => {
                               const targetItem =modality_options.find(m=>m.name==con.modality)                        
-                              return (
+                              return viewOnly?(
+                                <div className="td" key={`question_event_${idx}`}>
+                                  <span
+                                    className="incon-wrapper"
+                                    // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                  >
+                                    {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                  </span>
+                                </div>
+                              ):(
                                 <div className="td" key={`question_event_${idx}`}>
                                   <span
                                     className="incon-wrapper"
@@ -1496,7 +1534,16 @@ const EventList = (props) => {
                           {evt.condition.length > 0 &&
                             evt.condition.map((con, idx) => {
                               const targetItem =modality_options.find(m=>m.name==con.modality)                        
-                              return (
+                              return viewOnly?(
+                                <div className="td" key={`study_event_${idx}`}>
+                                  <span
+                                    className="incon-wrapper"
+                                    onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                  >
+                                     {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                  </span>
+                                </div>
+                              ):(
                                 <div className="td" key={`study_event_${idx}`}>
                                   <span
                                     className="incon-wrapper"
@@ -1565,7 +1612,12 @@ const EventList = (props) => {
                   <div className="column-action-container">              
                   {
                     visits.map( (visit,idx)=>{
-                      return(
+                      return viewOnly?
+                      ((
+                        <div className="td num-cell" key={idx}> 
+                        <PlusCircleOutlined /> 
+                        </div>                 
+                      )):((
                         <div className="td num-cell" key={idx}>
                           <Tooltip                        
                             title={
@@ -1581,7 +1633,7 @@ const EventList = (props) => {
                         <PlusCircleOutlined /> 
                         </Tooltip> 
                         </div>                 
-                      )
+                      ))
                     })
                   }                    
                 </div>  
@@ -1662,18 +1714,31 @@ const EventList = (props) => {
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td">
-                      <Tooltip  
-                        title={<ModalityList evt={evt}   category={LABS} isRowBatch={true} rowModality={rowModality}/>}
-                        color="#ffffff"                     
-                        >
-                         <PlusCircleOutlined /> 
-                        </Tooltip> 
-
+                        {
+                          viewOnly?( 
+                          <PlusCircleOutlined />
+                            ):(
+                          <Tooltip  
+                            title={<ModalityList evt={evt}   category={LABS} isRowBatch={true} rowModality={rowModality}/>}
+                            color="#ffffff"                     
+                            >
+                            <PlusCircleOutlined /> 
+                          </Tooltip> 
+                          )
+                        }
                       </div>                   
                         {evt.condition.length > 0 &&
                           evt.condition.map((con, idx) => {
                             const targetItem =modality_options.find(m=>m.name==con.modality)   
-                            return (
+                            return viewOnly?(
+                              <div className="td" key={`labs_event_${idx}`}>
+                                <span
+                                  className={`${viewOnly?'viewOnly':''} incon-wrapper`}
+                                >
+                                  {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> }  
+                                </span>
+                              </div>
+                            ):(
                               <div className="td" key={`labs_event_${idx}`}>
                                 <span
                                   className={`${viewOnly?'viewOnly':''} incon-wrapper`}
@@ -1763,13 +1828,13 @@ const EventList = (props) => {
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td">
-                      <Tooltip  
+                      {viewOnly?<PlusCircleOutlined />  :<Tooltip  
                         title={<ModalityList evt={evt}  category={PHYSICAL_EXAMINATION} isRowBatch={true} rowModality={rowModality}/>}
                         color="#ffffff"  
                         // visible={true}                        
                         >
                          <PlusCircleOutlined /> 
-                        </Tooltip> 
+                        </Tooltip> }
 
                       </div>
                       {/* {evt.condition.length > 0 &&
@@ -1792,22 +1857,35 @@ const EventList = (props) => {
                         {evt.condition.length > 0 &&
                           evt.condition.map((con, idx) => {
                           const targetItem =modality_options.find(m=>m.name==con.modality)                        
-                          return (
-                            <div className="td" key={`exam_event_${idx}`}>
-                              <span
-                                className="incon-wrapper"
-                                // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
-                              >
-                                <Tooltip  
-                                  title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}
-                                  // trigger="click"
-                                  color="#ffffff"
-                                  // visible={}                                
-                                  >
-                                 {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
-                                 </Tooltip>                                                                                     
-                              </span>
-                            </div>
+                          return viewOnly?(
+                            (
+                              <div className="td" key={`exam_event_${idx}`}>
+                                <span
+                                  className="incon-wrapper"
+                                  // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                >
+                                  {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> }                                    
+                                </span>
+                              </div>
+                            )
+                          ):(
+                            (
+                              <div className="td" key={`exam_event_${idx}`}>
+                                <span
+                                  className="incon-wrapper"
+                                  // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                >
+                                  <Tooltip  
+                                    title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}
+                                    // trigger="click"
+                                    color="#ffffff"
+                                    // visible={}                                
+                                    >
+                                   {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                   </Tooltip>                                                                                     
+                                </span>
+                              </div>
+                            )
                           );
                         })}
                     </div>
@@ -1886,18 +1964,27 @@ const EventList = (props) => {
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td">
-                      <Tooltip  
+                      {viewOnly? <PlusCircleOutlined />  :<Tooltip  
                         title={<ModalityList evt={evt}   category={PROCEDURES} isRowBatch={true} rowModality={rowModality}/>}
                         color="#ffffff"  
                         // visible={true}                        
                         >
                          <PlusCircleOutlined /> 
-                        </Tooltip> 
+                        </Tooltip> }
                       </div>
                       {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
                           const targetItem =modality_options.find(m=>m.name==con.modality)                        
-                          return (
+                          return viewOnly?((
+                            <div className="td" key={`procedure_event_${idx}`}>
+                              <span
+                                className="incon-wrapper"
+                                // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                              >
+                                {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                              </span>
+                            </div>
+                          )):((
                             <div className="td" key={`procedure_event_${idx}`}>
                               <span
                                 className="incon-wrapper"
@@ -1913,7 +2000,7 @@ const EventList = (props) => {
                                  </Tooltip> 
                               </span>
                             </div>
-                          );
+                          ));
                         })}
                     </div>
                   </div>
@@ -1991,17 +2078,28 @@ const EventList = (props) => {
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td">
-                      <Tooltip  
+                      {viewOnly?<PlusCircleOutlined />  :<Tooltip  
                         title={<ModalityList evt={evt}  category={QUESTIONNAIRES} isRowBatch={true} rowModality={rowModality}/>}
                         color="#ffffff"                       
                         >
                          <PlusCircleOutlined /> 
-                        </Tooltip> 
+                        </Tooltip> }
                       </div>
                       {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
                           const targetItem =modality_options.find(m=>m.name==con.modality)                        
-                          return (
+                          return viewOnly?(
+                            (
+                              <div className="td" key={`question_event_${idx}`}>
+                                <span
+                                  className="incon-wrapper"
+                                  // onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                >
+                                    {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                </span>
+                              </div>
+                            )
+                          ):((
                             <div className="td" key={`question_event_${idx}`}>
                               <span
                                 className="incon-wrapper"
@@ -2015,7 +2113,7 @@ const EventList = (props) => {
                                  </Tooltip> 
                               </span>
                             </div>
-                          );
+                          ));
                         })}
                     </div>
                   </div>
@@ -2093,30 +2191,43 @@ const EventList = (props) => {
                     </div>
                     <div className="status-row e-row">
                       <div className="colunm td">
-                      <Tooltip  
+                      {viewOnly?<PlusCircleOutlined />  :<Tooltip  
                         title={<ModalityList evt={evt}  category={STUDY_PROCEDURES} isRowBatch={true} rowModality={rowModality}/>}
                         color="#ffffff"                         
                         >
                          <PlusCircleOutlined /> 
-                        </Tooltip> 
+                        </Tooltip> }
                       </div>
                       {evt.condition.length > 0 &&
                         evt.condition.map((con, idx) => {
                           const targetItem =modality_options.find(m=>m.name==con.modality)                        
-                          return (
-                            <div className="td" key={`study_event_${idx}`}>
-                              <span
-                                className="incon-wrapper"
-                                onClick={!viewOnly?() => toggleChecked(evt, idx):null}
-                              >
-                                <Tooltip  
-                                  title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}                          
-                                  color="#ffffff"                                           
-                                  >
-                                 {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
-                                 </Tooltip> 
-                              </span>
-                            </div>
+                          return viewOnly?(
+                            (
+                              <div className="td" key={`study_event_${idx}`}>
+                                <span
+                                  className="incon-wrapper"
+                                  onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                >
+                                  {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                </span>
+                              </div>
+                            )
+                          ):(
+                            (
+                              <div className="td" key={`study_event_${idx}`}>
+                                <span
+                                  className="incon-wrapper"
+                                  onClick={!viewOnly?() => toggleChecked(evt, idx):null}
+                                >
+                                  <Tooltip  
+                                    title={<ModalityList evt={evt} idx={idx} value={con.modality}/>}                          
+                                    color="#ffffff"                                           
+                                    >
+                                   {Boolean(con.modality)?<img src={targetItem.icon}/>: <PlusCircleOutlined /> } 
+                                   </Tooltip> 
+                                </span>
+                              </div>
+                            )
                           );
                         })}
                     </div>
