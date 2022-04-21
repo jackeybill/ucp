@@ -219,6 +219,7 @@ const EventList = (props) => {
   }, [props.submitType])
 
   useEffect(() => {
+    if (props.viewOnly ) return;
     props.exportEvent()
   })
 
