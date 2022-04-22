@@ -956,7 +956,7 @@ const ChartPage = (props: any) => {
           <div className="chart__wrapper indication">
             <div className="title" style={{color:'#999999', fontSize: 16, fontWeight: 600}}>STUDIES BY INDICATION</div>
             <div className="showMore newLine">
-              <span style={{color:'#999999'}}>Showing {chartData.study_indication.length} Records. </span> 
+              <span style={{color:'#999999'}}>Showing {chartData.study_indication.length} Indications. </span> 
             </div>
             <div className="content">
               <ReactECharts option={indicationOption} notMerge={true} style={{height: 360}}/>
@@ -975,7 +975,7 @@ const ChartPage = (props: any) => {
                 <span style={{color:'#999999', fontSize: 16, fontWeight: 600}}>STUDIES BY SPONSOR</span>
               </div>
               <div className="showMore newLine">
-              <span style={{color:'#999999'}}>Showing {chartData.study_sponsor.phases.length} Records. </span> 
+              <span style={{color:'#999999'}}>Showing {chartData.study_sponsor.phases.length} Sponsors. </span> 
             </div>
               <div className="content" style={{height: 500, overflowY: 'scroll'}}>
                 <ReactECharts option={sponsorOption} notMerge={true} style={{height: 7100}}/>
