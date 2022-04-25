@@ -114,7 +114,7 @@
       right: 0;
       transform: translateY(-50%);
     }
-    span.cate-label {
+    .cate-label {
       font-size: 10px;
       display: block;
     }
@@ -126,7 +126,7 @@
     right: -14px;
   }
 }
-.text-with-entity-container .text mark span.cate-label {
+.text-with-entity-container .text mark .cate-label {
   display: flex;
 }
 

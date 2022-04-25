@@ -144,7 +144,7 @@ const renderMark = (markParams, entity) => {
               </span>
             );
           })}
-          <span
+          <div
             id={word.id}
             key={`cate-${word.id}`}
             className={`cate-label ${
@@ -155,7 +155,7 @@ const renderMark = (markParams, entity) => {
             }`}
           >
             {formatWord(word.category)}&nbsp; 
-          </span>
+          </div>
         </mark>
       </Tooltip>
     );
@@ -185,7 +185,7 @@ const renderMark = (markParams, entity) => {
           </span>
         );
       })}
-      <span
+      <div
         id={word.id}
         key={`cate-${word.id}`}
         className={`cate-label ${
@@ -196,7 +196,7 @@ const renderMark = (markParams, entity) => {
         }`}
       >
         {formatWord(word.category)}&nbsp;
-      </span>
+      </div>
       </mark>
       
   );
@@ -242,7 +242,7 @@ const renderMarkNoColor = (markParams, entity) => {
               </span>
             );
           })}
-          <span
+          <div
             id={word.id}
             key={`cate-${word.id}`}
             style={{color: "transparent"}}
@@ -254,7 +254,7 @@ const renderMarkNoColor = (markParams, entity) => {
             }`}
           >
             {formatWord(word.category)}&nbsp; 
-          </span>
+          </div>
         </mark>
       </Tooltip>
     );
@@ -284,7 +284,7 @@ const renderMarkNoColor = (markParams, entity) => {
           </span>
         );
       })}
-      <span
+      <div
         id={word.id}
         key={`cate-${word.id}`}
         style={{color: "transparent"}}
@@ -296,7 +296,7 @@ const renderMarkNoColor = (markParams, entity) => {
         }`}
       >
         {formatWord(word.category)}&nbsp;
-      </span>
+      </div>
       </mark>
       
   );
