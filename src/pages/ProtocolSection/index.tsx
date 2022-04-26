@@ -414,7 +414,7 @@ const ProtocolSection = (props: any) => {
     }
     if (e.target.value == "sections") {
       setSections(initSelectedSections);
-      setCheckSections(initSelectedSections);
+      setCheckSections(initSelectedSections)  
     }
   };
 
@@ -635,17 +635,24 @@ const ProtocolSection = (props: any) => {
             />
           )}
           {props.location.pathname === "/extraction" && activeSection !== "scheduleActivities"&& checkedSections[0]!== "scheduleActivities" &&(
-            (activeSection === "objectivesEndpointsEstimands"|| checkedSections[0]=== "objectivesEndpointsEstimands")&&(file["6e30ab50aa8da9e5fad614a0ef641d58"]["objectivesEndpointsEstimands"][0]&&file["6e30ab50aa8da9e5fad614a0ef641d58"]["objectivesEndpointsEstimands"][0].content&&file["6e30ab50aa8da9e5fad614a0ef641d58"]["objectivesEndpointsEstimands"][0].content.startsWith("Mr . Nesser is a 52 - year - old Caucasian male"))? 
+            (activeSection === "objectivesEndpointsEstimands"|| checkedSections[0]=== "objectivesEndpointsEstimands")&&(file[key]["objectivesEndpointsEstimands"][0]&&file[key]["objectivesEndpointsEstimands"][0].content&&file[key]["objectivesEndpointsEstimands"][0].content.startsWith("Mr . Nesser is a 52 - year - old Caucasian male")||file[key]["objectivesEndpointsEstimands"][0].content===undefined||file[key]["objectivesEndpointsEstimands"][0].content==='')? 
             (
               <div style={{marginTop:"60px", paddingLeft:"30px"}}>
                 <div>N/A</div>
               </div>
-            ):(<>
+            ):((activeSection === "protocolTitle"|| checkedSections[0]=== "protocolTitle")&&(file[key]["protocolTitle"][0].content===undefined||file[key]["protocolTitle"][0].content==='')
+            ||(activeSection === "briefSummary"|| checkedSections[0]=== "briefSummary")&&(file[key]["briefSummary"][0].content===undefined||file[key]["briefSummary"][0].content==='')
+            ||(activeSection === "inclusionCriteria"|| checkedSections[0]=== "inclusionCriteria")&&(file[key]["inclusionCriteria"][0].content===undefined||file[key]["inclusionCriteria"][0].content==='')
+            ||(activeSection === "exclusionCriteria"|| checkedSections[0]=== "exclusionCriteria")&&(file[key]["exclusionCriteria"][0].content===undefined||file[key]["exclusionCriteria"][0].content==='')?(<>
+              <div style={{marginTop:"60px", paddingLeft:"30px"}}>
+                <div>N/A</div>
+              </div>
+            </>):(<>
               <Extraction
                 updateCurrentEntity={updateCurrentEntity}
                 activeSection={activeSection ? activeSection : sections[0]}
               />
-            </>)
+            </>))
           )}
           {props.location.pathname === "/extraction" && (activeSection === "scheduleActivities"|| checkedSections[0]=== "scheduleActivities")&& (file[key]["scheduleActivities"]&&(
             file[key]["scheduleActivities"][0]&&file[key]["scheduleActivities"][0].table&&file[key]["scheduleActivities"][0].table!=={}&&file[key]["scheduleActivities"][0].table[0])?

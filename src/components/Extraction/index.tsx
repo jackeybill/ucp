@@ -113,14 +113,14 @@ const Extraction = (props: any, ref) => {
   // change to array for svg
   let initSvgEntity = []
   file[key][activeSection].forEach((item,index)=>{
-    initSvgEntity.push(item.comprehendMedical["Entities"])
+    initSvgEntity.push(item.comprehendMedical&&item.comprehendMedical["Entities"])
   })
   // const initSvgEntity =
   //   [file[key][activeSection][0].comprehendMedical["Entities"],file[key][activeSection][0].comprehendMedical["Entities"],file[key][activeSection][0].comprehendMedical["Entities"]];
   const [svgEntity, setSvgEntity] = useState(initSvgEntity);
 
   const initLabels =
-  file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy? (file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy || {}):(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label || {});
+  file[key][activeSection][0].comprehendMedical!==undefined&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy? (file[key][activeSection][0].comprehendMedical&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy || {}):(file[key][activeSection][0].comprehendMedical&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label || {}) || {};
   const [labels, setLabels] = useState(initLabels); // labels and wordsColelction are same now
   const [wordsCollection, setWordsCollection] = useState(initLabels);
   // const entities =
@@ -130,7 +130,7 @@ const Extraction = (props: any, ref) => {
   if(activeSection==ENDPOINT_SECTION && isTable(file,key,activeSection)){
     summary=file[key][activeSection][0].totalSummary?file[key][activeSection][0].totalSummary[entity]:{}
   }else{
-    summary = file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary_dummy?(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary_dummy || {}):(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary || {});  
+    summary = file[key][activeSection][0].comprehendMedical!==undefined&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary_dummy?(file[key][activeSection][0].comprehendMedical&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary_dummy || {}):(file[key][activeSection][0].comprehendMedical&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].Summary || {});  
   }
 
   useEffect(() => {
@@ -138,7 +138,7 @@ const Extraction = (props: any, ref) => {
       const summaryCollection = [];
       sections.forEach((k) => {
         entity.forEach((en) => {
-          obj[k][0] && obj[k][0].comprehendMedical[en]&&
+          obj[k][0] && obj[k][0].comprehendMedical&& obj[k][0].comprehendMedical[en]&&
             summaryCollection.push(obj[k][0].comprehendMedical[en].Summary_dummy?(obj[k][0].comprehendMedical[en].Summary_dummy):(obj[k][0].comprehendMedical[en].Summary));
         });
       });
@@ -177,9 +177,9 @@ const Extraction = (props: any, ref) => {
     })
     setContent(tempNewContent)
     // setContent([file[key][activeSection][0].content,file[key][activeSection][0].content,file[key][activeSection][0].content]);
-    setLabels(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy?(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy):(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label));
+    setLabels(file[key][activeSection][0].comprehendMedical!==undefined&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy?(file[key][activeSection][0].comprehendMedical&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy):(file[key][activeSection][0].comprehendMedical&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label));
     setWordsCollection(
-      file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy?(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy):(file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label)
+      file[key][activeSection][0].comprehendMedical!==undefined&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy?(file[key][activeSection][0].comprehendMedical&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy):(file[key][activeSection][0].comprehendMedical&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label)
     );
     const paramBody = {
       [key]: {
@@ -225,7 +225,7 @@ const Extraction = (props: any, ref) => {
     // change to array for svg
     let tempSvgEntity = []
     file[key][activeSection].forEach((item,index)=>{
-      tempSvgEntity.push(item.comprehendMedical["Entities"])
+      tempSvgEntity.push(item.comprehendMedical&&item.comprehendMedical["Entities"])
     })
     // const tempSvgEntity = [file[key][activeSection][0].comprehendMedical["Entities"],file[key][activeSection][0].comprehendMedical["Entities"],file[key][activeSection][0].comprehendMedical["Entities"]]
 

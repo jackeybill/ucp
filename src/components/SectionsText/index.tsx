@@ -44,10 +44,9 @@ const SectionText = (props: SectionTextIF) => {
           {sections.map((s) => {
             const displayTitle = sectionOptions.find((e) => e.value == s);
             const sectionTxt =
-            props.fileReader.file[key][s] && (props.fileReader.file[key][s].length > 0 && props.fileReader.file[key][s][0].content.toString() !== "[object Object]"? props.fileReader.file[key][s][0].content
-                : "N/A")  
+            props.fileReader.file[key][s] && props.fileReader.file[key][s].length > 0 && props.fileReader.file[key][s][0].content?(props.fileReader.file[key][s][0].content.toString() !== "[object Object]"? props.fileReader.file[key][s][0].content: "N/A"):"N/A"
             const tableTxt =
-            props.fileReader.file[key][s] && (props.fileReader.file[key][s].length > 0 && props.fileReader.file[key][s][0].content.toString() !== "[object Object]" && displayTitle.label == "SCHEDULE OF ACTIVITIES"? props.fileReader.file[key][s][0].table
+            props.fileReader.file[key][s] && (props.fileReader.file[key][s].length > 0 && props.fileReader.file[key][s][0].content&& props.fileReader.file[key][s][0].content.toString() !== "[object Object]" && displayTitle.label == "SCHEDULE OF ACTIVITIES"? props.fileReader.file[key][s][0].table
                 : "")                
             return (
               <div className="section-item" key={s}>
@@ -159,7 +158,13 @@ const SectionText = (props: SectionTextIF) => {
                               )
                             })
                           }
-                          </div>):(<pre> <div>N/A</div></pre>)
+                          </div>):
+                      (<pre> <div>N/A</div></pre>)
+                    )
+                  }
+                  {
+                    s==ENDPOINT_SECTION&&props.file[key][s][0].raw === undefined && !props.file[key][s][0].tableResult&& (
+                      <pre> <div>N/A</div></pre>
                     )
                   }
                   {
