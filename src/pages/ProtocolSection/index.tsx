@@ -123,9 +123,9 @@ const ProtocolSection = (props: any) => {
 
   useEffect(() => {
     if (props.location.pathname == "/extraction") {
-      if (entity && activeSection && file[key][activeSection][0] && file[key][activeSection][0].comprehendMedical[entity]) {
+      if (entity && activeSection && file[key][activeSection][0] && file[key][activeSection][0].comprehendMedical && file[key][activeSection][0].comprehendMedical[entity]) {
         setEntities(file[key][activeSection][0] && file[key][activeSection][0].comprehendMedical[entity].Entities)
-        setComprehendMedical(file[key][activeSection][0] && file[key][activeSection][0].comprehendMedical)
+        setComprehendMedical(file[key][activeSection][0] &&file[key][activeSection][0].comprehendMedical&& file[key][activeSection][0].comprehendMedical)
       } else if (entity && activeSection && file[key][activeSection][0] && file[key][activeSection][0].table) {
         setEntities(file[key][activeSection][0] && file[key][activeSection][0].table)
         setComprehendMedical(file[key][activeSection][0] && file[key][activeSection][0].table)
@@ -222,7 +222,7 @@ const ProtocolSection = (props: any) => {
         if(activeSection === "scheduleActivities"|| (activeSection === ENDPOINT_SECTION&& isTable(file,key,activeSection))){
           jsonData=file[key][activeSection][0].table
         }else{
-          jsonData=file[key][activeSection][0].comprehendMedical[entity].Entities
+          jsonData=file[key][activeSection][0].comprehendMedical&&file[key][activeSection][0].comprehendMedical[entity].Entities
         }
       }
     }
@@ -444,7 +444,7 @@ const ProtocolSection = (props: any) => {
         if(activeSection === "scheduleActivities"|| (activeSection === ENDPOINT_SECTION && isTable(file,key,activeSection))){
           jsonData=file[key][activeSection][0].table
         }else{
-          jsonData=file[key][activeSection][0].comprehendMedical[entity].Entities
+          jsonData=file[key][activeSection][0].comprehendMedical&&file[key][activeSection][0].comprehendMedical[entity].Entities
         }
       }
 
@@ -635,18 +635,26 @@ const ProtocolSection = (props: any) => {
             />
           )}
           {props.location.pathname === "/extraction" && activeSection !== "scheduleActivities"&& checkedSections[0]!== "scheduleActivities" &&(
-            (activeSection === "objectivesEndpointsEstimands"|| checkedSections[0]=== "objectivesEndpointsEstimands")&&(file[key]["objectivesEndpointsEstimands"][0]&&file[key]["objectivesEndpointsEstimands"][0].content&&file[key]["objectivesEndpointsEstimands"][0].content.startsWith("Mr . Nesser is a 52 - year - old Caucasian male"))? 
+            (activeSection === "objectivesEndpointsEstimands"|| checkedSections[0]=== "objectivesEndpointsEstimands")&&(file[key]["objectivesEndpointsEstimands"][0]&&file[key]["objectivesEndpointsEstimands"][0].content&&file[key]["objectivesEndpointsEstimands"][0].content.startsWith("Mr . Nesser is a 52 - year - old Caucasian male")||file[key]["objectivesEndpointsEstimands"][0].content===undefined||file[key]["objectivesEndpointsEstimands"][0].content==='')? 
             (
               <div style={{marginTop:"60px", paddingLeft:"30px"}}>
                 <div>N/A</div>
               </div>
-            ):(<>
+            ):((activeSection === "protocolTitle"|| checkedSections[0]=== "protocolTitle")&&(file[key]["protocolTitle"][0].content===undefined||file[key]["protocolTitle"][0].content==='')
+            ||(activeSection === "briefSummary"|| checkedSections[0]=== "briefSummary")&&(file[key]["briefSummary"][0].content===undefined||file[key]["briefSummary"][0].content==='')
+            ||(activeSection === "inclusionCriteria"|| checkedSections[0]=== "inclusionCriteria")&&(file[key]["inclusionCriteria"][0].content===undefined||file[key]["inclusionCriteria"][0].content==='')
+            ||(activeSection === "exclusionCriteria"|| checkedSections[0]=== "exclusionCriteria")&&(file[key]["exclusionCriteria"][0].content===undefined||file[key]["exclusionCriteria"][0].content==='')?(<>
+              <div style={{marginTop:"60px", paddingLeft:"30px"}}>
+                <div>N/A</div>
+              </div>
+            </>):(<>
               <Extraction
                 updateCurrentEntity={updateCurrentEntity}
                 activeSection={activeSection ? activeSection : sections[0]}
               />
-            </>)
+            </>))
           )}
+          
           {props.location.pathname === "/extraction" && (activeSection === "scheduleActivities"|| checkedSections[0]=== "scheduleActivities")&& (file[key]["scheduleActivities"]&&(
             file[key]["scheduleActivities"][0]&&file[key]["scheduleActivities"][0].table&&file[key]["scheduleActivities"][0].table!=={}&&file[key]["scheduleActivities"][0].table[0])?
             (<>
