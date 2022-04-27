@@ -38,8 +38,11 @@ interface TextWithEntityIF {
   fileReader?:{}
   tableBody?:any,   
   tableBodyColumnIndex?:any,
-  tableBodyRowIndex?:any
-  isEndPointTable?:any
+  tableBodyRowIndex?:any,
+  isEndPointTable?:any,
+  handleClickChange?:any,
+  hide?:any,
+  clicked?:any
 }
 
 interface markIF {
@@ -319,7 +322,10 @@ const renderTooltipTitle = (
   tableBody,
   tableBodyColumnIndex,
   tableBodyRowIndex,
-  isEndPointTable
+  isEndPointTable,
+  handleClickChange,
+  hide,
+  clicked
 ) => {
   const id = word.id;
   const score = word.score || "";
@@ -376,7 +382,8 @@ const renderTooltipTitle = (
       <div className="bottom">
         <Button
           type="primary"
-          onClick={() =>
+          onClick={() => {
+            hide() 
             handleSaveContent(
               id,
               currentScore,
@@ -388,6 +395,8 @@ const renderTooltipTitle = (
               tableBodyColumnIndex,
               tableBodyRowIndex
             )
+          }
+           
           }
         >
           Save
@@ -486,6 +495,8 @@ const TextWithEntity = (props: TextWithEntityIF) => {
     activeSection,
     path,
   };
+  const [clicked, setClicked] = useState(false)
+  const [showID, setShowID] = useState("-1")
 
   const onChange = (id,v) => {
     setCurrentId(id)
@@ -538,10 +549,15 @@ const TextWithEntity = (props: TextWithEntityIF) => {
       children: selectedWordObj,
       score:1,
     };
+    // show Tooltip for new underlined entity
+    setClicked(true)
+    setShowID(newMarkObj.id+'')
+    setCurrentLabel("")
     // get text for mark
     let markText = "";
     newMarkObj.children.forEach((ele) => {
-      ele.id = Number(ele.id);
+      // ele.id = Number(ele.id);
+      console.log("id:",ele.id);
       markText += ele.text;
     });
     newMarkObj.text = markText;
@@ -556,7 +572,17 @@ const TextWithEntity = (props: TextWithEntityIF) => {
     }else{
       updateWordsCollection(tempWordsCollection);
     }
-    
+  };
+
+  const hide = () => {
+    setClicked(false)
+    setShowID("-1")
+  }
+
+  const handleClickChange = (visible, key) => {
+    setClicked(visible)
+    visible?setShowID(key):setShowID("-1")
+    !visible&&setCurrentLabel("")
   };
 
   return (
@@ -605,10 +631,13 @@ const TextWithEntity = (props: TextWithEntityIF) => {
                 };
                 return (
                   <Tooltip     
-                    // visible={true}
+                    visible={showID===id+'' && clicked}
+                    onVisibleChange={(e)=>{handleClickChange(e,id)}}
                     key={id}
                     className="entity-concept"
                     placement="right"
+                    mouseEnterDelay={0.5}
+                    mouseLeaveDelay={2}
                     title={renderTooltipTitle(
                       word,
                       currentId,
@@ -626,7 +655,10 @@ const TextWithEntity = (props: TextWithEntityIF) => {
                       tableBody,
                       tableBodyColumnIndex,
                       tableBodyRowIndex,
-                      isEndPointTable
+                      isEndPointTable,
+                      handleClickChange,
+                      hide,
+                      clicked
                     )}
                   >
                     {renderMark(markParams, entity)}
