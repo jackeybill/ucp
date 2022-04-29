@@ -7,7 +7,8 @@ const initialState = {
     labels:[],
     protocolName:"",
     fileName:"",
-    disabledButton:true
+    disabledButton:true,
+    afterUpload:false,
 }
 
 const fileReducer = (state = initialState, action) => {

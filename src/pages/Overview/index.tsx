@@ -65,16 +65,16 @@ const columns = [
         let numA;
         let numB;
         if (a.status==="Not started") {
-           numA = 10
-        } else if (a.status==="In progress") {
            numA = 20
+        } else if (a.status==="In progress") {
+           numA = 10
         } else {
            numA = 30
         }
         if (b.status==="Not started") {
-           numB = 10
-        } else if (b.status==="In progress") {
            numB = 20
+        } else if (b.status==="In progress") {
+           numB = 10
         } else {
            numB = 30
         }        
@@ -125,8 +125,7 @@ const Overview = (props: any) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
       setLoading(true)
       const resp = await getOverviewList();
       setLoading(false)
@@ -146,8 +145,22 @@ const Overview = (props: any) => {
         setData(tmpData);
       }
     };
-    fetchData();
-  }, []);
+
+    useEffect(() => { 
+      fetchData();
+    }, []);
+
+    useEffect(()=>{
+      if(props.fileReader.afterUpload){
+        setVisible(false); 
+        message.success('Your document has been submitted for processing. Please check back later. ') 
+        fetchData(); 
+        props.readFile({
+          afterUpload:false,
+        })
+      }
+      
+    },[props.fileReader.afterUpload])
 
   const showDrawer = () => {
     setVisible(true);
