@@ -83,7 +83,8 @@ class SelectableTable extends React.Component <SelectableTableProps>{
           showSizeChanger: true, 
           onShowSizeChange: this.onShowSizeChange,
           pageSizeOptions: this.state.pageSizeOptions
-        }} sticky 
+        }} 
+        // sticky
         rowKey={record => record['nct_id']} />
       </>
     );
