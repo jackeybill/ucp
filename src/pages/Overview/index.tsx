@@ -223,7 +223,7 @@ const Overview = (props: any) => {
             columns={columns}
             dataSource={data}
             showSorterTooltip={false}
-            pagination={{ position: ["bottomRight"], size: "small", pageSize: 6 }}
+            pagination={{ position: ["bottomRight"], size: "small", defaultPageSize: 6, pageSizeOptions:["6", "10", "20", "50", "100"] }}
               onRow={
                 record => {
                   return {
