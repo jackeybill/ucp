@@ -170,21 +170,30 @@ const Overview = (props: any) => {
     setVisible(false);
   };
 
+  const sleep = (time: number) => {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  };
+
   const handleRowClick = async (record) => {
     setLoading(true)    
     const filepath = `iso-service-dev/RawDocuments/${record.fileName}`
     let begin = 0
-    let resp = ""
-    while (begin >= 0) {
-      const respbegin = await extractText(filepath, begin)
-      begin = respbegin.begin
-      resp += respbegin.body
+    let extractedRes = ""
+    let resultbegin = null;
+    while (begin >= 0 ||resultbegin.statusCode !== 200) {
+      resultbegin = await extractText(filepath, begin)
+      begin = resultbegin.begin
+      if(resultbegin.statusCode === 200) {
+        extractedRes += resultbegin.body
+      }
+      if(resultbegin.statusCode !== 200){
+        await sleep(20000)
+      } 
     }
     
     setLoading(false)
-
      props.readFile({
-      file: JSON.parse(resp)
+      file: JSON.parse(extractedRes)
     })
     
      props.history.push({
