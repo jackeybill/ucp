@@ -649,8 +649,8 @@ class SimilarHistoricalTrial extends React.Component<HistoricalProps> {
                     position: ["bottomRight"],
                     showTotal: (total, range) =>
                       `${range[0]}-${range[1]} of ${this.state.data.length} items`,
-                    // pageSize: this.state.pageSize,
-                    pageSize: 5,
+                    defaultPageSize: 5,
+                    pageSizeOptions:["5", "10", "20", "50", "100"],
                     onChange: this.changePage,
                     current: this.state.current,
                     total: this.state.data.length,
