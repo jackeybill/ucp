@@ -1,4 +1,4 @@
-import { BACKEND_HOST, TOPIC_ANALYSIS, RELATIONSHIP, PA_HOST, PA_HOST_EMAIL, PWC_LOGIN_URL } from '../constants'
+import { BACKEND_HOST, TOPIC_ANALYSIS, RELATIONSHIP, PA_HOST, PA_HOST_EMAIL, PWC_LOGIN_URL, PROTOCOL_JOB_URL} from '../constants'
 import moment from 'moment';
 
 export const uploadFile = async (nctID: string, protocolName: string, filename: string, path: string, base64: any,part?:any) => {
@@ -15,7 +15,7 @@ export const uploadFile = async (nctID: string, protocolName: string, filename: 
 };
 
 export const getOverviewList = async () => {
-  const response = await fetch('https://7dx4asj8xj.execute-api.us-east-2.amazonaws.com/dev/dean-dev-protocol-job', {
+  const response = await fetch(PROTOCOL_JOB_URL, {
     method:'POST',
     headers: {
       'Access-Control-Request-Method': 'POST',
@@ -30,7 +30,7 @@ export const getOverviewList = async () => {
 }
 
 export const getSummaryChart = async (therapeutic_area,study_phase) => {
-  const response = await fetch('https://7dx4asj8xj.execute-api.us-east-2.amazonaws.com/dev/dean-dev-protocol-job', {
+  const response = await fetch(PROTOCOL_JOB_URL, {
     method:'POST',
     headers: {
       'Access-Control-Request-Method': 'POST',
