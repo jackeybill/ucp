@@ -4489,7 +4489,7 @@ const ScenarioPage = (props) => {
     }
 
     function downloadFile(fileName) {
-      window.open('https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/summary/'+fileName, '_blank')
+      window.open('https://iso-data-zone-new.s3.us-east-2.amazonaws.com/iso-service-dev/summary/'+fileName, '_blank')
       setSpinning(false)
       setIEResource(fileName)
     }
@@ -4502,7 +4502,7 @@ const ScenarioPage = (props) => {
   const downloadAverage = async () => {
     var num = avgFileKey.lastIndexOf('/')+1
     let fileName = avgFileKey.substr(num)
-    window.open('https://iso-data-zone.s3.us-east-2.amazonaws.com/iso-service-dev/summary/'+fileName, '_blank')
+    window.open('https://iso-data-zone-new.s3.us-east-2.amazonaws.com/iso-service-dev/summary/'+fileName, '_blank')
     // let tempInclusionResourceAvg = []
     // let tempExclusionResourceAvg = []
     // if(!avgResource){

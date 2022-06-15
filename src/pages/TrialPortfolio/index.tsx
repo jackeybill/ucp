@@ -217,10 +217,15 @@ const TrialPortfolio = (props) => {
     }
   };
 
-  const onViewTrial = (e, record) => {
+  const onViewTrial = async(e, record) => {
     e.preventDefault();
     setShowDetails(true);
-    setTrial(JSON.parse(JSON.stringify(record)));
+    const study = await getStudy(record['_id'])
+    if (study.statusCode == 200) {
+      setTrial(study.body);
+    }else{
+      setTrial(JSON.parse(JSON.stringify(record)));
+    }
   };
 
   const onDeleteTrial = async (e, id) => {
