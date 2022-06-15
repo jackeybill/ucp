@@ -90,17 +90,21 @@ export const ROLE_MENUE_MAPPING = {
 
 
 
-export const BACKEND_HOST = "https://hp5pe11vg7.execute-api.us-east-1.amazonaws.com/prod/"
-export const USER_LOGIN = "https://634sjwunbk.execute-api.us-east-2.amazonaws.com/default/data-profiling-service-dev-user"
+export const BACKEND_HOST = ""
+export const USER_LOGIN = ""
 
-export const TOPIC_ANALYSIS = "https://ey0cm39xd6.execute-api.us-east-2.amazonaws.com/prod"
-export const RELATIONSHIP = "https://f7kkd4584m.execute-api.us-east-2.amazonaws.com/default/data-profiling-service-dev-relationship"
-
-
-export const PA_HOST_EMAIL = "https://2biav84kz7.execute-api.us-east-2.amazonaws.com/default/prior-authorization-service-dev-sendEMail"
+export const TOPIC_ANALYSIS = ""
+export const RELATIONSHIP = ""
 
 
+export const PA_HOST_EMAIL = ""
 
-export const PWC_LOGIN_URL ="https://ac-studio.pwc.com/function/idam?state="+window.location.origin+"&bottoken=eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDY4ODEyMDAsInN1YiI6IkJvdFRva2VuIiwiQm90SW5mb0lkIjoiMWIzNTFlM2YtMzQ4YS00MDhjLThjNWEtYzFjYTQyOTc1MmI4IiwiQm90TmFtZSI6IkhJQTIifQ.YfFU3ClMxEF3tELv6sf9UA_5ENdBaZPO5Gh2tDDOI7I";
+
+
+export const PWC_LOGIN_URL ="";
 // export const PA_HOST = "https://uoz8c451m1.execute-api.us-west-2.amazonaws.com/dev/cases"
-export const PA_HOST = "https://ymd7qr4u4g.execute-api.us-east-1.amazonaws.com/master/cases"
+export const PA_HOST = ""
+
+
+export const TRIAL_URL = "https://xnsyichzuf.execute-api.us-east-2.amazonaws.com/dev/trial"
+export const criteria_url="https://xnsyichzuf.execute-api.us-east-2.amazonaws.com/dev/gwcase-support"

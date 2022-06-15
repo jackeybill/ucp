@@ -1,4 +1,4 @@
-import { BACKEND_HOST, TOPIC_ANALYSIS, RELATIONSHIP, PA_HOST, PA_HOST_EMAIL,PWC_LOGIN_URL } from '../constants'
+import { BACKEND_HOST, TOPIC_ANALYSIS, RELATIONSHIP, PA_HOST, PA_HOST_EMAIL,PWC_LOGIN_URL, TRIAL_URL, criteria_url} from '../constants'
 
 export const uploadFile = async (filename: string, path: string, base64: any) => {
   const response = await fetch(BACKEND_HOST, {
@@ -309,11 +309,9 @@ export const submitText = async (result: any, path: any,) => {
   return await response.json();
 };
 
-// criteria
-// const criteria_url="https://jtbey858h4.execute-api.us-west-2.amazonaws.com/main/cases"
-const criteria_url="https://qw90oypb5e.execute-api.us-west-2.amazonaws.com/default/gwCase-support"
+
 export const getTrialList = async () => {
-  const response = await fetch(criteria_url, {
+  const response = await fetch(TRIAL_URL, {
     method: 'POST',
     headers: {
       'Access-Control-Request-Method': 'POST',
@@ -331,7 +329,7 @@ export const getTrialList = async () => {
 }
 
 export const DeleteTrialList = async (id) => {
-  const response = await fetch(criteria_url, {
+  const response = await fetch(TRIAL_URL, {
     method: 'POST',
     headers: {
       'Access-Control-Request-Method': 'POST',
@@ -350,7 +348,7 @@ export const DeleteTrialList = async (id) => {
 }
 
 export const addStudy = async (params:any) => {
-  const response = await fetch(criteria_url, {
+  const response = await fetch(TRIAL_URL, {
     method: 'POST',
     headers: {
       'Access-Control-Request-Method': 'POST',
@@ -438,7 +436,7 @@ export const getCriteriaLibByNctId = async (nct_list, trialId) => {
 }
 
 export const updateStudy = async (params:any) => {
-  const response = await fetch(criteria_url, {
+  const response = await fetch(TRIAL_URL, {
     method: 'POST',
     headers: {
       'Access-Control-Request-Method': 'POST',
@@ -488,7 +486,7 @@ export const getSimilarhistoricalTrialById = async (ids) => {
 }
 
 export const getStudy = async (param: String) => {
-  const response = await fetch(criteria_url, {
+  const response = await fetch(TRIAL_URL, {
     method: 'POST',
     headers: {
       'Access-Control-Request-Method': 'POST',
