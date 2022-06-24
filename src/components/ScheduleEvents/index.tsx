@@ -1176,7 +1176,7 @@ const ScheduleEvents = (props) => {
       subStr += '\n' + catrgory + ',"' + events[event]['Standard Event'] + '",' + events[event]['Dummy Cost']
       if(events[event]['condition'].length > 0){
         for(const idx in events[event]['condition']){
-          subStr += ',' + (events[event]['condition'][idx].checked ? 'x' : '')
+          subStr += ',' + (events[event]['condition'][idx].modality ? 'x' : '')
         }
       }
     }
