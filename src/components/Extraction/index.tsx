@@ -101,7 +101,8 @@ const Extraction = (props: any, ref) => {
     "TEMPORAL_PHRASE": "TEMPORAL_PHRASE", 
     "LIMITATION": "LIMITATION", 
     "MODIFIER": "MODIFIER",
-    "NEGATION": "NEGATION"
+    "NEGATION": "NEGATION",
+    "GENDER": "GENDER"
     }
 
     const entityTypes = Object.keys(Type_Category_Mapper)    
