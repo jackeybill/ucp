@@ -140,7 +140,7 @@ const ScenarioPage = (props) => {
     const [activeTabKey, setActiveTabKey] = useState('1')
     const [processStep, setProcessStep] = useState(0)
     const [submitType, setSubmitType] = useState(0)
-    const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState([])
+    const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState(props.location.state.similarHistoricalTrials)
     const [spinning, setSpinning] = useState(false)
     const [showChartLabel, setShowChartLabel] = useState(false)
     const [pageLoading, setPageLoading] = useState(true)
@@ -7154,6 +7154,7 @@ const ScenarioPage = (props) => {
               historyStatusOption={historyStatusOption}
               sponsorChartColor={sponsorChartColor}
               statusChartColor={statusChartColor}
+              historyNCTlist={similarHistoricalTrials}
               />
             </div>
             }

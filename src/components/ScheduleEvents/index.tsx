@@ -1256,6 +1256,7 @@ const ScheduleEvents = (props) => {
   const [historicalTrialdata, setHistoricalTrialdata] = useState([])
   const [spinning, setSpinning] = useState(false)
   const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState([])
+  // const [similarHistoricalTrials, setSimilarHistoricalTrials] = useState(props.historyNCTlist)
   const [statusChartData,setStatusChartData] = useState([])
   const [sponsorChartData,setSponsorChartData] = useState([])
   const [showMoreDetailEndpoint, setShowMoreDetailEndpoint] = useState(false)
