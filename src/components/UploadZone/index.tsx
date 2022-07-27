@@ -35,6 +35,7 @@ const Dropzone = (props: any) => {
   const [progress, setProgress] = useState(0);
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [fileTypeError, setFileTypeError] = useState(false);
   // const [nctID, setNctID] = useState("");
   // const [protocolName, setProtocolName] = useState("");
 
@@ -56,6 +57,14 @@ const Dropzone = (props: any) => {
   }, [progress, files]);
 
   const onDrop = useCallback(async (acceptedFiles) => {
+    for (let f of acceptedFiles) {
+      if (f.type !== "application/pdf") {
+        // setLoading(false);
+        setFileTypeError(true)
+        return
+      }
+    }
+    setFileTypeError(false)
     // props.setLoading(true);
     setLoading(true);
     setFiles(acceptedFiles);
@@ -64,9 +73,6 @@ const Dropzone = (props: any) => {
     // Do something with the files
     const fileList = [];
     for (let f of acceptedFiles) {
-      if (f.type !== "application/pdf") {
-        continue;
-      }
       const base64 = await toBase64(f);  
       const fileBytes = base64.split(",")[1]
       const byteLength = base64.split(",")[1].length
@@ -202,6 +208,9 @@ const Dropzone = (props: any) => {
             >
               <Input />
             </Form.Item>
+            {
+              fileTypeError?(<p className="pdf-file-type-error">The files you selected contain Non-PDF files, please try again.</p>):(null)
+            }
           </Form>
           </div>
           <div

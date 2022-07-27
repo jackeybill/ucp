@@ -1,6 +1,9 @@
-import React from 'react'
+/* eslint-disable */
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react'
+import { DeleteFilled, SwapOutlined } from "@ant-design/icons";
+// <DeleteFilled />
+// <SwapOutlined />
 import './styles.scss'
-
 
 const formatStr = (s: string) => {
   return s
@@ -41,28 +44,15 @@ export interface SvgComponentProps {
   content: any;
   activeSection: string;
 }
- 
-export interface SvgComponentState {
-  
-}
- 
-class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState> {
-  constructor(props: SvgComponentProps) {
-    super(props);
-    this.state = {
 
-    };
-  }
-  componentDidMount() {
-    this.refresh()
-  }
-  
-  componentDidUpdate(prevProps: SvgComponentProps, newProps: any) {
-    this.refresh()
-    console.log( this.props)
-  }
+const SvgComponent = (props: SvgComponentProps) => {
+  const [entityData, setEntityData] = useState(props.entityData)
 
-  refresh = () : void  => {
+  useLayoutEffect(() => {
+    refresh()
+  })
+  
+  const refresh = () : void  => {
     const OFFSET_HEAD_TAIL = 8
     const svgNode: any = document.getElementById("svg-viewport")
     const verticalConnLineNodeList = svgNode!.getElementsByClassName("conn_line vertical")
@@ -280,239 +270,242 @@ class SvgComponent extends React.Component<SvgComponentProps, SvgComponentState>
     svgNode!.setAttribute("width", width.toString())
     svgNode!.setAttribute("height", height.toString())
   }
-
-
-
-  render() {
-    const svgRawData = []
-    this.props.entityData.forEach((item, index)=> {
-      svgRawData.push({entityData:item,content:this.props.content[index],activeSection:this.props.activeSection})
-    })
-
-    const svgData = []
-
-    const getSvgData = (content, entities, paragraphNo) => {
-      const lines = []
-      const entityLocation: any = {} // key: entity id;  value: line index
-      const pendingEntities: any = [] // need to draw arrow tail
-      const verticalRelations: Array<any> = []
   
-      entities = entities.sort((e1: any, e2: any) => (e1.BeginOffset - e2.BeginOffset || e1.EndOffset - e2.EndOffset))
-      let pos = 0
-      let scanedEntitiesIndex = 0
+  
+  const handleRemoveRelation = () => {
+    // setEntityData()
+  }
+  
 
-      let cachedID = 1;
-      const generateExtraID = () => {
-        return cachedID++;
-      }
-  
-      const findNextIncludingEntity = (last: number) => {
-        let entity = entities[scanedEntitiesIndex]
-        if (entity && entity.EndOffset <= last) {
-          scanedEntitiesIndex++
-          return entity
-        }
-        return null
-      }
+  const svgRawData = []
+  props.entityData.forEach((item, index)=> {
+    svgRawData.push({entityData:item,content:props.content[index],activeSection:props.activeSection})
+  })
 
-      // To show the missing relationship of multiple relationships
-      const replaceEntityWithAttributesOne = (entities, entity) => {
-        const existedAddedEntity = entities.find(e => e.Id === entity.Id ) ;
+  const svgData = []
 
-        if(existedAddedEntity){
-          const hasAttributeForExistedEntity = !!existedAddedEntity.Attributes;
-          const hasAttributeForNewEntity = !!entity.Attributes;
-          if(!hasAttributeForExistedEntity &&  hasAttributeForNewEntity){
-            existedAddedEntity.Attributes = entity.Attributes;
-          }
-        }
-      }
-    
-      const getSvgLine = (last: number) => {
-        // deal with content[pos, cur]
-        const gList = []
-        let cur = pos
-        const addedEntities: Array<any> = []
-  
-        let nextEntity = findNextIncludingEntity(last)
-        while(nextEntity) {
-          if(cur < nextEntity.BeginOffset) {
-            gList.push(
-              <g className="svg_text_chunk gap" data-start-offset={cur} data-end-offset={nextEntity.BeginOffset} style={{display:'inline-block',padding:'0 2px'}}>
-                <text startOffset={cur-pos}>&nbsp;&nbsp;&nbsp;{content.slice(cur, nextEntity.BeginOffset)}&nbsp;&nbsp;&nbsp;</text>
-                
-              </g>
-            )
-            cur = nextEntity.BeginOffset
-          } else {
-            replaceEntityWithAttributesOne(addedEntities, nextEntity);
-            if (addedEntities.findIndex(e => e.Id === nextEntity.Id) === -1) {
-              // Add entity text
-              let color = "#1e8900" 
-              if (nextEntity.Type.toLowerCase().includes('name')) {
-                color = "#df3312"
-              } else if (nextEntity.Type.toLowerCase().includes('time')) {
-                color = "#CE6DBD"
-              }
-              if (nextEntity.SubChild) {
-                let subColor = "#1e8900"
-              
-                 gList.push(
-                  <g key={nextEntity.Id} className="svg_text_chunk entity"  style={{paddingLeft:2}}>
-                    <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text> 
-                    <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}/>               
-                     {
-                       nextEntity.SubChild.map((c, idx) => {
-                         const pxRatio = 7.6
-                          if (c.Type.toLowerCase().includes('name')) {
-                            subColor = "#0a69A0";
-                          }else if (c.Type.toLowerCase().includes('time')) {
-                            subColor = "#D64CCC";
-                          }
-                          return (
-                            <g key={c.Id} data-start-offset={c.BeginOffset} data-end-offset={c.EndOffset}>
-                             <line strokeWidth="3" strokeLinecap="round" x1={`${(Math.abs(c.BeginOffset - nextEntity.BeginOffset-1))*pxRatio}px`} y1={10} x2={`${(c.EndOffset - nextEntity.BeginOffset)*pxRatio}px`}y2={10} style={{ stroke: subColor }} />                   
-                             <circle fill={subColor} cx="3" cy={20 + 10 * (idx + 1)} r="3"></circle>
-                             <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={20+10*(idx+1)} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(c.Type)} (${c.Text})` }&nbsp;&nbsp;&nbsp;</text>                                         
-                          </g>
-                         )
-                       })
-                    }
-                    <circle fill={color} cx="3" cy="20" r="3"></circle>             
-                    <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={20} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>                     
-                  </g>
-              )            
-              } else {
-                 gList.push(
-                  <g key={nextEntity.Id} className="svg_text_chunk entity" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset} style={{paddingLeft:2}}>
-                    <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text>                            
-                    <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} />              
-                    <circle fill={color} cx="3" cy="15" r="3"></circle>              
-                    <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={15} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>                     
-                  </g>
-              )           
-              }         
-              addedEntities.push(nextEntity)
-              entityLocation[nextEntity.Id] = lines.length
-            }
-  
-            cur = nextEntity.EndOffset
-            nextEntity = findNextIncludingEntity(last)
-          }
-        }
-        
-        
-        if (cur < last) {
-          gList.push(
-            <g className={`svg_text_chunk gap`} data-start-offset={cur} data-end-offset={last} style={{display:'inline-block',padding:'0 2px'}}>
-              <text>&nbsp;&nbsp;&nbsp;{content.slice(cur, last)}&nbsp;&nbsp;&nbsp;</text>        
-            </g>
-          )
-          cur = last
-        }
-        addedEntities
-        .filter(item => item.Attributes)
-        .forEach((item, idx) => {
-          for (let i=0; i<item.Attributes.length; i++) {
-            const childEntity = item.Attributes[i]
-            // if relationship is in the same line
-            if (addedEntities.findIndex(e => e.Id === childEntity.Id) >= 0) {
-              // Add relationship arrow
-              gList.push(<path className={`arrowhead relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id}/>)
-              gList.push(<line className={`head_line relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-              gList.push(<path className={`joint_curve ${childEntity.BeginOffset > item.BeginOffset ? 'left-circle' : ''} relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-              gList.push(<path className={`conn_line relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
-              gList.push(<rect className="text_rect" style={{strokeWidth: 1, cursor: "default"}} />)
-              gList.push(
-                <text dy="3" className="relation_label" style={{fill: "dimgrey", display: "block", strokeWidth: 1, cursor: "default"}}>
-                  <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'7pt'}}>{formatStr(childEntity.RelationshipType)}</textPath>
-                </text>
-              )
-              gList.push(<path className={`joint_curve ${childEntity.BeginOffset > item.BeginOffset ? 'left-circle' : ''} relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-              gList.push(<line className={`tail_line relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-              gList.push(<path className={`arrowtail relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-            } else {
-              // Relationship across different rows
-              gList.push(<path className={`arrowhead cross_row_relation relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id}/>)
-              gList.push(<line className={`head_line relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-              gList.push(<path className={`joint_curve relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
-              gList.push(<path className={`conn_line horizontal relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_head_horizontal_line_${childEntity.Id}_${item.Id}`}/>)
-              verticalRelations.push(<path className={`conn_line vertical relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
-              verticalRelations.push(<line className={`conn_line horizontal relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
-              verticalRelations.push(<line className={`conn_line horizontal relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
-              verticalRelations.push(<path className={`joint_curve left_circle relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
-              verticalRelations.push(<path className={`joint_curve relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
-              verticalRelations.push(<rect className={`text_rect`}/>)
-              verticalRelations.push(
-                <text dy="3" className="relation_label" style={{fill: "dimgrey", display: "block", strokeWidth: 1, cursor: "default"}}>
-                  <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'7pt'}}>{formatStr(childEntity.RelationshipType)}</textPath>
-                </text>
-              )
-              // Record the entities which need to draw arrowtail
-              pendingEntities.push(childEntity)
-            }
-          }
-        })
-        
-        pos = cur
-        return gList
-      }
-  
-      let enterBreakIndex = content.indexOf('\n')
-      // when there is only one paragraph
-      if (enterBreakIndex == -1) {
-         lines.push(getSvgLine(content.length))
-      }
-      
-      while (enterBreakIndex !== -1) {
-        lines.push(getSvgLine(enterBreakIndex))
-        enterBreakIndex = content.indexOf('\n', enterBreakIndex + 1)
-      }
-  
-      for (let childEntity of pendingEntities) {
-        const lineNo = entityLocation[childEntity.Id]
-        const tempLineChildren = lines[lineNo]
-        tempLineChildren.push(<path className={`arrowtail cross_row_relation relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id}/>)
-        tempLineChildren.push(<line className={`head_line relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} />)
-        tempLineChildren.push(<path className={`joint_curve relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} />)
-        tempLineChildren.push(<path className={`conn_line horizontal relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} id={`relation_tail_horizontal_line_${childEntity.Id}_${childEntity.parentId}`}/>)
-      }
+  const getSvgData = (content, entities, paragraphNo) => {
+    const lines = []
+    const entityLocation: any = {} // key: entity id;  value: line index
+    const pendingEntities: any = [] // need to draw arrow tail
+    const verticalRelations: Array<any> = []
 
-      svgData.push({lines,verticalRelations})
+    entities = entities.sort((e1: any, e2: any) => (e1.BeginOffset - e2.BeginOffset || e1.EndOffset - e2.EndOffset))
+    let pos = 0
+    let scanedEntitiesIndex = 0
+
+    let cachedID = 1;
+    const generateExtraID = () => {
+      return cachedID++;
     }
 
-    svgRawData.map((item, index)=> {
-      let content = item.content + '\n'
-      let entities = item.entityData&&item.entityData.Entities?flattenAttributeIntoEntities(item.entityData.Entities||[]):[]
-      getSvgData(content, entities, index)
-    })
+    const findNextIncludingEntity = (last: number) => {
+      let entity = entities[scanedEntitiesIndex]
+      if (entity && entity.EndOffset <= last) {
+        scanedEntitiesIndex++
+        return entity
+      }
+      return null
+    }
+
+    // To show the missing relationship of multiple relationships
+    const replaceEntityWithAttributesOne = (entities, entity) => {
+      const existedAddedEntity = entities.find(e => e.Id === entity.Id ) ;
+
+      if(existedAddedEntity){
+        const hasAttributeForExistedEntity = !!existedAddedEntity.Attributes;
+        const hasAttributeForNewEntity = !!entity.Attributes;
+        if(!hasAttributeForExistedEntity &&  hasAttributeForNewEntity){
+          existedAddedEntity.Attributes = entity.Attributes;
+        }
+      }
+    }
+  
+    const getSvgLine = (last: number) => {
+      // deal with content[pos, cur]
+      const gList = []
+      let cur = pos
+      const addedEntities: Array<any> = []
+
+      let nextEntity = findNextIncludingEntity(last)
+      while(nextEntity) {
+        if(cur < nextEntity.BeginOffset) {
+          gList.push(
+            <g className="svg_text_chunk gap" data-start-offset={cur} data-end-offset={nextEntity.BeginOffset} style={{display:'inline-block',padding:'0 2px'}}>
+              <text startOffset={cur-pos}>&nbsp;&nbsp;&nbsp;{content.slice(cur, nextEntity.BeginOffset)}&nbsp;&nbsp;&nbsp;</text>
+              
+            </g>
+          )
+          cur = nextEntity.BeginOffset
+        } else {
+          replaceEntityWithAttributesOne(addedEntities, nextEntity);
+          if (addedEntities.findIndex(e => e.Id === nextEntity.Id) === -1) {
+            // Add entity text
+            let color = "#1e8900" 
+            if (nextEntity.Type.toLowerCase().includes('name')) {
+              color = "#df3312"
+            } else if (nextEntity.Type.toLowerCase().includes('time')) {
+              color = "#CE6DBD"
+            }
+            if (nextEntity.SubChild) {
+              let subColor = "#1e8900"
+            
+               gList.push(
+                <g key={nextEntity.Id} className="svg_text_chunk entity"  style={{paddingLeft:2}}>
+                  <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text> 
+                  <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}/>               
+                   {
+                     nextEntity.SubChild.map((c, idx) => {
+                       const pxRatio = 7.6
+                        if (c.Type.toLowerCase().includes('name')) {
+                          subColor = "#0a69A0";
+                        }else if (c.Type.toLowerCase().includes('time')) {
+                          subColor = "#D64CCC";
+                        }
+                        return (
+                          <g key={c.Id} data-start-offset={c.BeginOffset} data-end-offset={c.EndOffset}>
+                           <line strokeWidth="3" strokeLinecap="round" x1={`${(Math.abs(c.BeginOffset - nextEntity.BeginOffset-1))*pxRatio}px`} y1={10} x2={`${(c.EndOffset - nextEntity.BeginOffset)*pxRatio}px`}y2={10} style={{ stroke: subColor }} />                   
+                           <circle fill={subColor} cx="3" cy={20 + 10 * (idx + 1)} r="3"></circle>
+                           <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={20+10*(idx+1)} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(c.Type)} (${c.Text})` }&nbsp;&nbsp;&nbsp;</text>                                         
+                        </g>
+                       )
+                     })
+                  }
+                  <circle fill={color} cx="3" cy="20" r="3"></circle>             
+                  <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={20} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>                     
+                </g>
+            )            
+            } else {
+               gList.push(
+                <g key={nextEntity.Id} className="svg_text_chunk entity" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset} style={{paddingLeft:2}}>
+                  <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text>                            
+                  <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} />              
+                  <circle fill={color} cx="3" cy="15" r="3"></circle>              
+                  <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={15} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>                     
+                </g>
+            )           
+            }         
+            addedEntities.push(nextEntity)
+            entityLocation[nextEntity.Id] = lines.length
+          }
+
+          cur = nextEntity.EndOffset
+          nextEntity = findNextIncludingEntity(last)
+        }
+      }
+      
+      
+      if (cur < last) {
+        gList.push(
+          <g className={`svg_text_chunk gap`} data-start-offset={cur} data-end-offset={last} style={{display:'inline-block',padding:'0 2px'}}>
+            <text>&nbsp;&nbsp;&nbsp;{content.slice(cur, last)}&nbsp;&nbsp;&nbsp;</text>        
+          </g>
+        )
+        cur = last
+      }
+      addedEntities
+      .filter(item => item.Attributes)
+      .forEach((item, idx) => {
+        for (let i=0; i<item.Attributes.length; i++) {
+          const childEntity = item.Attributes[i]
+          // if relationship is in the same line
+          if (addedEntities.findIndex(e => e.Id === childEntity.Id) >= 0) {
+            // Add relationship arrow
+            gList.push(<path className={`arrowhead relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id}/>)
+            gList.push(<line className={`head_line relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+            gList.push(<path className={`joint_curve ${childEntity.BeginOffset > item.BeginOffset ? 'left-circle' : ''} relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+            gList.push(<path className={`conn_line relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
+            gList.push(<rect className="text_rect" style={{strokeWidth: 1, cursor: "default"}} />)
+            gList.push(
+              <text dy="3" className="relation_label" style={{fill: "dimgrey", display: "block", strokeWidth: 1, cursor: "default"}}>
+                <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'7pt'}}>{formatStr(childEntity.RelationshipType)}</textPath>
+              </text>
+            )
+            gList.push(<path className={`joint_curve ${childEntity.BeginOffset > item.BeginOffset ? 'left-circle' : ''} relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+            gList.push(<line className={`tail_line relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+            gList.push(<path className={`arrowtail relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+          } else {
+            // Relationship across different rows
+            gList.push(<path className={`arrowhead cross_row_relation relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id}/>)
+            gList.push(<line className={`head_line relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+            gList.push(<path className={`joint_curve relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
+            gList.push(<path className={`conn_line horizontal relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_head_horizontal_line_${childEntity.Id}_${item.Id}`}/>)
+            verticalRelations.push(<path className={`conn_line vertical relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
+            verticalRelations.push(<line className={`conn_line horizontal relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
+            verticalRelations.push(<line className={`conn_line horizontal relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
+            verticalRelations.push(<path className={`joint_curve left_circle relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
+            verticalRelations.push(<path className={`joint_curve relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
+            verticalRelations.push(<rect className={`text_rect`}/>)
+            verticalRelations.push(
+              <text dy="3" className="relation_label" style={{fill: "dimgrey", display: "block", strokeWidth: 1, cursor: "default"}}>
+                <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'7pt'}}>{formatStr(childEntity.RelationshipType)}</textPath>
+              </text>
+            )
+            // Record the entities which need to draw arrowtail
+            pendingEntities.push(childEntity)
+          }
+        }
+      })
+      
+      pos = cur
+      return gList
+    }
+
+    let enterBreakIndex = content.indexOf('\n')
+    // when there is only one paragraph
+    if (enterBreakIndex == -1) {
+       lines.push(getSvgLine(content.length))
+    }
     
-    return (
-      <div>
-        <div id="svg-wrapper" className="svg-view-container" style={{overflow: "scroll", maxWidth: '100%', background: "#fafafa"}}>
-          <svg viewBox="0 0" id="svg-viewport" overflow="scroll" style={{ position: "relative", display: "block" }}>        
-            { this.props.entityData.length<2?(svgData.slice(0,1).map((item, index)=>{
-              return(
-                <>
-                {item.lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{ display: 'inline-block' }}>{line}</g>)}
-                {item.verticalRelations}
-                <g key={`line-space`} className="svg_line" style={{ display: 'inline-block' }}></g>
-              </>
-              )
-            })):(svgData.slice(1).map((item, index)=>{
-              return(
-                <>
-                {item.lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{ display: 'inline-block' }}>{line}</g>)}
-                {item.verticalRelations}
-                <g key={`line-space`} className="svg_line" style={{ display: 'inline-block' }}></g>
-              </>
-              )
-            }))}
-          </svg>
-        </div>
-      </div>
-    )
+    while (enterBreakIndex !== -1) {
+      lines.push(getSvgLine(enterBreakIndex))
+      enterBreakIndex = content.indexOf('\n', enterBreakIndex + 1)
+    }
+
+    for (let childEntity of pendingEntities) {
+      const lineNo = entityLocation[childEntity.Id]
+      const tempLineChildren = lines[lineNo]
+      tempLineChildren.push(<path className={`arrowtail cross_row_relation relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id}/>)
+      tempLineChildren.push(<line className={`head_line relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} />)
+      tempLineChildren.push(<path className={`joint_curve relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} />)
+      tempLineChildren.push(<path className={`conn_line horizontal relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${childEntity.parentId}`} data-head-id={childEntity.parentId} data-tail-id={childEntity.Id} id={`relation_tail_horizontal_line_${childEntity.Id}_${childEntity.parentId}`}/>)
+    }
+
+    svgData.push({lines,verticalRelations})
   }
+
+  svgRawData.map((item, index)=> {
+    let content = item.content + '\n'
+    let entities = item.entityData&&item.entityData.Entities?flattenAttributeIntoEntities(item.entityData.Entities||[]):[]
+    getSvgData(content, entities, index)
+  })
+  
+  return (
+    <div>
+      <div id="svg-wrapper" className="svg-view-container" style={{overflow: "scroll", maxWidth: '100%', background: "#fafafa"}}>
+        <svg viewBox="0 0" id="svg-viewport" overflow="scroll" style={{ position: "relative", display: "block" }}>        
+          { props.entityData.length<2?(svgData.slice(0,1).map((item, index)=>{
+            return(
+              <>
+              {item.lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{ display: 'inline-block' }}>{line}</g>)}
+              {item.verticalRelations}
+              <g key={`line-space`} className="svg_line" style={{ display: 'inline-block' }}></g>
+            </>
+            )
+          })):(svgData.slice(1).map((item, index)=>{
+            return(
+              <>
+              {item.lines.map((line, idx) => <g key={`line-${idx}`} className="svg_line" style={{ display: 'inline-block' }}>{line}</g>)}
+              {item.verticalRelations}
+              <g key={`line-space`} className="svg_line" style={{ display: 'inline-block' }}></g>
+            </>
+            )
+          }))}
+        </svg>
+      </div>
+    </div>
+  )
+  
 }
  
 export default SvgComponent;
