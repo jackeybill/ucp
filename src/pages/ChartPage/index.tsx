@@ -825,9 +825,7 @@ const ChartPage = (props: any) => {
                   style={{ width: 200 }}
                   onChange={handleAreaChange}
                   filterOption={(input, option) =>
-                    option.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
+                    (option!.children as unknown as string).indexOf(input) >= 0
                   }
                 >
                   {indication_option.map((o) => {

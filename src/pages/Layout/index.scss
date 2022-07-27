@@ -64,6 +64,17 @@
           color: #d04a02!important;
 
         }
+        .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected::after,
+        .ant-menu-item:hover::after,
+        .ant-menu-item::after
+         {
+          border-bottom: 0px solid transparent!important;
+          display: none;
+      }
+      .pa__layout .ant-layout-header div.menu-box .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after, .pa__layout .ant-layout-header div.menu-box .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover::after, .pa__layout .ant-layout-header div.menu-box .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active::after, .pa__layout .ant-layout-header div.menu-box .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active::after, .pa__layout .ant-layout-header div.menu-box .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open::after, .pa__layout .ant-layout-header div.menu-box .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open::after, .pa__layout .ant-layout-header div.menu-box .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected::after, .pa__layout .ant-layout-header div.menu-box .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected::after {
+        border-bottom: 0px solid transparent!important;
+        display: none;
+    }
       }
       .ant-menu-horizontal:not(.ant-menu-dark)
         > .ant-menu-item-selected::after {
