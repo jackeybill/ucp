@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect, useRef } from "react";
 import { withRouter } from "react-router";
 import { Tabs, Input, Select, message } from "antd";
@@ -118,6 +119,9 @@ const Extraction = (props: any, ref) => {
   // const initSvgEntity =
   //   [file[key][activeSection][0].comprehendMedical["Entities"],file[key][activeSection][0].comprehendMedical["Entities"],file[key][activeSection][0].comprehendMedical["Entities"]];
   const [svgEntity, setSvgEntity] = useState(initSvgEntity);
+  let clickNum = 0
+  let attributesData = {Id:0}
+  let paragraphIndex = 0
 
   const initLabels =
   file[key][activeSection][0].comprehendMedical!==undefined&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy? (file[key][activeSection][0].comprehendMedical&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label_dummy || {}):(file[key][activeSection][0].comprehendMedical&&file[key][activeSection][0].comprehendMedical[entity]&&file[key][activeSection][0].comprehendMedical[entity].label || {}) || {};
@@ -170,6 +174,9 @@ const Extraction = (props: any, ref) => {
 
   useEffect(() => {
     setActiveType("");
+    setActiveRel(file[key][activeSection][0]&&file[key][activeSection][0].RelationshipSummary_dummy&&file[key][activeSection][0].RelationshipSummary_dummy.length>0?`${formatWord(
+      Object.keys(file[key][activeSection][0].RelationshipSummary_dummy[0])[0]
+    )}-${formatWord(Object.values(file[key][activeSection][0].RelationshipSummary_dummy[0])[0])}`:"default value")
     // change to array for svg
     let tempNewContent = []
     file[key][activeSection].forEach((item,index)=>{
@@ -227,13 +234,151 @@ const Extraction = (props: any, ref) => {
     file[key][activeSection].forEach((item,index)=>{
       tempSvgEntity.push(item.comprehendMedical&&item.comprehendMedical["Entities"])
     })
-    // const tempSvgEntity = [file[key][activeSection][0].comprehendMedical["Entities"],file[key][activeSection][0].comprehendMedical["Entities"],file[key][activeSection][0].comprehendMedical["Entities"]]
 
     setWordsCollection(labels);
     props.updateCurrentEntity(entity);
     setSvgEntity(tempSvgEntity);
     setActiveTabKey(props.fileReader.activeTabKey)
   }, [entity, activeSection, labels, activeTabKey,props.fileReader.activeTabKey, props.fileReader.file]);
+
+  // change SvgEntity in svg component
+  const handleSvgChange = (i) => {
+    const newData = [...svgEntity]
+    if(clickNum === 0) {
+      // first click, save the attributes
+      newData[i.index]["Entities"].forEach((item,index)=>{
+        if(item.Id === Number(i.id)){
+          // Remove the "Attributes" inside the "Attributes"
+          let d  = JSON.parse(JSON.stringify(item,function(key,value){
+            if(key === "Attributes"){
+              return undefined;
+            }else{
+              return value;
+            }
+          }))
+          attributesData = d
+          paragraphIndex = i.index
+        }
+      })
+      clickNum = clickNum + 1
+    } else {
+      // second click, add the attributes and clear the variables
+      newData[i.index]["Entities"].forEach((item,index)=>{
+        if(item.Id === Number(i.id)){
+          if(i.index !== paragraphIndex){
+            message.error("Not in the same line")
+          } else {
+            if(item.Id === attributesData.Id){
+              message.error("Click same entity twice")
+            } else {
+              const targetData = JSON.parse(JSON.stringify(attributesData))
+              targetData.RelationshipScore = 1
+              targetData.RelationshipType = activeRel
+              targetData.parentId = item.Id
+              if(newData[i.index]["Entities"][index]["Attributes"]){
+                // Avoid adding duplicate Attributes
+                let whetherExist = newData[i.index]["Entities"][index]["Attributes"].some((iten)=>{
+                  return iten.Id === attributesData.Id
+                })              
+                if(!whetherExist) {
+                 let tempAtt = JSON.parse(JSON.stringify(newData[i.index]["Entities"][index]["Attributes"],function(key,value){
+                    if(key === "Attributes"){
+                      return undefined;
+                    }else{
+                      return value;
+                    }
+                  }))
+                  const tempAttnew = JSON.parse(JSON.stringify(tempAtt))
+                  tempAttnew.push(targetData)
+                  newData[i.index]["Entities"][index]["Attributes"]=[...tempAttnew]
+                } else {
+                  message.error("Relation already exists")
+                }
+              }else {
+                const attrArray = []
+                attrArray.push(targetData)
+                newData[i.index]["Entities"][index]["Attributes"]= [...attrArray]
+              }
+              console.log("newData",newData);
+              setSvgEntity(newData)
+              let relationObj = {}
+              if(!props.fileReader.updatedRelation[activeSection]) {
+                relationObj = {
+                  [i.index]:newData[i.index].Entities
+                }                
+              } else {
+                relationObj = Object.assign(JSON.parse(JSON.stringify(props.fileReader.updatedRelation[activeSection])),{
+                  [i.index]:newData[i.index].Entities
+                })
+              }
+              let paramBody = {}
+              paramBody = Object.assign(JSON.parse(JSON.stringify(props.fileReader.updatedRelation)),{
+                [activeSection]: relationObj
+              })
+              props.readFile({
+                updatedRelation: paramBody,
+              });              
+            }
+          }
+          paragraphIndex = 0
+          attributesData = {Id:0}
+          clickNum = 0
+        }
+      })
+    }
+  }
+
+  // change or delete relationship in svg component
+  const handleRelChange = (i) => {      
+    const newData = [...svgEntity]
+    newData[i.index]["Entities"].forEach((item,index)=>{
+      if(item.Id === Number(i.idEnd)){
+        // Remove the "Attributes" 
+        newData[i.index]["Entities"][index]  = JSON.parse(JSON.stringify(item,function(key,value){
+          if(key === "Attributes"){
+            if(item["Attributes"].length <= 1) {
+              return undefined;
+            } else {
+              const newValue = value.filter((iten,indey)=>{
+                return iten.Id !== Number(i.idStart)
+                })
+              return newValue
+            }
+          }else{
+            return value;
+          }
+        }))          
+        
+        console.log("newData",newData);
+        setSvgEntity(newData)
+        let relationObj = {}
+        if(!props.fileReader.updatedRelation[activeSection]) {
+          relationObj = {
+            [i.index]:newData[i.index].Entities
+          }                
+        } else {
+          relationObj = Object.assign(JSON.parse(JSON.stringify(props.fileReader.updatedRelation[activeSection])),{
+            [i.index]:newData[i.index].Entities
+          })
+        }
+        let paramBody = {}
+        paramBody = Object.assign(JSON.parse(JSON.stringify(props.fileReader.updatedRelation)),{
+          [activeSection]: relationObj
+        })
+        props.readFile({
+          updatedRelation: paramBody,
+        });              
+      }
+    })
+  }
+
+  const [activeRel, setActiveRel] = useState(file[key][activeSection][0]&&file[key][activeSection][0].RelationshipSummary_dummy&&file[key][activeSection][0].RelationshipSummary_dummy.length>0?`${formatWord(
+    Object.keys(file[key][activeSection][0].RelationshipSummary_dummy[0])[0]
+  )}-${formatWord(Object.values(file[key][activeSection][0].RelationshipSummary_dummy[0])[0])}`:"default value");
+
+  const onRelTypeClick = (value) => {
+    setActiveRel(value);    
+  };
 
   const getDisplayTitle = (s) => {
     let displayTitle;
@@ -499,7 +644,13 @@ const Extraction = (props: any, ref) => {
                       file[key][activeSection][0].RelationshipSummary_dummy.map(
                         (pair: any, idx: number) => {
                           return (
-                            <span className="pair-item" key={idx}>
+                            <span className={`pair-item ${
+                              activeRel == `${formatWord(
+                                Object.keys(pair)[0]
+                              )}-${formatWord(Object.values(pair)[0])}` ? "active" : ""
+                            }`} style={{cursor: 'pointer'}} key={idx} onClick={() => onRelTypeClick(`${formatWord(
+                              Object.keys(pair)[0]
+                            )}-${formatWord(Object.values(pair)[0])}`)}>
                               {`${formatWord(
                                 Object.keys(pair)[0]
                               )}-${formatWord(Object.values(pair)[0])}`}
@@ -517,6 +668,8 @@ const Extraction = (props: any, ref) => {
                 entityData={svgEntity}
                 content={content}
                 activeSection={activeSection}
+                handleSvgChange={i=>handleSvgChange(i)}
+                handleRelChange={i=>handleRelChange(i)}
               />
             </div>
           </div>

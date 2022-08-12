@@ -322,6 +322,21 @@ export const submitText = async (result: any, path: any,) => {
   return await response.json();
 };
 
+export const submitRelation = async (result: any, path: any,) => {
+  const status = "Completed"
+ const lastUpdate= moment().format('MM-DD-YYYY');   
+ const response = await fetch(BACKEND_HOST, {
+   method: "POST",
+   headers: {
+     "Access-Control-Request-Method": "POST",
+     "Content-Type": "application/json",
+   },
+   body: JSON.stringify({ update_relationship: { content: result, key:path, status, lastUpdate} }),
+ });
+
+ return await response.json();
+};
+
 
 
 

@@ -1,8 +1,7 @@
 /* eslint-disable */
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react'
-import { DeleteFilled, SwapOutlined } from "@ant-design/icons";
-// <DeleteFilled />
-// <SwapOutlined />
+import React, { useState, useEffect, useLayoutEffect, useRef, memo } from 'react'
+import { CloseOutlined, DeleteFilled, SwapOutlined } from "@ant-design/icons";
+import {ENDPOINT_SECTION} from "../../pages/ProtocolSection";
 import './styles.scss'
 
 const formatStr = (s: string) => {
@@ -15,6 +14,9 @@ const flattenAttributeIntoEntities = (inputData: any, result?: any, parentId?: n
   if (!result) {
     result = []
   }
+  // let inputData = JSON.parse(JSON.stringify(rawInputData))
+  // let result = JSON.parse(JSON.stringify(rawResult))
+  
   for (let i=0; i<inputData.length; i++) {
     const element = inputData[i]
     if (parentId) {
@@ -43,14 +45,17 @@ export interface SvgComponentProps {
   entityData: any;
   content: any;
   activeSection: string;
+  handleSvgChange: any;
+  handleRelChange: any;
 }
 
-const SvgComponent = (props: SvgComponentProps) => {
-  const [entityData, setEntityData] = useState(props.entityData)
+const SvgComponent = memo((props: SvgComponentProps) => {
+  // const [rawEntityData, setRawEntityData] = useState([])
 
   useLayoutEffect(() => {
     refresh()
-  })
+    // console.log("rawEntityData",props.entityData);
+  },[props.entityData])
   
   const refresh = () : void  => {
     const OFFSET_HEAD_TAIL = 8
@@ -148,7 +153,14 @@ const SvgComponent = (props: SvgComponentProps) => {
         rectNode.setAttribute('fill', '#fafafa')
         rectNode.setAttribute('stroke', '#fafafa')
 
-        const tailJointCurveNode = relationLabelNode.nextElementSibling
+        const deleteIconNode = relationLabelNode.nextElementSibling
+        deleteIconNode.setAttribute('y', topY-6-3)
+        deleteIconNode.setAttribute('x', (headTextCenterX + tailTextCenterX) / 2 - relationLabelNode.getBBox().width / 2 - 1 + 3 + (relationLabelNode.getBBox().width + 2) / 2)
+        deleteIconNode.setAttribute('width', relationLabelNode.getBBox().width + 2)
+        deleteIconNode.setAttribute('height', 8)
+        deleteIconNode.setAttribute('stroke', '#666')
+
+        const tailJointCurveNode = relationLabelNode.nextElementSibling.nextElementSibling
         // tailJointCurveNode.setAttribute('d', `M${tailJointCurveNode.classList.contains('left-circle')?(tailTextCenterX-12):(tailTextCenterX+12)},${topY}A12,12,0,0,1,${tailTextCenterX},${-26 - j * 10}`)
         tailJointCurveNode.setAttribute(
           'd',
@@ -271,19 +283,39 @@ const SvgComponent = (props: SvgComponentProps) => {
     svgNode!.setAttribute("height", height.toString())
   }
   
-  
   const handleRemoveRelation = () => {
     // setEntityData()
+  }
+
+  const handleEntityClick = (e: React.MouseEvent<Element>): void => {
+    const idNum = e.currentTarget.getAttribute('id').split('_id_')[1]
+    const indexNum = e.currentTarget.getAttribute('class').split('_text_chunk paragraph_')[1]
+    const positionObj = {id:idNum,index:indexNum}
+    console.log("positionObj",positionObj)
+    props.handleSvgChange(positionObj)
+    
+  }
+
+  const handleRelationClick = (e: React.MouseEvent<Element>, childEntity): void => {
+    console.log('Relation clicked', e.currentTarget)
+    console.log("childEntity", childEntity);
+    // #relation_id_5_paragraph_2_3_4
+    const idNumStart = e.currentTarget.getAttribute('href').split('_paragraph_')[1].split('_')[1]
+    const idNumEnd = e.currentTarget.getAttribute('href').split('_paragraph_')[1].split('_')[2]
+    const indexNum = e.currentTarget.getAttribute('href').split('_paragraph_')[1].split('_')[0]
+    const positionRel = {idStart:idNumStart,idEnd:idNumEnd,index:indexNum}
+    console.log("positionRel",positionRel)
+    props.handleRelChange(positionRel)
   }
   
 
   const svgRawData = []
-  props.entityData.forEach((item, index)=> {
+  // Deep copy to avoid changing the raw data
+  JSON.parse(JSON.stringify(props.entityData)).forEach((item, index)=> {
     svgRawData.push({entityData:item,content:props.content[index],activeSection:props.activeSection})
   })
 
   const svgData = []
-
   const getSvgData = (content, entities, paragraphNo) => {
     const lines = []
     const entityLocation: any = {} // key: entity id;  value: line index
@@ -309,16 +341,17 @@ const SvgComponent = (props: SvgComponentProps) => {
     }
 
     // To show the missing relationship of multiple relationships
-    const replaceEntityWithAttributesOne = (entities, entity) => {
-      const existedAddedEntity = entities.find(e => e.Id === entity.Id ) ;
-
-      if(existedAddedEntity){
-        const hasAttributeForExistedEntity = !!existedAddedEntity.Attributes;
-        const hasAttributeForNewEntity = !!entity.Attributes;
-        if(!hasAttributeForExistedEntity &&  hasAttributeForNewEntity){
-          existedAddedEntity.Attributes = entity.Attributes;
+    const replaceEntityWithAttributesOne = (entities, entity) => {      
+      entities.forEach(e => {
+        if(e.Id === entity.Id) {
+          const hasAttributeForExistedEntity = !!e.Attributes;
+          const hasAttributeForNewEntity = !!entity.Attributes;
+          if(!hasAttributeForExistedEntity &&  hasAttributeForNewEntity){
+            e.Attributes = entity.Attributes;
+          }
         }
-      }
+      } ) ;
+
     }
   
     const getSvgLine = (last: number) => {
@@ -328,12 +361,11 @@ const SvgComponent = (props: SvgComponentProps) => {
       const addedEntities: Array<any> = []
 
       let nextEntity = findNextIncludingEntity(last)
-      while(nextEntity) {
+      while(nextEntity) {        
         if(cur < nextEntity.BeginOffset) {
           gList.push(
             <g className="svg_text_chunk gap" data-start-offset={cur} data-end-offset={nextEntity.BeginOffset} style={{display:'inline-block',padding:'0 2px'}}>
               <text startOffset={cur-pos}>&nbsp;&nbsp;&nbsp;{content.slice(cur, nextEntity.BeginOffset)}&nbsp;&nbsp;&nbsp;</text>
-              
             </g>
           )
           cur = nextEntity.BeginOffset
@@ -349,10 +381,12 @@ const SvgComponent = (props: SvgComponentProps) => {
             }
             if (nextEntity.SubChild) {
               let subColor = "#1e8900"
-            
                gList.push(
-                <g key={nextEntity.Id} className="svg_text_chunk entity"  style={{paddingLeft:2}}>
-                  <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text> 
+                <g key={nextEntity.Id} className={`svg_text_chunk entity`} style={{paddingLeft:2}}>
+                  <text id={`text_id_${nextEntity.Id}`} className={`entity_text_chunk paragraph_${paragraphNo}`} 
+                  style={{cursor: "pointer"}}
+                  onClick={e=>handleEntityClick(e)}
+                  data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text> 
                   <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}/>               
                    {
                      nextEntity.SubChild.map((c, idx) => {
@@ -377,8 +411,11 @@ const SvgComponent = (props: SvgComponentProps) => {
             )            
             } else {
                gList.push(
-                <g key={nextEntity.Id} className="svg_text_chunk entity" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset} style={{paddingLeft:2}}>
-                  <text id={`text_id_${nextEntity.Id}`} className="entity_text_chunk" data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text>                            
+                <g key={nextEntity.Id} className={`svg_text_chunk entity`} data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset} style={{paddingLeft:2}}>
+                  <text id={`text_id_${nextEntity.Id}`} className={`entity_text_chunk paragraph_${paragraphNo}`} 
+                  style={{cursor: "pointer"}}
+                  onClick={e=>handleEntityClick(e)}
+                  data-start-offset={nextEntity.BeginOffset} data-end-offset={nextEntity.EndOffset}>&nbsp;&nbsp;&nbsp;{nextEntity.Text}&nbsp;&nbsp;&nbsp;</text>                            
                   <line strokeWidth="3" strokeLinecap="round" x1={2} y1={6} x2={3} y2={6} style={{ stroke: color }} />              
                   <circle fill={color} cx="3" cy="15" r="3"></circle>              
                   <text fill="dimgrey" className="entity_label_text entity_label" x={9} y={15} dy="0.35em" >&nbsp;&nbsp;&nbsp;{`${formatStr(nextEntity.Type)} (${nextEntity.Text})` }&nbsp;&nbsp;&nbsp;</text>                     
@@ -393,7 +430,6 @@ const SvgComponent = (props: SvgComponentProps) => {
           nextEntity = findNextIncludingEntity(last)
         }
       }
-      
       
       if (cur < last) {
         gList.push(
@@ -417,10 +453,18 @@ const SvgComponent = (props: SvgComponentProps) => {
             gList.push(<path className={`conn_line relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} id={`relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`}/>)
             gList.push(<rect className="text_rect" style={{strokeWidth: 1, cursor: "default"}} />)
             gList.push(
-              <text dy="3" className="relation_label" style={{fill: "dimgrey", display: "block", strokeWidth: 1, cursor: "default"}}>
-                <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'7pt'}}>{formatStr(childEntity.RelationshipType)}</textPath>
+              <text dy="3" className="relation_label" style={{fill: "dimgrey", display: "block", strokeWidth: 1}}>
+                <textPath startOffset="50%" className="relation_label_text" style={{textAnchor: "middle",fontSize:'7pt', cursor: "pointer"}}
+                onClick={e=>handleRelationClick(e,childEntity)} >
+                  {formatStr(childEntity.RelationshipType)}
+                </textPath>
               </text>
             )
+            gList.push( 
+            <svg viewBox="64 64 896 896" focusable="false" className="delete_button" data-icon="close" width="1em" height="8" fill="#696969" aria-hidden="true">
+              <path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 00203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z">
+              </path>
+            </svg>)
             gList.push(<path className={`joint_curve ${childEntity.BeginOffset > item.BeginOffset ? 'left-circle' : ''} relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
             gList.push(<line className={`tail_line relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
             gList.push(<path className={`arrowtail relation_id_${generateExtraID()}_paragraph_${paragraphNo}_${childEntity.Id}_${item.Id}`} data-head-id={item.Id} data-tail-id={childEntity.Id} />)
@@ -506,7 +550,7 @@ const SvgComponent = (props: SvgComponentProps) => {
     </div>
   )
   
-}
+})
  
 export default SvgComponent;
 

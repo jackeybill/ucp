@@ -133,6 +133,10 @@
     .pair-item {
       background: rgba(0, 0, 0, 0.1);
       margin-right: 5px;
+      &.active {
+        opacity: 0.8;
+        background-color: rgb(223, 51, 18);
+      }
     }
   }
 }

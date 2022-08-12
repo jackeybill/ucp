@@ -4,6 +4,7 @@ const initialState = {
     file: {},
     activeTabKey:'ENTITY RECOGNITION', 
     updatedSection: {},
+    updatedRelation: {},
     labels:[],
     protocolName:"",
     fileName:"",

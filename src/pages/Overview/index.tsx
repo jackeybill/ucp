@@ -148,6 +148,9 @@ const Overview = (props: any) => {
     
   useEffect(() => {
     fetchData();
+    props.readFile({
+      updatedRelation: {},
+    });
   }, []);
 
   useEffect(()=>{

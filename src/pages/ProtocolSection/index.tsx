@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect, useRef } from "react";
 import { withRouter } from "react-router";
 import { Radio, Checkbox, Button, Menu, Dropdown, message,Modal, Tooltip } from "antd";
@@ -16,7 +17,7 @@ import { CSVLink, CSVDownload } from "react-csv";
 import "svg2pdf.js";
 import { connect } from "react-redux";
 import { saveSvgAsPng } from "save-svg-as-png";
-import { submitText } from "../../utils/ajax-proxy";
+import { submitText, submitRelation } from "../../utils/ajax-proxy";
 import SectionText from "../../components/SectionsText";
 import Extraction, { isTable } from "../../components/Extraction";
 import ExtractionTable from "../../components/ExtractionTable";
@@ -467,7 +468,7 @@ const ProtocolSection = (props: any) => {
     const path = props.fileReader.file["result_url"];
     const parambody = props.fileReader.updatedSection;
     const saveRes = await submitText(parambody, path);
-    // console.log("parambody:",parambody);
+    console.log("parambody:",parambody);
     
     if (saveRes.statusCode == "200") {
       message.success("Submit successfully");
@@ -477,6 +478,19 @@ const ProtocolSection = (props: any) => {
     }
   };
 
+  const handleRelation = async () => {
+    const path = props.fileReader.file["result_url"];
+    const parambody = props.fileReader.updatedRelation;
+    const saveRes = await submitRelation(parambody, path);
+    console.log("relation parambody:",parambody);
+    
+    if (saveRes.statusCode == "200") {
+      message.success("Submit successfully");
+      setTimeout(() => {
+        props.history.push("/overview");
+      }, 2000);
+    }
+  };
 
   const handleOk = () => {
     setIsModalVisible(false);
@@ -760,7 +774,7 @@ const ProtocolSection = (props: any) => {
                     Submit
                   </Button>
                 ) : (
-                  <Button type="primary" className="validation-btn" onClick={handleSubmit}>
+                  <Button type="primary" className="validation-btn" onClick={handleRelation}>
                     <SaveOutlined />
                     Validate and Submit
                   </Button>

@@ -13,3 +13,11 @@
 .plain-text {
   // padding: 0 52px;
 }
+.svg_line {
+  .relation_label:hover+.delete_button {
+    display: block;
+  }
+  .delete_button {
+    display: none;
+  }
+}

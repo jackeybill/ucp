@@ -148,6 +148,9 @@ ul.ant-table-pagination {
 .ant-drawer.ant-drawer-right.ant-drawer-open .ant-drawer-content-wrapper {
   width: 700px !important;
 }
+.ant-drawer.ant-drawer-right.ant-drawer-open .ant-drawer-content {
+  width: 700px !important;
+}
 
 .ant-checkbox-checked::after {
   border: 1px solid $theme-color;
